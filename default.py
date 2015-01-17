@@ -21,9 +21,9 @@ try:
   import requests
 except ImportError:
   xbmc.log("ERROR: Could not locate required library requests")
-  notify("XBMC Hue", "ERROR: Could not import Python requests")
+  notify("Kodi Hue", "ERROR: Could not import Python requests")
 
-xbmc.log("XBMC Hue service started, version: %s" % get_version())
+xbmc.log("Kodi Hue service started, version: %s" % get_version())
 
 capture = xbmc.RenderCapture()
 fmt = capture.getImageFormat()
@@ -147,7 +147,7 @@ class Hue:
       notify("Failed", "Could not connect to bridge")
       self.connected = False
     else:
-      notify("XBMC Hue", "Connected")
+      notify("Kodi Hue", "Connected")
       self.connected = True
 
   def dim_lights(self):
@@ -177,6 +177,18 @@ class Hue:
         xbmc.sleep(1)
         self.light[2].brighter_light()
 
+  def partial_lights(self):
+    self.logger.debuglog("class Hue: partial lights")
+    if self.settings.light == 0:
+      self.light.partial_light()
+    else:
+      self.light[0].partial_light()
+      if self.settings.light > 1:
+        xbmc.sleep(1)
+        self.light[1].partial_light()
+      if self.settings.light > 2:
+        xbmc.sleep(1)
+        self.light[2].partial_light()
 
   def update_settings(self):
     self.logger.debuglog("class Hue: update settings")
@@ -439,7 +451,17 @@ def state_changed(state, duration):
     else:
       logger.debuglog("dimming lights")
       hue.dim_lights()
-  elif state == "stopped" or state == "paused":
+  elif state == "paused":
+    if hue.settings.mode == 0 and hue.settings.ambilight_dim:
+      # Be persistent in restoring the lights 
+      # (prevent from being overwritten by an ambilight update)
+      for i in range(0, 3):
+        logger.debuglog("partial lights")
+        hue.dim_group.partial_lights()
+        time.sleep(1)
+    else:
+      hue.partial_lights()
+  elif state == "stopped":
     if hue.settings.mode == 0 and hue.settings.ambilight_dim:
       # Be persistent in restoring the lights 
       # (prevent from being overwritten by an ambilight update)

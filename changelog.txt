@@ -1,3 +1,8 @@
+0.7
+ - [info] forked by michaelrcarroll
+ - changed xbmc references to kodi
+ - [feature] optionally add pause brightness override
+
 0.6.2
  - [feature] optionally disable add-on for short movies
  - [feature] Full color support for LightStrips and Bloom Friends of hue

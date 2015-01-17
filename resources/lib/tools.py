@@ -92,6 +92,8 @@ class Light:
     self.override_hue = settings.override_hue
     self.dimmed_bri   = settings.dimmed_bri
     self.dimmed_hue   = settings.dimmed_hue
+    self.override_paused = settings.override_paused
+    self.paused_bri   = settings.paused_bri
     self.undim_bri    = settings.undim_bri
     self.undim_hue    = settings.undim_hue
     self.override_undim_bri = settings.override_undim_bri
@@ -201,6 +203,27 @@ class Light:
     data += "}"
     self.set_light(data)
 
+  def partial_light(self):
+    data = '{"on":true,"transitiontime":%d' % (self.dim_time)
+    if self.override_paused:
+      data += ',"bri":%s' % self.paused_bri
+      self.valLast = self.paused_bri
+    else:
+      #not enabled for dimming on pause
+      self.brighter_light()
+    if not self.livingwhite:
+      data += ',"sat":%s' % self.start_setting['sat']
+      self.satLast = self.start_setting['sat']
+
+      if self.override_hue:
+        data += ',"hue":%s' % self.undim_hue
+        self.hueLast = self.undim_hue
+      else:
+        data += ',"hue":%s' % self.start_setting['hue']
+        self.hueLast = self.start_setting['hue']
+    data += "}"
+    self.set_light(data)
+
 class Group(Light):
   group = True
   lights = {}
@@ -269,6 +292,10 @@ class Group(Light):
   def brighter_light(self):
       for light in self.lights:
         self.lights[light].brighter_light()
+
+  def partial_light(self):
+      for light in self.lights:
+        self.lights[light].partial_light()
 
   def request_url_put(self, url, data):
     try:

@@ -2,7 +2,7 @@
 <settings>
     <category label="100">
         <setting type="lsep" label="100" />
-        <setting id="discover_bridge" type="action" label="101" action="RunScript(script.xbmc.hue.ambilight,action=discover)" />
+        <setting id="discover_bridge" type="action" label="101" action="RunScript(script.kodi.hue.ambilight,action=discover)" />
         <setting id="bridge_ip" type="text" label="102" enable="!eq(-1,true)" default="-" />
         <setting id="bridge_user" type="text" label="103" enable="!eq(-1,true)" default="-" />
         <setting type="lsep" label="200" />
@@ -24,7 +24,9 @@
         <setting id="dim_time" label="507" type="slider" default="0.5" range="0,0.5,10" option="float" />
         <setting id="override_undim_bri" type="bool" label="511" default="false" />
         <setting id="undim_bri" label="502" type="slider" visible="eq(-1,true)" default="80" range="0,5,100" option="int" />
-        <setting id="override_hue" type="bool" label="506" default="false" />
+        <setting id="override_paused" type="bool" label="513" default="false" />
+        <setting id="paused_bri" label="512" type="slider" visible="eq(-1,true)" default="30" range="0,5,100" option="int" />
+        <setting id="override_hue" type="bool" label="506" default="true" />
         <setting id="dimmed_hue" type="slider" label="503" default="22755" visible="eq(-1,true)" range="0,1000,65534" option="int" />
         <setting id="undim_hue" type="slider" label="504" default="22755" visible="eq(-2,true)" range="0,1000,65534" option="int" />
         <setting type="lsep" label="600" />

@@ -24,6 +24,8 @@ class settings():
     self.dimmed_bri            = int(int(__addon__.getSetting("dimmed_bri").split(".")[0])*254/100)
     self.override_undim_bri    = __addon__.getSetting("override_undim_bri") == "true"
     self.undim_bri             = int(int(__addon__.getSetting("undim_bri").split(".")[0])*254/100)
+    self.override_paused       = __addon__.getSetting("override_paused") == "true"
+    self.paused_bri            = int(int(__addon__.getSetting("paused_bri").split(".")[0])*254/100)
     self.dim_time              = int(float(__addon__.getSetting("dim_time"))*10)
     self.override_hue          = __addon__.getSetting("override_hue") == "true"
     self.dimmed_hue            = int(__addon__.getSetting("dimmed_hue").split(".")[0])
@@ -58,6 +60,8 @@ class settings():
     'misc_disableshort: %s\n' % str(self.misc_disableshort) + \
     'dimmed_bri: %s\n' % str(self.dimmed_bri) + \
     'undim_bri: %s\n' % str(self.undim_bri) + \
+    'override_paused: %s\n' % str(self.override_paused) + \
+    'paused_bri: %s\n' % str(self.paused_bri) + \
     'dimmed_hue: %s\n' % str(self.dimmed_hue) + \
     'override_hue: %s\n' % str(self.override_hue) + \
     'undim_hue: %s\n' % str(self.undim_hue) + \
