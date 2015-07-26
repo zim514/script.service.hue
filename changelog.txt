@@ -1,6 +1,13 @@
+0.7.1
+ - [fix] uses group api to trigger light changes instead of indiviually controlling lights (better response time)
+ - [fix] if lights are turning off, send a full "off" command with a transition time instead of dim to 0 and then off (smoother transition)
+ - [feature] if pause for framerate change is enabled, then handle first pause of playback (i.e. don't dim)
+ - [fix] disable continuous capture if not in ambilight mode
+ - [info] updated icon
+
 0.7
  - [info] forked by michaelrcarroll
- - changed xbmc references to kodi
+ - [info] changed xbmc references to kodi
  - [feature] optionally add pause brightness override
 
 0.6.2

@@ -1,13 +1,7 @@
 script.kodi.hue.ambilight
 =========================
 
-[![Screenshot](http://meethue.files.wordpress.com/2013/07/youtube.png?w=400)](http://youtu.be/eU5ZvXzXmrU)
-
-A Kodi add-on that controls Philips Hue lights. In "Theatre mode" the add-on dims the the Philips Hue lights as soon as a movie starts playing, and turns the lights back on once the movie is done. "Ambilight mode" turns your Philips Hue lights in a room-sized ambilight
-
-If you enjoy the add-on, donations are certainly welcome. I've only added a few things to this, cees-elzinga is the orignal author!
-
-[![PayPal]( https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=48ZKAZK6QHNGJ&lc=NL&item_name=script%2exbmc%2ehue&currency_code=EUR)
+A Kodi add-on that controls Philips Hue lights. In "Theater mode" the add-on dims the the Philips Hue lights as soon as a movie starts playing, and turns the lights back on once the movie is done. "Ambilight mode" turns your Philips Hue lights in a room-sized ambilight.
 
 Installation
 ------------
@@ -26,7 +20,7 @@ The add-on depends on the Kodi add-on "requests" for the ambilight mode.
 
  - Download the add-on as a ZIP file from the top of this page
    - (Right click on the "ZIP" icon and select "Download Linked File")
- - Open XBMC
+ - Open Kodi
  - Go to `System -> Settings -> Add-ons -> Install from zip file`
  -  Restart Kodi and configure the add-on:
    - `System -> Settings -> Add-ons -> Enabled add-ons -> Services -> Kodi Philips Hue`
@@ -39,7 +33,8 @@ Note for Raspberry Pi users:
 
 Release history
 ---------------
-  * 2015-01-15 v 0.7.0 Fixed Kodi references, added paused brightness override (by michaelrcarroll)
+  * 2015-07-26 v 0.7.1 Updated Icon, code refactor, bugfixes, better group performance, handling of "pause during screen refresh rate change" setting
+  * 2015-01-15 v 0.7.0 Fixed Kodi references, added paused brightness override (changes beginning here by @michaelrcarroll)
   * 2014-01-12 v 0.6.2 Minor improvements
   * 2013-07-13 v 0.6.0 General improvements all around (by robwalch)
   * 2013-05-25 v 0.5.0 Debug logging, livingwhite lights
