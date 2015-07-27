@@ -39,6 +39,9 @@
   <string id="505">Debug logging</string>
   <string id="511">Override undim brightness</string>
   <string id="514">Proportional transition time</string>
+  <string id="517">Credits Settings</string>
+  <string id="515">Attempt to undim during credits</string>
+  <string id="516">Delay credits undim time</string>
 
   <string id="600">Ambilight</string>
   <string id="601">Dim a group of lights when playback starts</string>
