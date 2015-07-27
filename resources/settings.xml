@@ -30,6 +30,9 @@
         <setting id="override_hue" type="bool" label="506" default="true" />
         <setting id="dimmed_hue" type="slider" label="503" default="22755" visible="eq(-1,true)" range="0,1000,65534" option="int" />
         <setting id="undim_hue" type="slider" label="504" default="22755" visible="eq(-2,true)" range="0,1000,65534" option="int" />
+        <setting type="lsep" label="517" />
+        <setting id="undim_during_credits" type="bool" label="515" default="true" />
+        <setting id="credits_delay_time" type="slider" label="516" default="0" visible="eq(-1,true)" range="0,1,60" option="int" />
         <setting type="lsep" label="600" />
         <setting id="ambilight_dim" type="bool" label="601" default="false" />
         <setting id="ambilight_dim_group" type="number" label="602" default="0" enable="eq(-1,true)" visible="eq(-1,true)" />

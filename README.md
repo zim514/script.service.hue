@@ -43,6 +43,8 @@ Note for Raspberry Pi users:
 
 Release history
 ---------------
+
+  * 2015-07-27 v 0.8.0 Added credit detection (through chapterdb.com), proportional transition times based on brightness
   * 2015-11-02 v 0.7.2 Minor update, attempting to resolve autodiscover issues
   * 2015-07-26 v 0.7.1 Updated Icon, code refactor, bugfixes, better group performance, handling of "pause during screen refresh rate change" setting
   * 2015-01-15 v 0.7.0 Fixed Kodi references, added paused brightness override (changes beginning here by @michaelrcarroll)

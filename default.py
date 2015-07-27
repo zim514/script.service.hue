@@ -8,6 +8,7 @@ import colorsys
 import os
 import datetime
 import math
+from threading import Timer
 
 __addon__      = xbmcaddon.Addon()
 __cwd__        = __addon__.getAddonInfo('path')
@@ -32,6 +33,31 @@ fmt = capture.getImageFormat()
 # xbmc.log("Hue Capture Image format: %s" % fmt)
 fmtRGBA = fmt == 'RGBA'
 
+class RepeatedTimer(object):
+  def __init__(self, interval, function, *args, **kwargs):
+    self._timer     = None
+    self.interval   = interval
+    self.function   = function
+    self.args       = args
+    self.kwargs     = kwargs
+    self.is_running = False
+    self.start()
+
+  def _run(self):
+    self.is_running = False
+    self.start()
+    self.function(*self.args, **self.kwargs)
+
+  def start(self):
+    if not self.is_running:
+      self._timer = Timer(self.interval, self._run)
+      self._timer.start()
+      self.is_running = True
+
+  def stop(self):
+    self._timer.cancel()
+    self.is_running = False
+
 class MyMonitor( xbmc.Monitor ):
   def __init__( self, *args, **kwargs ):
     xbmc.Monitor.__init__( self )
@@ -47,35 +73,61 @@ monitor = MyMonitor()
 class MyPlayer(xbmc.Player):
   duration = 0
   playingvideo = False
+  timer = None
+  movie = False
 
   def __init__(self):
     xbmc.Player.__init__(self)
   
+  def checkTime(self):
+    if self.isPlayingVideo():
+      check_time(int(self.getTime())) #call back out to plugin function.
+
   def onPlayBackStarted(self):
     if self.isPlayingVideo():
       self.playingvideo = True
       self.duration = self.getTotalTime()
+      self.movie = xbmc.getCondVisibility('VideoPlayer.Content(movies)')
+      global credits_triggered
+      credits_triggered = False
+      if self.movie and self.duration != 0: #only try if its a movie and has a duration
+        get_credits_info(self.getVideoInfoTag().getTitle(), self.duration) # TODO: start it on a timer to not block the beginning of the media
+        logger.debuglog("credits_time: %r" % credits_time)
+        self.timer = RepeatedTimer(1, self.checkTime)
       state_changed("started", self.duration)
 
   def onPlayBackPaused(self):
     if self.isPlayingVideo():
       self.playingvideo = False
+      if self.movie and not self.timer is None:
+        self.timer.stop()
       state_changed("paused", self.duration)
 
   def onPlayBackResumed(self):
     if self.isPlayingVideo():
       self.playingvideo = True
+      if self.duration == 0:
+        self.duration = self.getTotalTime()
+        if self.movie and self.duration != 0: #only try if its a movie and has a duration
+          get_credits_info(self.getVideoInfoTag().getTitle(), self.duration) # TODO: start it on a timer to not block the beginning of the media
+          logger.debuglog("credits_time: %r" % credits_time)
+      if self.movie and self.duration != 0:    
+        self.timer = RepeatedTimer(1, self.checkTime)
       state_changed("resumed", self.duration)
 
   def onPlayBackStopped(self):
     #logger.debuglog("onPlayBackStopped called.")
     #if self.playingvideo: #don't check this, just fire the event no matter what.
     self.playingvideo = False
+    if self.movie and not self.timer is None:
+      self.timer.stop()
     state_changed("stopped", self.duration)
 
   def onPlayBackEnded(self):
     if self.playingvideo:
       self.playingvideo = False
+      if self.movie and not self.timer is None:
+        self.timer.stop()
       state_changed("stopped", self.duration)
 
 class Hue:
@@ -457,6 +509,38 @@ def fade_light_hsv(light, hsvRatio):
     # logger.debuglog("distance %s duration %s" % (distance, duration))
     light.set_light2(h, s, v, duration)
 
+credits_time = None #test = 10
+credits_triggered = False
+
+def get_credits_info(title, duration):
+  logger.debuglog("get_credits_info")
+  if hue.settings.undim_during_credits:
+    #get credits time here
+    logger.debuglog("title: %r, duration: %r" % (title, duration))
+    global credits_time
+    credits_time = ChapterManager.CreditsStartTimeForMovie(title, duration)
+    logger.debuglog("set credits time to: %r" % credits_time)
+
+def check_time(cur_time):
+  global credits_triggered
+  #logger.debuglog("check_time: %r, undim: %r, credits_time: %r" % (cur_time, hue.settings.undim_during_credits, credits_time))
+  if hue.settings.undim_during_credits and credits_time != None:
+    if (cur_time >= credits_time + hue.settings.credits_delay_time) and not credits_triggered:
+      logger.debuglog("hit credits, turn on lights")
+      # do partial undim (if enabled, otherwise full undim)
+      if hue.settings.mode == 0 and hue.settings.ambilight_dim:
+        # Be persistent in restoring the lights 
+        # (prevent from being overwritten by an ambilight update)
+        for i in range(0, 3):
+          logger.debuglog("partial lights")
+          hue.dim_group.brighter_light()
+          time.sleep(1)
+      else:
+        hue.brighter_lights()
+      credits_triggered = True
+    elif (cur_time < credits_time + hue.settings.credits_delay_time) and credits_triggered:
+      #still before credits, if this has happened, we've rewound
+      credits_triggered = False
 
 def state_changed(state, duration):
   logger.debuglog("state changed to: %s" % state)

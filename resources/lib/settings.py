@@ -31,6 +31,8 @@ class settings():
     self.override_hue          = __addon__.getSetting("override_hue") == "true"
     self.dimmed_hue            = int(__addon__.getSetting("dimmed_hue").split(".")[0])
     self.undim_hue             = int(__addon__.getSetting("undim_hue").split(".")[0])
+    self.undim_during_credits  = __addon__.getSetting("undim_during_credits") == "true"
+    self.credits_delay_time    = int(__addon__.getSetting("credits_delay_time").split(".")[0])
     self.ambilight_dim         = __addon__.getSetting("ambilight_dim") == "true"
     self.ambilight_dim_group   = int(__addon__.getSetting("ambilight_dim_group"))
     self.ambilight_min         = int(int(__addon__.getSetting("ambilight_min").split(".")[0])*254/100)
