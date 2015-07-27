@@ -27,6 +27,7 @@ class settings():
     self.override_paused       = __addon__.getSetting("override_paused") == "true"
     self.paused_bri            = int(int(__addon__.getSetting("paused_bri").split(".")[0])*254/100)
     self.dim_time              = int(float(__addon__.getSetting("dim_time"))*10)
+    self.proportional_dim_time = __addon__.getSetting("proportional_dim_time") == "true"
     self.override_hue          = __addon__.getSetting("override_hue") == "true"
     self.dimmed_hue            = int(__addon__.getSetting("dimmed_hue").split(".")[0])
     self.undim_hue             = int(__addon__.getSetting("undim_hue").split(".")[0])

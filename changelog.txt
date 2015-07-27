@@ -1,3 +1,7 @@
+0.8
+ - [feature] detect last chapter (movies only) and optionally bring lights up (credits)
+ - [feature] proportional transition times (e.g. if going from 0-30% brightness, only take 30% of transition time) (optional)
+
 0.7.1
  - [fix] uses group api to trigger light changes instead of indiviually controlling lights (better response time)
  - [fix] if lights are turning off, send a full "off" command with a transition time instead of dim to 0 and then off (smoother transition)

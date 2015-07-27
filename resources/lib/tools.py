@@ -89,6 +89,7 @@ class Light:
     self.bridge_user  = settings.bridge_user
     self.light        = light_id
     self.dim_time     = settings.dim_time
+    self.proportional_dim_time = settings.proportional_dim_time
     self.override_hue = settings.override_hue
     self.dimmed_bri   = settings.dimmed_bri
     self.dimmed_hue   = settings.dimmed_hue
@@ -97,6 +98,7 @@ class Light:
     self.undim_bri    = settings.undim_bri
     self.undim_hue    = settings.undim_hue
     self.override_undim_bri = settings.override_undim_bri
+
     self.onLast = True
     self.hueLast = 0
     self.satLast = 0
@@ -119,6 +121,7 @@ class Light:
     j = r.json()
     self.start_setting = {}
     state = j['state']
+    self.logger.debuglog("current_setting: %r" % state)
     self.start_setting['on'] = state['on']
     self.start_setting['bri'] = state['bri']
     self.onLast = state['on']
@@ -141,28 +144,39 @@ class Light:
   #   self.request_url_put("http://%s/api/%s/lights/%s/state" % \
   #     (self.bridge_ip, self.bridge_user, self.light), data=data)
 
-  def set_light2(self, hue, sat, bri, dur=20):
+  def set_light2(self, hue, sat, bri):
     data = {}
 
     if not self.livingwhite:
       if not hue is None:
-        data["hue"] = hue
-        self.hueLast = hue
+        if not hue == self.hueLast:
+          data["hue"] = hue
+          self.hueLast = hue
       if not sat is None:
-        data["sat"] = sat
-        self.satLast = sat
+        if not sat == self.satLast:
+          data["sat"] = sat
+          self.satLast = sat
 
     if bri > 0:
       data["on"] = True
       self.onLast = True
-      data["bri"] = bri
-      self.valLast = bri
+      data["bri"] = bri 
     else:
       data["on"] = False
       self.onLast = False
-      self.valLast = bri
 
-    data["transitiontime"] = dur
+    if self.proportional_dim_time:
+      self.logger.debuglog("last %r, next %r, start %r, finish %r" % (self.valLast, bri, self.start_setting['bri'], self.dimmed_bri))
+      difference = abs(float(bri) - self.valLast)
+      total = float(self.start_setting['bri']) - self.dimmed_bri
+      proportion = difference / total
+      time = int(round(proportion * self.dim_time))
+    else:
+      time = self.dim_time
+
+    self.valLast = bri # moved after time calclation to know the previous value (important)
+
+    data["transitiontime"] = time
     
     dataString = json.dumps(data)
 
@@ -182,7 +196,7 @@ class Light:
     else:
       hue = None
 
-    self.set_light2(hue, None, self.dimmed_bri, self.dim_time)
+    self.set_light2(hue, None, self.dimmed_bri)
 
   def brighter_light(self):
     if self.override_undim_bri:
@@ -191,8 +205,7 @@ class Light:
       bri = self.start_setting['bri']
 
     if not self.livingwhite:
-      sat = self.start_setting['sat']
-
+      sat = self.start_setting["sat"]
       if self.override_hue:
         hue = self.undim_hue
       else:
@@ -201,7 +214,7 @@ class Light:
       sat = None
       hue = None
 
-    self.set_light2(hue, sat, bri, self.dim_time)
+    self.set_light2(hue, sat, bri)
 
   def partial_light(self):
     if self.override_paused:
@@ -216,8 +229,8 @@ class Light:
       else:
         sat = None
         hue = None
-      
-      self.set_light2(hue, sat, bri, self.dim_time)
+
+      self.set_light2(hue, sat, bri)
     else:
       #not enabled for dimming on pause
       self.brighter_light()
@@ -265,29 +278,40 @@ class Group(Light):
   #   Light.request_url_put(self, "http://%s/api/%s/groups/%s/action" % \
   #     (self.bridge_ip, self.bridge_user, self.group_id), data=data)
 
-  def set_light2(self, hue, sat, bri, dur=20):
+  def set_light2(self, hue, sat, bri):
 
     data = {}
 
     if not self.livingwhite:
       if not hue is None:
-        data["hue"] = hue
-        self.hueLast = hue
+        if not hue == self.hueLast:
+          data["hue"] = hue
+          self.hueLast = hue
       if not sat is None:
-        data["sat"] = sat
-        self.satLast = sat
+        if not sat == self.satLast:
+          data["sat"] = sat
+          self.satLast = sat
 
     if bri > 0:
       data["on"] = True
       self.onLast = True
       data["bri"] = bri
-      self.valLast = bri
     else:
       data["on"] = False
       self.onLast = False
-      self.valLast = bri
 
-    data["transitiontime"] = dur
+    if self.proportional_dim_time:
+      self.logger.debuglog("last %r, next %r, start %r, finish %r" % (self.valLast, bri, self.start_setting['bri'], self.dimmed_bri))
+      difference = abs(float(bri) - self.valLast)
+      total = float(self.start_setting['bri']) - self.dimmed_bri
+      proportion = difference / total
+      time = int(round(proportion * self.dim_time))
+    else:
+      time = self.dim_time
+
+    self.valLast = bri # moved after time calculation
+
+    data["transitiontime"] = time
     
     dataString = json.dumps(data)
 

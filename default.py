@@ -46,7 +46,7 @@ monitor = MyMonitor()
 
 class MyPlayer(xbmc.Player):
   duration = 0
-  playingvideo = None
+  playingvideo = False
 
   def __init__(self):
     xbmc.Player.__init__(self)
@@ -68,9 +68,10 @@ class MyPlayer(xbmc.Player):
       state_changed("resumed", self.duration)
 
   def onPlayBackStopped(self):
-    if self.playingvideo:
-      self.playingvideo = False
-      state_changed("stopped", self.duration)
+    #logger.debuglog("onPlayBackStopped called.")
+    #if self.playingvideo: #don't check this, just fire the event no matter what.
+    self.playingvideo = False
+    state_changed("stopped", self.duration)
 
   def onPlayBackEnded(self):
     if self.playingvideo:
