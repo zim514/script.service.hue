@@ -3,6 +3,12 @@ script.kodi.hue.ambilight
 
 A Kodi add-on that controls Philips Hue lights. In "Theater mode" the add-on dims the the Philips Hue lights as soon as a movie starts playing, and turns the lights back on once the movie is done. "Ambilight mode" turns your Philips Hue lights in a room-sized ambilight.
 
+Support
+-------
+This is a side project for me, and as such I'll update it when and if I have time . I'll happily respond to issues and feature requests (provided that they are detailed enough to realistically debug your problem (**LOGS**)). Since this is based on @cees-elzinga's original work, I've only modified some of the functions to enhance the features. I don't personally use the ambilight feature, and therefore havent done much testing with it... Again, happy to try and help out, but don't expect super-quick responses!
+
+Please fork and enhance! Pull requests welcome!
+
 Installation
 ------------
 
@@ -44,3 +50,13 @@ Release history
   * 2013-04-01 v 0.3.3 Rename to script.xbmc.hue.ambilight
   * 2013-02-25 v 0.3.1 Improved handling for grouped lights
   * 2013-01-27 v 0.1.0 Initial release
+
+TODO:
+-----
+  * Add: saturation override so that full light parameters can be overridden
+  * Fix: lights may turn on if they are already off, need better state checking
+  * Add: setting to customize what is considered a "short" video
+  * Add: *experimental* auto undim when movie reaches credits (does not always work, may ruin your movie-watching experience)
+  * Refactor: clean up a lot of the old code that's still in the addon, but not necessary
+  * Add: [OpenHAB](http://github.com/openhab/openhab) support for a grouped switch endpoint (to turn off a set of lights that are controlled by something other than Philips Hue... i.e. Z-Wave)
+  * Publish: get addon onto the official Kodi addon repository
