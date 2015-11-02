@@ -101,7 +101,7 @@ class Hue:
     elif self.params['action'] == "discover":
       self.logger.debuglog("Starting discover")
       notify("Bridge discovery", "starting")
-      hue_ip = start_autodisover()
+      hue_ip = self.start_autodiscover()
       if hue_ip != None:
         notify("Bridge discovery", "Found bridge at: %s" % hue_ip)
         username = register_user(hue_ip)
@@ -120,6 +120,41 @@ class Hue:
     if self.connected:
       if self.settings.misc_initialflash:
         self.flash_lights()
+
+  def start_autodiscover(self):
+    port = 1900
+    ip = "239.255.255.250"
+
+    address = (ip, port)
+    data = """M-SEARCH * HTTP/1.1
+    HOST: %s:%s
+    MAN: ssdp:discover
+    MX: 3
+    ST: upnp:rootdevice""" % (ip, port)
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    hue_ip = None
+    num_retransmits = 0
+    while(num_retransmits < 10) and hue_ip == None:
+      num_retransmits += 1
+      client_socket.sendto(data, address)
+      recv_data, addr = client_socket.recvfrom(2048)
+      self.logger.debuglog("received data during autodiscovery: "+recv_data)
+      if "IpBridge" in recv_data and "description.xml" in recv_data:
+        hue_ip = recv_data.split("LOCATION: http://")[1].split(":")[0]
+      time.sleep(1)
+
+    if hue_ip == None:
+      #still nothing found, try alternate api
+      r=requests.get("https://www.meethue.com/api/nupnp", verify=False) #verify false hack until meethue fixes their ssl cert.
+      j=r.json()
+      if len(j) > 0:
+        hue_ip=j[0]["internalipaddress"]
+        self.logger.debuglog("meethue api returned: "+hue_ip)
+      else:
+        self.logger.debuglog("meethue api did not find bridge")
+        
+    return hue_ip
 
   def flash_lights(self):
     self.logger.debuglog("class Hue: flashing lights")

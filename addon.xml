@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.kodi.hue.ambilight" name="Kodi Philips Hue" version="0.7.1" provider-name="Michael R Carroll">
+<addon id="script.kodi.hue.ambilight" name="Kodi Philips Hue" version="0.7.2" provider-name="Michael R Carroll">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.requests"/>

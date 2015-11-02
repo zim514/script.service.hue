@@ -1,3 +1,8 @@
+0.7.2
+ - [fix] enhanced logging for autodiscovery
+ - [feature] added meethue.com api for autodiscovery as fallback for local SSDP
+ - [fix] changed one lang string (Theatre -> Theater)
+
 0.7.1
  - [fix] uses group api to trigger light changes instead of indiviually controlling lights (better response time)
  - [fix] if lights are turning off, send a full "off" command with a transition time instead of dim to 0 and then off (smoother transition)

@@ -23,7 +23,7 @@ def notify(title, msg=""):
 try:
   import requests
 except ImportError:
-  notify("XBMC Hue", "ERROR: Could not import Python requests")
+  notify("Kodi Hue", "ERROR: Could not import Python requests")
 
 def get_version():
   # prob not the best way...
@@ -33,31 +33,7 @@ def get_version():
       if line.find("ambilight") != -1 and line.find("version") != -1:
         return line[line.find("version=")+9:line.find(" provider")-1]
   except:
-    return "unkown"
-
-def start_autodisover():
-  port = 1900
-  ip = "239.255.255.250"
-
-  address = (ip, port)
-  data = """M-SEARCH * HTTP/1.1
-  HOST: %s:%s
-  MAN: ssdp:discover
-  MX: 3
-  ST: upnp:rootdevice""" % (ip, port)
-  client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-  hue_ip = None
-  num_retransmits = 0
-  while(num_retransmits < 10) and hue_ip == None:
-      num_retransmits += 1
-      client_socket.sendto(data, address)
-      recv_data, addr = client_socket.recvfrom(2048)
-      if "IpBridge" in recv_data and "description.xml" in recv_data:
-        hue_ip = recv_data.split("LOCATION: http://")[1].split(":")[0]
-      time.sleep(1)
-      
-  return hue_ip
+    return "unknown"
 
 def register_user(hue_ip):
   username = hashlib.md5(str(random.random())).hexdigest()

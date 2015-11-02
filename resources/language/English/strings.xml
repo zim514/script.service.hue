@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-  <string id="100">Bridge configuration</string>
-  <string id="101">Click me for automatic configuration</string>
+  <string id="100">Bridge Configuration</string>
+  <string id="101">Start Automatic Configuration</string>
   <string id="102">Bridge IP</string>
   <string id="103">Bridge User</string>
 
   <string id="200">Mode</string>
   <string id="201">Mode</string>
   <string id="202">Ambilight</string>
-  <string id="203">Theatre</string>
+  <string id="203">Theater</string>
 
   <string id="300">Lights</string>
   <string id="301">Enable</string>
