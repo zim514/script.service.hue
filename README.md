@@ -9,6 +9,10 @@ This is a side project for me, and as such I'll update it when and if I have tim
 
 Please fork and enhance! Pull requests welcome!
 
+Debugging
+---------
+Please turn on Debug Logging through the addon (Configure -> Advanced Settings -> Debug Logging) and follow the procedure at http://kodi.wiki/view/Log_file/Easy to upload a log file. Provide a link to your logfile in the issue.
+
 Installation
 ------------
 
@@ -39,6 +43,7 @@ Note for Raspberry Pi users:
 
 Release history
 ---------------
+  * 2015-11-02 v 0.7.2 Minor update, attempting to resolve autodiscover issues
   * 2015-07-26 v 0.7.1 Updated Icon, code refactor, bugfixes, better group performance, handling of "pause during screen refresh rate change" setting
   * 2015-01-15 v 0.7.0 Fixed Kodi references, added paused brightness override (changes beginning here by @michaelrcarroll)
   * 2014-01-12 v 0.6.2 Minor improvements
