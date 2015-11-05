@@ -12,10 +12,10 @@
 
   <string id="300">Lights</string>
   <string id="301">Enable</string>
-  <string id="302">a group of lights</string>
-  <string id="303">a single light</string>
-  <string id="304">two lights</string>
-  <string id="305">three light</string>
+  <string id="302">Group of lights</string>
+  <string id="303">Single light</string>
+  <string id="304">Two lights</string>
+  <string id="305">Three light</string>
   <string id="306">Light bulb ID 1</string>
   <string id="307">Light bulb ID 2</string>
   <string id="308">Light bulb ID 3</string>
@@ -33,9 +33,12 @@
   <string id="513">Override pause brightness</string>
   <string id="512">Paused brightness</string>
   <string id="507">Dim/Undim transition time</string>
-  <string id="506">Override Hue colors</string>
-  <string id="503">Dimmed Hue color</string>
-  <string id="504">Undimmed Hue color</string>
+  <string id="506">Override Hue</string>
+  <string id="503">Dimmed Hue</string>
+  <string id="504">Undimmed Hue</string>
+  <string id="518">Override Saturation</string>
+  <string id="519">Dimmed Saturation</string>
+  <string id="520">Undimmed Saturation</string>
   <string id="505">Debug logging</string>
   <string id="511">Override undim brightness</string>
   <string id="514">Proportional transition time</string>

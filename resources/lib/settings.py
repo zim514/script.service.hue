@@ -31,6 +31,9 @@ class settings():
     self.override_hue          = __addon__.getSetting("override_hue") == "true"
     self.dimmed_hue            = int(__addon__.getSetting("dimmed_hue").split(".")[0])
     self.undim_hue             = int(__addon__.getSetting("undim_hue").split(".")[0])
+    self.override_sat          = __addon__.getSetting("override_sat") == "true"
+    self.dimmed_sat            = int(__addon__.getSetting("dimmed_sat").split(".")[0])
+    self.undim_sat             = int(__addon__.getSetting("undim_sat").split(".")[0])
     self.undim_during_credits  = __addon__.getSetting("undim_during_credits") == "true"
     self.credits_delay_time    = int(__addon__.getSetting("credits_delay_time").split(".")[0])
     self.ambilight_dim         = __addon__.getSetting("ambilight_dim") == "true"
@@ -68,6 +71,9 @@ class settings():
     'dimmed_hue: %s\n' % str(self.dimmed_hue) + \
     'override_hue: %s\n' % str(self.override_hue) + \
     'undim_hue: %s\n' % str(self.undim_hue) + \
+    'dimmed_sat: %s\n' % str(self.dimmed_sat) + \
+    'override_sat: %s\n' % str(self.override_sat) + \
+    'undim_sat: %s\n' % str(self.undim_sat) + \
     'ambilight_dim: %s\n' % str(self.ambilight_dim) + \
     'ambilight_dim_group: %s\n' % str(self.ambilight_dim_group) + \
     'ambilight_min: %s\n' % str(self.ambilight_min) + \

@@ -73,6 +73,9 @@ class Light:
     self.override_hue = settings.override_hue
     self.dimmed_bri   = settings.dimmed_bri
     self.dimmed_hue   = settings.dimmed_hue
+    self.override_sat = settings.override_sat
+    self.dimmed_sat   = settings.dimmed_sat
+    self.undim_sat   = settings.undim_sat
     self.override_paused = settings.override_paused
     self.paused_bri   = settings.paused_bri
     self.undim_bri    = settings.undim_bri
@@ -90,7 +93,8 @@ class Light:
   def request_url_put(self, url, data):
     if self.start_setting['on']:
       try:
-        self.s.put(url, data=data)
+        response = self.s.put(url, data=data)
+        self.logger.debuglog("response: %s" % response)
       except:
         self.logger.debuglog("exception in request_url_put")
         pass # probably a timeout
@@ -124,7 +128,7 @@ class Light:
   #   self.request_url_put("http://%s/api/%s/lights/%s/state" % \
   #     (self.bridge_ip, self.bridge_user, self.light), data=data)
 
-  def set_light2(self, hue, sat, bri):
+  def set_light2(self, hue, sat, bri, duration=None):
     data = {}
 
     if not self.livingwhite:
@@ -138,21 +142,25 @@ class Light:
           self.satLast = sat
 
     if bri > 0:
-      data["on"] = True
-      self.onLast = True
-      data["bri"] = bri 
+      if self.onLast == False: #don't send on unless we have to (performance)
+        data["on"] = True
+        self.onLast = True
+      data["bri"] = bri
     else:
       data["on"] = False
       self.onLast = False
 
-    if self.proportional_dim_time:
-      self.logger.debuglog("last %r, next %r, start %r, finish %r" % (self.valLast, bri, self.start_setting['bri'], self.dimmed_bri))
-      difference = abs(float(bri) - self.valLast)
-      total = float(self.start_setting['bri']) - self.dimmed_bri
-      proportion = difference / total
-      time = int(round(proportion * self.dim_time))
+    if duration is None:
+      if self.proportional_dim_time:
+        self.logger.debuglog("last %r, next %r, start %r, finish %r" % (self.valLast, bri, self.start_setting['bri'], self.dimmed_bri))
+        difference = abs(float(bri) - self.valLast)
+        total = float(self.start_setting['bri']) - self.dimmed_bri
+        proportion = difference / total
+        time = int(round(proportion * self.dim_time))
+      else:
+        time = self.dim_time
     else:
-      time = self.dim_time
+      time = duration
 
     self.valLast = bri # moved after time calclation to know the previous value (important)
 
@@ -176,7 +184,12 @@ class Light:
     else:
       hue = None
 
-    self.set_light2(hue, None, self.dimmed_bri)
+    if self.override_sat:
+      sat = self.dimmed_sat
+    else:
+      sat = None
+
+    self.set_light2(hue, sat, self.dimmed_bri)
 
   def brighter_light(self):
     if self.override_undim_bri:
@@ -185,7 +198,10 @@ class Light:
       bri = self.start_setting['bri']
 
     if not self.livingwhite:
-      sat = self.start_setting["sat"]
+      if self.override_sat:
+        sat = self.undim_sat
+      else:
+        sat = self.start_setting['sat']
       if self.override_hue:
         hue = self.undim_hue
       else:
@@ -199,8 +215,12 @@ class Light:
   def partial_light(self):
     if self.override_paused:
       bri = self.paused_bri
+
       if not self.livingwhite:
-        sat = self.start_setting['sat']
+        if self.override_sat:
+          sat = self.undim_sat
+        else:
+          sat = self.start_setting['sat']
 
         if self.override_hue:
           hue = self.undim_hue
@@ -258,7 +278,7 @@ class Group(Light):
   #   Light.request_url_put(self, "http://%s/api/%s/groups/%s/action" % \
   #     (self.bridge_ip, self.bridge_user, self.group_id), data=data)
 
-  def set_light2(self, hue, sat, bri):
+  def set_light2(self, hue, sat, bri, duration=None):
 
     data = {}
 
@@ -273,21 +293,25 @@ class Group(Light):
           self.satLast = sat
 
     if bri > 0:
-      data["on"] = True
-      self.onLast = True
+      if self.onLast == False: #don't sent on unless we have to. (performance)
+        data["on"] = True
+        self.onLast = True
       data["bri"] = bri
     else:
       data["on"] = False
       self.onLast = False
 
-    if self.proportional_dim_time:
-      self.logger.debuglog("last %r, next %r, start %r, finish %r" % (self.valLast, bri, self.start_setting['bri'], self.dimmed_bri))
-      difference = abs(float(bri) - self.valLast)
-      total = float(self.start_setting['bri']) - self.dimmed_bri
-      proportion = difference / total
-      time = int(round(proportion * self.dim_time))
+    if duration is None:
+      if self.proportional_dim_time:
+        self.logger.debuglog("last %r, next %r, start %r, finish %r" % (self.valLast, bri, self.start_setting['bri'], self.dimmed_bri))
+        difference = abs(float(bri) - self.valLast)
+        total = float(self.start_setting['bri']) - self.dimmed_bri
+        proportion = difference / total
+        time = int(round(proportion * self.dim_time))
+      else:
+        time = self.dim_time
     else:
-      time = self.dim_time
+      time = duration
 
     self.valLast = bri # moved after time calculation
 
@@ -314,7 +338,8 @@ class Group(Light):
 
   def request_url_put(self, url, data):
     try:
-      self.s.put(url, data=data)
+      response = self.s.put(url, data=data)
+      self.logger.debuglog("response: %s" % response)
     except Exception as e:
       # probably a timeout
       self.logger.debuglog("WARNING: Request fo bridge failed")
