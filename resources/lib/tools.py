@@ -121,9 +121,10 @@ class Light:
       self.start_setting['sat'] = state['sat']
       self.hueLast = state['hue']
       self.satLast = state['sat']
-    
     else:
       self.livingwhite = True
+
+    self.logger.debuglog("light %s start settings: %s" % (self.light, self.start_setting))
 
   # def set_light(self, data):
   #   self.logger.debuglog("set_light: %s: %s" % (self.light, data))
@@ -134,7 +135,7 @@ class Light:
 
     if self.start_setting["on"] == False and self.force_light_on == False:
       # light was not on, and settings say we should not turn it on
-      self.logger.debuglog("light %r was off, settings say we should not turn it on" % self.light)
+      self.logger.debuglog("light %s was off, settings say we should not turn it on" % self.light)
       return
 
     data = {}
@@ -290,7 +291,7 @@ class Group(Light):
 
     if self.start_setting["on"] == False and self.force_light_on == False:
       # light was not on, and settings say we should not turn it on
-      self.logger.debuglog("group was off, settings say we should not turn it on")
+      self.logger.debuglog("group %s was off, settings say we should not turn it on" % self.group_id)
       return
 
     data = {}
@@ -349,6 +350,32 @@ class Group(Light):
   #     for light in self.lights:
   #       self.lights[light].partial_light()
 
+  def get_current_setting(self):
+    r = requests.get("http://%s/api/%s/groups/%s" % \
+      (self.bridge_ip, self.bridge_user, self.group_id))
+    j = r.json()
+    #self.logger.debuglog("response: %s" % j)
+    self.start_setting = {}
+    state = j['action']
+    #self.logger.debuglog("current_setting: %r" % state)
+    self.start_setting['on'] = state['on']
+    self.start_setting['bri'] = state['bri']
+    self.onLast = state['on']
+    self.valLast = state['bri']
+    
+    # modelid = j['modelid']
+    # self.fullSpectrum = ((modelid == 'LST001') or (modelid == 'LLC007'))
+
+    if state.has_key('hue'):
+      self.start_setting['hue'] = state['hue']
+      self.start_setting['sat'] = state['sat']
+      self.hueLast = state['hue']
+      self.satLast = state['sat']
+    else:
+      self.livingwhite = True
+
+    self.logger.debuglog("group %s start settings: %s" % (self.group_id, self.start_setting))
+
   def request_url_put(self, url, data):
     try:
       response = self.s.put(url, data=data)
@@ -357,6 +384,10 @@ class Group(Light):
       # probably a timeout
       self.logger.debuglog("WARNING: Request fo bridge failed")
       pass
+
+######################
+# BEGIN CREDITS CODE #
+######################
 
 API_KEY = "7OOEGRV8Y2SVNTS29EBJ"
 API_SEARCH_URL = "http://www.chapterdb.org/chapters/search"
@@ -442,6 +473,10 @@ class ChapterManager:
       return "%02d:%02d:%02d" % (t_hours, t_minutes, t_seconds)
 
     return None
+
+####################
+# END CREDITS CODE #
+####################
 
 class Logger:
   scriptname = "Kodi Hue"

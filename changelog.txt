@@ -1,6 +1,9 @@
 0.8
  - [feature] detect last chapter (movies only) and optionally bring lights up (credits) (SUPER EXPERIMENTAL. ONLY ENABLE IF YOU'RE BRAVE/CRAZY AND ARE WILLING TO HAVE LIGHTS TURN ON DURING A MOVIE)
  - [feature] proportional transition times (e.g. if going from 0-30% brightness, only take 30% of transition time) (optional)
+ - [feature] added override for saturation
+ - [feature] added setting to adjust "short movie" detection threshold
+ - [fix] updated some default settings to more user-friendly values
 
 0.7.2
  - [fix] enhanced logging for autodiscovery

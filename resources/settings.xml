@@ -27,12 +27,12 @@
         <setting id="proportional_dim_time" label="514" type="bool" default="true" />
         <setting id="override_undim_bri" type="bool" label="511" default="false" />
         <setting id="undim_bri" label="502" type="slider" visible="eq(-1,true)" default="80" range="0,5,100" option="int" />
-        <setting id="override_paused" type="bool" label="513" default="false" />
+        <setting id="override_paused" type="bool" label="513" default="true" />
         <setting id="paused_bri" label="512" type="slider" visible="eq(-1,true)" default="30" range="0,5,100" option="int" />
-        <setting id="override_hue" type="bool" label="506" default="true" />
+        <setting id="override_hue" type="bool" label="506" default="false" />
         <setting id="dimmed_hue" type="slider" label="503" default="22755" visible="eq(-1,true)" range="0,1000,65534" option="int" />
         <setting id="undim_hue" type="slider" label="504" default="22755" visible="eq(-2,true)" range="0,1000,65534" option="int" />
-        <setting id="override_sat" type="bool" label="518" default="true" />
+        <setting id="override_sat" type="bool" label="518" default="false" />
         <setting id="dimmed_sat" type="slider" label="519" default="0" visible="eq(-1,true)" range="0,255" option="int" />
         <setting id="undim_sat" type="slider" label="520" default="0" visible="eq(-2,true)" range="0,255" option="int" />
         <setting type="lsep" label="517" />

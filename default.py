@@ -559,7 +559,7 @@ def state_changed(state, duration):
   if state == "started":
     logger.debuglog("retrieving current setting before starting")
     
-    if hue.settings.light == 0:
+    if hue.settings.light == 0: # group mode
       hue.light.get_current_setting()
     else:
       hue.light[0].get_current_setting()
