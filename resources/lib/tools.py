@@ -8,6 +8,7 @@ import re
 import urllib
 from urllib2 import Request, urlopen
 import xml.etree.ElementTree as ET
+
 NOSE = os.environ.get('NOSE', None)
 if not NOSE:
   import xbmc
@@ -41,13 +42,13 @@ def get_version():
 
 def register_user(hue_ip):
   username = hashlib.md5(str(random.random())).hexdigest()
-  device = "xbmc-player"
+  device = "kodi-player"
   data = '{"username": "%s", "devicetype": "%s"}' % (username, device)
 
   r = requests.post('http://%s/api' % hue_ip, data=data)
   response = r.text
   while "link button not pressed" in response:
-    notify("Bridge discovery", "press link button on bridge")
+    notify("Bridge Discovery", "Press link button on bridge")
     r = requests.post('http://%s/api' % hue_ip, data=data)
     response = r.text 
     time.sleep(3)
@@ -81,6 +82,7 @@ class Light:
     self.undim_bri    = settings.undim_bri
     self.undim_hue    = settings.undim_hue
     self.override_undim_bri = settings.override_undim_bri
+    self.force_light_on = settings.force_light_on
 
     self.onLast = True
     self.hueLast = 0
@@ -129,6 +131,12 @@ class Light:
   #     (self.bridge_ip, self.bridge_user, self.light), data=data)
 
   def set_light2(self, hue, sat, bri, duration=None):
+
+    if self.start_setting["on"] == False and self.force_light_on == False:
+      # light was not on, and settings say we should not turn it on
+      self.logger.debuglog("light %r was off, settings say we should not turn it on" % self.light)
+      return
+
     data = {}
 
     if not self.livingwhite:
@@ -142,7 +150,7 @@ class Light:
           self.satLast = sat
 
     if bri > 0:
-      if self.onLast == False: #don't send on unless we have to (performance)
+      if self.onLast == False : #don't send on unless we have to (performance)
         data["on"] = True
         self.onLast = True
       data["bri"] = bri
@@ -279,6 +287,11 @@ class Group(Light):
   #     (self.bridge_ip, self.bridge_user, self.group_id), data=data)
 
   def set_light2(self, hue, sat, bri, duration=None):
+
+    if self.start_setting["on"] == False and self.force_light_on == False:
+      # light was not on, and settings say we should not turn it on
+      self.logger.debuglog("group was off, settings say we should not turn it on")
+      return
 
     data = {}
 

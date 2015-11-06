@@ -153,19 +153,19 @@ class Hue:
         self.test_connection()
     elif self.params['action'] == "discover":
       self.logger.debuglog("Starting discover")
-      notify("Bridge discovery", "starting")
+      notify("Bridge Discovery", "starting")
       hue_ip = self.start_autodiscover()
       if hue_ip != None:
-        notify("Bridge discovery", "Found bridge at: %s" % hue_ip)
+        notify("Bridge Discovery", "Found bridge at: %s" % hue_ip)
         username = register_user(hue_ip)
         self.logger.debuglog("Updating settings")
         self.settings.update(bridge_ip = hue_ip)
         self.settings.update(bridge_user = username)
-        notify("Bridge discovery", "Finished")
+        notify("Bridge Discovery", "Finished")
         self.test_connection()
         self.update_settings()
       else:
-        notify("Bridge discovery", "Failed. Could not find bridge.")
+        notify("Bridge Discovery", "Failed. Could not find bridge.")
     else:
       # not yet implemented
       self.logger.debuglog("unimplemented action call: %s" % self.params['action'])
@@ -552,7 +552,7 @@ def state_changed(state, duration):
   if "result" in response and "value" in response["result"]:
     pauseafterrefreshchange = int(response["result"]["value"])
 
-  if duration < 300 and hue.settings.misc_disableshort:
+  if duration < hue.settings.misc_disableshort_threshold and hue.settings.misc_disableshort:
     logger.debuglog("add-on disabled for short movies")
     return
 

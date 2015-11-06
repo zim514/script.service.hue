@@ -25,6 +25,8 @@
   <string id="400">Misc settings</string>
   <string id="401">Enable initial flash</string>
   <string id="402">Disable for short movies</string>
+  <string id="403">Force Light(s) on (even if off)</string>
+  <string id="404">Short Movie Threshold (seconds)</string>
 
   <string id="500">Advanced settings</string>
   <string id="510">Changes will be active after restarting Kodi</string>

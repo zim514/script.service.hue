@@ -20,6 +20,7 @@ class settings():
     self.group_id              = int(__addon__.getSetting("group_id"))
     self.misc_initialflash     = __addon__.getSetting("misc_initialflash") == "true"
     self.misc_disableshort     = __addon__.getSetting("misc_disableshort") == "true"
+    self.misc_disableshort_threshold = int(__addon__.getSetting("misc_disableshort_threshold") == "true")
 
     self.dimmed_bri            = int(int(__addon__.getSetting("dimmed_bri").split(".")[0])*254/100)
     self.override_undim_bri    = __addon__.getSetting("override_undim_bri") == "true"
@@ -41,6 +42,7 @@ class settings():
     self.ambilight_min         = int(int(__addon__.getSetting("ambilight_min").split(".")[0])*254/100)
     self.ambilight_max         = int(int(__addon__.getSetting("ambilight_max").split(".")[0])*254/100)
     self.color_bias            = int(int(__addon__.getSetting("color_bias").split(".")[0])/3*3)
+    self.force_light_on        = __addon__.getSetting("force_light_on") == "true"
 
     if self.ambilight_min > self.ambilight_max:
         self.ambilight_min = self.ambilight_max
@@ -64,6 +66,7 @@ class settings():
     'group_id: %s\n' % str(self.group_id) + \
     'misc_initialflash: %s\n' % str(self.misc_initialflash) + \
     'misc_disableshort: %s\n' % str(self.misc_disableshort) + \
+    'misc_disableshort_threshold: %s\n' % str(self.misc_disableshort_threshold) + \
     'dimmed_bri: %s\n' % str(self.dimmed_bri) + \
     'undim_bri: %s\n' % str(self.undim_bri) + \
     'override_paused: %s\n' % str(self.override_paused) + \
@@ -79,4 +82,5 @@ class settings():
     'ambilight_min: %s\n' % str(self.ambilight_min) + \
     'ambilight_max: %s\n' % str(self.ambilight_max) + \
     'color_bias: %s\n' % str(self.color_bias) + \
+    'force_light_on: %s\n' % str(self.force_light_on) + \
     'debug: %s\n' % self.debug
