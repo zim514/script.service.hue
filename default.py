@@ -183,19 +183,25 @@ class Hue:
     HOST: %s:%s
     MAN: ssdp:discover
     MX: 3
-    ST: upnp:rootdevice""" % (ip, port)
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    ST: upnp:rootdevice
+    """ % (ip, port)
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP) #force udp
+    client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    client_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 2)
 
     hue_ip = None
     num_retransmits = 0
     while(num_retransmits < 10) and hue_ip == None:
       num_retransmits += 1
-      client_socket.sendto(data, address)
-      recv_data, addr = client_socket.recvfrom(2048)
-      self.logger.debuglog("received data during autodiscovery: "+recv_data)
-      if "IpBridge" in recv_data and "description.xml" in recv_data:
-        hue_ip = recv_data.split("LOCATION: http://")[1].split(":")[0]
-      time.sleep(1)
+      try:
+        client_socket.sendto(data, address)
+        recv_data, addr = client_socket.recvfrom(2048)
+        self.logger.debuglog("received data during autodiscovery: "+recv_data)
+        if "IpBridge" in recv_data and "description.xml" in recv_data:
+          hue_ip = recv_data.split("LOCATION: http://")[1].split(":")[0]
+        time.sleep(1)
+      except socket.timeout:
+        break #if the socket times out once, its probably not going to complete at all. fallback to nupnp.
 
     if hue_ip == None:
       #still nothing found, try alternate api
@@ -203,9 +209,9 @@ class Hue:
       j=r.json()
       if len(j) > 0:
         hue_ip=j[0]["internalipaddress"]
-        self.logger.debuglog("meethue api returned: "+hue_ip)
+        self.logger.debuglog("meethue nupnp api returned: "+hue_ip)
       else:
-        self.logger.debuglog("meethue api did not find bridge")
+        self.logger.debuglog("meethue nupnp api did not find bridge")
         
     return hue_ip
 

@@ -105,6 +105,18 @@ class Light:
     r = requests.get("http://%s/api/%s/lights/%s" % \
       (self.bridge_ip, self.bridge_user, self.light))
     j = r.json()
+
+    if isinstance(j, list) and "error" in j[0]:
+      # something went wrong.
+      err = j[0]["error"]
+      if err["type"] == 3:
+        notify("Group Not Found", "Could not find group %s in bridge." % self.group_id)
+      else:
+        notify("Bridge Error", "Error %s while talking to the bridge" % err["type"])
+      raise ValueError("Bridge Error", err["type"], err)
+      return
+
+    #no error, keep going
     self.start_setting = {}
     state = j['state']
     #self.logger.debuglog("current_setting: %r" % state)
@@ -354,7 +366,18 @@ class Group(Light):
     r = requests.get("http://%s/api/%s/groups/%s" % \
       (self.bridge_ip, self.bridge_user, self.group_id))
     j = r.json()
-    #self.logger.debuglog("response: %s" % j)
+    self.logger.debuglog("response: %s" % j)
+    if isinstance(j, list) and "error" in j[0]:
+      # something went wrong.
+      err = j[0]["error"]
+      if err["type"] == 3:
+        notify("Group Not Found", "Could not find group %s in bridge." % self.group_id)
+      else:
+        notify("Bridge Error", "Error %s while talking to the bridge" % err["type"])
+      raise ValueError("Bridge Error", err["type"], err)
+      return
+
+    #no error, lets keep going
     self.start_setting = {}
     state = j['action']
     #self.logger.debuglog("current_setting: %r" % state)
