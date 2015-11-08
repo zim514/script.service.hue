@@ -43,7 +43,7 @@ class settings():
     self.ambilight_dim_light2_id = int(__addon__.getSetting("ambilight_dim_light2_id"))
     self.ambilight_dim_light3_id = int(__addon__.getSetting("ambilight_dim_light3_id"))
     self.ambilight_dim_group_id = int(__addon__.getSetting("ambilight_dim_group_id"))
-    self.ambilight_dim_group   = int(__addon__.getSetting("ambilight_dim_group")) #CLEANUP: Not needed anymore
+    #self.ambilight_dim_group   = int(__addon__.getSetting("ambilight_dim_group")) #CLEANUP: Not needed anymore
     self.ambilight_min         = int(int(__addon__.getSetting("ambilight_min").split(".")[0])*254/100)
     self.ambilight_max         = int(int(__addon__.getSetting("ambilight_max").split(".")[0])*254/100)
     self.color_bias            = int(int(__addon__.getSetting("color_bias").split(".")[0])/3*3)
@@ -84,7 +84,11 @@ class settings():
     'override_sat: %s\n' % str(self.override_sat) + \
     'undim_sat: %s\n' % str(self.undim_sat) + \
     'ambilight_dim: %s\n' % str(self.ambilight_dim) + \
-    'ambilight_dim_group: %s\n' % str(self.ambilight_dim_group) + \
+    'ambilight_dim_light: %s\n' % str(self.ambilight_dim_light) + \
+    'ambilight_dim_light1_id: %s\n' % str(self.ambilight_dim_light1_id) + \
+    'ambilight_dim_light2_id: %s\n' % str(self.ambilight_dim_light2_id) + \
+    'ambilight_dim_light3_id: %s\n' % str(self.ambilight_dim_light3_id) + \
+    'ambilight_dim_group_id: %s\n' % str(self.ambilight_dim_group_id) + \
     'ambilight_min: %s\n' % str(self.ambilight_min) + \
     'ambilight_max: %s\n' % str(self.ambilight_max) + \
     'color_bias: %s\n' % str(self.color_bias) + \
