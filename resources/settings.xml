@@ -56,7 +56,11 @@
         <!--Dimming-->
         <setting type="lsep" label="3100" />
         <setting id="ambilight_dim" type="bool" label="3101" default="false" />
-        <setting id="ambilight_dim_group" type="number" label="3102" default="0" enable="eq(-1,true)" visible="eq(-1,true)" subsetting="true" />
+        <setting id="ambilight_dim_light" type="enum" enable="true" default="1" lvalues="3102|3103|3104|3105" subestting="true" />
+        <setting id="ambilight_dim_light1_id" type="number" label="1306" default="1" enable="gt(-1,0)" visible="gt(-1,0)" />
+        <setting id="ambilight_dim_light2_id" type="number" label="1307" default="2" enable="gt(-2,1)" visible="gt(-2,1)" />
+        <setting id="ambilight_dim_light3_id" type="number" label="1308" default="3" enable="gt(-3,2)" visible="gt(-3,2)" />
+        <setting id="ambilight_dim_group_id" type="number" label="1309" default="0" visible="eq(-4,0)" enable="eq(-4,0)" />
         <!--Brightness-->
         <setting type="lsep" label="3200" />
         <setting id="ambilight_min" label="3201" type="slider" default="0" range="0,5,100" option="int" />
@@ -74,8 +78,9 @@
         <setting type="lsep" label="4100" />
         <setting id="misc_initialflash" type="bool" label="4101" default="false" />
         <setting id="misc_disableshort" type="bool" label="4102" default="false" />
-        <setting id="misc_disableshort_threshold" type="number" label="4104" default="120" enable="eq(-1,true)" />
-        <setting id="force_light_on" type="bool" label="4103" default="false" />
+        <setting id="misc_disableshort_threshold" type="number" label="4103" default="120" enable="eq(-1,true)" />
+        <setting id="force_light_on" type="bool" label="4104" default="false" />
+        <setting id="force_light_group_start_override" type="bool" label="4105" default="true" />
         <!--Debug-->
         <setting type="lsep" label="4200" />
         <setting id="debug" type="bool" label="4201" default="false" />

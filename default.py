@@ -135,7 +135,8 @@ class Hue:
   connected = None
   last_state = None
   light = None
-  dim_group = None
+  ambilight_dim_light = None
+  #dim_group = None #TODO: Eradicate this variable.
 
   def __init__(self, settings, args):
     self.logger = Logger()
@@ -311,6 +312,28 @@ class Hue:
       if self.settings.light > 2:
         xbmc.sleep(1)
         self.light[2] = Light(self.settings.light3_id, self.settings)
+    #ambilight dim
+    if self.settings.ambilight_dim:
+      if self.settings.ambilight_dim_light == 0 and \
+          (self.ambilight_dim_light is None or type(self.ambilight_dim_light) != Group):
+        self.logger.debuglog("creating Group instance for ambilight dim")
+        self.ambilight_dim_light = Group(self.settings, self.settings.ambilight_dim_group_id)
+      elif self.settings.ambilight_dim_light > 0 and \
+            (self.ambilight_dim_light is None or \
+            type(self.ambilight_dim_light) == Group or \
+            len(self.ambilight_dim_light) != self.settings.ambilight_dim_light or \
+            self.ambilight_dim_light[0].light != self.settings.ambilight_dim_light1_id or \
+            (self.settings.ambilight_dim_light > 1 and self.ambilight_dim_light[1].light != self.settings.ambilight_dim_light2_id) or \
+            (self.settings.ambilight_dim_light > 2 and self.ambilight_dim_light[2].light != self.settings.ambilight_dim_light3_id)):
+        self.logger.debuglog("creating Light instances for ambilight dim")
+        self.ambilight_dim_light = [None] * self.settings.ambilight_dim_light
+        self.ambilight_dim_light[0] = Light(self.settings.ambilight_dim_light1_id, self.settings)
+        if self.settings.ambilight_dim_light > 1:
+          xbmc.sleep(1)
+          self.ambilight_dim_light[1] = Light(self.settings.ambilight_dim_light2_id, self.settings)
+        if self.settings.ambilight_dim_light > 2:
+          xbmc.sleep(1)
+          self.ambilight_dim_light[2] = Light(self.settings.ambilight_dim_light3_id, self.settings)
 
 class HSVRatio:
   cyan_min = float(4.5/12.0)
@@ -475,11 +498,13 @@ def run():
         player = MyPlayer()
       xbmc.sleep(500)
     if hue.settings.mode == 0: # ambilight mode
-      if hue.settings.ambilight_dim and hue.dim_group == None:
-        logger.debuglog("creating group to dim")
-        tmp = hue.settings
-        tmp.group_id = tmp.ambilight_dim_group
-        hue.dim_group = Group(tmp)
+      # no longer needed here. (especially in a run-loop!!!) instantiating a Group object causes a TON of requests to go to the bridge, which will back up and MASSIVELY deteriorate performance.
+      # if hue.settings.ambilight_dim:
+      #  and hue.dim_group == None:
+      #   logger.debuglog("creating group to dim")
+      #   tmp = hue.settings
+      #   tmp.group_id = tmp.ambilight_dim_group
+      #   hue.dim_group = Group(tmp)
       
       if player == None:
         player = MyPlayer()
@@ -535,12 +560,11 @@ def check_time(cur_time):
       logger.debuglog("hit credits, turn on lights")
       # do partial undim (if enabled, otherwise full undim)
       if hue.settings.mode == 0 and hue.settings.ambilight_dim:
-        # Be persistent in restoring the lights 
-        # (prevent from being overwritten by an ambilight update)
-        for i in range(0, 3):
-          logger.debuglog("partial lights")
-          hue.dim_group.brighter_light()
-          time.sleep(1)
+        if hue.settings.ambilight_dim_light == 0:
+          hue.ambilight_dim_light.brighter_light()
+      elif hue.settings.ambilight_dim_light > 0:
+        for l in hue.ambilight_dim_light:
+          l.brighter_light()
       else:
         hue.brighter_lights()
       credits_triggered = True
@@ -568,15 +592,23 @@ def state_changed(state, duration):
     if hue.settings.light == 0: # group mode
       hue.light.get_current_setting()
     else:
-      hue.light[0].get_current_setting()
-      if hue.settings.light > 1:
-        xbmc.sleep(1)
-        hue.light[1].get_current_setting()
-      if hue.settings.light > 2:
-        xbmc.sleep(1)
-        hue.light[2].get_current_setting()
+      for l in hue.light:
+        l.get_current_setting() #loop through without sleep.
+      # hue.light[0].get_current_setting()
+      # if hue.settings.light > 1:
+      #   xbmc.sleep(1)
+      #   hue.light[1].get_current_setting()
+      # if hue.settings.light > 2:
+      #   xbmc.sleep(1)
+      #   hue.light[2].get_current_setting()
 
     if hue.settings.mode == 0: # ambilight mode
+      if hue.settings.ambilight_dim:
+        if hue.settings.ambilight_dim_light == 0:
+          hue.ambilight_dim_light.get_current_setting()
+        elif hue.settings.ambilight_dim_light > 0:
+          for l in hue.ambilight_dim_light:
+            l.get_current_setting()
       #start capture when playback starts
       capture_width = 32 #100
       capture_height = int(capture_width / capture.getAspectRatio())
@@ -584,31 +616,33 @@ def state_changed(state, duration):
       capture.capture(capture_width, capture_height, xbmc.CAPTURE_FLAG_CONTINUOUS)
 
   if (state == "started" and pauseafterrefreshchange == 0) or state == "resumed":
-    if hue.settings.mode == 0 and hue.settings.ambilight_dim: # only if a complete group
+    if hue.settings.mode == 0 and hue.settings.ambilight_dim: #if in ambilight mode and dimming is enabled
       logger.debuglog("dimming group for ambilight")
-      hue.dim_group.dim_light()
+      if hue.settings.ambilight_dim_light == 0:
+        hue.ambilight_dim_light.dim_light()
+      elif hue.settings.ambilight_dim_light > 0:
+        for l in hue.ambilight_dim_light:
+          l.dim_light()
     else:
       logger.debuglog("dimming lights")
       hue.dim_lights()
   elif state == "paused" and hue.last_state == "dimmed":
     #only if its coming from being off
     if hue.settings.mode == 0 and hue.settings.ambilight_dim:
-      # Be persistent in restoring the lights 
-      # (prevent from being overwritten by an ambilight update)
-      for i in range(0, 3):
-        logger.debuglog("partial lights")
-        hue.dim_group.partial_lights()
-        time.sleep(1)
+      if hue.settings.ambilight_dim_light == 0:
+        hue.ambilight_dim_light.partial_light()
+      elif hue.settings.ambilight_dim_light > 0:
+        for l in hue.ambilight_dim_light:
+          l.partial_light()
     else:
       hue.partial_lights()
   elif state == "stopped":
     if hue.settings.mode == 0 and hue.settings.ambilight_dim:
-      # Be persistent in restoring the lights 
-      # (prevent from being overwritten by an ambilight update)
-      for i in range(0, 3):
-        logger.debuglog("brighter lights")
-        hue.dim_group.brighter_light()
-        time.sleep(1)
+      if hue.settings.ambilight_dim_light == 0:
+        hue.ambilight_dim_light.brighter_light()
+      elif hue.settings.ambilight_dim_light > 0:
+        for l in hue.ambilight_dim_light:
+          l.brighter_light()
     else:
       hue.brighter_lights()
 

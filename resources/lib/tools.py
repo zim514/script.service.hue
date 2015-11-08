@@ -83,11 +83,12 @@ class Light:
     self.undim_hue    = settings.undim_hue
     self.override_undim_bri = settings.override_undim_bri
     self.force_light_on = settings.force_light_on
+    self.force_light_group_start_override = settings.force_light_group_start_override
 
     self.onLast = True
     self.hueLast = 0
     self.satLast = 0
-    self.valLast = 255
+    self.valLast = 0
 
     self.get_current_setting()
     self.s = requests.Session()
@@ -260,8 +261,11 @@ class Group(Light):
   group = True
   lights = {}
 
-  def __init__(self, settings):
-    self.group_id = settings.group_id
+  def __init__(self, settings, group_id=None):
+    if group_id==None:
+      self.group_id = settings.group_id
+    else:
+      self.group_id = group_id
 
     self.logger = Logger()
     if settings.debug:
@@ -272,8 +276,8 @@ class Group(Light):
     for light in self.get_lights():
       tmp = Light(light, settings)
       tmp.get_current_setting()
-      if tmp.start_setting['on']:
-        self.lights[light] = tmp
+      #if tmp.start_setting['on']: #TODO: Why only add these if they're on?
+      self.lights[light] = tmp
 
   def __len__(self):
     return 0
@@ -381,10 +385,24 @@ class Group(Light):
     self.start_setting = {}
     state = j['action']
     #self.logger.debuglog("current_setting: %r" % state)
+    
     self.start_setting['on'] = state['on']
-    self.start_setting['bri'] = state['bri']
-    self.onLast = state['on']
-    self.valLast = state['bri']
+    if self.force_light_group_start_override: #override default just in case there is one light on
+      for l in self.lights:
+        #self.logger.debuglog("light: %s" % self.lights[l])
+        if self.lights[l].start_setting['on']:
+          self.logger.debuglog("light %s was on, so the group will start as on" % l)
+          self.start_setting['on'] = True
+          break
+
+    self.start_setting['bri'] = state["bri"]
+    if self.force_light_group_start_override:
+      for l in self.lights:
+        if self.start_setting['bri'] < self.lights[l].start_setting['bri']:
+          self.start_setting['bri'] = self.lights[l].start_setting['bri'] #take the brightest of the group.
+
+    self.onLast = self.start_setting['on']
+    self.valLast = self.start_setting['bri']
     
     # modelid = j['modelid']
     # self.fullSpectrum = ((modelid == 'LST001') or (modelid == 'LLC007'))

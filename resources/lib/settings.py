@@ -38,11 +38,17 @@ class settings():
     self.undim_during_credits  = __addon__.getSetting("undim_during_credits") == "true"
     self.credits_delay_time    = int(__addon__.getSetting("credits_delay_time").split(".")[0])
     self.ambilight_dim         = __addon__.getSetting("ambilight_dim") == "true"
-    self.ambilight_dim_group   = int(__addon__.getSetting("ambilight_dim_group"))
+    self.ambilight_dim_light   = int(__addon__.getSetting("ambilight_dim_light"))
+    self.ambilight_dim_light1_id = int(__addon__.getSetting("ambilight_dim_light1_id"))
+    self.ambilight_dim_light2_id = int(__addon__.getSetting("ambilight_dim_light2_id"))
+    self.ambilight_dim_light3_id = int(__addon__.getSetting("ambilight_dim_light3_id"))
+    self.ambilight_dim_group_id = int(__addon__.getSetting("ambilight_dim_group_id"))
+    self.ambilight_dim_group   = int(__addon__.getSetting("ambilight_dim_group")) #CLEANUP: Not needed anymore
     self.ambilight_min         = int(int(__addon__.getSetting("ambilight_min").split(".")[0])*254/100)
     self.ambilight_max         = int(int(__addon__.getSetting("ambilight_max").split(".")[0])*254/100)
     self.color_bias            = int(int(__addon__.getSetting("color_bias").split(".")[0])/3*3)
     self.force_light_on        = __addon__.getSetting("force_light_on") == "true"
+    self.force_light_group_start_override = __addon__.getSetting("force_light_group_start_override") == "true"
 
     if self.ambilight_min > self.ambilight_max:
         self.ambilight_min = self.ambilight_max
@@ -83,4 +89,5 @@ class settings():
     'ambilight_max: %s\n' % str(self.ambilight_max) + \
     'color_bias: %s\n' % str(self.color_bias) + \
     'force_light_on: %s\n' % str(self.force_light_on) + \
+    'force_light_group_start_override: %s\n' % str(self.force_light_group_start_override) + \
     'debug: %s\n' % self.debug

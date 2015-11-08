@@ -57,7 +57,14 @@
   
   <string id="3100">Dimming</string>
   <string id="3101">Dim before playback</string>
-  <string id="3102">Group ID</string>
+  <string id="3102">Group of lights</string>
+  <string id="3103">Single light</string>
+  <string id="3104">Two lights</string>
+  <string id="3105">Three light</string>
+  <string id="3106">Light ID 1</string>
+  <string id="3107">Light ID 2</string>
+  <string id="3108">Light ID 3</string>
+  <string id="3109">Group ID (0=All lights)</string>
 
   <string id="3200">Brightness</string>
   <string id="3201">Minimum brightness</string>
@@ -73,8 +80,9 @@
   <string id="4100">Misc. Settings</string>
   <string id="4101">Enable initial flash</string>
   <string id="4102">Disable for short movies</string>
-  <string id="4103">Force Light(s) on (even if off)</string>
-  <string id="4104">Short Movie Threshold (seconds)</string>
+  <string id="4103">Short Movie Threshold (seconds)</string>
+  <string id="4104">Force Light(s) on (even if off)</string>
+  <string id="4105">Group on and brightness start states overridden by members</string>
 
   <string id="4200">Debug</string>
   <string id="4201">Debug logging</string>
