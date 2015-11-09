@@ -18,7 +18,7 @@
         <setting id="light2_id" type="number" label="1307" default="2" enable="gt(-2,1)" visible="gt(-2,1)" />
         <setting id="light3_id" type="number" label="1308" default="3" enable="gt(-3,2)" visible="gt(-3,2)" />
         <setting id="group_id" type="number" label="1309" default="0" visible="eq(-4,0)" enable="eq(-4,0)" />
-        <setting id="ambilight_info" type="action" label="1310" visible="eq(-5,0) + eq(-7,0)" />
+        <setting type="lsep" label="1310" visible="eq(-5,0) + eq(-7,0)" /> <!--Ambilight Info-->
     </category>
 
     <category label="2000">
@@ -26,9 +26,9 @@
         <setting type="lsep" label="2000" />
         <!--Dimming-->
         <setting type="lsep" label="2100" />
-        <setting id="dim_time" label="2101" type="slider" default="0.5" range="0,0.5,10" option="float" />
+        <setting id="dim_time" label="2101" type="slider" default="4" range="0,0.5,10" option="float" />
         <setting id="proportional_dim_time" label="2102" type="bool" default="true" />
-        <setting id="propritional_explainer" type="action" label="2103" visible="eq(-1,true)" subsetting="true" />
+        <setting id="propritional_explainer" type="lsep" label="2103" visible="eq(-1,true)" subsetting="true" />
         <setting id="dimmed_bri" label="2104" type="slider" default="0" range="0,5,100" option="int" />
         <setting id="override_undim_bri" type="bool" label="2105" default="false" />
         <setting id="undim_bri" label="2106" type="slider" visible="eq(-1,true)" default="100" range="0,5,100" option="int" />
@@ -45,8 +45,8 @@
         <!--Credits-->
         <setting type="lsep" label="2300" />
         <setting id="undim_during_credits" type="bool" label="2301" default="false" />
-        <setting id="undim_explainer" type="action" label="2302" subsetting="true" />
-        <setting id="undim_warning" type="action" label="2303" subsetting="true" />
+        <setting type="lsep" label="2302" subsetting="true" /> <!--Credits Explainer-->
+        <setting type="lsep" label="2303" subsetting="true" /> <!--Credits Warning-->
         <setting id="credits_delay_time" type="slider" label="2304" default="0" visible="eq(-3,true)" range="0,1,60" option="int" />
     </category>
 
@@ -68,7 +68,7 @@
         <!--Color-->
         <setting type="lsep" label="3300" />
         <setting id="color_bias" label="3301" type="slider" default="18" range="6,3,36" option="int" />
-        <setting id="color_bias_explainer" label="3302" type="action" subsetting="true" />
+        <setting label="3302" type="lsep" subsetting="true" /> <!--Color Bias Explainer-->
     </category>
 
     <category label="4000">

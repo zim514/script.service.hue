@@ -68,6 +68,7 @@ class Light:
 
     self.bridge_ip    = settings.bridge_ip
     self.bridge_user  = settings.bridge_user
+    self.mode         = settings.mode
     self.light        = light_id
     self.dim_time     = settings.dim_time
     self.proportional_dim_time = settings.proportional_dim_time
@@ -94,13 +95,13 @@ class Light:
     self.s = requests.Session()
 
   def request_url_put(self, url, data):
-    if self.start_setting['on']:
-      try:
-        response = self.s.put(url, data=data)
-        self.logger.debuglog("response: %s" % response)
-      except:
-        self.logger.debuglog("exception in request_url_put")
-        pass # probably a timeout
+    #if self.start_setting['on']: #Why? 
+    try:
+      response = self.s.put(url, data=data)
+      self.logger.debuglog("response: %s" % response)
+    except:
+      self.logger.debuglog("exception in request_url_put")
+      pass # probably a timeout
 
   def get_current_setting(self):
     r = requests.get("http://%s/api/%s/lights/%s" % \
@@ -111,7 +112,7 @@ class Light:
       # something went wrong.
       err = j[0]["error"]
       if err["type"] == 3:
-        notify("Group Not Found", "Could not find group %s in bridge." % self.group_id)
+        notify("Light Not Found", "Could not find light %s in bridge." % self.light)
       else:
         notify("Bridge Error", "Error %s while talking to the bridge" % err["type"])
       raise ValueError("Bridge Error", err["type"], err)
@@ -163,8 +164,9 @@ class Light:
           data["sat"] = sat
           self.satLast = sat
 
+    self.logger.debuglog("light %s: onLast: %s, valLast: %s" % (self.light, self.onLast, self.valLast))
     if bri > 0:
-      if self.onLast == False : #don't send on unless we have to (performance)
+      if self.onLast == False: #don't send on unless we have to (performance)
         data["on"] = True
         self.onLast = True
       data["bri"] = bri
@@ -173,7 +175,7 @@ class Light:
       self.onLast = False
 
     if duration is None:
-      if self.proportional_dim_time:
+      if self.proportional_dim_time and self.mode != 0: #only if its not ambilight mode too
         self.logger.debuglog("last %r, next %r, start %r, finish %r" % (self.valLast, bri, self.start_setting['bri'], self.dimmed_bri))
         difference = abs(float(bri) - self.valLast)
         total = float(self.start_setting['bri']) - self.dimmed_bri
@@ -332,7 +334,7 @@ class Group(Light):
       self.onLast = False
 
     if duration is None:
-      if self.proportional_dim_time:
+      if self.proportional_dim_time and self.mode != 0: #only if its not ambilight mode too
         self.logger.debuglog("last %r, next %r, start %r, finish %r" % (self.valLast, bri, self.start_setting['bri'], self.dimmed_bri))
         difference = abs(float(bri) - self.valLast)
         total = float(self.start_setting['bri']) - self.dimmed_bri

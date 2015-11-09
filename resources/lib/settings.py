@@ -43,7 +43,6 @@ class settings():
     self.ambilight_dim_light2_id = int(__addon__.getSetting("ambilight_dim_light2_id"))
     self.ambilight_dim_light3_id = int(__addon__.getSetting("ambilight_dim_light3_id"))
     self.ambilight_dim_group_id = int(__addon__.getSetting("ambilight_dim_group_id"))
-    #self.ambilight_dim_group   = int(__addon__.getSetting("ambilight_dim_group")) #CLEANUP: Not needed anymore
     self.ambilight_min         = int(int(__addon__.getSetting("ambilight_min").split(".")[0])*254/100)
     self.ambilight_max         = int(int(__addon__.getSetting("ambilight_max").split(".")[0])*254/100)
     self.color_bias            = int(int(__addon__.getSetting("color_bias").split(".")[0])/3*3)
