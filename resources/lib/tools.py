@@ -40,21 +40,6 @@ def get_version():
   except:
     return "unknown"
 
-def register_user(hue_ip):
-  username = hashlib.md5(str(random.random())).hexdigest()
-  device = "kodi-hue-addon"
-  data = '{devicetype": "%s#%s"}' % (device, xbmc.getInfoLabel('System.FriendlyName'))
-
-  r = requests.post('http://%s/api' % hue_ip, data=data)
-  response = r.text
-  while "link button not pressed" in response:
-    notify("Bridge Discovery", "Press link button on bridge")
-    r = requests.post('http://%s/api' % hue_ip, data=data)
-    response = r.text 
-    time.sleep(3)
-
-  return username
-
 class Light:
   start_setting = None
   group = False
@@ -104,6 +89,8 @@ class Light:
       pass # probably a timeout
 
   def get_current_setting(self):
+    self.logger.debuglog("get_current_setting. requesting from: http://%s/api/%s/lights/%s" % \
+      (self.bridge_ip, self.bridge_user, self.light))
     r = requests.get("http://%s/api/%s/lights/%s" % \
       (self.bridge_ip, self.bridge_user, self.light))
     j = r.json()

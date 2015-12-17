@@ -153,26 +153,31 @@ class Hue:
   pauseafterrefreshchange = 0
 
   def __init__(self, settings, args):
+    #Logs are good, mkay.
     self.logger = Logger()
     if settings.debug:
       self.logger.debug()
 
+    #get settings
     self.settings = settings
     self._parse_argv(args)
 
-    if self.settings.bridge_user not in ["-", "", None]:
+    #if there's a bridge user, lets instantiate the lights (only if we're connected).
+    if self.settings.bridge_user not in ["-", "", None] and self.connected:
       self.update_settings()
 
     if self.params == {}:
+      self.logger.debuglog("params: %s" % self.params)
+      #if there's a bridge IP, try to talk to it.
       if self.settings.bridge_ip not in ["-", "", None]:
         self.test_connection()
     elif self.params['action'] == "discover":
-      self.logger.debuglog("Starting discover")
+      self.logger.debuglog("Starting discovery")
       notify("Bridge Discovery", "starting")
       hue_ip = self.start_autodiscover()
       if hue_ip != None:
         notify("Bridge Discovery", "Found bridge at: %s" % hue_ip)
-        username = register_user(hue_ip)
+        username = self.register_user(hue_ip)
         self.logger.debuglog("Updating settings")
         self.settings.update(bridge_ip = hue_ip)
         self.settings.update(bridge_user = username)
@@ -235,6 +240,27 @@ class Hue:
         self.logger.debuglog("meethue nupnp api did not find bridge")
         
     return hue_ip
+
+  def register_user(self, hue_ip):
+    #username = hashlib.md5(str(random.random())).hexdigest() #not needed with new strategy
+    device = "kodi-hue-addon"
+    data = '{"devicetype": "%s#%s"}' % (device, xbmc.getInfoLabel('System.FriendlyName')[0:19])
+    self.logger.debuglog("sending data: %s" % data)
+
+    r = requests.post('http://%s/api' % hue_ip, data=data)
+    response = r.text
+    while "link button not pressed" in response:
+      self.logger.debuglog("register user response: %s" % r)
+      notify("Bridge Discovery", "Press link button on bridge")
+      r = requests.post('http://%s/api' % hue_ip, data=data)
+      response = r.text 
+      time.sleep(3)
+
+    j = r.json()
+    self.logger.debuglog("got a username response: %s" % j)
+    username = j[0]["success"]["username"]
+
+    return username
 
   def flash_lights(self):
     self.logger.debuglog("class Hue: flashing lights")
