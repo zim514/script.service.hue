@@ -42,8 +42,8 @@ def get_version():
 
 def register_user(hue_ip):
   username = hashlib.md5(str(random.random())).hexdigest()
-  device = "kodi-player"
-  data = '{"username": "%s", "devicetype": "%s"}' % (username, device)
+  device = "kodi-hue-addon"
+  data = '{devicetype": "%s#%s"}' % (device, xbmc.getInfoLabel('System.FriendlyName'))
 
   r = requests.post('http://%s/api' % hue_ip, data=data)
   response = r.text
