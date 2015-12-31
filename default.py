@@ -696,9 +696,11 @@ def state_changed(state, duration):
             l.get_current_setting()
       #start capture when playback starts
       capture_width = 32 #100
-      capture_height = int(capture_width / capture.getAspectRatio())
+      capture_height = capture_width / capture.getAspectRatio()
+      if capture_height == 0
+        capture_height = capture_width #fix for divide by zero.
       logger.debuglog("capture %s x %s" % (capture_width, capture_height))
-      capture.capture(capture_width, capture_height, xbmc.CAPTURE_FLAG_CONTINUOUS)
+      capture.capture(int(capture_width), int(capture_height), xbmc.CAPTURE_FLAG_CONTINUOUS)
 
   if (state == "started" and hue.pauseafterrefreshchange == 0) or state == "resumed":
     if hue.settings.mode == 0 and hue.settings.ambilight_dim: #if in ambilight mode and dimming is enabled
