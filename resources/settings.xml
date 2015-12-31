@@ -84,5 +84,8 @@
         <!--Debug-->
         <setting type="lsep" label="4200" />
         <setting id="debug" type="bool" label="4201" default="false" />
+        <!--Reset-->
+        <setting type="lsep" label="4300" />
+        <setting id="reset_settings" type="action" label="4301" action="RunScript(script.kodi.hue.ambilight,action=reset_settings)" option="close" />
     </category>
 </settings>

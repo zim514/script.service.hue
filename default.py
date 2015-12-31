@@ -11,6 +11,7 @@ import math
 from threading import Timer
 
 __addon__      = xbmcaddon.Addon()
+__addondir__   = xbmc.translatePath( __addon__.getAddonInfo('profile') ) 
 __cwd__        = __addon__.getAddonInfo('path')
 __resource__   = xbmc.translatePath( os.path.join( __cwd__, 'resources', 'lib' ) )
 
@@ -170,7 +171,9 @@ class Hue:
       self.logger.debuglog("params: %s" % self.params)
       #if there's a bridge IP, try to talk to it.
       if self.settings.bridge_ip not in ["-", "", None]:
-        self.test_connection()
+        result = self.test_connection()
+        if result:
+          self.update_settings()
     elif self.params['action'] == "discover":
       self.logger.debuglog("Starting discovery")
       notify("Bridge Discovery", "starting")
@@ -186,6 +189,13 @@ class Hue:
         self.update_settings()
       else:
         notify("Bridge Discovery", "Failed. Could not find bridge.")
+    elif self.params['action'] == "reset_settings":
+      self.logger.debuglog("Reset Settings to default.")
+      self.logger.debuglog(__addondir__)
+      os.unlink(os.path.join(__addondir__,"settings.xml"))
+      #self.settings.readxml()
+      #xbmcgui.Window(10000).clearProperty("script.kodi.hue.ambilight" + '_running')
+      #__addon__.openSettings()
     else:
       # not yet implemented
       self.logger.debuglog("unimplemented action call: %s" % self.params['action'])
@@ -282,6 +292,7 @@ class Hue:
         self.params = {}
 
   def test_connection(self):
+    self.logger.debuglog("testing connection")
     r = requests.get('http://%s/api/%s/config' % \
       (self.settings.bridge_ip, self.settings.bridge_user))
     test_connection = r.text.find("name")
@@ -291,6 +302,7 @@ class Hue:
     else:
       notify("Kodi Hue", "Connected")
       self.connected = True
+    return self.connected
 
   # #unifed light action method. will replace dim_lights, brighter_lights, partial_lights
   # def light_actions(self, action, lights=None):
@@ -561,8 +573,9 @@ def run():
   player = None
   last = time.time()
 
+  #logger.debuglog("starting run loop!")
   while not monitor.abortRequested():
-    
+    #logger.debuglog("in run loop!")
     if hue.settings.mode == 1: # theater mode
       if player == None:
         logger.debuglog("creating instance of custom player")
@@ -618,6 +631,7 @@ def run():
           if monitor.waitForAbort(0.1):
             #kodi requested an abort, lets get out of here.
             break
+  del player #might help with slow exit.
 
 def fade_light_hsv(light, hsvRatio):
   fullSpectrum = light.fullSpectrum
@@ -697,7 +711,7 @@ def state_changed(state, duration):
       #start capture when playback starts
       capture_width = 32 #100
       capture_height = capture_width / capture.getAspectRatio()
-      if capture_height == 0
+      if capture_height == 0:
         capture_height = capture_width #fix for divide by zero.
       logger.debuglog("capture %s x %s" % (capture_width, capture_height))
       capture.capture(int(capture_width), int(capture_height), xbmc.CAPTURE_FLAG_CONTINUOUS)
@@ -744,7 +758,7 @@ if ( __name__ == "__main__" ):
   if len(sys.argv) == 2:
     args = sys.argv[1]
   hue = Hue(settings, args)
-  while not hue.connected:
+  while not hue.connected and not monitor.abortRequested():
     logger.debuglog("not connected")
     time.sleep(1)
   run()

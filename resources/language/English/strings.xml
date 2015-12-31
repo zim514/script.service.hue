@@ -86,4 +86,7 @@
 
   <string id="4200">Debug</string>
   <string id="4201">Debug logging</string>
+
+  <string id="4300">WARNING: RESET ALL SETTINGS</string>
+  <string id="4301">Reset all settings (requires disable/re-enable)</string>
 </strings>
