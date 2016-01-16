@@ -85,7 +85,7 @@ class MyPlayer(xbmc.Player):
       check_time(int(self.getTime())) #call back out to plugin function.
 
   def onPlayBackStarted(self):
-    xbmc.log("Kodi Hue: DEBUG plabyack started called on player")
+    xbmc.log("Kodi Hue: DEBUG playback started called on player")
     if self.isPlayingVideo():
       self.playingvideo = True
       self.duration = self.getTotalTime()
@@ -106,7 +106,7 @@ class MyPlayer(xbmc.Player):
       state_changed("started", self.duration)
 
   def onPlayBackPaused(self):
-    xbmc.log("Kodi Hue: DEBUG plabyack paused called on player")
+    xbmc.log("Kodi Hue: DEBUG playback paused called on player")
     if self.isPlayingVideo():
       self.playingvideo = False
       if self.movie and not self.timer is None:
@@ -114,7 +114,7 @@ class MyPlayer(xbmc.Player):
       state_changed("paused", self.duration)
 
   def onPlayBackResumed(self):
-    logger.debuglog("plabyack resumed called on player")
+    logger.debuglog("playback resumed called on player")
     if self.isPlayingVideo():
       self.playingvideo = True
       if self.duration == 0:
@@ -127,7 +127,7 @@ class MyPlayer(xbmc.Player):
       state_changed("resumed", self.duration)
 
   def onPlayBackStopped(self):
-    xbmc.log("Kodi Hue: DEBUG plabyack stopped called on player")
+    xbmc.log("Kodi Hue: DEBUG playback stopped called on player")
     self.framerate = 0
     #logger.debuglog("onPlayBackStopped called.")
     #if self.playingvideo: #don't check this, just fire the event no matter what.
@@ -137,7 +137,7 @@ class MyPlayer(xbmc.Player):
     state_changed("stopped", self.duration)
 
   def onPlayBackEnded(self):
-    xbmc.log("Kodi Hue: DEBUG plabyack ended called on player")
+    xbmc.log("Kodi Hue: DEBUG playback ended called on player")
     self.framerate = 0
     if self.playingvideo:
       self.playingvideo = False
