@@ -193,7 +193,7 @@ class Hue:
       self.logger.debuglog("unimplemented action call: %s" % self.params['action'])
 
     #detect pause for refresh change (must reboot for this to take effect.)
-    response = json.loads(xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Settings.GetSettingValue", "params":{"setting":"videoplayer.pauseafterrefreshchange"},"id":1}'))
+    response = json.loads(xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Settings.GetSettingValue", "params":{"setting":"videoscreen.delayrefreshchange"},"id":1}'))
     #logger.debuglog(isinstance(response, dict))
     if "result" in response and "value" in response["result"]:
       pauseafterrefreshchange = int(response["result"]["value"])
