@@ -561,16 +561,16 @@ def _rgb_from_pixels_rgba(pixels, index):
 
 
 def run():
-  player = None
+  player = MyPlayer()
+  if player == None:
+    logger.log("Cannot instantiate player. Bailing out")
+    return
   last = time.time()
 
   #logger.debuglog("starting run loop!")
   while not monitor.abortRequested():
     #logger.debuglog("in run loop!")
     if hue.settings.mode == 1: # theater mode
-      if player == None:
-        logger.debuglog("creating instance of custom player")
-        player = MyPlayer()
       if monitor.waitForAbort(0.5):
         #kodi requested an abort, lets get out of here.
         break
@@ -583,41 +583,37 @@ def run():
       #   tmp.group_id = tmp.ambilight_dim_group
       #   hue.dim_group = Group(tmp)
 
-      if player == None:
-        logger.debuglog("creating instance of custom player")
-        player = MyPlayer()
-      else:
-        #player must exist for ambilight.
-        #xbmc.sleep(100) #why?
-        now = time.time()
-        #logger.debuglog("run loop delta: %f (%f/sec)" % ((now-last), 1/(now-last)))
-        last = now
+      #player must exist for ambilight.
+      #xbmc.sleep(100) #why?
+      now = time.time()
+      #logger.debuglog("run loop delta: %f (%f/sec)" % ((now-last), 1/(now-last)))
+      last = now
 
-        #set sample rate to framerate
-        #probably doesnt need to be called @ 60fps, i understand the intention, but TV & Movies is in the 24-30fps range.
-        if player.framerate != 0: #gotta have a framerate
-          try:
-            if monitor.waitForAbort(0.1): #rate limit to 10/sec or less
-              logger.debuglog("abort requested in ambilight loop") #kodi requested an abort, lets get out of here.
-              break
-            if capture.waitForCaptureStateChangeEvent(int(round(1000/player.framerate))):
-              #we've got a capture event
-              if capture.getCaptureState() == xbmc.CAPTURE_STATE_DONE:
-                if player.playingvideo:
-                  screen = Screenshot(capture.getImage(), capture.getWidth(), capture.getHeight())
-                  hsvRatios = screen.spectrum_hsv(screen.pixels, screen.capture_width, screen.capture_height)
-                  if hue.settings.light == 0:
-                    fade_light_hsv(hue.light, hsvRatios[0])
-                  else:
-                    for i, l in enumerate(hue.light):
-                      #xbmc.sleep(4) #why?
-                      fade_light_hsv(l, hsvRatios[i])
-          except ZeroDivisionError:
-            logger.debuglog("no framerate. waiting.")
-        else:
-          if monitor.waitForAbort(0.1):
-            #kodi requested an abort, lets get out of here.
+      #set sample rate to framerate
+      #probably doesnt need to be called @ 60fps, i understand the intention, but TV & Movies is in the 24-30fps range.
+      if player.framerate != 0: #gotta have a framerate
+        try:
+          if monitor.waitForAbort(0.1): #rate limit to 10/sec or less
+            logger.debuglog("abort requested in ambilight loop") #kodi requested an abort, lets get out of here.
             break
+          if capture.waitForCaptureStateChangeEvent(int(round(1000/player.framerate))):
+            #we've got a capture event
+            if capture.getCaptureState() == xbmc.CAPTURE_STATE_DONE:
+              if player.playingvideo:
+                screen = Screenshot(capture.getImage(), capture.getWidth(), capture.getHeight())
+                hsvRatios = screen.spectrum_hsv(screen.pixels, screen.capture_width, screen.capture_height)
+                if hue.settings.light == 0:
+                  fade_light_hsv(hue.light, hsvRatios[0])
+                else:
+                  for i, l in enumerate(hue.light):
+                    #xbmc.sleep(4) #why?
+                    fade_light_hsv(l, hsvRatios[i])
+        except ZeroDivisionError:
+          logger.debuglog("no framerate. waiting.")
+      else:
+        if monitor.waitForAbort(0.1):
+        #kodi requested an abort, lets get out of here.
+        break
   del player #might help with slow exit.
 
 def fade_light_hsv(light, hsvRatio):
