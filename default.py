@@ -75,7 +75,6 @@ class MyPlayer(xbmc.Player):
   playingvideo = False
   timer = None
   movie = False
-  framerate = 0
 
   def __init__(self):
     xbmc.Player.__init__(self)
@@ -90,12 +89,6 @@ class MyPlayer(xbmc.Player):
       self.playingvideo = True
       self.duration = self.getTotalTime()
       self.movie = xbmc.getCondVisibility('VideoPlayer.Content(movies)')
-
-      #logger.debuglog("mediainfo: %s" % get_log_mediainfo())
-      if self.framerate == 0:
-        #get framerate:
-        self.framerate = int(round(get_log_mediainfo()["fps"]))
-        logger.debuglog("got fps: %s" % self.framerate)
 
       global credits_triggered
       credits_triggered = False
@@ -128,7 +121,6 @@ class MyPlayer(xbmc.Player):
 
   def onPlayBackStopped(self):
     xbmc.log("Kodi Hue: DEBUG playback stopped called on player")
-    self.framerate = 0
     #logger.debuglog("onPlayBackStopped called.")
     #if self.playingvideo: #don't check this, just fire the event no matter what.
     self.playingvideo = False
@@ -138,7 +130,6 @@ class MyPlayer(xbmc.Player):
 
   def onPlayBackEnded(self):
     xbmc.log("Kodi Hue: DEBUG playback ended called on player")
-    self.framerate = 0
     if self.playingvideo:
       self.playingvideo = False
       if self.movie and not self.timer is None:
@@ -570,30 +561,17 @@ def run():
   #logger.debuglog("starting run loop!")
   while not monitor.abortRequested():
     if hue.settings.mode == 0: # ambilight mode
-      # no longer needed here. (especially in a run-loop!!!) instantiating a Group object causes a TON of requests to go to the bridge, which will back up and MASSIVELY deteriorate performance.
-      # if hue.settings.ambilight_dim:
-      #  and hue.dim_group == None:
-      #   logger.debuglog("creating group to dim")
-      #   tmp = hue.settings
-      #   tmp.group_id = tmp.ambilight_dim_group
-      #   hue.dim_group = Group(tmp)
-
-      #player must exist for ambilight.
-      #xbmc.sleep(100) #why?
       now = time.time()
       #logger.debuglog("run loop delta: %f (%f/sec)" % ((now-last), 1/(now-last)))
       last = now
 
-      #set sample rate to framerate
-      #probably doesnt need to be called @ 60fps, i understand the intention, but TV & Movies is in the 24-30fps range.
-      if player.framerate != 0: #gotta have a framerate
+      if player.playingvideo: # only if there's actually video
         try:
-          if capture.waitForCaptureStateChangeEvent(int(round(1000/player.framerate))):
+          if capture.waitForCaptureStateChangeEvent(200):
             #we've got a capture event
             if capture.getCaptureState() == xbmc.CAPTURE_STATE_DONE:
-              if player.playingvideo:
-                screen = Screenshot(capture.getImage(), capture.getWidth(), capture.getHeight())
-                hsvRatios = screen.spectrum_hsv(screen.pixels, screen.capture_width, screen.capture_height)
+              screen = Screenshot(capture.getImage(), capture.getWidth(), capture.getHeight())
+              hsvRatios = screen.spectrum_hsv(screen.pixels, screen.capture_width, screen.capture_height)
                 if hue.settings.light == 0:
                   fade_light_hsv(hue.light, hsvRatios[0])
                 else:
@@ -601,8 +579,8 @@ def run():
                     #xbmc.sleep(4) #why?
                     fade_light_hsv(l, hsvRatios[i])
         except ZeroDivisionError:
-          logger.debuglog("no framerate. waiting.")
-
+          logger.debuglog("no frame. looping.")
+          
     if monitor.waitForAbort(0.1):
       #kodi requested an abort, lets get out of here.
       break
