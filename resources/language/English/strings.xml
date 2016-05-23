@@ -70,6 +70,8 @@
   <string id="3201">Minimum brightness</string>
   <string id="3202">Maximum brightness</string>
 
+  <string id="3240">Use old ambilight algorithm</string>
+
   <string id="3250">Thresholds</string>
   <string id="3251">Value threshold</string>
   <string id="3252">Saturation threshold</string>

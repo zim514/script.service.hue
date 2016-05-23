@@ -634,7 +634,9 @@ def fade_light_hsv(light, hsvRatio):
   vvec = v - light.valLast
   distance = math.sqrt(hvec**2 + svec**2 + vvec**2) #changed to squares for performance
   if distance > 0:
-    duration = int(3 + 27 * distance/255)
+    if hue.settings.ambilight_old_algorithm:
+        duration = int(3 + 27 * distance/255)
+    duration = int(10 - 2.5 * distance/255)
     # logger.debuglog("distance %s duration %s" % (distance, duration))
     light.set_light2(h, s, v, duration)
 
