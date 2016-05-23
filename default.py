@@ -610,13 +610,9 @@ def run():
                   if hue.settings.light == 0:
                     fade_light_hsv(hue.light, hsvRatios[0])
                   else:
-                    fade_light_hsv(hue.light[0], hsvRatios[0])
-                    if hue.settings.light > 1:
+                    for i, l in enumerate(hue.light):
                       #xbmc.sleep(4) #why?
-                      fade_light_hsv(hue.light[1], hsvRatios[1])
-                    if hue.settings.light > 2:
-                      #xbmc.sleep(4) #why?
-                      fade_light_hsv(hue.light[2], hsvRatios[2])
+                      fade_light_hsv(l, hsvRatios[i])
           except ZeroDivisionError:
             logger.debuglog("no framerate. waiting.")
         else:
