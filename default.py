@@ -440,10 +440,11 @@ class HSVRatio:
     else:
       self.v = (self.v + overall_value)/2
 
-
   def hue(self, fullSpectrum):
     if fullSpectrum != True:
-      if self.s > 0.01:
+      if self.h > 0.065 and self.h < 0.19:
+          self.h = self.h * 2.32
+      elif self.s > 0.01:
         if self.h < 0.5:
           #yellow-green correction
           self.h = self.h * 1.17
