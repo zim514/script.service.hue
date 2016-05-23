@@ -66,7 +66,7 @@
         <setting id="ambilight_min" label="3201" type="slider" default="0" range="0,5,100" option="int" />
         <setting id="ambilight_max" label="3202" type="slider" default="90" range="0,5,100" option="int" />
         <!--Algorithm-->
-        <setting id="ambilight_old_algorithm" label="3240" type="bool" default="false" />
+        <setting id="ambilight_old_algorithm" label="3240" type="bool" default="true" />
         <!--Thresholds-->
         <setting type="lsep" label="3250" />
         <setting id="ambilight_threshold_value" label="3251" type="slider" default="0.25" range="0,0.01,1" option="float" />
