@@ -534,8 +534,8 @@ class Screenshot:
       v += tmpv
 
       # skip low value and saturation
-      if tmpv > 0.25:
-        if tmps > 0.33:
+      if tmpv > hue.settings.ambilight_threshold_value:
+        if tmps > hue.settings.ambilight_threshold_saturation:
           h = int(tmph * 360)
           try:
               spectrum[h] += 1
