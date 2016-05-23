@@ -11,7 +11,7 @@ import math
 from threading import Timer
 
 __addon__      = xbmcaddon.Addon()
-__addondir__   = xbmc.translatePath( __addon__.getAddonInfo('profile') ) 
+__addondir__   = xbmc.translatePath( __addon__.getAddonInfo('profile') )
 __cwd__        = __addon__.getAddonInfo('path')
 __resource__   = xbmc.translatePath( os.path.join( __cwd__, 'resources', 'lib' ) )
 
@@ -79,7 +79,7 @@ class MyPlayer(xbmc.Player):
 
   def __init__(self):
     xbmc.Player.__init__(self)
-  
+
   def checkTime(self):
     if self.isPlayingVideo():
       check_time(int(self.getTime())) #call back out to plugin function.
@@ -122,7 +122,7 @@ class MyPlayer(xbmc.Player):
         if self.movie and self.duration != 0: #only try if its a movie and has a duration
           get_credits_info(self.getVideoInfoTag().getTitle(), self.duration) # TODO: start it on a timer to not block the beginning of the media
           logger.debuglog("credits_time: %r" % credits_time)
-      if self.movie and self.duration != 0:    
+      if self.movie and self.duration != 0:
         self.timer = RepeatedTimer(1, self.checkTime)
       state_changed("resumed", self.duration)
 
@@ -248,7 +248,7 @@ class Hue:
         self.logger.debuglog("meethue nupnp api returned: "+hue_ip)
       else:
         self.logger.debuglog("meethue nupnp api did not find bridge")
-        
+
     return hue_ip
 
   def register_user(self, hue_ip):
@@ -263,7 +263,7 @@ class Hue:
       self.logger.debuglog("register user response: %s" % r)
       notify("Bridge Discovery", "Press link button on bridge")
       r = requests.post('http://%s/api' % hue_ip, data=data)
-      response = r.text 
+      response = r.text
       time.sleep(3)
 
     j = r.json()
@@ -284,7 +284,7 @@ class Hue:
       if self.settings.light > 2:
         xbmc.sleep(1)
         self.light[2].flash_light()
-    
+
   def _parse_argv(self, args):
     try:
         self.params = dict(arg.split("=") for arg in args.split("&"))
@@ -343,7 +343,8 @@ class Hue:
       if self.settings.light > 2:
         xbmc.sleep(1)
         self.light[2].dim_light()
-        
+
+
   def brighter_lights(self):
     self.logger.debuglog("class Hue: brighter lights")
     self.last_state = "brighter"
@@ -438,7 +439,7 @@ class HSVRatio:
       self.v = self.v * self.ratio + overall_value * (1-self.ratio)
     else:
       self.v = (self.v + overall_value)/2
-    
+
 
   def hue(self, fullSpectrum):
     if fullSpectrum != True:
@@ -503,11 +504,11 @@ class Screenshot:
       # sort colors by popularity
       hsvRatios = sorted(hsvRatios, key=lambda hsvratio: hsvratio.ratio, reverse=True)
       # logger.debuglog("hsvRatios %s" % hsvRatios)
-      
+
       #return at least 3
       if colorCount == 2:
         hsvRatios.insert(0, hsvRatios[0])
-      
+
       hsvRatios[0].averageValue(overall_value)
       hsvRatios[1].averageValue(overall_value)
       hsvRatios[2].averageValue(overall_value)
@@ -532,7 +533,7 @@ class Screenshot:
     s, v = 0, 0
     r, g, b = 0, 0, 0
     tmph, tmps, tmpv = 0, 0, 0
-    
+
     for i in range(size):
       if fmtRGBA:
         r = pixels[pixel]
@@ -591,7 +592,7 @@ def run():
       #   tmp = hue.settings
       #   tmp.group_id = tmp.ambilight_dim_group
       #   hue.dim_group = Group(tmp)
-      
+
       if player == None:
         logger.debuglog("creating instance of custom player")
         player = MyPlayer()
@@ -687,7 +688,7 @@ def state_changed(state, duration):
 
   if state == "started":
     logger.debuglog("retrieving current setting before starting")
-    
+
     if hue.settings.light == 0: # group mode
       hue.light.get_current_setting()
     else:
@@ -753,7 +754,7 @@ if ( __name__ == "__main__" ):
   monitor = MyMonitor()
   if settings.debug == True:
     logger.debug()
-  
+
   args = None
   if len(sys.argv) == 2:
     args = sys.argv[1]
