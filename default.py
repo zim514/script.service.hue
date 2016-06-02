@@ -252,9 +252,8 @@ class Hue:
     return hue_ip
 
   def register_user(self, hue_ip):
-    #username = hashlib.md5(str(random.random())).hexdigest() #not needed with new strategy
-    device = "kodi-hue-addon"
-    data = '{"devicetype": "%s#%s"}' % (device, xbmc.getInfoLabel('System.FriendlyName')[0:19])
+    device = "kodi#ambilight"
+    data = '{"devicetype": "%s"}' % device
     self.logger.debuglog("sending data: %s" % data)
 
     r = requests.post('http://%s/api' % hue_ip, data=data)
