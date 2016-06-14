@@ -43,8 +43,11 @@ class settings():
     self.ambilight_dim_light2_id = int(__addon__.getSetting("ambilight_dim_light2_id"))
     self.ambilight_dim_light3_id = int(__addon__.getSetting("ambilight_dim_light3_id"))
     self.ambilight_dim_group_id = int(__addon__.getSetting("ambilight_dim_group_id"))
+    self.ambilight_old_algorithm = __addon__.getSetting("ambilight_old_algorithm") == "true"
     self.ambilight_min         = int(int(__addon__.getSetting("ambilight_min").split(".")[0])*254/100)
     self.ambilight_max         = int(int(__addon__.getSetting("ambilight_max").split(".")[0])*254/100)
+    self.ambilight_threshold_value = int(int(__addon__.getSetting("ambilight_threshold_value").split(".")[0])*254/100)
+    self.ambilight_threshold_saturation = int(int(__addon__.getSetting("ambilight_threshold_saturation").split(".")[0])*254/100)
     self.color_bias            = int(int(__addon__.getSetting("color_bias").split(".")[0])/3*3)
     self.force_light_on        = __addon__.getSetting("force_light_on") == "true"
     self.force_light_group_start_override = __addon__.getSetting("force_light_group_start_override") == "true"
@@ -88,8 +91,11 @@ class settings():
     'ambilight_dim_light2_id: %s\n' % str(self.ambilight_dim_light2_id) + \
     'ambilight_dim_light3_id: %s\n' % str(self.ambilight_dim_light3_id) + \
     'ambilight_dim_group_id: %s\n' % str(self.ambilight_dim_group_id) + \
+    'ambilight_old_algorithm: %s\n' % str(self.ambilight_old_algorithm) + \
     'ambilight_min: %s\n' % str(self.ambilight_min) + \
     'ambilight_max: %s\n' % str(self.ambilight_max) + \
+    'ambilight_threshold_value: %s\n' % str(self.ambilight_threshold_value) + \
+    'ambilight_threshold_saturation: %s\n' % str(self.ambilight_threshold_saturation) + \
     'color_bias: %s\n' % str(self.color_bias) + \
     'force_light_on: %s\n' % str(self.force_light_on) + \
     'force_light_group_start_override: %s\n' % str(self.force_light_group_start_override) + \

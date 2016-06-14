@@ -2,3 +2,5 @@
 *.pyc
 *.dylib
 *.pyo
+cscope.out
+tags

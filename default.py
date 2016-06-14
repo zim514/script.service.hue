@@ -11,7 +11,7 @@ import math
 from threading import Timer
 
 __addon__      = xbmcaddon.Addon()
-__addondir__   = xbmc.translatePath( __addon__.getAddonInfo('profile') ) 
+__addondir__   = xbmc.translatePath( __addon__.getAddonInfo('profile') )
 __cwd__        = __addon__.getAddonInfo('path')
 __resource__   = xbmc.translatePath( os.path.join( __cwd__, 'resources', 'lib' ) )
 
@@ -79,7 +79,7 @@ class MyPlayer(xbmc.Player):
 
   def __init__(self):
     xbmc.Player.__init__(self)
-  
+
   def checkTime(self):
     if self.isPlayingVideo():
       check_time(int(self.getTime())) #call back out to plugin function.
@@ -122,7 +122,7 @@ class MyPlayer(xbmc.Player):
         if self.movie and self.duration != 0: #only try if its a movie and has a duration
           get_credits_info(self.getVideoInfoTag().getTitle(), self.duration) # TODO: start it on a timer to not block the beginning of the media
           logger.debuglog("credits_time: %r" % credits_time)
-      if self.movie and self.duration != 0:    
+      if self.movie and self.duration != 0:
         self.timer = RepeatedTimer(1, self.checkTime)
       state_changed("resumed", self.duration)
 
@@ -248,7 +248,7 @@ class Hue:
         self.logger.debuglog("meethue nupnp api returned: "+hue_ip)
       else:
         self.logger.debuglog("meethue nupnp api did not find bridge")
-        
+
     return hue_ip
 
   def register_user(self, hue_ip):
@@ -263,7 +263,7 @@ class Hue:
       self.logger.debuglog("register user response: %s" % r)
       notify("Bridge Discovery", "Press link button on bridge")
       r = requests.post('http://%s/api' % hue_ip, data=data)
-      response = r.text 
+      response = r.text
       time.sleep(3)
 
     j = r.json()
@@ -284,7 +284,7 @@ class Hue:
       if self.settings.light > 2:
         xbmc.sleep(1)
         self.light[2].flash_light()
-    
+
   def _parse_argv(self, args):
     try:
         self.params = dict(arg.split("=") for arg in args.split("&"))
@@ -343,7 +343,8 @@ class Hue:
       if self.settings.light > 2:
         xbmc.sleep(1)
         self.light[2].dim_light()
-        
+
+
   def brighter_lights(self):
     self.logger.debuglog("class Hue: brighter lights")
     self.last_state = "brighter"
@@ -438,11 +439,12 @@ class HSVRatio:
       self.v = self.v * self.ratio + overall_value * (1-self.ratio)
     else:
       self.v = (self.v + overall_value)/2
-    
 
   def hue(self, fullSpectrum):
     if fullSpectrum != True:
-      if self.s > 0.01:
+      if self.h > 0.065 and self.h < 0.19:
+          self.h = self.h * 2.32
+      elif self.s > 0.01:
         if self.h < 0.5:
           #yellow-green correction
           self.h = self.h * 1.17
@@ -475,39 +477,35 @@ class Screenshot:
   def most_used_spectrum(self, spectrum, saturation, value, size, overall_value):
     # color bias/groups 6 - 36 in steps of 3
     colorGroups = settings.color_bias
-    if colorGroups == 0:
-      colorGroups = 1
     colorHueRatio = 360 / colorGroups
 
     hsvRatios = []
     hsvRatiosDict = {}
 
-    for i in range(360):
-      if spectrum.has_key(i):
-        #shift index to the right so that groups are centered on primary and secondary colors
-        colorIndex = int(((i+colorHueRatio/2) % 360)/colorHueRatio)
-        pixelCount = spectrum[i]
+    for i in spectrum:
+      # shift index to the right so that groups are centered on primary and secondary colors
+      colorIndex = int(((i+colorHueRatio/2) % 360)/colorHueRatio)
+      pixelCount = spectrum[i]
 
-        if hsvRatiosDict.has_key(colorIndex):
-          hsvr = hsvRatiosDict[colorIndex]
-          hsvr.average(i/360.0, saturation[i], value[i])
-          hsvr.ratio = hsvr.ratio + pixelCount / float(size)
-
-        else:
-          hsvr = HSVRatio(i/360.0, saturation[i], value[i], pixelCount / float(size))
-          hsvRatiosDict[colorIndex] = hsvr
-          hsvRatios.append(hsvr)
+      try:
+        hsvr = hsvRatiosDict[colorIndex]
+        hsvr.average(i/360.0, saturation[i], value[i])
+        hsvr.ratio = hsvr.ratio + pixelCount / float(size)
+      except KeyError:
+        hsvr = HSVRatio(i/360.0, saturation[i], value[i], pixelCount / float(size))
+        hsvRatiosDict[colorIndex] = hsvr
+        hsvRatios.append(hsvr)
 
     colorCount = len(hsvRatios)
     if colorCount > 1:
       # sort colors by popularity
       hsvRatios = sorted(hsvRatios, key=lambda hsvratio: hsvratio.ratio, reverse=True)
       # logger.debuglog("hsvRatios %s" % hsvRatios)
-      
+
       #return at least 3
       if colorCount == 2:
         hsvRatios.insert(0, hsvRatios[0])
-      
+
       hsvRatios[0].averageValue(overall_value)
       hsvRatios[1].averageValue(overall_value)
       hsvRatios[2].averageValue(overall_value)
@@ -517,8 +515,7 @@ class Screenshot:
       hsvRatios[0].averageValue(overall_value)
       return [hsvRatios[0]] * 3
 
-    else:
-      return [HSVRatio()] * 3
+    return [HSVRatio()] * 3
 
   def spectrum_hsv(self, pixels, width, height):
     spectrum = {}
@@ -526,48 +523,43 @@ class Screenshot:
     value = {}
 
     size = int(len(pixels)/4)
-    pixel = 0
 
-    i = 0
-    s, v = 0, 0
+    v = 0
     r, g, b = 0, 0, 0
     tmph, tmps, tmpv = 0, 0, 0
-    
-    for i in range(size):
-      if fmtRGBA:
-        r = pixels[pixel]
-        g = pixels[pixel + 1]
-        b = pixels[pixel + 2]
-      else: #probably BGRA
-        b = pixels[pixel]
-        g = pixels[pixel + 1]
-        r = pixels[pixel + 2]
-      pixel += 4
 
+    for i in range(0, size, 4):
+      r, g, b = _rgb_from_pixels(pixels, i)
       tmph, tmps, tmpv = colorsys.rgb_to_hsv(float(r/255.0), float(g/255.0), float(b/255.0))
-      s += tmps
       v += tmpv
 
       # skip low value and saturation
-      if tmpv > 0.25:
-        if tmps > 0.33:
+      if tmpv > hue.settings.ambilight_threshold_value:
+        if tmps > hue.settings.ambilight_threshold_saturation:
           h = int(tmph * 360)
+          try:
+              spectrum[h] += 1
+              saturation[h] = (saturation[h] + tmps)/2
+              value[h] = (value[h] + tmpv)/2
+          except KeyError:
+              spectrum[h] = 1
+              saturation[h] = tmps
+              value[h] = tmpv
 
-          # logger.debuglog("%s \t set pixel r %s \tg %s \tb %s" % (i, r, g, b))
-          # logger.debuglog("%s \t set pixel h %s \ts %s \tv %s" % (i, tmph*100, tmps*100, tmpv*100))
-
-          if spectrum.has_key(h):
-            spectrum[h] += 1 # tmps * 2 * tmpv
-            saturation[h] = (saturation[h] + tmps)/2
-            value[h] = (value[h] + tmpv)/2
-          else:
-            spectrum[h] = 1 # tmps * 2 * tmpv
-            saturation[h] = tmps
-            value[h] = tmpv
-
-    overall_value = v / float(i)
-    # s_overall = int(s * 100 / i)
+    overall_value = v / float(len(pixels))
     return self.most_used_spectrum(spectrum, saturation, value, size, overall_value)
+
+
+def _rgb_from_pixels(pixels, index):
+  if fmtRGBA:
+    return _rgb_from_pixels_rgba(pixels, index)
+  else:  # probably BGRA
+    return _rgb_from_pixels_rgba(pixels, index)[::-1]
+
+
+def _rgb_from_pixels_rgba(pixels, index):
+  return [pixels[index + i] for i in range(3)]
+
 
 def run():
   player = None
@@ -591,7 +583,7 @@ def run():
       #   tmp = hue.settings
       #   tmp.group_id = tmp.ambilight_dim_group
       #   hue.dim_group = Group(tmp)
-      
+
       if player == None:
         logger.debuglog("creating instance of custom player")
         player = MyPlayer()
@@ -618,13 +610,9 @@ def run():
                   if hue.settings.light == 0:
                     fade_light_hsv(hue.light, hsvRatios[0])
                   else:
-                    fade_light_hsv(hue.light[0], hsvRatios[0])
-                    if hue.settings.light > 1:
+                    for i, l in enumerate(hue.light):
                       #xbmc.sleep(4) #why?
-                      fade_light_hsv(hue.light[1], hsvRatios[1])
-                    if hue.settings.light > 2:
-                      #xbmc.sleep(4) #why?
-                      fade_light_hsv(hue.light[2], hsvRatios[2])
+                      fade_light_hsv(l, hsvRatios[i])
           except ZeroDivisionError:
             logger.debuglog("no framerate. waiting.")
         else:
@@ -642,7 +630,9 @@ def fade_light_hsv(light, hsvRatio):
   vvec = v - light.valLast
   distance = math.sqrt(hvec**2 + svec**2 + vvec**2) #changed to squares for performance
   if distance > 0:
-    duration = int(3 + 27 * distance/255)
+    if hue.settings.ambilight_old_algorithm:
+        duration = int(3 + 27 * distance/255)
+    duration = int(10 - 2.5 * distance/255)
     # logger.debuglog("distance %s duration %s" % (distance, duration))
     light.set_light2(h, s, v, duration)
 
@@ -687,7 +677,7 @@ def state_changed(state, duration):
 
   if state == "started":
     logger.debuglog("retrieving current setting before starting")
-    
+
     if hue.settings.light == 0: # group mode
       hue.light.get_current_setting()
     else:
@@ -753,7 +743,7 @@ if ( __name__ == "__main__" ):
   monitor = MyMonitor()
   if settings.debug == True:
     logger.debug()
-  
+
   args = None
   if len(sys.argv) == 2:
     args = sys.argv[1]
