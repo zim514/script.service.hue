@@ -30,6 +30,7 @@ except ImportError:
 xbmc.log("Kodi Hue service started, version: %s" % get_version())
 
 capture = xbmc.RenderCapture()
+useLegacyApi = True
 fmt = capture.getImageFormat()
 # BGRA or RGBA
 # xbmc.log("Hue Capture Image format: %s" % fmt)
@@ -75,7 +76,6 @@ class MyPlayer(xbmc.Player):
   playingvideo = False
   timer = None
   movie = False
-  framerate = 0
 
   def __init__(self):
     xbmc.Player.__init__(self)
@@ -90,12 +90,6 @@ class MyPlayer(xbmc.Player):
       self.playingvideo = True
       self.duration = self.getTotalTime()
       self.movie = xbmc.getCondVisibility('VideoPlayer.Content(movies)')
-
-      #logger.debuglog("mediainfo: %s" % get_log_mediainfo())
-      if self.framerate == 0:
-        #get framerate:
-        self.framerate = int(round(get_log_mediainfo()["fps"]))
-        logger.debuglog("got fps: %s" % self.framerate)
 
       global credits_triggered
       credits_triggered = False
@@ -128,7 +122,6 @@ class MyPlayer(xbmc.Player):
 
   def onPlayBackStopped(self):
     xbmc.log("Kodi Hue: DEBUG playback stopped called on player")
-    self.framerate = 0
     #logger.debuglog("onPlayBackStopped called.")
     #if self.playingvideo: #don't check this, just fire the event no matter what.
     self.playingvideo = False
@@ -138,7 +131,6 @@ class MyPlayer(xbmc.Player):
 
   def onPlayBackEnded(self):
     xbmc.log("Kodi Hue: DEBUG playback ended called on player")
-    self.framerate = 0
     if self.playingvideo:
       self.playingvideo = False
       if self.movie and not self.timer is None:
@@ -201,7 +193,7 @@ class Hue:
       self.logger.debuglog("unimplemented action call: %s" % self.params['action'])
 
     #detect pause for refresh change (must reboot for this to take effect.)
-    response = json.loads(xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Settings.GetSettingValue", "params":{"setting":"videoplayer.pauseafterrefreshchange"},"id":1}'))
+    response = json.loads(xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Settings.GetSettingValue", "params":{"setting":"videoscreen.delayrefreshchange"},"id":1}'))
     #logger.debuglog(isinstance(response, dict))
     if "result" in response and "value" in response["result"]:
       pauseafterrefreshchange = int(response["result"]["value"])
@@ -252,9 +244,8 @@ class Hue:
     return hue_ip
 
   def register_user(self, hue_ip):
-    #username = hashlib.md5(str(random.random())).hexdigest() #not needed with new strategy
-    device = "kodi-hue-addon"
-    data = '{"devicetype": "%s#%s"}' % (device, xbmc.getInfoLabel('System.FriendlyName')[0:19])
+    device = "kodi#ambilight"
+    data = '{"devicetype": "%s"}' % device
     self.logger.debuglog("sending data: %s" % data)
 
     r = requests.post('http://%s/api' % hue_ip, data=data)
@@ -546,7 +537,9 @@ class Screenshot:
               saturation[h] = tmps
               value[h] = tmpv
 
-    overall_value = v / float(len(pixels))
+    overall_value = 1
+    if int(i) != 0:
+      overall_value = v / float(len(pixels))
     return self.most_used_spectrum(spectrum, saturation, value, size, overall_value)
 
 
@@ -560,65 +553,58 @@ def _rgb_from_pixels(pixels, index):
 def _rgb_from_pixels_rgba(pixels, index):
   return [pixels[index + i] for i in range(3)]
 
-
 def run():
-  player = None
+  player = MyPlayer()
+  if player == None:
+    logger.log("Cannot instantiate player. Bailing out")
+    return
   last = time.time()
 
   #logger.debuglog("starting run loop!")
   while not monitor.abortRequested():
-    #logger.debuglog("in run loop!")
-    if hue.settings.mode == 1: # theater mode
-      if player == None:
-        logger.debuglog("creating instance of custom player")
-        player = MyPlayer()
-      if monitor.waitForAbort(0.5):
-        #kodi requested an abort, lets get out of here.
-        break
-    elif hue.settings.mode == 0: # ambilight mode
-      # no longer needed here. (especially in a run-loop!!!) instantiating a Group object causes a TON of requests to go to the bridge, which will back up and MASSIVELY deteriorate performance.
-      # if hue.settings.ambilight_dim:
-      #  and hue.dim_group == None:
-      #   logger.debuglog("creating group to dim")
-      #   tmp = hue.settings
-      #   tmp.group_id = tmp.ambilight_dim_group
-      #   hue.dim_group = Group(tmp)
+    if hue.settings.mode == 0: # ambilight mode
+      now = time.time()
+      #logger.debuglog("run loop delta: %f (%f/sec)" % ((now-last), 1/(now-last)))
+      last = now
 
-      if player == None:
-        logger.debuglog("creating instance of custom player")
-        player = MyPlayer()
-      else:
-        #player must exist for ambilight.
-        #xbmc.sleep(100) #why?
-        now = time.time()
-        #logger.debuglog("run loop delta: %f (%f/sec)" % ((now-last), 1/(now-last)))
-        last = now
+      startReadOut = False
+      vals = {}
+      ## live tv does not trigger playbackstart
+      if player.isPlayingVideo() and not player.playingvideo:
+        player.playingvideo = True
+        state_changed("started", player.getTotalTime())
+        continue
+      if player.playingvideo: # only if there's actually video
+        try:
+          if useLegacyApi:
+            capture.waitForCaptureStateChangeEvent(200)
+            #we've got a capture event
+            if capture.getCaptureState() == xbmc.CAPTURE_STATE_DONE:
+              startReadOut = True
+          else:
+            vals = capture.getImage(200)
+            if len(vals) > 0 and player.playingvideo:
+              startReadOut = True
+          if startReadOut:
+            if useLegacyApi:
+              vals = capture.getImage()
+              screen = Screenshot(vals, capture.getWidth(), capture.getHeight())
+            else:
+              screen = Screenshot(capture.getImage(), capture.getWidth(), capture.getHeight())
+            hsvRatios = screen.spectrum_hsv(screen.pixels, screen.capture_width, screen.capture_height)
+            if hue.settings.light == 0:
+              fade_light_hsv(hue.light, hsvRatios[0])
+            else:
+              for i, l in enumerate(hue.light):
+                #xbmc.sleep(4) #why?
+                fade_light_hsv(l, hsvRatios[i])
+        except ZeroDivisionError:
+          logger.debuglog("no frame. looping.")
+          
+    if monitor.waitForAbort(0.1):
+      #kodi requested an abort, lets get out of here.
+      break
 
-        #set sample rate to framerate
-        #probably doesnt need to be called @ 60fps, i understand the intention, but TV & Movies is in the 24-30fps range.
-        if player.framerate != 0: #gotta have a framerate
-          try:
-            if monitor.waitForAbort(0.1): #rate limit to 10/sec or less
-              logger.debuglog("abort requested in ambilight loop") #kodi requested an abort, lets get out of here.
-              break
-            if capture.waitForCaptureStateChangeEvent(int(round(1000/player.framerate))):
-              #we've got a capture event
-              if capture.getCaptureState() == xbmc.CAPTURE_STATE_DONE:
-                if player.playingvideo:
-                  screen = Screenshot(capture.getImage(), capture.getWidth(), capture.getHeight())
-                  hsvRatios = screen.spectrum_hsv(screen.pixels, screen.capture_width, screen.capture_height)
-                  if hue.settings.light == 0:
-                    fade_light_hsv(hue.light, hsvRatios[0])
-                  else:
-                    for i, l in enumerate(hue.light):
-                      #xbmc.sleep(4) #why?
-                      fade_light_hsv(l, hsvRatios[i])
-          except ZeroDivisionError:
-            logger.debuglog("no framerate. waiting.")
-        else:
-          if monitor.waitForAbort(0.1):
-            #kodi requested an abort, lets get out of here.
-            break
   del player #might help with slow exit.
 
 def fade_light_hsv(light, hsvRatio):
@@ -704,7 +690,10 @@ def state_changed(state, duration):
       if capture_height == 0:
         capture_height = capture_width #fix for divide by zero.
       logger.debuglog("capture %s x %s" % (capture_width, capture_height))
-      capture.capture(int(capture_width), int(capture_height), xbmc.CAPTURE_FLAG_CONTINUOUS)
+      if useLegacyApi:
+        capture.capture(int(capture_width), int(capture_height), xbmc.CAPTURE_FLAG_CONTINUOUS)
+      else:
+        capture.capture(int(capture_width), int(capture_height))
 
   if (state == "started" and hue.pauseafterrefreshchange == 0) or state == "resumed":
     if hue.settings.mode == 0 and hue.settings.ambilight_dim: #if in ambilight mode and dimming is enabled
@@ -714,6 +703,7 @@ def state_changed(state, duration):
       elif hue.settings.ambilight_dim_light > 0:
         for l in hue.ambilight_dim_light:
           l.dim_light()
+
     else:
       logger.debuglog("dimming lights")
       hue.dim_lights()
@@ -738,6 +728,10 @@ def state_changed(state, duration):
       hue.brighter_lights()
 
 if ( __name__ == "__main__" ):
+  try:
+    capture.getCaptureState()
+  except AttributeError:
+    useLegacyApi = False
   settings = settings()
   logger = Logger()
   monitor = MyMonitor()
