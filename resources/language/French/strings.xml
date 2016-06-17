@@ -28,26 +28,26 @@
   <!-- Theater -->
   <string id="2000">Cinéma</string>
 
-  <string id="2100">Dimming</string>
+  <string id="2100">Variateur</string>
   <string id="2101">Durée de transition (secondes)</string>
   <string id="2102">Durée de transition proportionnel</string>
-  <string id="2103">Exemple: Prend 70% de la durée de transition si dimming 70%</string>
-  <string id="2104">Dimmed luminosité</string>
-  <string id="2105">Override undimmed luminosité</string>
-  <string id="2106">Undimmed luminosité</string>
-  <string id="2107">Override paused luminosité</string>
-  <string id="2108">Paused luminosité</string>
+  <string id="2103">Exemple: Prend 70% de la durée de transition si variateur 70%</string>
+  <string id="2104">Luminosité (activé)</string>
+  <string id="2105">Override undimmed luminosity</string>
+  <string id="2106">Luminosité (désactivé)</string>
+  <string id="2107">Forcer la luminosité en pause</string>
+  <string id="2108">Luminosité en pause</string>
 
   <string id="2200">Couleur</string>
-  <string id="2201">Override hue</string>
-  <string id="2202">Dimmed hue</string>
-  <string id="2203">Undimmed hue</string>
-  <string id="2204">Override saturation</string>
-  <string id="2205">Dimmed saturation</string>
-  <string id="2206">Undimmed saturation</string>
+  <string id="2201">Forcer la teinte</string>
+  <string id="2202">Teinte (activé)</string>
+  <string id="2203">Teinte (désactivé)</string>
+  <string id="2204">Forcer la saturation</string>
+  <string id="2205">Saturation (activé)</string>
+  <string id="2206">Saturation (désactivé)</string>
 
   <string id="2300">Génériques - EXPERIMENTAL</string>
-  <string id="2301">Undim pendant les génériques de fin</string>
+  <string id="2301">Rallumer pendant les génériques de fin</string>
   <string id="2302">Interroge ChapterDB.org pour détecter les génériques de fin et rallumer la lumière</string>
   <string id="2303">ATTENTION: Cette option peut rallumer la lumière en plein film.</string>
   <string id="2304">Attendre pour undim après les génériques (secondes)</string>
@@ -55,8 +55,8 @@
   <!-- Ambilight -->
   <string id="3000">Ambilight</string>
   
-  <string id="3100">Dimming</string>
-  <string id="3101">Dim avant la lecture</string>
+  <string id="3100">Variateur</string>
+  <string id="3101">Atténuer avant la lecture</string>
   <string id="3102">Groupe d'ampoules</string>
   <string id="3103">Ampoule seule</string>
   <string id="3104">Deux ampoules</string>
