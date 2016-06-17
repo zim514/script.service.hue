@@ -70,7 +70,7 @@
         <!--Thresholds-->
         <setting type="lsep" label="3250" />
         <setting id="ambilight_threshold_value" label="3251" type="slider" default="0.25" range="0,0.01,1" option="float" />
-        <setting id="ambilight_threshold_saturation" label="3251" type="slider" default="0.33" range="0,0.01,1" option="float" />
+        <setting id="ambilight_threshold_saturation" label="3252" type="slider" default="0.33" range="0,0.01,1" option="float" />
         <!--Color-->
         <setting type="lsep" label="3300" />
         <setting id="color_bias" label="3301" type="slider" default="18" range="6,3,36" option="int" />
