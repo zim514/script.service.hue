@@ -30,19 +30,19 @@
 
   <string id="2100">Variateur</string>
   <string id="2101">Durée de transition (secondes)</string>
-  <string id="2102">Durée de transition proportionnel</string>
+  <string id="2102">Durée de transition proportionnelle</string>
   <string id="2103">Exemple: Prend 70% de la durée de transition si variateur 70%</string>
   <string id="2104">Luminosité (activé)</string>
   <string id="2105">Override undimmed luminosity</string>
   <string id="2106">Luminosité (désactivé)</string>
-  <string id="2107">Forcer la luminosité en pause</string>
+  <string id="2107">Prendre le contrôle de la luminosité en pause</string>
   <string id="2108">Luminosité en pause</string>
 
   <string id="2200">Couleur</string>
-  <string id="2201">Forcer la teinte</string>
+  <string id="2201">Prendre le contrôle la teinte</string>
   <string id="2202">Teinte (activé)</string>
   <string id="2203">Teinte (désactivé)</string>
-  <string id="2204">Forcer la saturation</string>
+  <string id="2204">Prendre le contrôle la saturation</string>
   <string id="2205">Saturation (activé)</string>
   <string id="2206">Saturation (désactivé)</string>
 
