@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <!-- Main -->
+  <string id="1000">Principal</string>
+
+  <string id="1100">Configuration du Bridge</string>
+  <string id="1101">Démarrer la Configuration Automatique</string>
+  <string id="1102">IP du Bridge</string>
+  <string id="1103">Utilisateur du Bridge</string>
+
+  <string id="1200">Sélection</string>
+  <string id="1201">Mode</string>
+  <string id="1202">Ambilight</string>
+  <string id="1203">Cinéma</string>
+
+  <string id="1300">Ampoules</string>
+  <string id="1301">Activer</string>
+  <string id="1302">Groupe d'ampoules</string>
+  <string id="1303">Ampoule seule</string>
+  <string id="1304">Deux ampoules</string>
+  <string id="1305">Trois ampoules</string>
+  <string id="1306">Light ID 1</string>
+  <string id="1307">Light ID 2</string>
+  <string id="1308">Light ID 3</string>
+  <string id="1309">Group ID (0=Toutes les ampoules)</string>
+  <string id="1310">le mode Ambilight avec un groupe d'ampoules est lent (mais vous pouvez l'essayer)</string>
+
+  <!-- Theater -->
+  <string id="2000">Cinéma</string>
+
+  <string id="2100">Dimming</string>
+  <string id="2101">Durée de transition (secondes)</string>
+  <string id="2102">Durée de transition proportionnel</string>
+  <string id="2103">Exemple: Prend 70% de la durée de transition si dimming 70%</string>
+  <string id="2104">Dimmed luminosité</string>
+  <string id="2105">Override undimmed luminosité</string>
+  <string id="2106">Undimmed luminosité</string>
+  <string id="2107">Override paused luminosité</string>
+  <string id="2108">Paused luminosité</string>
+
+  <string id="2200">Couleur</string>
+  <string id="2201">Override hue</string>
+  <string id="2202">Dimmed hue</string>
+  <string id="2203">Undimmed hue</string>
+  <string id="2204">Override saturation</string>
+  <string id="2205">Dimmed saturation</string>
+  <string id="2206">Undimmed saturation</string>
+
+  <string id="2300">Génériques - EXPERIMENTAL</string>
+  <string id="2301">Undim pendant les génériques de fin</string>
+  <string id="2302">Interroge ChapterDB.org pour détecter les génériques de fin et rallumer la lumière</string>
+  <string id="2303">ATTENTION: Cette option peut rallumer la lumière en plein film.</string>
+  <string id="2304">Attendre pour undim après les génériques (secondes)</string>
+
+  <!-- Ambilight -->
+  <string id="3000">Ambilight</string>
+  
+  <string id="3100">Dimming</string>
+  <string id="3101">Dim avant la lecture</string>
+  <string id="3102">Groupe d'ampoules</string>
+  <string id="3103">Ampoule seule</string>
+  <string id="3104">Deux ampoules</string>
+  <string id="3105">Trois ampoules</string>
+  <string id="3106">Light ID 1</string>
+  <string id="3107">Light ID 2</string>
+  <string id="3108">Light ID 3</string>
+  <string id="3109">Group ID (0=Toutes les ampoules)</string>
+
+  <string id="3200">Luminosité</string>
+  <string id="3201">Luminosité minimum</string>
+  <string id="3202">Luminosité maximum</string>
+
+  <string id="3240">Utiliser l'ancien algorithme ambilight</string>
+
+  <string id="3250">Seuils</string>
+  <string id="3251">Seuil de valeur</string>
+  <string id="3252">Seuil de saturation</string>
+
+  <string id="3300">Couleur</string>
+  <string id="3301">Color Bias</string>
+  <string id="3302">Sensibilité: 6=variété avec >1 ampoules, 36=fidélité</string>
+
+  <!-- Advanced -->
+  <string id="4000">Avancé</string>
+
+  <string id="4100">Divers</string>
+  <string id="4101">Activer le flash initial</string>
+  <string id="4102">Désactiver pour les court-métrages</string>
+  <string id="4103">Seuil de durée d'un court-métrage (secondes)</string>
+  <string id="4104">Forcer l'allumage des ampoules (même si éteintes)</string>
+  <string id="4105">Group on and brightness start states overridden by members</string>
+
+  <string id="4200">Debug</string>
+  <string id="4201">Debug logging</string>
+
+  <string id="4300">ATTENTION: REINITIALISER TOUS LES PARAMETRES</string>
+  <string id="4301">Reinitialise tous les paramètres (nécéssite la désactivation/réactivation)</string>
+</strings>
