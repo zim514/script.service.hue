@@ -20,7 +20,7 @@ class settings():
     self.group_id              = int(__addon__.getSetting("group_id"))
     self.misc_initialflash     = __addon__.getSetting("misc_initialflash") == "true"
     self.misc_disableshort     = __addon__.getSetting("misc_disableshort") == "true"
-    self.misc_disableshort_threshold = int(__addon__.getSetting("misc_disableshort_threshold") == "true")
+    self.misc_disableshort_threshold = int(__addon__.getSetting("misc_disableshort_threshold"))
 
     self.dimmed_bri            = int(int(__addon__.getSetting("dimmed_bri").split(".")[0])*254/100)
     self.override_undim_bri    = __addon__.getSetting("override_undim_bri") == "true"
