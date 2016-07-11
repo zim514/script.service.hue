@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <!-- Main -->
+  <string id="1000">Hauptmenü</string>
+
+  <string id="1100">Bridge Konfiguration</string>
+  <string id="1101">Starte automatische Konfiguration</string>
+  <string id="1102">Bridge IP</string>
+  <string id="1103">Bridge Benutzer</string>
+
+  <string id="1200">Auswahl Modus</string>
+  <string id="1201">Modus</string>
+  <string id="1202">Ambilight</string>
+  <string id="1203">Theater</string>
+
+  <string id="1300">Lampen</string>
+  <string id="1301">Aktivieren</string>
+  <string id="1302">Lampen-Gruppe</string>
+  <string id="1303">Eine Lampe</string>
+  <string id="1304">Zwei Lampen</string>
+  <string id="1305">Drei Lampen</string>
+  <string id="1306">Lampe Nr. 1</string>
+  <string id="1307">Lampe Nr. 2</string>
+  <string id="1308">Lampe Nr. 3</string>
+  <string id="1309">Gruppen-Nr.(0=Alle Lampen)</string>
+  <string id="1310">Ambilight via Lampen-Gruppe ist zu langsam (aber probiers gern aus)</string>
+
+  <!-- Theater -->
+  <string id="2000">Theater</string>
+
+  <string id="2100">Dimmung</string>
+  <string id="2101">Übergangszeit (Sekunden)</string>
+  <string id="2102">Proportionale Übergangszeit</string>
+  <string id="2103">Example: Take 70% of transition time if dimming 70%</string>
+  <string id="2104">Gedimmte Helligkeit</string>
+  <string id="2105">Überschreibe ungedimmte Helligkeit</string>
+  <string id="2106">Ungedimmte Helligkeit</string>
+  <string id="2107">Überschreibe Helligkeit wenn pausiert</string>
+  <string id="2108">Helligkeit wenn pausiert</string>
+
+  <string id="2200">Farben</string>
+  <string id="2201">Überschreibe Farbton</string>
+  <string id="2202">Gedimmter Farbton</string>
+  <string id="2203">Ungedimmter Farbeton</string>
+  <string id="2204">Überschreibe Sättigung</string>
+  <string id="2205">Gedimmte Sättigung</string>
+  <string id="2206">Ungedimmte Sättigung</string>
+
+  <string id="2300">Abspann - (EXPERIMENTELL)</string>
+  <string id="2301">Beim Abspann entdimmen</string>
+  <string id="2302">ChapterDB.org wird abgefragt um den Abspann zu erkennen</string>
+  <string id="2303">WARNUNG: Die Lampen könnten während des Films angehen.<string>
+  <string id="2304">Wartezeit bis zum entdimmen (Sekunden)</string>
+
+  <!-- Ambilight -->
+  <string id="3000">Ambilight</string>
+  
+  <string id="3100">Dimmung</string>
+  <string id="3101">Vorm abspielen dimmen</string>
+  <string id="3102">Lampen-Gruppe</string>
+  <string id="3103">Eine Lampe</string>
+  <string id="3104">Zwei Lampen</string>
+  <string id="3105">Drei Lampen</string>
+  <string id="3106">Lampe Nr. 1</string>
+  <string id="3107">Lampe Nr. 2</string>
+  <string id="3108">Lampe Nr. 3</string>
+  <string id="3109">Gruppen-Nr.(0=Alle Lampen)</string>
+
+  <string id="3200">Helligkeit</string>
+  <string id="3201">Helligkeit Minimum</string>
+  <string id="3202">Helligkeit Maximum</string>
+
+  <string id="3240">Alten Ambilight-Algorithmus verwenden</string>
+
+  <string id="3250">Schwellwerte</string>
+  <string id="3251">Werte Schwellwert</string>
+  <string id="3252">Sättigung Schwellwert</string>
+
+  <string id="3300">Farben</string>
+  <string id="3301">Farbbeeinflussung</string>
+  <string id="3302">Empfindlichkeit: 6=Varianz bei mehreren Lampen, 36=Genauigkeit</string>
+
+  <!-- Advanced -->
+  <string id="4000">Erweitert</string>
+
+  <string id="4100">Diverse Einstellungen</string>
+  <string id="4101">Beim Einschalten flackern</string>
+  <string id="4102">Für Kurzfilme nicht einschalten</string>
+  <string id="4103">Kurzfilm-Schwellwert (Sekunden)</string>
+  <string id="4104">Einschalten der Lampen forcieren (auch wenn aus)<string>
+  <string id="4105">Einschalten und Helligkeit der Gruppe beim Start überschreiben</string>
+
+  <string id="4200">Debug</string>
+  <string id="4201">Debug logging</string>
+
+  <string id="4300">WARNUNG: EINSTELLUNGEN ZURÜCKSETZEN</string>
+  <string id="4301">Alle Einstellungen zurücksetzen (De-/aktivierung des Plugins)</string>
+</strings>
