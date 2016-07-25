@@ -114,8 +114,8 @@ class Light:
     self.onLast = state['on']
     self.valLast = state['bri']
     
-    modelid = j['modelid']
-    self.fullSpectrum = ((modelid == 'LST001') or (modelid == 'LLC007'))
+    lighttype = j['type']
+    self.fullSpectrum = ((lighttype == 'Color Light') or (lighttype == 'Extended Color Light'))
 
     if state.has_key('hue'):
       self.start_setting['hue'] = state['hue']
@@ -392,9 +392,6 @@ class Group(Light):
 
     self.onLast = self.start_setting['on']
     self.valLast = self.start_setting['bri']
-    
-    # modelid = j['modelid']
-    # self.fullSpectrum = ((modelid == 'LST001') or (modelid == 'LLC007'))
 
     if state.has_key('hue'):
       self.start_setting['hue'] = state['hue']
