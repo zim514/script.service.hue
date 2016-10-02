@@ -31,9 +31,15 @@ The add-on depends on the Kodi add-on "requests" for the ambilight mode.
  - Download the add-on as a ZIP file from the top of this page
    - (Right click on the "ZIP" icon and select "Download Linked File")
  - Open Kodi
+ - Kodi 16 :
  - Go to `System -> Settings -> Add-ons -> Install from zip file`
+ - Kodi 17 :
+ - Go to `Extensions -> Add-ons -> Install from zip file`
  -  Restart Kodi and configure the add-on:
+   - Kodi 16 :
    - `System -> Settings -> Add-ons -> Enabled add-ons -> Services -> Kodi Philips Hue`
+   - Kodi 17 :
+   - `Extensions -> Add-ons -> My Extensions -> Services -> Kodi Philips Hue`
    - Run `Start auto discovery of bridge IP and User`.
 
 Note for Raspberry Pi users:
