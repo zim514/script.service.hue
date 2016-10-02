@@ -56,13 +56,3 @@ Release history
   * 2013-04-01 v 0.3.3 Rename to script.xbmc.hue.ambilight
   * 2013-02-25 v 0.3.1 Improved handling for grouped lights
   * 2013-01-27 v 0.1.0 Initial release
-
-TODO:
------
-  * Add: saturation override so that full light parameters can be overridden
-  * Fix: lights may turn on if they are already off, need better state checking
-  * Add: setting to customize what is considered a "short" video
-  * Add: *experimental* auto undim when movie reaches credits (does not always work, may ruin your movie-watching experience)
-  * Refactor: clean up a lot of the old code that's still in the addon, but not necessary
-  * Add: [OpenHAB](http://github.com/openhab/openhab) support for a grouped switch endpoint (to turn off a set of lights that are controlled by something other than Philips Hue... i.e. Z-Wave)
-  * Publish: get addon onto the official Kodi addon repository
