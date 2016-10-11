@@ -21,7 +21,7 @@ The add-on depends on the Kodi add-on "requests" for the ambilight mode.
 **Kodi add-on script.module.requests**
 
  - Download the add-on as a ZIP file from https://github.com/beenje/script.module.requests
-  - (Right click on the "ZIP" icon and select "Download Linked File").
+  - (Click on the green "Clone or download button" then click on the "Download ZIP" link).
  - Open Kodi
  - Go to `System -> Settings -> Add-ons -> Install from zip file`
  - Select the zip file.
@@ -29,7 +29,7 @@ The add-on depends on the Kodi add-on "requests" for the ambilight mode.
 **Kodi add-on script.kodi.hue.ambilight**
 
  - Download the add-on as a ZIP file from the top of this page
-   - (Right click on the "ZIP" icon and select "Download Linked File")
+  - (Click on the green "Clone or download button" then click on the "Download ZIP" link).
  - Open Kodi
  - Kodi 16 :
  - Go to `System -> Settings -> Add-ons -> Install from zip file`
