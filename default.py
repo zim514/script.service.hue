@@ -518,6 +518,7 @@ class Screenshot:
     v = 0
     r, g, b = 0, 0, 0
     tmph, tmps, tmpv = 0, 0, 0
+    overall_value = 1
 
     for i in range(0, size, 4):
       r, g, b = _rgb_from_pixels(pixels, i)
@@ -537,9 +538,9 @@ class Screenshot:
               saturation[h] = tmps
               value[h] = tmpv
 
-    overall_value = 1
-    if int(i) != 0:
+    if size > 0:
       overall_value = v / float(len(pixels))
+
     return self.most_used_spectrum(spectrum, saturation, value, size, overall_value)
 
 
@@ -600,7 +601,7 @@ def run():
                 fade_light_hsv(l, hsvRatios[i])
         except ZeroDivisionError:
           logger.debuglog("no frame. looping.")
-          
+
     if monitor.waitForAbort(0.1):
       #kodi requested an abort, lets get out of here.
       break
