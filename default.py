@@ -74,6 +74,7 @@ class MyMonitor( xbmc.Monitor ):
 class MyPlayer(xbmc.Player):
   duration = 0
   playingvideo = False
+  playlistlen = 0
   timer = None
   movie = False
 
@@ -86,7 +87,11 @@ class MyPlayer(xbmc.Player):
 
   def onPlayBackStarted(self):
     xbmc.log("Kodi Hue: DEBUG playback started called on player")
-    if self.isPlayingVideo():
+    playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+    self.playlistlen = playlist.size()
+    self.playlistpos = playlist.getposition()
+
+    if self.isPlayingVideo() and not self.playingvideo:
       self.playingvideo = True
       self.duration = self.getTotalTime()
       self.movie = xbmc.getCondVisibility('VideoPlayer.Content(movies)')
@@ -122,20 +127,22 @@ class MyPlayer(xbmc.Player):
 
   def onPlayBackStopped(self):
     xbmc.log("Kodi Hue: DEBUG playback stopped called on player")
-    #logger.debuglog("onPlayBackStopped called.")
-    #if self.playingvideo: #don't check this, just fire the event no matter what.
     self.playingvideo = False
+    self.playlistlen = 0
     if self.movie and not self.timer is None:
       self.timer.stop()
     state_changed("stopped", self.duration)
 
   def onPlayBackEnded(self):
     xbmc.log("Kodi Hue: DEBUG playback ended called on player")
-    if self.playingvideo:
-      self.playingvideo = False
-      if self.movie and not self.timer is None:
-        self.timer.stop()
-      state_changed("stopped", self.duration)
+    # If there are upcoming plays, ignore 
+    if self.playlistpos < self.playlistlen-1:
+      return
+      
+    self.playingvideo = False
+    if self.movie and not self.timer is None:
+      self.timer.stop()
+    state_changed("stopped", self.duration)
 
 class Hue:
   params = None
