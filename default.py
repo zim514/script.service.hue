@@ -729,6 +729,11 @@ def check_time(cur_time):
 def state_changed(state, duration):
     logger.debuglog("state changed to: %s" % state)
 
+    if (xbmc.getCondVisibility('Window.IsActive(screensaver-atv4.xml)') or
+        xbmc.getCondVisibility('Window.IsActive(screensaver-video-main.xml)')):
+        logger.debuglog("add-on disabled for screensavers")
+        return
+
     if duration < hue.settings.misc_disableshort_threshold and hue.settings.misc_disableshort:
         logger.debuglog("add-on disabled for short movies")
         return
