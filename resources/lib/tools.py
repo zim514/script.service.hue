@@ -21,11 +21,9 @@ XML_NAMESPACE = "http://jvance.com/2008/ChapterGrabber"
 THRESHOLD_LAST_CHAPTER = 60
 
 
-def notify(title, msg=""):
-    global __icon__
-    xbmc.executebuiltin(
-        "XBMC.Notification(%s, %s, 3, %s)" %
-        (title, msg, __icon__))
+def notify(title, msg=''):
+    xbmc.executebuiltin('XBMC.Notification({}, {}, 3, {})'.format(
+        title, msg, __icon__))
 
 try:
     import requests
