@@ -6,16 +6,14 @@ import urllib
 from urllib2 import Request, urlopen
 import xml.etree.ElementTree as ET
 
-NOSE = os.environ.get('NOSE', None)
-if not NOSE:
-    import xbmc
-    import xbmcaddon
+import xbmc
+import xbmcaddon
 
-    __addon__ = xbmcaddon.Addon()
-    __cwd__ = __addon__.getAddonInfo('path')
-    __icon__ = os.path.join(__cwd__, "icon.png")
-    __settings__ = os.path.join(__cwd__, "resources", "settings.xml")
-    __xml__ = os.path.join(__cwd__, 'addon.xml')
+__addon__ = xbmcaddon.Addon()
+__cwd__ = __addon__.getAddonInfo('path')
+__icon__ = os.path.join(__cwd__, "icon.png")
+__settings__ = os.path.join(__cwd__, "resources", "settings.xml")
+__xml__ = os.path.join(__cwd__, 'addon.xml')
 
 API_KEY = "7OOEGRV8Y2SVNTS29EBJ"
 API_SEARCH_URL = "http://www.chapterdb.org/chapters/search"
@@ -24,11 +22,10 @@ THRESHOLD_LAST_CHAPTER = 60
 
 
 def notify(title, msg=""):
-    if not NOSE:
-        global __icon__
-        xbmc.executebuiltin(
-            "XBMC.Notification(%s, %s, 3, %s)" %
-            (title, msg, __icon__))
+    global __icon__
+    xbmc.executebuiltin(
+        "XBMC.Notification(%s, %s, 3, %s)" %
+        (title, msg, __icon__))
 
 try:
     import requests
