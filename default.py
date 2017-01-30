@@ -19,6 +19,7 @@ sys.path.append(__resource__)
 
 from settings import settings
 from tools import notify, Light, Group, ChapterManager, Logger, get_version
+import bridge
 
 try:
     import requests
@@ -310,16 +311,7 @@ class Hue:
             self.params = {}
 
     def test_connection(self):
-        self.logger.debuglog("testing connection")
-        r = requests.get('http://%s/api/%s/config' %
-                         (self.settings.bridge_ip, self.settings.bridge_user))
-        test_connection = r.text.find("name")
-        if not test_connection:
-            notify("Failed", "Could not connect to bridge")
-            self.connected = False
-        else:
-            notify("Kodi Hue", "Connected")
-            self.connected = True
+        self.connected = bridge.user_exists()
         return self.connected
 
     def dim_lights(self):
