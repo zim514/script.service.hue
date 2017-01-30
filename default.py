@@ -19,7 +19,6 @@ sys.path.append(__resource__)
 
 from settings import *
 from tools import *
-from mediainfofromlog import *
 
 try:
     import requests
