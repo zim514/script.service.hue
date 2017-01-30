@@ -57,7 +57,7 @@ def _discover_upnp():
             if 'IpBridge' in recv and 'description.xml' in recv:
                 bridge_ip = recv.split('LOCATION: http://')[1].split(':')[0]
                 break
-            time.sleep(1)
+            time.sleep(3)
         except socket.timeout:
             # if the socket times out once, its probably not going to
             # complete at all. fallback to nupnp.
