@@ -1,5 +1,4 @@
 import xbmc
-import xbmcgui
 import xbmcaddon
 import json
 import time
@@ -17,8 +16,8 @@ __resource__ = xbmc.translatePath(os.path.join(__cwd__, 'resources', 'lib'))
 
 sys.path.append(__resource__)
 
-from settings import *
-from tools import *
+from settings import settings
+from tools import notify, Light, Group, ChapterManager, Logger
 
 try:
     import requests
