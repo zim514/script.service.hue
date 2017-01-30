@@ -1,13 +1,14 @@
+from threading import Timer
+import colorsys
+import datetime
+import json
+import math
+import os
+import sys
+import time
+
 import xbmc
 import xbmcaddon
-import json
-import time
-import sys
-import colorsys
-import os
-import datetime
-import math
-from threading import Timer
 
 __addon__ = xbmcaddon.Addon()
 __addondir__ = xbmc.translatePath(__addon__.getAddonInfo('profile'))
@@ -17,7 +18,7 @@ __resource__ = xbmc.translatePath(os.path.join(__cwd__, 'resources', 'lib'))
 sys.path.append(__resource__)
 
 from settings import settings
-from tools import notify, Light, Group, ChapterManager, Logger
+from tools import notify, Light, Group, ChapterManager, Logger, get_version
 
 try:
     import requests

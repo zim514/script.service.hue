@@ -1,9 +1,9 @@
-import time
-import os
-import json
-import re
-import urllib
 from urllib2 import Request, urlopen
+import json
+import os
+import re
+import time
+import urllib
 import xml.etree.ElementTree as ET
 
 import xbmc
