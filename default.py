@@ -31,7 +31,6 @@ capture = xbmc.RenderCapture()
 useLegacyApi = True
 fmt = capture.getImageFormat()
 # BGRA or RGBA
-# xbmc.log("Hue Capture Image format: %s" % fmt)
 fmtRGBA = fmt == 'RGBA'
 
 
@@ -204,9 +203,6 @@ class Hue:
             self.logger.debuglog("Reset Settings to default.")
             self.logger.debuglog(__addondir__)
             os.unlink(os.path.join(__addondir__, "settings.xml"))
-            # self.settings.readxml()
-            #xbmcgui.Window(10000).clearProperty("script.kodi.hue.ambilight" + '_running')
-            #__addon__.openSettings()
         else:
             # not yet implemented
             self.logger.debuglog(
@@ -217,7 +213,6 @@ class Hue:
         response = json.loads(
             xbmc.executeJSONRPC(
                 '{"jsonrpc":"2.0","method":"Settings.GetSettingValue", "params":{"setting":"videoscreen.delayrefreshchange"},"id":1}'))
-        #logger.debuglog(isinstance(response, dict))
         if "result" in response and "value" in response["result"]:
             pauseafterrefreshchange = int(response["result"]["value"])
 
@@ -325,32 +320,6 @@ class Hue:
             notify("Kodi Hue", "Connected")
             self.connected = True
         return self.connected
-
-    # #unifed light action method. will replace dim_lights, brighter_lights, partial_lights
-    # def light_actions(self, action, lights=None):
-    #   if lights == None:
-    #     #default for method
-    #     lights = self.light
-
-    #   self.last_state = action
-
-    #   if isinstance(lights, list):
-    #     #array of lights
-    #     for l in lights:
-    #       if action == "dim":
-    #         l.dim_light()
-    #       elif action == "undim":
-    #         l.brighter_light()
-    #       elif action == "partial":
-    #         l.partial_light()
-    #   else:
-    #     #group
-    #     if action == "dim":
-    #       lights.dim_light()
-    #     elif action == "undim":
-    #       lights.brighter_light()
-    #     elif action == "partial":
-    #       lights.partial_light()
 
     def dim_lights(self):
         self.logger.debuglog("class Hue: dim lights")
@@ -619,11 +588,9 @@ def run():
         return
     last = time.time()
 
-    #logger.debuglog("starting run loop!")
     while not monitor.abortRequested():
         if hue.settings.mode == 0:  # ambilight mode
             now = time.time()
-            #logger.debuglog("run loop delta: %f (%f/sec)" % ((now-last), 1/(now-last)))
             last = now
 
             startReadOut = False
@@ -685,7 +652,6 @@ def fade_light_hsv(light, hsvRatio):
         if hue.settings.ambilight_old_algorithm:
             duration = int(3 + 27 * distance/255)
         duration = int(10 - 2.5 * distance/255)
-        # logger.debuglog("distance %s duration %s" % (distance, duration))
         light.set_light2(h, s, v, duration)
 
 credits_time = None  # test = 10
@@ -704,7 +670,6 @@ def get_credits_info(title, duration):
 
 def check_time(cur_time):
     global credits_triggered
-    #logger.debuglog("check_time: %r, undim: %r, credits_time: %r" % (cur_time, hue.settings.undim_during_credits, credits_time))
     if hue.settings.undim_during_credits and credits_time is not None:
         if (cur_time >= credits_time +
                 hue.settings.credits_delay_time) and not credits_triggered:
@@ -744,13 +709,6 @@ def state_changed(state, duration):
         else:
             for l in hue.light:
                 l.get_current_setting()  # loop through without sleep.
-            # hue.light[0].get_current_setting()
-            # if hue.settings.light > 1:
-            #   xbmc.sleep(1)
-            #   hue.light[1].get_current_setting()
-            # if hue.settings.light > 2:
-            #   xbmc.sleep(1)
-            #   hue.light[2].get_current_setting()
 
         if hue.settings.mode == 0:  # ambilight mode
             if hue.settings.ambilight_dim:

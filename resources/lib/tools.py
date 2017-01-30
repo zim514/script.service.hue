@@ -1,9 +1,6 @@
 import time
 import os
-import socket
 import json
-import random
-import hashlib
 import re
 import urllib
 from urllib2 import Request, urlopen
@@ -19,6 +16,11 @@ if not NOSE:
     __icon__ = os.path.join(__cwd__, "icon.png")
     __settings__ = os.path.join(__cwd__, "resources", "settings.xml")
     __xml__ = os.path.join(__cwd__, 'addon.xml')
+
+API_KEY = "7OOEGRV8Y2SVNTS29EBJ"
+API_SEARCH_URL = "http://www.chapterdb.org/chapters/search"
+XML_NAMESPACE = "http://jvance.com/2008/ChapterGrabber"
+THRESHOLD_LAST_CHAPTER = 60
 
 
 def notify(title, msg=""):
@@ -85,7 +87,6 @@ class Light:
         self.s = requests.Session()
 
     def request_url_put(self, url, data):
-        # if self.start_setting['on']: #Why?
         try:
             response = self.s.put(url, data=data)
             self.logger.debuglog("response: %s" % response)
@@ -120,7 +121,6 @@ class Light:
         # no error, keep going
         self.start_setting = {}
         state = j['state']
-        #self.logger.debuglog("current_setting: %r" % state)
         self.start_setting['on'] = state['on']
         self.start_setting['bri'] = state['bri']
         self.onLast = state['on']
@@ -142,11 +142,6 @@ class Light:
         self.logger.debuglog(
             "light %s start settings: %s" %
             (self.light, self.start_setting))
-
-    # def set_light(self, data):
-    #   self.logger.debuglog("set_light: %s: %s" % (self.light, data))
-    #   self.request_url_put("http://%s/api/%s/lights/%s/state" % \
-    #     (self.bridge_ip, self.bridge_user, self.light), data=data)
 
     def set_light2(self, hue, sat, bri, duration=None):
 
@@ -292,8 +287,6 @@ class Group(Light):
         for light in self.get_lights():
             tmp = Light(light, settings)
             tmp.get_current_setting()
-            # if tmp.start_setting['on']: #TODO: Why only add these if they're
-            # on?
             self.lights[light] = tmp
 
     def __len__(self):
@@ -306,7 +299,6 @@ class Group(Light):
             j = r.json()
         except:
             self.logger.debuglog("WARNING: Request fo bridge failed")
-            #notify("Communication Failed", "Error while talking to the bridge")
 
         try:
             return j['lights']
@@ -314,11 +306,6 @@ class Group(Light):
             # user probably selected a non-existing group
             self.logger.debuglog("Exception: no lights in this group")
             return []
-
-    # def set_light(self, data):
-    #   self.logger.debuglog("set_light: %s" % data)
-    #   Light.request_url_put(self, "http://%s/api/%s/groups/%s/action" % \
-    #     (self.bridge_ip, self.bridge_user, self.group_id), data=data)
 
     def set_light2(self, hue, sat, bri, duration=None):
 
@@ -380,18 +367,6 @@ class Group(Light):
             (self.bridge_ip, self.bridge_user, self.group_id),
             data=dataString)
 
-    # def dim_light(self):
-    #   for light in self.lights:
-    #       self.lights[light].dim_light()
-
-    # def brighter_light(self):
-    #     for light in self.lights:
-    #       self.lights[light].brighter_light()
-
-    # def partial_light(self):
-    #     for light in self.lights:
-    #       self.lights[light].partial_light()
-
     def get_current_setting(self):
         r = requests.get("http://%s/api/%s/groups/%s" %
                          (self.bridge_ip, self.bridge_user, self.group_id))
@@ -416,12 +391,10 @@ class Group(Light):
         # no error, lets keep going
         self.start_setting = {}
         state = j['action']
-        #self.logger.debuglog("current_setting: %r" % state)
 
         self.start_setting['on'] = state['on']
         if self.force_light_group_start_override:  # override default just in case there is one light on
             for l in self.lights:
-                #self.logger.debuglog("light: %s" % self.lights[l])
                 if self.lights[l].start_setting['on']:
                     self.logger.debuglog(
                         "light %s was on, so the group will start as on" % l)
@@ -461,21 +434,11 @@ class Group(Light):
             self.logger.debuglog("WARNING: Request fo bridge failed")
             pass
 
-######################
-# BEGIN CREDITS CODE #
-######################
-
-API_KEY = "7OOEGRV8Y2SVNTS29EBJ"
-API_SEARCH_URL = "http://www.chapterdb.org/chapters/search"
-XML_NAMESPACE = "http://jvance.com/2008/ChapterGrabber"
-THRESHOLD_LAST_CHAPTER = 60
-
 
 class ChapterManager:
 
     @staticmethod
     def CreditsStartTimeForMovie(title, t_duration=None, chapterCount=None):
-        # try:
         url = "%s?title=%s" % (API_SEARCH_URL, urllib.quote(title))
 
         if t_duration is not None:
@@ -494,8 +457,6 @@ class ChapterManager:
         request = Request(url, headers=headers)
         response_body = urlopen(request).read()
         root = ET.fromstring(response_body)
-
-        #xbmc.log("%s: DEBUG %s" % (self.scriptname, "got response back from chapterdb "))
 
         for res_chapterInfo in root.findall("{%s}chapterInfo" % XML_NAMESPACE):
             res_duration = res_chapterInfo.find(
@@ -539,9 +500,6 @@ class ChapterManager:
             return ChapterManager.CreditsStartTimeForMovie(
                 title, None, chapterCount)
 
-        # except Exception as e:
-        #  print "Error: %s" % e
-
         return None
 
     @staticmethod
@@ -569,10 +527,6 @@ class ChapterManager:
             return "%02d:%02d:%02d" % (t_hours, t_minutes, t_seconds)
 
         return None
-
-####################
-# END CREDITS CODE #
-####################
 
 
 class Logger:
