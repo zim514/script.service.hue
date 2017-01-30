@@ -35,6 +35,23 @@ def discover():
     return bridge_ip
 
 
+def create_user(bridge_ip):
+    device = 'kodi#ambilight'
+    data = '{"devicetype": "{}"}'.format(device)
+
+    res = ''
+    while 'link button not pressed' in res:
+        tools.notify('Kodi Hue', 'Press link button on bridge')
+        req = requests.post('http://{}/api'.format(bridge_ip), data=data)
+        res = req.text
+        time.sleep(3)
+
+    res = req.json()
+    username = req[0]['success']['username']
+
+    return username
+
+
 def _discover_upnp():
     port = 1900
     ip = "239.255.255.250"

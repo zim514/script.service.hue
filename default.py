@@ -226,24 +226,7 @@ class Hue:
         return bridge.discover()
 
     def register_user(self, hue_ip):
-        device = "kodi#ambilight"
-        data = '{"devicetype": "%s"}' % device
-        self.logger.debuglog("sending data: %s" % data)
-
-        r = requests.post('http://%s/api' % hue_ip, data=data)
-        response = r.text
-        while "link button not pressed" in response:
-            self.logger.debuglog("register user response: %s" % r)
-            notify("Bridge Discovery", "Press link button on bridge")
-            r = requests.post('http://%s/api' % hue_ip, data=data)
-            response = r.text
-            time.sleep(3)
-
-        j = r.json()
-        self.logger.debuglog("got a username response: %s" % j)
-        username = j[0]["success"]["username"]
-
-        return username
+        return bridge.create_user()
 
     def flash_lights(self):
         self.logger.debuglog("class Hue: flashing lights")
