@@ -2,6 +2,8 @@ import socket
 import time
 import tools
 
+import lights
+
 try:
     import requests
 except ImportError:
@@ -37,9 +39,9 @@ def discover():
 
 def create_user(bridge_ip):
     device = 'kodi#ambilight'
-    data = '{"devicetype": "{}"}'.format(device)
+    data = '{{"devicetype": "{}"}}'.format(device)
 
-    res = ''
+    res = 'link button not pressed'
     while 'link button not pressed' in res:
         tools.notify('Kodi Hue', 'Press link button on bridge')
         req = requests.post('http://{}/api'.format(bridge_ip), data=data)
@@ -47,9 +49,37 @@ def create_user(bridge_ip):
         time.sleep(3)
 
     res = req.json()
-    username = req[0]['success']['username']
+    username = res[0]['success']['username']
 
     return username
+
+
+def get_lights(bridge_ip, username):
+    return get_lights_by_ids(bridge_ip, username)
+
+
+def get_lights_by_ids(bridge_ip, username, light_ids=None):
+    req = requests.get('http://{}/api/{}/lights'.format(bridge_ip, username))
+    res = req.json()
+
+    if light_ids is None:
+        light_ids = res.keys()
+
+    found = []
+    for light_id in light_ids:
+        found.append(lights.Light(bridge_ip, username, light_id,
+                                  res[str(light_id)]))
+
+    return found
+
+
+def get_lights_by_group(bridge_ip, username, group_id):
+    req = requests.get('http://{}/api/{}/groups/{}'.format(
+        bridge_ip, username, group_id))
+    res = req.json()
+
+    light_ids = res['lights']
+    return get_lights_by_ids(bridge_ip, username, light_ids)
 
 
 def _discover_upnp():

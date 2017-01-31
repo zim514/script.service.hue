@@ -1,6 +1,5 @@
 from threading import Timer
 import colorsys
-import datetime
 import json
 import math
 import os
@@ -18,14 +17,9 @@ __resource__ = xbmc.translatePath(os.path.join(__cwd__, 'resources', 'lib'))
 sys.path.append(__resource__)
 
 from settings import settings
-from tools import notify, Light, Group, ChapterManager, Logger, get_version
+from tools import notify, ChapterManager, Logger, get_version
 import bridge
-
-try:
-    import requests
-except ImportError:
-    xbmc.log("ERROR: Could not locate required library requests")
-    notify("Kodi Hue", "ERROR: Could not import Python requests")
+import lights
 
 xbmc.log("Kodi Hue service started, version: %s" % get_version())
 
@@ -70,7 +64,6 @@ class MyMonitor(xbmc.Monitor):
 
     def onSettingsChanged(self):
         logger.debuglog("running in mode %s" % str(hue.settings.mode))
-        last = datetime.datetime.now()
         hue.settings.readxml()
         hue.update_settings()
 
@@ -226,20 +219,11 @@ class Hue:
         return bridge.discover()
 
     def register_user(self, hue_ip):
-        return bridge.create_user()
+        return bridge.create_user(hue_ip)
 
     def flash_lights(self):
         self.logger.debuglog("class Hue: flashing lights")
-        if self.settings.light == 0:
-            self.light.flash_light()
-        else:
-            self.light[0].flash_light()
-            if self.settings.light > 1:
-                xbmc.sleep(1)
-                self.light[1].flash_light()
-            if self.settings.light > 2:
-                xbmc.sleep(1)
-                self.light[2].flash_light()
+        self.light.flash_lights()
 
     def _parse_argv(self, args):
         try:
@@ -255,98 +239,55 @@ class Hue:
     def dim_lights(self):
         self.logger.debuglog("class Hue: dim lights")
         self.last_state = "dimmed"
-        if self.settings.light == 0:
-            self.light.dim_light()
-        else:
-            self.light[0].dim_light()
-            if self.settings.light > 1:
-                xbmc.sleep(1)
-                self.light[1].dim_light()
-            if self.settings.light > 2:
-                xbmc.sleep(1)
-                self.light[2].dim_light()
+        self.light.dim_lights()
 
     def brighter_lights(self):
         self.logger.debuglog("class Hue: brighter lights")
         self.last_state = "brighter"
-        if self.settings.light == 0:
-            self.light.brighter_light()
-        else:
-            self.light[0].brighter_light()
-            if self.settings.light > 1:
-                xbmc.sleep(1)
-                self.light[1].brighter_light()
-            if self.settings.light > 2:
-                xbmc.sleep(1)
-                self.light[2].brighter_light()
+        self.light.brighter_lights()
 
     def partial_lights(self):
         self.logger.debuglog("class Hue: partial lights")
         self.last_state = "partial"
-        if self.settings.light == 0:
-            self.light.partial_light()
-        else:
-            self.light[0].partial_light()
-            if self.settings.light > 1:
-                xbmc.sleep(1)
-                self.light[1].partial_light()
-            if self.settings.light > 2:
-                xbmc.sleep(1)
-                self.light[2].partial_light()
+        self.light.partial_lights()
 
     def update_settings(self):
         self.logger.debuglog("class Hue: update settings")
         self.logger.debuglog(settings)
-        if self.settings.light == 0 and \
-                (self.light is None or not isinstance(self.light, Group)):
-            self.logger.debuglog("creating Group instance")
-            self.light = Group(self.settings)
-        elif self.settings.light > 0 and \
-            (self.light is None or
-             isinstance(self.light, Group) or
-             len(self.light) != self.settings.light or
-             self.light[0].light != self.settings.light1_id or
-             (self.settings.light > 1 and self.light[1].light != self.settings.light2_id) or
-             (self.settings.light > 2 and self.light[2].light != self.settings.light3_id)):
-            self.logger.debuglog("creating Light instances")
-            self.light = [None] * self.settings.light
-            self.light[0] = Light(self.settings.light1_id, self.settings)
+        if self.settings.light == 0:
+            available = bridge.get_lights_by_group(self.settings.bridge_ip,
+                                                   self.settings.bridge_user,
+                                                   self.settings.group_id)
+            self.light = lights.Controller(available, self.settings)
+        elif self.settings.light > 0:
+            light_ids = [self.settings.light1_id]
             if self.settings.light > 1:
-                xbmc.sleep(1)
-                self.light[1] = Light(self.settings.light2_id, self.settings)
+                light_ids.append(self.settings.light2_id)
             if self.settings.light > 2:
-                xbmc.sleep(1)
-                self.light[2] = Light(self.settings.light3_id, self.settings)
+                light_ids.append(self.settings.light3_id)
+                available = bridge.get_lights_by_ids(self.settings.bridge_ip,
+                                                     self.settings.bridge_user,
+                                                     light_ids)
+                self.light = lights.Controller(available, self.settings)
         # ambilight dim
         if self.settings.ambilight_dim:
-            if self.settings.ambilight_dim_light == 0 and (
-                self.ambilight_dim_light is None or not isinstance(
-                    self.ambilight_dim_light, Group)):
-                self.logger.debuglog(
-                    "creating Group instance for ambilight dim")
-                self.ambilight_dim_light = Group(
-                    self.settings, self.settings.ambilight_dim_group_id)
-            elif self.settings.ambilight_dim_light > 0 and \
-                (self.ambilight_dim_light is None or
-                 isinstance(self.ambilight_dim_light, Group) or
-                 len(self.ambilight_dim_light) != self.settings.ambilight_dim_light or
-                 self.ambilight_dim_light[0].light != self.settings.ambilight_dim_light1_id or
-                 (self.settings.ambilight_dim_light > 1 and self.ambilight_dim_light[1].light != self.settings.ambilight_dim_light2_id) or
-                 (self.settings.ambilight_dim_light > 2 and self.ambilight_dim_light[2].light != self.settings.ambilight_dim_light3_id)):
-                self.logger.debuglog(
-                    "creating Light instances for ambilight dim")
-                self.ambilight_dim_light = [
-                    None] * self.settings.ambilight_dim_light
-                self.ambilight_dim_light[0] = Light(
-                    self.settings.ambilight_dim_light1_id, self.settings)
+            if self.settings.ambilight_dim_light == 0:
+                available = bridge.get_lights_by_group(
+                    self.settings.bridge_ip, self.settings.bridge_user,
+                    self.settings.ambilight_dim_group_id)
+                self.ambilight_dim_light = lights.Controller(available,
+                                                             self.settings)
+            elif self.settings.ambilight_dim_light > 0:
+                light_ids = [self.settings.ambilight_dim_light1_id]
                 if self.settings.ambilight_dim_light > 1:
-                    xbmc.sleep(1)
-                    self.ambilight_dim_light[1] = Light(
-                        self.settings.ambilight_dim_light2_id, self.settings)
+                    light_ids.append(self.settings.ambilight_dim_light2_id)
                 if self.settings.ambilight_dim_light > 2:
-                    xbmc.sleep(1)
-                    self.ambilight_dim_light[2] = Light(
-                        self.settings.ambilight_dim_light3_id, self.settings)
+                    light_ids.append(self.settings.ambilight_dim_light3_id)
+                available = bridge.get_lights_by_ids(self.settings.bridge_ip,
+                                                     self.settings.bridge_user,
+                                                     light_ids)
+                self.ambilight_dim_light = lights.Controller(available,
+                                                             self.settings)
 
 
 class HSVRatio:
@@ -370,8 +311,8 @@ class HSVRatio:
         else:
             self.v = (self.v + overall_value)/2
 
-    def hue(self, fullSpectrum):
-        if not fullSpectrum:
+    def hue(self, fullspectrum):
+        if not fullspectrum:
             if self.h > 0.065 and self.h < 0.19:
                 self.h = self.h * 2.32
             elif self.s > 0.01:
@@ -555,11 +496,10 @@ def run():
                         hsvRatios = screen.spectrum_hsv(
                             screen.pixels, screen.capture_width, screen.capture_height)
                         if hue.settings.light == 0:
-                            fade_light_hsv(hue.light, hsvRatios[0])
+                            fade_light_hsv(hue.light[0], hsvRatios[0])
                         else:
-                            for i, l in enumerate(hue.light):
-                                # xbmc.sleep(4) #why?
-                                fade_light_hsv(l, hsvRatios[i])
+                            for i in range(hue.settings.light):
+                                fade_light_hsv(hue.light.lights[i], hsvRatios[i])
                 except ZeroDivisionError:
                     logger.debuglog("no frame. looping.")
 
@@ -571,19 +511,17 @@ def run():
 
 
 def fade_light_hsv(light, hsvRatio):
-    fullSpectrum = light.fullSpectrum
-    h, s, v = hsvRatio.hue(fullSpectrum)
-    hvec = abs(h - light.hueLast) % int(65535/2)
+    fullspectrum = light.fullspectrum
+    h, s, v = hsvRatio.hue(fullspectrum)
+    hvec = abs(h - light.last_hue) % int(65535/2)
     hvec = float(hvec/128.0)
-    svec = s - light.satLast
-    vvec = v - light.valLast
+    svec = s - light.last_sat
+    vvec = v - light.last_bri
     # changed to squares for performance
     distance = math.sqrt(hvec**2 + svec**2 + vvec**2)
     if distance > 0:
-        if hue.settings.ambilight_old_algorithm:
-            duration = int(3 + 27 * distance/255)
         duration = int(10 - 2.5 * distance/255)
-        light.set_light2(h, s, v, duration)
+        light.set_state(hue=h, sat=s, bri=v, transition_time=duration)
 
 credits_time = None  # test = 10
 credits_triggered = False
@@ -607,11 +545,7 @@ def check_time(cur_time):
             logger.debuglog("hit credits, turn on lights")
             # do partial undim (if enabled, otherwise full undim)
             if hue.settings.mode == 0 and hue.settings.ambilight_dim:
-                if hue.settings.ambilight_dim_light == 0:
-                    hue.ambilight_dim_light.brighter_light()
-            elif hue.settings.ambilight_dim_light > 0:
-                for l in hue.ambilight_dim_light:
-                    l.brighter_light()
+                hue.ambilight_dim_light.brighter_lights()
             else:
                 hue.brighter_lights()
             credits_triggered = True
@@ -635,62 +569,39 @@ def state_changed(state, duration):
     if state == "started":
         logger.debuglog("retrieving current setting before starting")
 
-        if hue.settings.light == 0:  # group mode
-            hue.light.get_current_setting()
+        # start capture when playback starts
+        capture_width = 32  # 100
+        capture_height = capture_width / capture.getAspectRatio()
+        if capture_height == 0:
+            capture_height = capture_width  # fix for divide by zero.
+        logger.debuglog("capture %s x %s" % (capture_width, capture_height))
+        if useLegacyApi:
+            capture.capture(
+                int(capture_width),
+                int(capture_height),
+                xbmc.CAPTURE_FLAG_CONTINUOUS)
         else:
-            for l in hue.light:
-                l.get_current_setting()  # loop through without sleep.
-
-        if hue.settings.mode == 0:  # ambilight mode
-            if hue.settings.ambilight_dim:
-                if hue.settings.ambilight_dim_light == 0:
-                    hue.ambilight_dim_light.get_current_setting()
-                elif hue.settings.ambilight_dim_light > 0:
-                    for l in hue.ambilight_dim_light:
-                        l.get_current_setting()
-            # start capture when playback starts
-            capture_width = 32  # 100
-            capture_height = capture_width / capture.getAspectRatio()
-            if capture_height == 0:
-                capture_height = capture_width  # fix for divide by zero.
-            logger.debuglog("capture %s x %s" % (capture_width, capture_height))
-            if useLegacyApi:
-                capture.capture(
-                    int(capture_width),
-                    int(capture_height),
-                    xbmc.CAPTURE_FLAG_CONTINUOUS)
-            else:
-                capture.capture(int(capture_width), int(capture_height))
+            capture.capture(int(capture_width), int(capture_height))
 
     if (state == "started" and hue.pauseafterrefreshchange == 0) or state == "resumed":
         if hue.settings.mode == 0 and hue.settings.ambilight_dim:  # if in ambilight mode and dimming is enabled
-            logger.debuglog("dimming for ambilight")
-            if hue.settings.ambilight_dim_light == 0:
-                hue.ambilight_dim_light.dim_light()
-            elif hue.settings.ambilight_dim_light > 0:
-                for l in hue.ambilight_dim_light:
-                    l.dim_light()
-
+            xbmc.log('Kodi Hue: DEBUG dimming lights')
+            if hue.settings.ambilight_dim_light >= 0:
+                hue.ambilight_dim_light.dim_lights()
         else:
-            logger.debuglog("dimming lights")
+            xbmc.log('Kodi Hue: DEBUG dimming lights')
             hue.dim_lights()
     elif state == "paused" and hue.last_state == "dimmed":
         # only if its coming from being off
         if hue.settings.mode == 0 and hue.settings.ambilight_dim:
-            if hue.settings.ambilight_dim_light == 0:
-                hue.ambilight_dim_light.partial_light()
-            elif hue.settings.ambilight_dim_light > 0:
-                for l in hue.ambilight_dim_light:
-                    l.partial_light()
+            if hue.settings.ambilight_dim_light >= 0:
+                hue.ambilight_dim_light.partial_lights()
         else:
             hue.partial_lights()
     elif state == "stopped":
         if hue.settings.mode == 0 and hue.settings.ambilight_dim:
-            if hue.settings.ambilight_dim_light == 0:
-                hue.ambilight_dim_light.brighter_light()
-            elif hue.settings.ambilight_dim_light > 0:
-                for l in hue.ambilight_dim_light:
-                    l.brighter_light()
+            if hue.settings.ambilight_dim_light >= 0:
+                hue.ambilight_dim_light.brighter_lights()
         else:
             hue.brighter_lights()
 
