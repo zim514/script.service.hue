@@ -17,24 +17,20 @@ class Light(object):
 
         try:
             self.init_hue = spec['state']['hue']
-            self.last_hue = self.init_hue
             self.hue = self.init_hue
         except KeyError:
             self.livingwhite = True
 
         try:
             self.init_sat = spec['state']['sat']
-            self.last_sat = self.init_sat
             self.sat = self.init_sat
         except KeyError:
             self.livingwhite = True
 
         self.init_bri = spec['state']['bri']
-        self.last_bri = self.init_bri
         self.bri = self.init_bri
 
         self.init_on = spec['state']['on']
-        self.last_on = self.init_on
         self.on = self.init_on
 
         self.session = requests.Session()
@@ -42,20 +38,16 @@ class Light(object):
     def set_state(self, hue=None, sat=None, bri=None, on=None,
                   transition_time=None):
         state = {}
-        if hue is not None and not self.livingwhite and hue != self.last_hue:
-            self.last_hue = self.hue
+        if hue is not None and not self.livingwhite and hue != self.hue:
             self.hue = hue
             state['hue'] = hue
-        if sat is not None and not self.livingwhite and sat != self.last_sat:
-            self.last_sat = self.sat
+        if sat is not None and not self.livingwhite and sat != self.sat:
             self.sat = sat
             state['sat'] = sat
-        if bri is not None and bri != self.last_bri:
-            self.last_bri = self.bri
+        if bri is not None and bri != self.bri:
             self.bri = bri
             state['bri'] = bri
-        if on is not None and on != self.last_on:
-            self.last_on = self.on
+        if on is not None and on != self.on:
             self.on = on
             state['on'] = on
         if transition_time is not None:
@@ -152,7 +144,7 @@ class Controller(list):
         time = 0
 
         if self.settings.proportional_dim_time:
-            difference = abs(float(bri) - light.last_bri)
+            difference = abs(float(bri) - light.bri)
             total = float(light.init_bri) - self.settings.dimmed_bri
             proportion = difference / total
             time = int(round(proportion * self.settings.dim_time))
