@@ -2,8 +2,6 @@ import json
 import requests
 import time
 
-import xbmc
-
 
 class Light(object):
 
@@ -45,20 +43,20 @@ class Light(object):
                   transition_time=None):
         state = {}
         if hue is not None and not self.livingwhite and hue != self.last_hue:
+            self.last_hue = self.hue
             self.hue = hue
-            self.last_hue = hue
             state['hue'] = hue
         if sat is not None and not self.livingwhite and sat != self.last_sat:
+            self.last_sat = self.sat
             self.sat = sat
-            self.last_sat = sat
             state['sat'] = sat
         if bri is not None and bri != self.last_bri:
+            self.last_bri = self.bri
             self.bri = bri
-            self.last_bri = bri
             state['bri'] = bri
         if on is not None and on != self.last_on:
+            self.last_on = self.on
             self.on = on
-            self.last_on = on
             state['on'] = on
         if transition_time is not None:
             state['transitiontime'] = transition_time
@@ -67,8 +65,6 @@ class Light(object):
         try:
             endpoint = 'http://{}/api/{}/lights/{}/state'.format(
                 self.bridge_ip, self.username, self.light_id)
-            xbmc.log("Kodi Hue: DEBUG light transition {} {}".format(endpoint,
-                                                                     data))
             self.session.put(endpoint, data)
         except Exception:
             pass
@@ -92,30 +88,24 @@ class Controller(list):
         self.settings = settings
 
     def partial_lights(self):
-        if self.settings.override_paused:
-            bri = self.settings.paused_bri
+        for light in self.lights:
+            if self.settings.override_undim_bri:
+                bri = self.settings.undim_bri
+            else:
+                bri = light.init_bri
 
-            for light in self.lights:
-                sat = None
-                hue = None
+            hue = light.init_hue
+            if self.settings.override_hue:
+                hue = self.settings.undim_hue
 
-                if self.settings.override_sat:
-                    sat = self.settings.undim_sat
-                else:
-                    sat = light.init_sat
+            sat = light.init_sat
+            if self.settings.override_sat:
+                sat = self.settings.undim_sat
 
-                if self.settings.override_hue:
-                    hue = self.settings.undim_hue
-                else:
-                    hue = light.init_hue
-
-                light.set_state(
-                    hue=hue, sat=sat, bri=bri,
-                    transition_time=self._transition_time(light, bri)
-                )
-        else:
-            # not enabled for dimming on pause
-            self.undim_lights()
+            light.set_state(
+                hue=hue, sat=sat, bri=bri,
+                transition_time=self._transition_time(light, bri)
+            )
 
     def undim_lights(self):
         for light in self.lights:
@@ -124,17 +114,13 @@ class Controller(list):
             else:
                 bri = light.init_bri
 
-            sat = None
-            hue = None
-
-            if self.settings.override_sat:
-                sat = self.settings.undim_sat
-            else:
-                sat = light.init_sat
+            hue = light.init_hue
             if self.settings.override_hue:
                 hue = self.settings.undim_hue
-            else:
-                hue = light.init_hue
+
+            sat = light.init_sat
+            if self.settings.override_sat:
+                sat = self.settings.undim_sat
 
             light.set_state(
                 hue=hue, sat=sat, bri=bri,
@@ -142,13 +128,12 @@ class Controller(list):
             )
 
     def dim_lights(self):
-        xbmc.log('Kodi Hue: DEBUG Controller.dim_lights {}'.format(self.lights))
         for light in self.lights:
-            hue = None
+            hue = light.init_hue
             if self.settings.override_hue:
                 hue = self.settings.dimmed_hue
 
-            sat = None
+            sat = light.init_sat
             if self.settings.override_sat:
                 sat = self.settings.dimmed_sat
 

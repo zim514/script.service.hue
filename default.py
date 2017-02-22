@@ -20,11 +20,11 @@ from settings import settings
 from tools import notify, ChapterManager, Logger, get_version
 import bridge
 import lights
+import image
 
 xbmc.log("Kodi Hue service started, version: %s" % get_version())
 
 capture = xbmc.RenderCapture()
-useLegacyApi = True
 fmt = capture.getImageFormat()
 # BGRA or RGBA
 fmtRGBA = fmt == 'RGBA'
@@ -290,169 +290,6 @@ class Hue:
                                                              self.settings)
 
 
-class HSVRatio:
-    cyan_min = float(4.5/12.0)
-    cyan_max = float(7.75/12.0)
-
-    def __init__(self, hue=0.0, saturation=0.0, value=0.0, ratio=0.0):
-        self.h = hue
-        self.s = saturation
-        self.v = value
-        self.ratio = ratio
-
-    def average(self, h, s, v):
-        self.h = (self.h + h)/2
-        self.s = (self.s + s)/2
-        self.v = (self.v + v)/2
-
-    def averageValue(self, overall_value):
-        if self.ratio > 0.5:
-            self.v = self.v * self.ratio + overall_value * (1-self.ratio)
-        else:
-            self.v = (self.v + overall_value)/2
-
-    def hue(self, fullspectrum):
-        if not fullspectrum:
-            if self.h > 0.065 and self.h < 0.19:
-                self.h = self.h * 2.32
-            elif self.s > 0.01:
-                if self.h < 0.5:
-                    # yellow-green correction
-                    self.h = self.h * 1.17
-                    # cyan-green correction
-                    if self.h > self.cyan_min:
-                        self.h = self.cyan_min
-                else:
-                    # cyan-blue correction
-                    if self.h < self.cyan_max:
-                        self.h = self.cyan_max
-
-        h = int(self.h*65535)  # on a scale from 0 <-> 65535
-        s = int(self.s*255)
-        v = int(self.v*255)
-        if v < hue.settings.ambilight_min:
-            v = hue.settings.ambilight_min
-        if v > hue.settings.ambilight_max:
-            v = hue.settings.ambilight_max
-        return h, s, v
-
-    def __repr__(self):
-        return 'h: %s s: %s v: %s ratio: %s' % (
-            self.h, self.s, self.v, self.ratio)
-
-
-class Screenshot:
-
-    def __init__(self, pixels, capture_width, capture_height):
-        self.pixels = pixels
-        self.capture_width = capture_width
-        self.capture_height = capture_height
-
-    def most_used_spectrum(
-        self,
-        spectrum,
-        saturation,
-        value,
-        size,
-     overall_value):
-        # color bias/groups 6 - 36 in steps of 3
-        colorGroups = settings.color_bias
-        colorHueRatio = 360 / colorGroups
-
-        hsvRatios = []
-        hsvRatiosDict = {}
-
-        for i in spectrum:
-            # shift index to the right so that groups are centered on primary
-            # and secondary colors
-            colorIndex = int(((i+colorHueRatio/2) % 360)/colorHueRatio)
-            pixelCount = spectrum[i]
-
-            try:
-                hsvr = hsvRatiosDict[colorIndex]
-                hsvr.average(i/360.0, saturation[i], value[i])
-                hsvr.ratio = hsvr.ratio + pixelCount / float(size)
-            except KeyError:
-                hsvr = HSVRatio(
-                    i / 360.0, saturation[i],
-                    value[i],
-                    pixelCount / float(size))
-                hsvRatiosDict[colorIndex] = hsvr
-                hsvRatios.append(hsvr)
-
-        colorCount = len(hsvRatios)
-        if colorCount > 1:
-            # sort colors by popularity
-            hsvRatios = sorted(
-                hsvRatios,
-                key=lambda hsvratio: hsvratio.ratio,
-                reverse=True)
-            # logger.debuglog("hsvRatios %s" % hsvRatios)
-
-            # return at least 3
-            if colorCount == 2:
-                hsvRatios.insert(0, hsvRatios[0])
-
-            hsvRatios[0].averageValue(overall_value)
-            hsvRatios[1].averageValue(overall_value)
-            hsvRatios[2].averageValue(overall_value)
-            return hsvRatios
-
-        elif colorCount == 1:
-            hsvRatios[0].averageValue(overall_value)
-            return [hsvRatios[0]] * 3
-
-        return [HSVRatio()] * 3
-
-    def spectrum_hsv(self, pixels, width, height):
-        spectrum = {}
-        saturation = {}
-        value = {}
-
-        size = int(len(pixels)/4)
-
-        v = 0
-        r, g, b = 0, 0, 0
-        tmph, tmps, tmpv = 0, 0, 0
-        overall_value = 1
-
-        for i in range(0, size, 4):
-            r, g, b = _rgb_from_pixels(pixels, i)
-            tmph, tmps, tmpv = colorsys.rgb_to_hsv(
-                float(r/255.0), float(g/255.0), float(b/255.0))
-            v += tmpv
-
-            # skip low value and saturation
-            if tmpv > hue.settings.ambilight_threshold_value:
-                if tmps > hue.settings.ambilight_threshold_saturation:
-                    h = int(tmph * 360)
-                    try:
-                        spectrum[h] += 1
-                        saturation[h] = (saturation[h] + tmps)/2
-                        value[h] = (value[h] + tmpv)/2
-                    except KeyError:
-                        spectrum[h] = 1
-                        saturation[h] = tmps
-                        value[h] = tmpv
-
-        if size > 0:
-            overall_value = v / float(len(pixels))
-
-        return self.most_used_spectrum(
-            spectrum, saturation, value, size, overall_value)
-
-
-def _rgb_from_pixels(pixels, index):
-    if fmtRGBA:
-        return _rgb_from_pixels_rgba(pixels, index)
-    else:  # probably BGRA
-        return _rgb_from_pixels_rgba(pixels, index)[::-1]
-
-
-def _rgb_from_pixels_rgba(pixels, index):
-    return [pixels[index + i] for i in range(3)]
-
-
 def run():
     player = MyPlayer()
     if player is None:
@@ -474,29 +311,24 @@ def run():
                 continue
             if player.playingvideo:  # only if there's actually video
                 try:
-                    if useLegacyApi:
-                        capture.waitForCaptureStateChangeEvent(200)
-                        # we've got a capture event
-                        if capture.getCaptureState() == xbmc.CAPTURE_STATE_DONE:
-                            startReadOut = True
-                    else:
-                        vals = capture.getImage(200)
-                        if len(vals) > 0 and player.playingvideo:
-                            startReadOut = True
+                    vals = capture.getImage(200)
+                    if len(vals) > 0 and player.playingvideo:
+                        startReadOut = True
                     if startReadOut:
-                        if useLegacyApi:
-                            vals = capture.getImage()
-                            screen = Screenshot(
-                                vals, capture.getWidth(), capture.getHeight())
-                        else:
-                            screen = Screenshot(
-                                capture.getImage(),
-                                capture.getWidth(),
-                                capture.getHeight())
+                        screen = image.Screenshot(
+                            capture.getImage(),
+                            capture.getWidth(),
+                            capture.getHeight())
                         hsvRatios = screen.spectrum_hsv(
-                            screen.pixels, screen.capture_width, screen.capture_height)
+                            screen.pixels, screen.capture_width,
+                            screen.capture_height,
+                            hue.settings.ambilight_threshold_value,
+                            hue.settings.ambilight_threshold_saturation,
+                            hue.settings.color_bias
+                        )
+                        xbmc.log("Kodi Hue: DEBUG hsvratios {}".format(hsvRatios))
                         if hue.settings.light == 0:
-                            fade_light_hsv(hue.light[0], hsvRatios[0])
+                            fade_light_hsv(hue.light.lights[0], hsvRatios[0])
                         else:
                             for i in range(hue.settings.light):
                                 fade_light_hsv(hue.light.lights[i], hsvRatios[i])
@@ -512,7 +344,9 @@ def run():
 
 def fade_light_hsv(light, hsvRatio):
     fullspectrum = light.fullspectrum
-    h, s, v = hsvRatio.hue(fullspectrum)
+    h, s, v = hsvRatio.hue(
+        fullspectrum, hue.settings.ambilight_min, hue.settings.ambilight_max
+    )
     hvec = abs(h - light.last_hue) % int(65535/2)
     hvec = float(hvec/128.0)
     svec = s - light.last_sat
@@ -575,41 +409,28 @@ def state_changed(state, duration):
         if capture_height == 0:
             capture_height = capture_width  # fix for divide by zero.
         logger.debuglog("capture %s x %s" % (capture_width, capture_height))
-        if useLegacyApi:
-            capture.capture(
-                int(capture_width),
-                int(capture_height),
-                xbmc.CAPTURE_FLAG_CONTINUOUS)
-        else:
-            capture.capture(int(capture_width), int(capture_height))
+        capture.capture(int(capture_width), int(capture_height))
 
     if (state == "started" and hue.pauseafterrefreshchange == 0) or state == "resumed":
-        if hue.settings.mode == 0 and hue.settings.ambilight_dim:  # if in ambilight mode and dimming is enabled
-            xbmc.log('Kodi Hue: DEBUG dimming lights')
+        if hue.settings.ambilight_dim:  # if in ambilight mode and dimming is enabled
             if hue.settings.ambilight_dim_light >= 0:
                 hue.ambilight_dim_light.dim_lights()
         else:
-            xbmc.log('Kodi Hue: DEBUG dimming lights')
             hue.dim_lights()
     elif state == "paused" and hue.last_state == "dimmed":
-        # only if its coming from being off
-        if hue.settings.mode == 0 and hue.settings.ambilight_dim:
+        if hue.settings.ambilight_dim:
             if hue.settings.ambilight_dim_light >= 0:
                 hue.ambilight_dim_light.partial_lights()
         else:
             hue.partial_lights()
     elif state == "stopped":
-        if hue.settings.mode == 0 and hue.settings.ambilight_dim:
+        if hue.settings.ambilight_dim:
             if hue.settings.ambilight_dim_light >= 0:
-                hue.ambilight_dim_light.brighter_lights()
+                hue.ambilight_dim_light.undim_lights()
         else:
-            hue.brighter_lights()
+            hue.undim_lights()
 
 if (__name__ == "__main__"):
-    try:
-        capture.getCaptureState()
-    except AttributeError:
-        useLegacyApi = False
     settings = settings()
     logger = Logger()
     monitor = MyMonitor()
