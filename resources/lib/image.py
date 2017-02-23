@@ -55,10 +55,8 @@ class HSVRatio:
 
 class Screenshot:
 
-    def __init__(self, pixels, capture_width, capture_height):
+    def __init__(self, pixels):
         self.pixels = pixels
-        self.capture_width = capture_width
-        self.capture_height = capture_height
 
     def most_used_spectrum(self, spectrum, saturation, value, size,
                            overall_value, color_bias):
@@ -109,7 +107,7 @@ class Screenshot:
 
         return [HSVRatio()] * 3
 
-    def spectrum_hsv(self, pixels, width, height, threshold_bri, threshold_sat,
+    def spectrum_hsv(self, pixels, threshold_bri, threshold_sat,
                      color_bias):
         spectrum = {}
         saturation = {}

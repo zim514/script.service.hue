@@ -316,12 +316,9 @@ def run():
                         startReadOut = True
                     if startReadOut:
                         screen = image.Screenshot(
-                            capture.getImage(),
-                            capture.getWidth(),
-                            capture.getHeight())
+                            capture.getImage())
                         hsvRatios = screen.spectrum_hsv(
-                            screen.pixels, screen.capture_width,
-                            screen.capture_height,
+                            screen.pixels,
                             hue.settings.ambilight_threshold_value,
                             hue.settings.ambilight_threshold_saturation,
                             hue.settings.color_bias

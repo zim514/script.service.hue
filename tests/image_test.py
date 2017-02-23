@@ -83,19 +83,19 @@ def test_hsvratio_hue(h, s, v, ratio, fullspectrum, bri_min, bri_max, expected):
 
 
 SCREENSHOT_TEST_DATA = [
-    ([106, 77, 255, 0] * 1000, 32, 32, -1, -1, 18,
+    ([106, 77, 255, 0] * 1000, -1, -1, 18,
      ((0.9722222222222222,  0.6980392156862745, 0.625),
       (0.9722222222222222,  0.6980392156862745, 0.625),
       (0.9722222222222222,  0.6980392156862745, 0.625))),
-    ([199, 77, 106, 0] * 900 + [255, 255, 255, 0] * 100, 32, 32, -1, -1, 18,
+    ([199, 77, 106, 0] * 900 + [255, 255, 255, 0] * 100, -1, -1, 18,
      ((0.7055555555555556,  0.6130653266331658, 0.3455392156862716),
       (0.7055555555555556,  0.6130653266331658, 0.3455392156862716),
       (0.0, 0.0, 0.6002941176470569))),
-    ([199, 77, 106, 0] * 900 + [255, 255, 255, 0] * 100, 32, 32, -1, -1, 1,
+    ([199, 77, 106, 0] * 900 + [255, 255, 255, 0] * 100, -1, -1, 1,
      ((0.3527777777777778,  0.3065326633165829, 0.5453921568627431),
       (0.3527777777777778,  0.3065326633165829, 0.5453921568627431),
       (0.3527777777777778,  0.3065326633165829, 0.5453921568627431))),
-    ([199, 77, 106, 0] * 333 + [12, 149, 58, 0] * 333 + [106, 77, 255] * 333, 32, 32, -1, -1, 18,
+    ([199, 77, 106, 0] * 333 + [12, 149, 58, 0] * 333 + [106, 77, 255] * 333, -1, -1, 18,
      ((0.275,  0.9194630872483223, 0.3883139824316286),
       (0.7055555555555556,  0.6130653266331658, 0.4863531981179031),
       (0.9722222222222222,  0.6980392156862745, 0.5961571196865305))),
@@ -103,13 +103,13 @@ SCREENSHOT_TEST_DATA = [
 
 
 @pytest.mark.parametrize(
-    "pixels,width,height,threshold_bri,threshold_sat,color_bias,expected",
+    "pixels,threshold_bri,threshold_sat,color_bias,expected",
     SCREENSHOT_TEST_DATA)
-def test_spectrum_hsv(pixels, width, height, threshold_bri, threshold_sat,
+def test_spectrum_hsv(pixels, threshold_bri, threshold_sat,
                       color_bias, expected):
-    s = image.Screenshot(pixels, width, height)
+    s = image.Screenshot(pixels)
     spectrum = s.spectrum_hsv(
-        pixels, width, height, threshold_bri, threshold_sat, color_bias
+        pixels, threshold_bri, threshold_sat, color_bias
     )
     for idx in range(3):
         print idx
