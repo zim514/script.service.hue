@@ -1,78 +1,85 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
     <category label="1000">
-        <!--Main SECTION-->
+        <!-- Main SECTION -->
         <setting type="lsep" label="1000" />
-        <!--Bridge-->
+        <!-- Grouping -->
         <setting type="lsep" label="1100" />
-        <setting id="discover_bridge" type="action" label="1101" action="RunScript(script.kodi.hue.ambilight,action=discover)" />
-        <setting id="bridge_ip" type="text" label="1102" enable="!eq(-1,true)" default="" />
-        <setting id="bridge_user" type="text" label="1103" enable="!eq(-2,true)" default="" />
-        <!--Mode-->
+        <setting id="setup_theater_lights" type="action" label="1120" action="RunScript(script.kodi.hue.ambilight,action=setup_theater_lights)" />
+        <setting id="setup_ambilight_lights" type="action" label="1130" action="RunScript(script.kodi.hue.ambilight,action=setup_ambilight_lights)" />
+        <!-- Bridge -->
         <setting type="lsep" label="1200" />
-        <setting id="mode" type="enum" enable="!eq(-4,true)" label="1201" default="0" lvalues="1202|1203" />
-        <!--Light/Group-->
-        <setting type="lsep" label="1300" />
-        <setting id="light" type="enum" enable="true" label="1301" default="1" lvalues="1302|1303|1304|1305" />
-        <setting id="light1_id" type="number" label="1306" default="1" enable="gt(-1,0)" visible="gt(-1,0)" />
-        <setting id="light2_id" type="number" label="1307" default="2" enable="gt(-2,1)" visible="gt(-2,1)" />
-        <setting id="light3_id" type="number" label="1308" default="3" enable="gt(-3,2)" visible="gt(-3,2)" />
-        <setting id="group_id" type="number" label="1309" default="0" visible="eq(-4,0)" enable="eq(-4,0)" />
-        <setting type="lsep" label="1310" visible="eq(-5,0) + eq(-7,0)" /> <!--Ambilight Info-->
+        <setting id="discover_bridge" type="action" label="1210" action="RunScript(script.kodi.hue.ambilight,action=discover)" />
+        <setting id="bridge_ip" type="text" label="1220" enable="!eq(-1,true)" default="" />
+        <setting id="bridge_user" type="text" label="1320" enable="!eq(-2,true)" default="" />
+
+        <setting id="ambilight_group" label="1300" type="text" visible="false" default="" />
+        <setting id="theater_group" label="1300" type="text" visible="false" default="" />
+        <!-- Reset -->
+        <setting type="lsep" label="1400" />
+        <setting id="reset_settings" type="action" label="1410" action="RunScript(script.kodi.hue.ambilight,action=reset_settings)" option="close" />
     </category>
 
     <category label="2000">
-        <!--Theater SECTION-->
+        <!-- Theater -->
         <setting type="lsep" label="2000" />
-        <!--Dimming-->
+
+        <!-- Global -->
         <setting type="lsep" label="2100" />
-        <setting id="dim_time" label="2101" type="slider" default="4" range="0,0.5,10" option="float" />
-        <setting id="proportional_dim_time" label="2102" type="bool" default="true" />
-        <setting id="propritional_explainer" type="lsep" label="2103" visible="eq(-1,true)" subsetting="true" />
-        <setting id="dimmed_bri" label="2104" type="slider" default="0" range="0,5,100" option="int" />
-        <setting id="override_undim_bri" type="bool" label="2105" default="false" />
-        <setting id="undim_bri" label="2106" type="slider" visible="eq(-1,true)" default="100" range="0,5,100" option="int" />
-        <setting id="override_paused" type="bool" label="2107" default="true" />
-        <setting id="paused_bri" label="2108" type="slider" visible="eq(-1,true)" default="30" range="0,5,100" option="int" />
-        <!--Color-->
+        <setting id="dim_time" label="2110" type="slider" default="4" range="0,0.5,10" option="float" />
+        <setting id="proportional_dim_time" label="2120" type="bool" default="true" />
+        <setting id="propritional_explainer" type="lsep" label="2130" visible="eq(-1,true)" subsetting="true" />
+
+        <!-- Playback Start -->
         <setting type="lsep" label="2200" />
-        <setting id="override_hue" type="bool" label="2201" default="false" />
-        <setting id="dimmed_hue" type="slider" label="2202" default="14910" visible="eq(-1,true)" range="0,1000,65534" option="int" />
-        <setting id="undim_hue" type="slider" label="2203" default="14910" visible="eq(-2,true)" range="0,1000,65534" option="int" />
-        <setting id="override_sat" type="bool" label="2204" default="false" />
-        <setting id="dimmed_sat" type="slider" label="2205" default="144" visible="eq(-1,true)" range="0,255" option="int" />
-        <setting id="undim_sat" type="slider" label="2206" default="144" visible="eq(-2,true)" range="0,255" option="int" />
-        <!--Credits-->
+        <setting id="theater_start_bri_override" label="2210" type="bool" default="false" />
+        <setting id="theater_start_bri" label="2220" visible="eq(-1,true)" type="slider" default="30" range="0,5,254" option="int" />
+
+        <!-- Playback Pause -->
         <setting type="lsep" label="2300" />
-        <setting id="undim_during_credits" type="bool" label="2301" default="false" />
-        <setting type="lsep" label="2302" subsetting="true" /> <!--Credits Explainer-->
-        <setting type="lsep" label="2303" subsetting="true" /> <!--Credits Warning-->
-        <setting id="credits_delay_time" type="slider" label="2304" default="0" visible="eq(-3,true)" range="0,1,60" option="int" />
+        <setting id="theater_pause_bri_override" label="2310" type="bool" default="false" />
+        <setting id="theater_pause_bri" label="2320" visible="eq(-1,true)" type="slider" default="150" range="0,5,254" option="int" />
+
+        <!-- Playback Stop -->
+        <setting type="lsep" label="2400" />
+        <setting id="theater_stop_bri_override" label="2410" type="bool" default="false" />
+        <setting id="theater_stop_bri" label="2420" visible="eq(-1,true)" type="slider" default="150" range="0,5,254" option="int" />
     </category>
 
     <category label="3000">
-        <!--Ambilight SECTION-->
+        <!--Ambilight -->
         <setting type="lsep" label="3000" />
-        <!--Dimming-->
+
+        <!-- Global Settings-->
         <setting type="lsep" label="3100" />
-        <setting id="ambilight_dim" type="bool" label="3101" default="false" />
-        <setting id="ambilight_dim_light" type="enum" enable="true" default="1" lvalues="3102|3103|3104|3105" subestting="true" />
-        <setting id="ambilight_dim_light1_id" type="number" label="1306" default="1" enable="gt(-1,0)" visible="gt(-1,0)" />
-        <setting id="ambilight_dim_light2_id" type="number" label="1307" default="2" enable="gt(-2,1)" visible="gt(-2,1)" />
-        <setting id="ambilight_dim_light3_id" type="number" label="1308" default="3" enable="gt(-3,2)" visible="gt(-3,2)" />
-        <setting id="ambilight_dim_group_id" type="number" label="1309" default="0" visible="eq(-4,0)" enable="eq(-4,0)" />
-        <!--Brightness-->
-        <setting type="lsep" label="3200" />
-        <setting id="ambilight_min" label="3201" type="slider" default="0" range="0,5,100" option="int" />
-        <setting id="ambilight_max" label="3202" type="slider" default="90" range="0,5,100" option="int" />
+        <setting id="ambilight_min" label="3110" type="slider" default="0" range="0,5,254" option="int" />
+        <setting id="ambilight_max" label="3120" type="slider" default="90" range="0,5,254" option="int" />
+
         <!--Thresholds-->
-        <setting type="lsep" label="3250" />
-        <setting id="ambilight_threshold_value" label="3251" type="slider" default="0.25" range="0,0.01,1" option="float" />
-        <setting id="ambilight_threshold_saturation" label="3252" type="slider" default="0.33" range="0,0.01,1" option="float" />
+        <setting type="lsep" label="3200" />
+        <setting id="ambilight_threshold_value" label="3210" type="slider" default="0.25" range="0,0.01,1" option="float" />
+        <setting id="ambilight_threshold_saturation" label="3220" type="slider" default="0.33" range="0,0.01,1" option="float" />
+
         <!--Color-->
         <setting type="lsep" label="3300" />
-        <setting id="color_bias" label="3301" type="slider" default="18" range="6,3,36" option="int" />
-        <setting label="3302" type="lsep" subsetting="true" /> <!--Color Bias Explainer-->
+        <setting id="color_bias" label="3310" type="slider" default="18" range="6,3,36" option="int" />
+        <setting label="3320" type="lsep" subsetting="true" /> <!--Color Bias Explainer-->
+
+        <!-- Playback Start -->
+        <setting type="lsep" label="3400" />
+        <setting id="ambilight_start_dim_enable" label="3410" type="bool" default="true" />
+        <setting id="ambilight_start_dim_override" label="3420" visible="eq(-1,true)" type="bool" default="false" />
+        <setting id="ambilight_start_dim" label="3430" visible="eq(-1,true)" type="slider" default="30" range="0,5,254" option="int" />
+
+        <!-- Playback Pause -->
+        <setting type="lsep" label="3500" />
+        <setting id="ambilight_pause_bri_override" label="3510" type="bool" default="false" />
+        <setting id="ambilight_pause_bri" label="3520" visible="eq(-1,true)" type="slider" default="150" range="0,5,254" option="int" />
+
+        <!-- Playback Stop -->
+        <setting type="lsep" label="3600" />
+        <setting id="ambilight_stop_bri_override" label="3610" type="bool" default="false" />
+        <setting id="ambilight_stop_bri" label="3620" visible="eq(-1,true)" type="slider" default="150" range="0,5,254" option="int" />
     </category>
 
     <category label="4000">
@@ -80,16 +87,9 @@
         <setting type="lsep" label="4000" />
         <!--Miscellaneous-->
         <setting type="lsep" label="4100" />
-        <setting id="misc_initialflash" type="bool" label="4101" default="false" />
-        <setting id="misc_disableshort" type="bool" label="4102" default="false" />
-        <setting id="misc_disableshort_threshold" type="number" label="4103" default="120" enable="eq(-1,true)" />
-        <setting id="force_light_on" type="bool" label="4104" default="false" />
-        <setting id="force_light_group_start_override" type="bool" label="4105" default="true" />
-        <!--Debug-->
-        <setting type="lsep" label="4200" />
-        <setting id="debug" type="bool" label="4201" default="false" />
-        <!--Reset-->
-        <setting type="lsep" label="4300" />
-        <setting id="reset_settings" type="action" label="4301" action="RunScript(script.kodi.hue.ambilight,action=reset_settings)" option="close" />
+        <setting id="misc_initialflash" type="bool" label="4110" default="false" />
+        <setting id="misc_disableshort" type="bool" label="4120" default="false" />
+        <setting id="misc_disableshort_threshold" type="number" label="4130" default="120" enable="eq(-1,true)" />
+        <setting id="force_light_on" type="bool" label="4140" default="false" />
     </category>
 </settings>

@@ -1,98 +1,74 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-  <!-- Main -->
-  <string id="1000">Main</string>
+    <!-- Main -->
+    <string id="1000">General</string>
 
-  <string id="1100">Bridge Configuration</string>
-  <string id="1101">Start Automatic Configuration</string>
-  <string id="1102">Bridge IP</string>
-  <string id="1103">Bridge User</string>
+    <string id="1100">Light Groups</string>
+    <string id="1120">Setup Theater Lights</string>
+    <string id="1130">Setup Ambilight Lights</string>
 
-  <string id="1200">Mode Selection</string>
-  <string id="1201">Mode</string>
-  <string id="1202">Ambilight</string>
-  <string id="1203">Theater</string>
+    <string id="1200">Bridge</string>
+    <string id="1210">Discover Hue Bridge</string>
+    <string id="1220">Bridge IP</string>
+    <string id="1230">Bridge User</string>
 
-  <string id="1300">Lights</string>
-  <string id="1301">Enable</string>
-  <string id="1302">Group of lights</string>
-  <string id="1303">Single light</string>
-  <string id="1304">Two lights</string>
-  <string id="1305">Three light</string>
-  <string id="1306">Light ID 1</string>
-  <string id="1307">Light ID 2</string>
-  <string id="1308">Light ID 3</string>
-  <string id="1309">Group ID (0=All lights)</string>
-  <string id="1310">Ambilight using a group of lights is too slow (but you're welcome to try)</string>
+    <string id="1400">WARNING: RESET ALL SETTINGS</string>
+    <string id="1410">Reset all settings (requires disable/re-enable)</string>
 
-  <!-- Theater -->
-  <string id="2000">Theater</string>
+    <!-- Theater -->
+    <string id="2000">Theater</string>
 
-  <string id="2100">Dimming</string>
-  <string id="2101">Transition time (seconds)</string>
-  <string id="2102">Proportional transition time</string>
-  <string id="2103">Example: Take 70% of transition time if dimming 70%</string>
-  <string id="2104">Dimmed brightness</string>
-  <string id="2105">Override undimmed brightness</string>
-  <string id="2106">Undimmed brightness</string>
-  <string id="2107">Override paused brightness</string>
-  <string id="2108">Paused brightness</string>
+    <string id="2100">Global Settings</string>
+    <string id="2110">Dim Time</string>
+    <string id="2120">Proportional Dim Time</string>
+    <string id="2130">Example: Take 70% of transition time if dimming 70%</string>
 
-  <string id="2200">Color</string>
-  <string id="2201">Override hue</string>
-  <string id="2202">Dimmed hue</string>
-  <string id="2203">Undimmed hue</string>
-  <string id="2204">Override saturation</string>
-  <string id="2205">Dimmed saturation</string>
-  <string id="2206">Undimmed saturation</string>
+    <string id="2200">Playback Start (or Resume)</string>
+    <string id="2210">Override Brightness (default 30)</string>
+    <string id="2220">Choose Brightness</string>
 
-  <string id="2300">Credits - EXPERIMENTAL</string>
-  <string id="2301">Undim during credits</string>
-  <string id="2302">Queries ChapterDB.org to detect credits and undip during playback</string>
-  <string id="2303">WARNING: This may turn on lights in the middle of a movie.</string>
-  <string id="2304">Wait to undim after credits (seconds)</string>
+    <string id="2300">Playback Pause</string>
+    <string id="2310">Override Brightness (default initial)</string>
+    <string id="2320">Choose Brightness</string>
 
-  <!-- Ambilight -->
-  <string id="3000">Ambilight</string>
-  
-  <string id="3100">Dimming</string>
-  <string id="3101">Dim before playback</string>
-  <string id="3102">Group of lights</string>
-  <string id="3103">Single light</string>
-  <string id="3104">Two lights</string>
-  <string id="3105">Three light</string>
-  <string id="3106">Light ID 1</string>
-  <string id="3107">Light ID 2</string>
-  <string id="3108">Light ID 3</string>
-  <string id="3109">Group ID (0=All lights)</string>
+    <string id="2400">Playback Stop</string>
+    <string id="2410">Override Brightness (default initial)</string>
+    <string id="2420">Choose Brightness</string>
 
-  <string id="3200">Brightness</string>
-  <string id="3201">Minimum brightness</string>
-  <string id="3202">Maximum brightness</string>
+    <!-- Ambilight -->
+    <string id="3000">Ambilight</string>
 
-  <string id="3240">Use old ambilight algorithm</string>
+    <string id="3100">Global Settings</string>
+    <string id="3110">Maximum Brightness</string>
+    <string id="3120">Minimum Brightness</string>
 
-  <string id="3250">Thresholds</string>
-  <string id="3251">Value threshold</string>
-  <string id="3252">Saturation threshold</string>
+    <string id="3200">Thresholds</string>
+    <string id="3210">Value</string>
+    <string id="3220">Saturation</string>
 
-  <string id="3300">Color</string>
-  <string id="3301">Color Bias</string>
-  <string id="3302">Sensitivity: 6=variety with >1 light, 36=accuracy</string>
+    <string id="3300">Color</string>
+    <string id="3310">Bias</string>
+    <string id="3320">TODO</string>
 
-  <!-- Advanced -->
-  <string id="4000">Advanced</string>
+    <string id="3400">Playback Start (or resume)</string>
+    <string id="3410">Enable Dimming</string>
+    <string id="3420">Override Brightness (default 30)</string>
+    <string id="3430">Choose Brightness</string>
 
-  <string id="4100">Misc. Settings</string>
-  <string id="4101">Enable initial flash</string>
-  <string id="4102">Disable for short movies</string>
-  <string id="4103">Short Movie Threshold (seconds)</string>
-  <string id="4104">Force Light(s) on (even if off)</string>
-  <string id="4105">Group on and brightness start states overridden by members</string>
+    <string id="3500">Playback Pause</string>
+    <string id="3510">Override Brightness (default initial)</string>
+    <string id="3520">Choose Brightness</string>
 
-  <string id="4200">Debug</string>
-  <string id="4201">Debug logging</string>
+    <string id="3600">Playback Stop</string>
+    <string id="3610">Override Brightness (default initial)</string>
+    <string id="3620">Choose Brightness</string>
 
-  <string id="4300">WARNING: RESET ALL SETTINGS</string>
-  <string id="4301">Reset all settings (requires disable/re-enable)</string>
+    <!-- Advanced -->
+    <string id="4000">Advanced</string>
+
+    <string id="4100">Misc. Settings</string>
+    <string id="4110">Enable initial flash</string>
+    <string id="4120">Disable for short movies</string>
+    <string id="4130">Short Movie Threshold (seconds)</string>
+    <string id="4140">Force Light(s) on (even if off)</string>
 </strings>

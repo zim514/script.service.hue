@@ -59,7 +59,7 @@ class Screenshot:
         self.pixels = pixels
 
     def most_used_spectrum(self, spectrum, saturation, value, size,
-                           overall_value, color_bias):
+                           overall_value, color_bias, num_hsv):
         # color bias/groups 6 - 36 in steps of 3
         color_hue_ratio = 360 / color_bias
 
@@ -94,22 +94,16 @@ class Screenshot:
                 key=lambda hsvratio: hsvratio.ratio,
                 reverse=True)
 
-            # return at least 3
-            if color_count == 2:
-                hsv_ratios.insert(0, hsv_ratios[0])
-
-            hsv_ratios[0].average_value(overall_value)
-            hsv_ratios[1].average_value(overall_value)
-            hsv_ratios[2].average_value(overall_value)
+            for ratio in hsv_ratios:
+                ratio.average_value(overall_value)
+            if len(hsv_ratios) < num_hsv:
+                hsv_ratios += [hsv_ratios[--1]] * (num_hsv - len(hsv_ratios))
             return hsv_ratios
 
-        elif color_count == 1:
-            hsv_ratios[0].average_value(overall_value)
-            return [hsv_ratios[0]] * 3
+        return [HSVRatio()] * num_hsv
 
-        return [HSVRatio()] * 3
-
-    def spectrum_hsv(self, pixels, threshold_bri, threshold_sat, color_bias):
+    def spectrum_hsv(self, pixels, threshold_bri, threshold_sat, color_bias,
+                     num_hsv):
         spectrum = {}
         saturation = {}
         value = {}
@@ -144,7 +138,8 @@ class Screenshot:
             overall_value = v / float(len(pixels))
 
         return self.most_used_spectrum(
-            spectrum, saturation, value, size, overall_value, color_bias)
+            spectrum, saturation, value, size, overall_value, color_bias,
+            num_hsv)
 
 
 def _rgb_from_pixels(pixels, index, rgba=False):

@@ -52,9 +52,9 @@ def test_get_lights(m):
 def test_get_lights_by_ids(m):
     m.register_uri('GET', 'http://127.0.0.1/api/fake/lights', json=LIGHTS)
     assert len(bridge.get_lights_by_ids(BRIDGE_IP, USERNAME,
-                                        light_ids=[1])) == 1
+                                        light_ids=['1'])) == 1
     assert len(bridge.get_lights_by_ids(BRIDGE_IP, USERNAME,
-                                        light_ids=[1, 2])) == 2
+                                        light_ids=['1', '2'])) == 2
     assert len(bridge.get_lights_by_ids(BRIDGE_IP, USERNAME)) == 2
 
 

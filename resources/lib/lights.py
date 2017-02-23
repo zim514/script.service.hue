@@ -61,16 +61,24 @@ class Light(object):
         except Exception:
             pass
 
-    def set_initial_state(self):
+    def restore_initial_state(self, transition_time=0):
         self.set_state(
             self.init_hue,
             self.init_sat,
             self.init_bri,
-            self.init_on)
+            self.init_on,
+            transition_time
+        )
+
+    def save_state_as_initial(self):
+        self.init_hue = self.hue
+        self.init_sat = self.sat
+        self.init_bri = self.bri
+        self.init_on = self.on
 
     def __repr__(self):
-        return ('<Light {} hue: {}, sat: {}, bri: {}, on: {}>'.format(
-            self.light_id, self.hue, self.sat, self.bri, self.on))
+        return ('<Light({}) {} hue: {}, sat: {}, bri: {}, on: {}>'.format(
+            self.name, self.light_id, self.hue, self.sat, self.bri, self.on))
 
 
 class Controller(list):
@@ -79,61 +87,37 @@ class Controller(list):
         self.lights = lights
         self.settings = settings
 
-    def partial_lights(self):
+    def set_state(self, hue=None, sat=None, bri=None, on=None,
+                  transition_time=None):
         for light in self.lights:
-            if self.settings.override_undim_bri:
-                bri = self.settings.undim_bri
-            else:
-                bri = light.init_bri
-
-            hue = light.init_hue
-            if self.settings.override_hue:
-                hue = self.settings.undim_hue
-
-            sat = light.init_sat
-            if self.settings.override_sat:
-                sat = self.settings.undim_sat
+            if not self.settings.force_light_on and not light.init_on:
+                continue
+            if bri:
+                if self.settings.proportional_dim_time:
+                    transition_time = self._transition_time(light, bri)
+                else:
+                    transition_time = self.settings.dim_time
 
             light.set_state(
-                hue=hue, sat=sat, bri=bri,
-                transition_time=self._transition_time(light, bri)
+                hue=hue, sat=sat, bri=bri, on=on,
+                transition_time=transition_time
             )
 
-    def undim_lights(self):
+    def restore_initial_state(self):
         for light in self.lights:
-            if self.settings.override_undim_bri:
-                bri = self.settings.undim_bri
-            else:
-                bri = light.init_bri
+            if not self.settings.force_light_on and not light.init_on:
+                continue
+            transition_time = self.settings.dim_time
+            if self.settings.proportional_dim_time:
+                transition_time = self._transition_time(light, light.init_bri)
 
-            hue = light.init_hue
-            if self.settings.override_hue:
-                hue = self.settings.undim_hue
-
-            sat = light.init_sat
-            if self.settings.override_sat:
-                sat = self.settings.undim_sat
-
-            light.set_state(
-                hue=hue, sat=sat, bri=bri,
-                transition_time=self._transition_time(light, bri)
+            light.restore_initial_state(
+                transition_time
             )
 
-    def dim_lights(self):
+    def save_state_as_initial(self):
         for light in self.lights:
-            hue = light.init_hue
-            if self.settings.override_hue:
-                hue = self.settings.dimmed_hue
-
-            sat = light.init_sat
-            if self.settings.override_sat:
-                sat = self.settings.dimmed_sat
-
-            light.set_state(
-                hue=hue, sat=sat, bri=self.settings.dimmed_bri,
-                transition_time=self._transition_time(
-                    light, self.settings.dimmed_bri)
-            )
+            light.save_state_as_initial()
 
     def flash_lights(self):
         self.dim_lights()
@@ -143,12 +127,11 @@ class Controller(list):
     def _transition_time(self, light, bri):
         time = 0
 
-        if self.settings.proportional_dim_time:
-            difference = abs(float(bri) - light.bri)
-            total = float(light.init_bri) - self.settings.dimmed_bri
-            proportion = difference / total
-            time = int(round(proportion * self.settings.dim_time))
-        else:
-            time = self.settings.dim_time
+        difference = abs(float(bri) - light.bri)
+        total = float(light.init_bri) - self.settings.theater_start_bri
+        if total == 0:
+            return self.settings.dim_time
+        proportion = difference / total
+        time = int(round(proportion * self.settings.dim_time))
 
         return time

@@ -71,11 +71,11 @@ def test_set_state(m):
     assert light.init_bri == 254
     assert light.init_on is True
 
-    light.set_initial_state()
+    light.restore_initial_state()
     assert light.hue == 17738
     assert light.sat == 100
     assert light.bri == 254
     assert light.on is True
 
     assert m.last_request.json() == {u'bri': 254, u'hue': 17738, u'on': True,
-                                     u'sat': 100}
+                                     u'sat': 100, u'transitiontime': 0}
