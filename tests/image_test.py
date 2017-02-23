@@ -56,7 +56,7 @@ RATIO_AVERAGE_VALUE_TEST_DATA = [
                          RATIO_AVERAGE_VALUE_TEST_DATA)
 def test_hsvratio_average_value(h, s, v, ratio, val, expected):
     r = image.HSVRatio(hue=h, saturation=s, value=v, ratio=ratio)
-    r.averageValue(val)
+    r.average_value(val)
     assert r.h == h
     assert r.s == s
     assert r.v == expected

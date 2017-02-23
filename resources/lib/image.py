@@ -3,8 +3,8 @@ import colorsys
 
 class HSVRatio:
 
-    cyan_min = float(4.5/12.0)
-    cyan_max = float(7.75/12.0)
+    cyan_min = float(4.5 / 12.0)
+    cyan_max = float(7.75 / 12.0)
 
     def __init__(self, hue=0.0, saturation=0.0, value=0.0, ratio=0.0):
         self.h = hue
@@ -13,15 +13,15 @@ class HSVRatio:
         self.ratio = ratio
 
     def average(self, h, s, v):
-        self.h = (self.h + h)/2
-        self.s = (self.s + s)/2
-        self.v = (self.v + v)/2
+        self.h = (self.h + h) / 2
+        self.s = (self.s + s) / 2
+        self.v = (self.v + v) / 2
 
-    def averageValue(self, overall_value):
+    def average_value(self, overall_value):
         if self.ratio > 0.5:
-            self.v = self.v * self.ratio + overall_value * (1-self.ratio)
+            self.v = self.v * self.ratio + overall_value * (1 - self.ratio)
         else:
-            self.v = (self.v + overall_value)/2
+            self.v = (self.v + overall_value) / 2
 
     def hue(self, fullspectrum, bri_min, bri_max):
         if not fullspectrum:
@@ -39,9 +39,9 @@ class HSVRatio:
                     if self.h < self.cyan_max:
                         self.h = self.cyan_max
 
-        h = int(self.h*65535)  # on a scale from 0 <-> 65535
-        s = int(self.s*255)
-        v = int(self.v*255)
+        h = int(self.h * 65535)  # on a scale from 0 <-> 65535
+        s = int(self.s * 255)
+        v = int(self.v * 255)
         if v < bri_min:
             v = bri_min
         if v > bri_max:
@@ -61,54 +61,55 @@ class Screenshot:
     def most_used_spectrum(self, spectrum, saturation, value, size,
                            overall_value, color_bias):
         # color bias/groups 6 - 36 in steps of 3
-        colorHueRatio = 360 / color_bias
+        color_hue_ratio = 360 / color_bias
 
-        hsvRatios = []
-        hsvRatiosDict = {}
+        hsv_ratios = []
+        hsv_ratios_dict = {}
 
         for i in spectrum:
             # shift index to the right so that groups are centered on primary
             # and secondary colors
-            colorIndex = int(((i+colorHueRatio/2) % 360)/colorHueRatio)
-            pixelCount = spectrum[i]
+            color_index = int(
+                ((i + color_hue_ratio / 2) % 360) / color_hue_ratio
+            )
+            pixel_count = spectrum[i]
 
             try:
-                hsvr = hsvRatiosDict[colorIndex]
-                hsvr.average(i/360.0, saturation[i], value[i])
-                hsvr.ratio = hsvr.ratio + pixelCount / float(size)
+                hsvr = hsv_ratios_dict[color_index]
+                hsvr.average(i / 360.0, saturation[i], value[i])
+                hsvr.ratio = hsvr.ratio + pixel_count / float(size)
             except KeyError:
                 hsvr = HSVRatio(
                     i / 360.0, saturation[i],
                     value[i],
-                    pixelCount / float(size))
-                hsvRatiosDict[colorIndex] = hsvr
-                hsvRatios.append(hsvr)
+                    pixel_count / float(size))
+                hsv_ratios_dict[color_index] = hsvr
+                hsv_ratios.append(hsvr)
 
-        colorCount = len(hsvRatios)
-        if colorCount > 1:
+        color_count = len(hsv_ratios)
+        if color_count > 1:
             # sort colors by popularity
-            hsvRatios = sorted(
-                hsvRatios,
+            hsv_ratios = sorted(
+                hsv_ratios,
                 key=lambda hsvratio: hsvratio.ratio,
                 reverse=True)
 
             # return at least 3
-            if colorCount == 2:
-                hsvRatios.insert(0, hsvRatios[0])
+            if color_count == 2:
+                hsv_ratios.insert(0, hsv_ratios[0])
 
-            hsvRatios[0].averageValue(overall_value)
-            hsvRatios[1].averageValue(overall_value)
-            hsvRatios[2].averageValue(overall_value)
-            return hsvRatios
+            hsv_ratios[0].average_value(overall_value)
+            hsv_ratios[1].average_value(overall_value)
+            hsv_ratios[2].average_value(overall_value)
+            return hsv_ratios
 
-        elif colorCount == 1:
-            hsvRatios[0].averageValue(overall_value)
-            return [hsvRatios[0]] * 3
+        elif color_count == 1:
+            hsv_ratios[0].average_value(overall_value)
+            return [hsv_ratios[0]] * 3
 
         return [HSVRatio()] * 3
 
-    def spectrum_hsv(self, pixels, threshold_bri, threshold_sat,
-                     color_bias):
+    def spectrum_hsv(self, pixels, threshold_bri, threshold_sat, color_bias):
         spectrum = {}
         saturation = {}
         value = {}
@@ -123,7 +124,7 @@ class Screenshot:
         for i in range(0, size, 4):
             r, g, b = _rgb_from_pixels(pixels, i)
             tmph, tmps, tmpv = colorsys.rgb_to_hsv(
-                float(r/255.0), float(g/255.0), float(b/255.0))
+                float(r / 255.0), float(g / 255.0), float(b / 255.0))
             v += tmpv
 
             # skip low value and saturation
@@ -132,8 +133,8 @@ class Screenshot:
                     h = int(tmph * 360)
                     try:
                         spectrum[h] += 1
-                        saturation[h] = (saturation[h] + tmps)/2
-                        value[h] = (value[h] + tmpv)/2
+                        saturation[h] = (saturation[h] + tmps) / 2
+                        value[h] = (value[h] + tmpv) / 2
                     except KeyError:
                         spectrum[h] = 1
                         saturation[h] = tmps
