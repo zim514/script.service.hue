@@ -1,16 +1,16 @@
 import socket
 import time
-import tools
 
 import lights
 
 try:
     import requests
 except ImportError:
+    import tools
     tools.notify("Kodi Hue", "ERROR: Could not import Python requests")
 
 
-def user_exists(bridge_ip, bridge_user):
+def user_exists(bridge_ip, bridge_user, notify=True):
     req = requests.get('http://{}/api/{}/config'.format(
         bridge_ip, bridge_user))
     res = req.json()
@@ -21,10 +21,11 @@ def user_exists(bridge_ip, bridge_user):
     except KeyError:
         success = False
 
-    if success:
-        tools.notify("Kodi Hue", "Connected")
-    else:
-        tools.notify("Kodi Hue", "Could not connect to bridge")
+    if notify:
+        if success:
+            tools.notify("Kodi Hue", "Connected")
+        else:
+            tools.notify("Kodi Hue", "Could not connect to bridge")
 
     return success
 
@@ -37,13 +38,14 @@ def discover():
     return bridge_ip
 
 
-def create_user(bridge_ip):
+def create_user(bridge_ip, notify=True):
     device = 'kodi#ambilight'
     data = '{{"devicetype": "{}"}}'.format(device)
 
     res = 'link button not pressed'
     while 'link button not pressed' in res:
-        tools.notify('Kodi Hue', 'Press link button on bridge')
+        if notify:
+            tools.notify('Kodi Hue', 'Press link button on bridge')
         req = requests.post('http://{}/api'.format(bridge_ip), data=data)
         res = req.text
         time.sleep(3)
