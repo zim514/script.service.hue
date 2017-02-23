@@ -22,6 +22,7 @@ def user_exists(bridge_ip, bridge_user, notify=True):
         success = False
 
     if notify:
+        import tools
         if success:
             tools.notify("Kodi Hue", "Connected")
         else:
@@ -45,6 +46,7 @@ def create_user(bridge_ip, notify=True):
     res = 'link button not pressed'
     while 'link button not pressed' in res:
         if notify:
+            import tools
             tools.notify('Kodi Hue', 'Press link button on bridge')
         req = requests.post('http://{}/api'.format(bridge_ip), data=data)
         res = req.text
