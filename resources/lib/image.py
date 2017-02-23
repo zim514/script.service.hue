@@ -115,7 +115,7 @@ class Screenshot:
         saturation = {}
         value = {}
 
-        size = int(len(pixels)/4)
+        size = int(len(pixels))
 
         v = 0
         r, g, b = 0, 0, 0
