@@ -90,7 +90,7 @@ class Controller(list):
         self.settings = settings
 
     def set_state(self, hue=None, sat=None, bri=None, on=None,
-                  transition_time=None, lights=None):
+                  transition_time=None, lights=None, force_on=True):
         xbmclog(
             'Kodi Hue: DEBUG In Controller.set_state(hue={}, sat={}, bri={}, '
             'on={}, transition_time={}, lights={})'.format(
@@ -99,7 +99,7 @@ class Controller(list):
         )
 
         for light in self._calculate_subgroup(lights):
-            if not self.settings.force_light_on and not light.init_on:
+            if not force_on and not light.init_on:
                 continue
             if bri:
                 if self.settings.proportional_dim_time:
@@ -112,14 +112,14 @@ class Controller(list):
                 transition_time=transition_time
             )
 
-    def restore_initial_state(self, lights=None):
+    def restore_initial_state(self, lights=None, force_on=True):
         xbmclog(
             'Kodi Hue: DEBUG In Controller.restore_initial_state(lights={})'
             .format(lights)
         )
 
         for light in self._calculate_subgroup(lights):
-            if not self.settings.force_light_on and not light.init_on:
+            if not force_on and not light.init_on:
                 continue
             transition_time = self.settings.dim_time
             if self.settings.proportional_dim_time:

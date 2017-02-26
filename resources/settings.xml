@@ -7,6 +7,7 @@
         <setting type="lsep" label="1100" />
         <setting id="setup_theater_lights" type="action" label="1120" action="RunScript(script.kodi.hue.ambilight,action=setup_theater_lights)" />
         <setting id="setup_ambilight_lights" type="action" label="1130" action="RunScript(script.kodi.hue.ambilight,action=setup_ambilight_lights)" />
+        <setting id="setup_static_lights" type="action" label="1140" action="RunScript(script.kodi.hue.ambilight,action=setup_static_lights)" />
         <!-- Bridge -->
         <setting type="lsep" label="1200" />
         <setting id="discover_bridge" type="action" label="1210" action="RunScript(script.kodi.hue.ambilight,action=discover)" />
@@ -16,6 +17,7 @@
         <setting id="ambilight_group" label="1300" type="text" visible="false" default="" />
         <setting id="theater_group" label="1300" type="text" visible="false" default="" />
         <setting id="theater_subgroup" label="1300" type="text" visible="false" default="" />
+        <setting id="static_group" label="1300" type="text" visible="false" default="" />
         <!-- Reset -->
         <setting type="lsep" label="1400" />
         <setting id="reset_settings" type="action" label="1410" action="RunScript(script.kodi.hue.ambilight,action=reset_settings)" option="close" />
@@ -86,13 +88,27 @@
     </category>
 
     <category label="4000">
-        <!--Advanced SECTION-->
+        <!-- Theater -->
         <setting type="lsep" label="4000" />
-        <!--Miscellaneous-->
+
+        <!-- Playback Start -->
         <setting type="lsep" label="4100" />
-        <setting id="misc_initialflash" type="bool" label="4110" default="false" />
-        <setting id="misc_disableshort" type="bool" label="4120" default="false" />
-        <setting id="misc_disableshort_threshold" type="number" label="4130" default="120" enable="eq(-1,true)" />
-        <setting id="force_light_on" type="bool" label="4140" default="false" />
+        <setting id="static_start_hue_override" label="4110" type="bool" default="false" />
+        <setting id="static_start_hue" label="4120" visible="eq(-1,true)" type="slider" default="30" range="0,100,65535" option="int" />
+        <setting id="static_start_sat_override" label="4130" type="bool" default="false" />
+        <setting id="static_start_sat" label="4140" visible="eq(-1,true)" type="slider" default="30" range="0,5,254" option="int" />
+        <setting id="static_start_bri_override" label="4150" type="bool" default="false" />
+        <setting id="static_start_bri" label="4160" visible="eq(-1,true)" type="slider" default="100" range="0,5,254" option="int" />
+    </category>
+
+    <category label="5000">
+        <!--Advanced SECTION-->
+        <setting type="lsep" label="5000" />
+        <!--Miscellaneous-->
+        <setting type="lsep" label="5100" />
+        <setting id="misc_initialflash" type="bool" label="5110" default="false" />
+        <setting id="misc_disableshort" type="bool" label="5120" default="false" />
+        <setting id="misc_disableshort_threshold" type="number" label="5130" default="120" enable="eq(-1,true)" />
+        <setting id="force_light_on" type="bool" label="5140" default="false" />
     </category>
 </settings>

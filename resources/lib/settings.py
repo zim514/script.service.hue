@@ -17,6 +17,7 @@ class Settings():
         self.ambilight_group = __addon__.getSetting("ambilight_group")
         self.theater_group = __addon__.getSetting("theater_group")
         self.theater_subgroup = __addon__.getSetting("theater_subgroup")
+        self.static_group = __addon__.getSetting("static_group")
 
         self.dim_time = int(float(__addon__.getSetting("dim_time"))*10)
         self.proportional_dim_time = __addon__.getSetting("proportional_dim_time") == "true"
@@ -48,6 +49,13 @@ class Settings():
 
         self.ambilight_stop_bri_override = __addon__.getSetting("ambilight_stop_bri_override") == "true"
         self.ambilight_stop_bri = int(__addon__.getSetting("ambilight_stop_bri").split(".")[0])
+
+        self.static_start_hue_override = __addon__.getSetting("static_start_hue_override") == "true"
+        self.static_start_hue = int(__addon__.getSetting("static_start_hue").split(".")[0])
+        self.static_start_sat_override = __addon__.getSetting("static_start_sat_override") == "true"
+        self.static_start_sat = int(__addon__.getSetting("static_start_sat").split(".")[0])
+        self.static_start_bri_override = __addon__.getSetting("static_start_bri_override") == "true"
+        self.static_start_bri = int(__addon__.getSetting("static_start_bri").split(".")[0])
 
         self.misc_initialflash = __addon__.getSetting("misc_initialflash") == "true"
         self.misc_disableshort = __addon__.getSetting("misc_disableshort") == "true"

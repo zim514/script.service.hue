@@ -95,6 +95,7 @@ class MyPlayer(xbmc.Player):
 class Hue:
     theater_controller = None
     ambilight_controller = None
+    static_controller = None
 
     def __init__(self, settings, args):
         self.settings = settings
@@ -124,7 +125,8 @@ class Hue:
                 self.settings.bridge_ip,
                 self.settings.bridge_user,
                 'Select Theater Lights',
-                self.settings.ambilight_group,
+                ','.join([self.settings.ambilight_group,
+                          self.settings.static_group]),
                 self.settings.theater_group
             )
             self.settings.update(theater_group=ret)
@@ -134,7 +136,8 @@ class Hue:
                 self.settings.bridge_ip,
                 self.settings.bridge_user,
                 'Select Theater Subgroup',
-                self.settings.ambilight_group,
+                ','.join([self.settings.ambilight_group,
+                          self.settings.static_group]),
                 self.settings.theater_subgroup
             )
             self.settings.update(theater_subgroup=ret)
@@ -144,10 +147,22 @@ class Hue:
                 self.settings.bridge_ip,
                 self.settings.bridge_user,
                 'Select Ambilight Lights',
-                self.settings.theater_group,
+                ','.join([self.settings.theater_group,
+                          self.settings.static_group]),
                 self.settings.ambilight_group
             )
             self.settings.update(ambilight_group=ret)
+            self.update_controllers()
+        elif params['action'] == "setup_static_lights":
+            ret = ui.multiselect_lights(
+                self.settings.bridge_ip,
+                self.settings.bridge_user,
+                'Select Static Lights',
+                ','.join([self.settings.theater_group,
+                          self.settings.ambilight_group]),
+                self.settings.static_group
+            )
+            self.settings.update(static_group=ret)
             self.update_controllers()
         else:
             # not yet implemented
@@ -175,11 +190,20 @@ class Hue:
             self.settings
         )
 
+        self.static_controller = lights.Controller(
+            bridge.get_lights_by_ids(
+                self.settings.bridge_ip,
+                self.settings.bridge_user,
+                self.settings.static_group.split(',')),
+            self.settings
+        )
+
         xbmc.log(
             'Kodi Hue: DEBUG instantiated controllers with following lights '
-            '- theater: {} ambilight: {}'.format(
+            '- theater: {} ambilight: {} static: {}'.format(
                 self.theater_controller.lights,
-                self.ambilight_controller.lights
+                self.ambilight_controller.lights,
+                self.static_controller.lights,
             )
         )
 
@@ -261,13 +285,32 @@ def state_changed(state, duration):
         if hue.settings.ambilight_start_dim_enable:
             xbmc.log('Kodi Hue: DEBUG dimming ambilight group')
             hue.ambilight_controller.set_state(
-                bri=hue.settings.ambilight_start_dim
+                bri=hue.settings.ambilight_start_dim,
+                force_on=hue.settings.force_light_on,
             )
 
         # Theater dimming
         xbmc.log('Kodi Hue: DEBUG dimming theater group')
         hue.theater_controller.set_state(
-            bri=hue.settings.theater_start_bri
+            bri=hue.settings.theater_start_bri,
+            force_on=hue.settings.force_light_on,
+        )
+
+        # Static group turn on
+        xbmc.log('Kodi Hue: DEBUG turning on static group')
+        h = None
+        if hue.settings.static_start_hue_override:
+            h = hue.settings.static_start_hue
+
+        sat = None
+        if hue.settings.static_start_sat_override:
+            sat = hue.settings.static_start_sat
+
+        hue.static_controller.set_state(
+            hue=h,
+            sat=sat,
+            bri=hue.settings.static_start_bri,
+            on=True,
         )
 
         ev.clear()
@@ -279,9 +322,14 @@ def state_changed(state, duration):
             xbmc.log('Kodi Hue: DEBUG undimming ambilight group')
             if hue.settings.ambilight_pause_bri_override:
                 bri = hue.settings.ambilight_pause_bri
-                hue.ambilight_controller.set_state(bri=bri)
+                hue.ambilight_controller.set_state(
+                    bri=bri,
+                    force_on=hue.settings.force_light_on,
+                )
             else:
-                hue.ambilight_controller.restore_initial_state()
+                hue.ambilight_controller.restore_initial_state(
+                    force_on=hue.settings.force_light_on,
+                )
 
         # Theather dimming
         if settings.theater_pause_dim_subgroup:
@@ -289,20 +337,30 @@ def state_changed(state, duration):
             if hue.settings.theater_pause_bri_override:
                 hue.theater_controller.set_state(
                     bri=hue.settings.theater_pause_bri,
-                    lights=hue.settings.theater_subgroup.split(',')
+                    lights=hue.settings.theater_subgroup.split(','),
+                    force_on=hue.settings.force_light_on,
                 )
             else:
                 hue.theater_controller.restore_initial_state(
-                    lights=hue.settings.theater_subgroup.split(',')
+                    lights=hue.settings.theater_subgroup.split(','),
+                    force_on=hue.settings.force_light_on,
                 )
         else:
             xbmc.log('Kodi Hue: DEBUG undimming theater group')
             if hue.settings.theater_pause_bri_override:
                 hue.theater_controller.set_state(
-                    bri=hue.settings.theater_pause_bri
+                    bri=hue.settings.theater_pause_bri,
+                    force_on=hue.settings.force_light_on,
                 )
             else:
-                hue.theater_controller.restore_initial_state()
+                hue.theater_controller.restore_initial_state(
+                    force_on=hue.settings.force_light_on,
+                )
+
+        # Static off
+        hue.static_controller.set_state(
+            on=False,
+        )
 
     elif state == "stopped":
 
@@ -311,21 +369,32 @@ def state_changed(state, duration):
             xbmc.log('Kodi Hue: DEBUG undimming ambilight group')
             if hue.settings.ambilight_stop_bri_override:
                 hue.ambilight_controller.set_state(
-                    bri=hue.settings.ambilight_stop_bri
+                    bri=hue.settings.ambilight_stop_bri,
+                    force_on=hue.settings.force_light_on,
                 )
             else:
-                hue.ambilight_controller.restore_initial_state()
+                hue.ambilight_controller.restore_initial_state(
+                    force_on=hue.settings.force_light_on,
+                )
         else:
-            hue.ambilight_controller.restore_initial_state()
+            hue.ambilight_controller.restore_initial_state(
+                    force_on=hue.settings.force_light_on,
+            )
 
         # Theater dimming
         xbmc.log('Kodi Hue: DEBUG undimming theater group')
         if hue.settings.theater_stop_bri_override:
             hue.theater_controller.set_state(
-                bri=hue.settings.theater_stop_bri
+                bri=hue.settings.theater_stop_bri,
+                force_on=hue.settings.force_light_on,
             )
         else:
-            hue.theater_controller.restore_initial_state()
+            hue.theater_controller.restore_initial_state(
+                force_on=hue.settings.force_light_on,
+            )
+
+        # Static restore
+        hue.static_controller.restore_initial_state()
 
 if (__name__ == "__main__"):
     settings = Settings()
