@@ -35,13 +35,63 @@ fmtRGBA = fmt == 'RGBA'
 
 class MyMonitor(xbmc.Monitor):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, settings):
         xbmc.Monitor.__init__(self)
+        self.settings = settings
 
     def onSettingsChanged(self):
         hue.settings.readxml()
         xbmclog('Kodi Hue: In onSettingsChanged() {}'.format(hue.settings))
         hue.update_controllers()
+
+    def onNotification(self, sender, method, data):
+        xbmclog('Kodi Hue: In onNotification(sender={}, method={}, data={})'
+                .format(sender, method, data))
+        if sender == __addon__.getAddonInfo('id'):
+            if method == 'Other.start_setup_theater_lights':
+                ret = ui.multiselect_lights(
+                    self.settings.bridge_ip,
+                    self.settings.bridge_user,
+                    'Select Theater Lights',
+                    ','.join([self.settings.ambilight_group,
+                              self.settings.static_group]),
+                    self.settings.theater_group
+                )
+                self.settings.update(theater_group=ret)
+                self.update_controllers()
+            if method == 'Other.start_setup_theater_subgroup':
+                ret = ui.multiselect_lights(
+                    self.settings.bridge_ip,
+                    self.settings.bridge_user,
+                    'Select Theater Subgroup',
+                    ','.join([self.settings.ambilight_group,
+                              self.settings.static_group]),
+                    self.settings.theater_subgroup
+                )
+                self.settings.update(theater_subgroup=ret)
+                self.update_controllers()
+            if method == 'Other.start_setup_ambilight_lights':
+                ret = ui.multiselect_lights(
+                    self.settings.bridge_ip,
+                    self.settings.bridge_user,
+                    'Select Ambilight Lights',
+                    ','.join([self.settings.theater_group,
+                              self.settings.static_group]),
+                    self.settings.ambilight_group
+                )
+                self.settings.update(ambilight_group=ret)
+                self.update_controllers()
+            if method == 'Other.start_setup_static_lights':
+                ret = ui.multiselect_lights(
+                    self.settings.bridge_ip,
+                    self.settings.bridge_user,
+                    'Select Static Lights',
+                    ','.join([self.settings.theater_group,
+                              self.settings.ambilight_group]),
+                    self.settings.static_group
+                )
+                self.settings.update(static_group=ret)
+                self.update_controllers()
 
 
 class MyPlayer(xbmc.Player):
@@ -117,48 +167,21 @@ class Hue:
                     self.update_controllers()
         elif params['action'] == "discover":
             ui.discover_hue_bridge(self)
+            self.update_controllers()
         elif params['action'] == "reset_settings":
             os.unlink(os.path.join(__addondir__, "settings.xml"))
         elif params['action'] == "setup_theater_lights":
-            ret = ui.multiselect_lights(
-                self.settings.bridge_ip,
-                self.settings.bridge_user,
-                'Select Theater Lights',
-                ','.join([self.settings.ambilight_group,
-                          self.settings.static_group]),
-                self.settings.theater_group
-            )
-            self.settings.update(theater_group=ret)
+            xbmc.executebuiltin('NotifyAll({}, {})'.format(
+                __addon__.getAddonInfo('id'), 'start_setup_theater_lights'))
         elif params['action'] == "setup_theater_subgroup":
-            ret = ui.multiselect_lights(
-                self.settings.bridge_ip,
-                self.settings.bridge_user,
-                'Select Theater Subgroup',
-                ','.join([self.settings.ambilight_group,
-                          self.settings.static_group]),
-                self.settings.theater_subgroup
-            )
-            self.settings.update(theater_subgroup=ret)
+            xbmc.executebuiltin('NotifyAll({}, {})'.format(
+                __addon__.getAddonInfo('id'), 'start_setup_theater_subgroup'))
         elif params['action'] == "setup_ambilight_lights":
-            ret = ui.multiselect_lights(
-                self.settings.bridge_ip,
-                self.settings.bridge_user,
-                'Select Ambilight Lights',
-                ','.join([self.settings.theater_group,
-                          self.settings.static_group]),
-                self.settings.ambilight_group
-            )
-            self.settings.update(ambilight_group=ret)
+            xbmc.executebuiltin('NotifyAll({}, {})'.format(
+                __addon__.getAddonInfo('id'), 'start_setup_ambilight_lights'))
         elif params['action'] == "setup_static_lights":
-            ret = ui.multiselect_lights(
-                self.settings.bridge_ip,
-                self.settings.bridge_user,
-                'Select Static Lights',
-                ','.join([self.settings.theater_group,
-                          self.settings.ambilight_group]),
-                self.settings.static_group
-            )
-            self.settings.update(static_group=ret)
+            xbmc.executebuiltin('NotifyAll({}, {})'.format(
+                __addon__.getAddonInfo('id'), 'start_setup_static_lights'))
         else:
             # not yet implemented
             pass
@@ -236,8 +259,7 @@ def run():
                         )
                         for i in range(len(hue.ambilight_controller.lights)):
                             algorithm.transition_colorspace(
-                                hue, hue.ambilight_controller.lights.values()[i], hsv_ratios[i],
-                            )
+                                hue, hue.ambilight_controller.lights.values()[i], hsv_ratios[i], )
                 except ZeroDivisionError:
                     pass
 
@@ -251,7 +273,7 @@ def state_changed(state, duration):
         state, duration))
 
     if (xbmc.getCondVisibility('Window.IsActive(screensaver-atv4.xml)') or
-        xbmc.getCondVisibility('Window.IsActive(screensaver-video-main.xml)')):
+            xbmc.getCondVisibility('Window.IsActive(screensaver-video-main.xml)')):
         return
 
     if duration < hue.settings.misc_disableshort_threshold and hue.settings.misc_disableshort:
@@ -286,7 +308,7 @@ def state_changed(state, duration):
 
 if (__name__ == "__main__"):
     settings = Settings()
-    monitor = MyMonitor()
+    monitor = MyMonitor(settings)
 
     args = None
     if len(sys.argv) == 2:

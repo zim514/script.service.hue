@@ -1,11 +1,15 @@
 import xbmcgui
 
 import bridge
-from tools import notify
+from tools import notify, xbmclog
 
 
 def multiselect_lights(bridge_ip, bridge_user, label, exclude,
                        preselect):
+    xbmclog('Kodi Hue: In multiselect_lights(bridge_ip={}, bridge_user={}, '
+            'label={}, exclude={}, preselect={})'.format(
+                bridge_ip, bridge_user, label, exclude, preselect)
+            )
     lights = bridge.get_lights_by_ids(bridge_ip, bridge_user)
     actual_lights = []
     items = []
