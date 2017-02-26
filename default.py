@@ -39,6 +39,7 @@ class MyMonitor(xbmc.Monitor):
 
     def onSettingsChanged(self):
         hue.settings.readxml()
+        xbmclog('Kodi Hue: In onSettingsChanged() {}'.format(hue.settings))
         hue.update_controllers()
 
 

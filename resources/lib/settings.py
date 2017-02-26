@@ -8,9 +8,11 @@ __addon__ = sys.modules["__main__"].__addon__
 class Settings():
     def __init__(self, *args, **kwargs):
         self.readxml()
-        self.addon = xbmcaddon.Addon()
 
     def readxml(self):
+        global __addon__
+        __addon__ = xbmcaddon.Addon()
+
         self.bridge_ip = __addon__.getSetting("bridge_ip")
         self.bridge_user = __addon__.getSetting("bridge_user")
 
@@ -63,10 +65,12 @@ class Settings():
         self.force_light_on = __addon__.getSetting("force_light_on") == "true"
 
         if self.ambilight_min > self.ambilight_max:
-            self.ambilight_min = self.ambilight_max
-            __addon__.setSetting("ambilight_min", __addon__.getSetting("ambilight_max"))
+            self.update("ambilight_min", self.ambilight_max)
 
     def update(self, **kwargs):
         self.__dict__.update(**kwargs)
         for k, v in kwargs.iteritems():
-            self.addon.setSetting(k, v)
+            __addon__.setSetting(k, v)
+
+    def __repr__(self):
+        return '<Settings\n{}\n>'.format('\n'.join(['{}={}'.format(key, value) for key, value in self.__dict__.items()]))

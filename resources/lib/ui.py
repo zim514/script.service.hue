@@ -34,11 +34,9 @@ def discover_hue_bridge(hue):
     if hue_ip is not None:
         notify("Hue Bridge Discovery", "Found bridge at: %s" % hue_ip)
         username = bridge.create_user(hue_ip)
-        notify("Hue Bridge Discovery", "Finished")
         hue.settings.update(bridge_ip=hue_ip)
         hue.settings.update(bridge_user=username)
-        notify("Hue Bridge Discovery", "Finished")
-        hue.update_controllers()
         hue.connected = True
+        notify("Hue Bridge Discovery", "Finished")
     else:
         notify("Hue Bridge Discovery", "Failed. Could not find bridge.")
