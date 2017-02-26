@@ -23,7 +23,8 @@ import ui
 import algorithm
 import image
 
-xbmclog("Kodi Hue: In . service started, version: %s" % get_version())
+xbmclog("Kodi Hue: In .(argv={}) service started, version: {}".format(
+    sys.argv, get_version()))
 
 ev = Event()
 capture = xbmc.RenderCapture()
@@ -128,7 +129,6 @@ class Hue:
                 self.settings.theater_group
             )
             self.settings.update(theater_group=ret)
-            self.update_controllers()
         elif params['action'] == "setup_theater_subgroup":
             ret = ui.multiselect_lights(
                 self.settings.bridge_ip,
@@ -139,7 +139,6 @@ class Hue:
                 self.settings.theater_subgroup
             )
             self.settings.update(theater_subgroup=ret)
-            self.update_controllers()
         elif params['action'] == "setup_ambilight_lights":
             ret = ui.multiselect_lights(
                 self.settings.bridge_ip,
@@ -150,7 +149,6 @@ class Hue:
                 self.settings.ambilight_group
             )
             self.settings.update(ambilight_group=ret)
-            self.update_controllers()
         elif params['action'] == "setup_static_lights":
             ret = ui.multiselect_lights(
                 self.settings.bridge_ip,
@@ -161,7 +159,6 @@ class Hue:
                 self.settings.static_group
             )
             self.settings.update(static_group=ret)
-            self.update_controllers()
         else:
             # not yet implemented
             pass
