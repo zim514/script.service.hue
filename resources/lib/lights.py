@@ -89,6 +89,21 @@ class Controller(object):
         self.lights = lights
         self.settings = settings
 
+    def on_playback_start(self):
+        raise NotImplementedError(
+            'on_playback_start must be implemented in the controller'
+        )
+
+    def on_playback_pause(self):
+        raise NotImplementedError(
+            'on_playback_pause must be implemented in the controller'
+        )
+
+    def on_playback_stop(self):
+        raise NotImplementedError(
+            'on_playback_stop must be implemented in the controller'
+        )
+
     def set_state(self, hue=None, sat=None, bri=None, on=None,
                   transition_time=None, lights=None, force_on=True):
         xbmclog(
