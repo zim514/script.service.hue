@@ -83,7 +83,7 @@ class Light(object):
             self.name, self.light_id, self.hue, self.sat, self.bri, self.on))
 
 
-class Controller(list):
+class Controller(object):
 
     def __init__(self, lights, settings):
         self.lights = lights
