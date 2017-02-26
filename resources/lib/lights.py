@@ -2,6 +2,8 @@ import json
 import requests
 import time
 
+from tools import xbmclog
+
 
 class Light(object):
 
@@ -88,8 +90,15 @@ class Controller(list):
         self.settings = settings
 
     def set_state(self, hue=None, sat=None, bri=None, on=None,
-                  transition_time=None):
-        for light in self.lights:
+                  transition_time=None, lights=None):
+        xbmclog(
+            'Kodi Hue: DEBUG In Controller.set_state(hue={}, sat={}, bri={}, '
+            'on={}, transition_time={}, lights={})'.format(
+                     hue, sat, bri, on, transition_time, lights
+            )
+        )
+
+        for light in self._calculate_subgroup(lights):
             if not self.settings.force_light_on and not light.init_on:
                 continue
             if bri:
@@ -103,8 +112,13 @@ class Controller(list):
                 transition_time=transition_time
             )
 
-    def restore_initial_state(self):
-        for light in self.lights:
+    def restore_initial_state(self, lights=None):
+        xbmclog(
+            'Kodi Hue: DEBUG In Controller.restore_initial_state(lights={})'
+            .format(lights)
+        )
+
+        for light in self._calculate_subgroup(lights):
             if not self.settings.force_light_on and not light.init_on:
                 continue
             transition_time = self.settings.dim_time
@@ -115,14 +129,32 @@ class Controller(list):
                 transition_time
             )
 
-    def save_state_as_initial(self):
-        for light in self.lights:
+    def save_state_as_initial(self, lights=None):
+        xbmclog(
+            'Kodi Hue: DEBUG In Controller.save_state_as_initial(lights={})'
+            .format(lights)
+        )
+
+        for light in self._calculate_subgroup(lights):
             light.save_state_as_initial()
 
     def flash_lights(self):
         self.dim_lights()
         time.sleep(self.settings.dim_time / 10)
         self.undim_lights()
+
+    def _calculate_subgroup(self, lights=None):
+        if lights is None:
+            ret = self.lights.values()
+        else:
+            ret = [light for light in
+                   self.lights.values() if light.light_id in lights]
+
+        xbmclog(
+            'Kodi Hue: DEBUG In Controller._calculate_subgroup'
+            '(lights={}) returning {}'.format(lights, ret)
+        )
+        return ret
 
     def _transition_time(self, light, bri):
         time = 0

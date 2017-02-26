@@ -15,6 +15,7 @@
 
         <setting id="ambilight_group" label="1300" type="text" visible="false" default="" />
         <setting id="theater_group" label="1300" type="text" visible="false" default="" />
+        <setting id="theater_subgroup" label="1300" type="text" visible="false" default="" />
         <!-- Reset -->
         <setting type="lsep" label="1400" />
         <setting id="reset_settings" type="action" label="1410" action="RunScript(script.kodi.hue.ambilight,action=reset_settings)" option="close" />
@@ -26,6 +27,7 @@
 
         <!-- Global -->
         <setting type="lsep" label="2100" />
+        <setting id="setup_theater_subgroup" type="action" label="2105" action="RunScript(script.kodi.hue.ambilight,action=setup_theater_subgroup)" />
         <setting id="dim_time" label="2110" type="slider" default="4" range="0,0.5,10" option="float" />
         <setting id="proportional_dim_time" label="2120" type="bool" default="true" />
         <setting id="propritional_explainer" type="lsep" label="2130" visible="eq(-1,true)" subsetting="true" />
@@ -37,6 +39,7 @@
 
         <!-- Playback Pause -->
         <setting type="lsep" label="2300" />
+        <setting id="theater_pause_dim_subgroup" label="2305" type="bool" default="false" />
         <setting id="theater_pause_bri_override" label="2310" type="bool" default="false" />
         <setting id="theater_pause_bri" label="2320" visible="eq(-1,true)" type="slider" default="150" range="0,5,254" option="int" />
 

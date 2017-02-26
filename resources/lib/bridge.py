@@ -70,12 +70,12 @@ def get_lights_by_ids(bridge_ip, username, light_ids=None):
         light_ids = res.keys()
 
     if light_ids == ['']:
-        return []
+        return {}
 
-    found = []
+    found = {}
     for light_id in light_ids:
-        found.append(lights.Light(bridge_ip, username, light_id,
-                                  res[light_id]))
+        found[light_id] = lights.Light(bridge_ip, username, light_id,
+                                       res[light_id])
 
     return found
 

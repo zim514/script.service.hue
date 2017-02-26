@@ -1,18 +1,25 @@
 import os
 
-import xbmc
-import xbmcaddon
+TESTING_ENV = False
 
-__addon__ = xbmcaddon.Addon()
-__cwd__ = __addon__.getAddonInfo('path')
-__icon__ = os.path.join(__cwd__, "icon.png")
-__settings__ = os.path.join(__cwd__, "resources", "settings.xml")
-__xml__ = os.path.join(__cwd__, 'addon.xml')
+try:
+    import xbmc
+    import xbmcaddon
 
-API_KEY = "7OOEGRV8Y2SVNTS29EBJ"
-API_SEARCH_URL = "http://www.chapterdb.org/chapters/search"
-XML_NAMESPACE = "http://jvance.com/2008/ChapterGrabber"
-THRESHOLD_LAST_CHAPTER = 60
+    __addon__ = xbmcaddon.Addon()
+    __cwd__ = __addon__.getAddonInfo('path')
+    __icon__ = os.path.join(__cwd__, "icon.png")
+    __settings__ = os.path.join(__cwd__, "resources", "settings.xml")
+    __xml__ = os.path.join(__cwd__, 'addon.xml')
+except ImportError:
+    TESTING_ENV = True
+
+
+def xbmclog(message):
+    if TESTING_ENV:
+        pass
+    else:
+        xbmc.log(message)
 
 
 def notify(title, msg=''):

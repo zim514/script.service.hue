@@ -19,6 +19,7 @@
     <string id="2000">Theater</string>
 
     <string id="2100">Global Settings</string>
+    <string id="2105">Setup Theater Subgroup</string>
     <string id="2110">Dim Time</string>
     <string id="2120">Proportional Dim Time</string>
     <string id="2130">Example: Take 70% of transition time if dimming 70%</string>
@@ -28,6 +29,7 @@
     <string id="2220">Choose Brightness</string>
 
     <string id="2300">Playback Pause</string>
+    <string id="2305">Only Dim Subgroup</string>
     <string id="2310">Override Brightness (default initial)</string>
     <string id="2320">Choose Brightness</string>
 
