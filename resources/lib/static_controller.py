@@ -7,7 +7,8 @@ class StaticController(lights.Controller):
         super(StaticController, self).__init__(*args, **kwargs)
 
     def on_playback_start(self):
-        xbmclog('Kodi Hue: DEBUG turning on static group')
+        xbmclog('Kodi Hue: In StaticController.on_playback_start() '
+                'turning on static group')
         hue = None
         if self.settings.static_start_hue_override:
             hue = self.settings.static_start_hue
@@ -24,9 +25,13 @@ class StaticController(lights.Controller):
         )
 
     def on_playback_pause(self):
+        xbmclog('Kodi Hue: In StaticController.on_playback_pause() '
+                'turning off static group')
         self.set_state(
             on=False,
         )
 
     def on_playback_stop(self):
+        xbmclog('Kodi Hue: In StaticController.on_playback_pause() '
+                'restoring static group')
         self.restore_initial_state()

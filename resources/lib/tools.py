@@ -23,8 +23,11 @@ def xbmclog(message):
 
 
 def notify(title, msg=''):
-    xbmc.executebuiltin('XBMC.Notification({}, {}, 3, {})'.format(
-        title, msg, __icon__))
+    if TESTING_ENV:
+        pass
+    else:
+        xbmc.executebuiltin('XBMC.Notification({}, {}, 3, {})'.format(
+            title, msg, __icon__))
 
 
 def get_version():

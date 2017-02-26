@@ -15,7 +15,8 @@ class TheaterController(lights.Controller):
         self.save_state_as_initial(subgroup)
 
         # Theater dimming
-        xbmclog('Kodi Hue: DEBUG dimming theater group')
+        xbmclog('Kodi Hue: In TheaterController.on_playback_start() '
+                'dimming theater group')
         self.set_state(
             bri=self.settings.theater_start_bri,
             force_on=self.settings.force_light_on,
@@ -23,7 +24,8 @@ class TheaterController(lights.Controller):
 
     def on_playback_pause(self):
         if self.settings.theater_pause_dim_subgroup:
-            xbmclog('Kodi Hue: DEBUG undimming theater subgroup')
+            xbmclog('Kodi Hue: In TheaterController.on_playback_pause() '
+                    'undimming theater subgroup')
             if self.settings.theater_pause_bri_override:
                 self.set_state(
                     bri=self.settings.theater_pause_bri,
@@ -36,7 +38,8 @@ class TheaterController(lights.Controller):
                     force_on=self.settings.force_light_on,
                 )
         else:
-            xbmclog('Kodi Hue: DEBUG undimming theater group')
+            xbmclog('Kodi Hue: In TheaterController.on_playback_pause() '
+                    'undimming theater group')
             if self.settings.theater_pause_bri_override:
                 self.set_state(
                     bri=self.settings.theater_pause_bri,
@@ -48,7 +51,8 @@ class TheaterController(lights.Controller):
                 )
 
     def on_playback_stop(self):
-        xbmclog('Kodi Hue: DEBUG undimming theater group')
+        xbmclog('Kodi Hue: In TheaterController.on_playback_stop() '
+                'undimming theater group')
         if self.settings.theater_stop_bri_override:
             self.set_state(
                 bri=self.settings.theater_stop_bri,

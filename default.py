@@ -14,17 +14,16 @@ __resource__ = xbmc.translatePath(os.path.join(__cwd__, 'resources', 'lib'))
 sys.path.append(__resource__)
 
 from settings import Settings
-from tools import get_version
+from tools import get_version, xbmclog
 from ambilight_controller import AmbilightController
 from theater_controller import TheaterController
 from static_controller import StaticController
 import bridge
 import ui
-import lights
 import algorithm
 import image
 
-xbmc.log("Kodi Hue: DEBUG service started, version: %s" % get_version())
+xbmclog("Kodi Hue: In . service started, version: %s" % get_version())
 
 ev = Event()
 capture = xbmc.RenderCapture()
@@ -50,24 +49,24 @@ class MyPlayer(xbmc.Player):
     movie = False
 
     def __init__(self):
-        xbmc.log('Kodi Hue: DEBUG Player instantiated')
+        xbmclog('Kodi Hue: In MyPlayer.__init__()')
         xbmc.Player.__init__(self)
 
     def onPlayBackStarted(self):
-        xbmc.log("Kodi Hue: DEBUG playback started called on player")
+        xbmclog('Kodi Hue: In MyPlayer.onPlayBackStarted()')
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         self.playlistlen = playlist.size()
         self.playingvideo = True
         state_changed("started", self.duration)
 
     def onPlayBackPaused(self):
-        xbmc.log("Kodi Hue: DEBUG playback paused called on player")
+        xbmclog('Kodi Hue: In MyPlayer.onPlayBackPaused()')
         state_changed("paused", self.duration)
         if self.isPlayingVideo():
             self.playingvideo = False
 
     def onPlayBackResumed(self):
-        xbmc.log("Kodi Hue: DEBUG playback resume called on player")
+        xbmclog('Kodi Hue: In MyPlayer.onPlayBackResume()')
         state_changed("resumed", self.duration)
         if self.isPlayingVideo():
             self.playingvideo = True
@@ -75,13 +74,13 @@ class MyPlayer(xbmc.Player):
                 self.duration = self.getTotalTime()
 
     def onPlayBackStopped(self):
-        xbmc.log("Kodi Hue: DEBUG playback stopped called on player")
+        xbmclog('Kodi Hue: In MyPlayer.onPlayBackStopped()')
         state_changed("stopped", self.duration)
         self.playingvideo = False
         self.playlistlen = 0
 
     def onPlayBackEnded(self):
-        xbmc.log("Kodi Hue: DEBUG playback ended called on player")
+        xbmclog('Kodi Hue: In MyPlayer.onPlayBackEnded()')
         # If there are upcoming plays, ignore
         if self.playlistpos < self.playlistlen-1:
             return
@@ -196,12 +195,12 @@ class Hue:
             self.settings
         )
 
-        xbmc.log(
-            'Kodi Hue: DEBUG instantiated controllers with following lights '
-            '- theater: {} ambilight: {} static: {}'.format(
-                self.theater_controller.lights,
-                self.ambilight_controller.lights,
-                self.static_controller.lights,
+        xbmclog(
+            'Kodi Hue: In Hue.update_controllers() instantiated following '
+            'controllers {} {} {}'.format(
+                self.theater_controller,
+                self.ambilight_controller,
+                self.static_controller,
             )
         )
 
@@ -209,7 +208,7 @@ class Hue:
 def run():
     player = MyPlayer()
     if player is None:
-        xbmc.log('Kodi Hue: DEBUG Could not instantiate player')
+        xbmclog('Kodi Hue: In run() could not instantiate player')
         return
 
     while not monitor.abortRequested():
@@ -245,12 +244,13 @@ def run():
                     pass
 
         if monitor.waitForAbort(0.1):
-            xbmc.log('Kodi Hue: DEBUG deleting player')
+            xbmclog('Kodi Hue: In run() deleting player')
             del player  # might help with slow exit.
 
 
 def state_changed(state, duration):
-    xbmc.log('Kodi Hue: DEBUG State changed to {}'.format(state))
+    xbmclog('Kodi Hue: In state_changed(state={}, duration={})'.format(
+        state, duration))
 
     if (xbmc.getCondVisibility('Window.IsActive(screensaver-atv4.xml)') or
         xbmc.getCondVisibility('Window.IsActive(screensaver-video-main.xml)')):

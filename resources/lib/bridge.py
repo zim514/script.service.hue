@@ -2,11 +2,11 @@ import socket
 import time
 
 import lights
+import tools
 
 try:
     import requests
 except ImportError:
-    import tools
     tools.notify("Kodi Hue", "ERROR: Could not import Python requests")
 
 

@@ -107,9 +107,10 @@ class Controller(object):
     def set_state(self, hue=None, sat=None, bri=None, on=None,
                   transition_time=None, lights=None, force_on=True):
         xbmclog(
-            'Kodi Hue: DEBUG In Controller.set_state(hue={}, sat={}, bri={}, '
-            'on={}, transition_time={}, lights={})'.format(
-                     hue, sat, bri, on, transition_time, lights
+            'Kodi Hue: In {}.set_state(hue={}, sat={}, bri={}, '
+            'on={}, transition_time={}, lights={}, force_on={})'.format(
+                self.__class__.__name__, hue, sat, bri, on, transition_time,
+                lights, force_on
             )
         )
 
@@ -129,8 +130,8 @@ class Controller(object):
 
     def restore_initial_state(self, lights=None, force_on=True):
         xbmclog(
-            'Kodi Hue: DEBUG In Controller.restore_initial_state(lights={})'
-            .format(lights)
+            'Kodi Hue: In {}.restore_initial_state(lights={})'
+            .format(self.__class__.__name__, lights)
         )
 
         for light in self._calculate_subgroup(lights):
@@ -146,8 +147,8 @@ class Controller(object):
 
     def save_state_as_initial(self, lights=None):
         xbmclog(
-            'Kodi Hue: DEBUG In Controller.save_state_as_initial(lights={})'
-            .format(lights)
+            'Kodi Hue: In {}.save_state_as_initial(lights={})'
+            .format(self.__class__.__name__, lights)
         )
 
         for light in self._calculate_subgroup(lights):
@@ -166,8 +167,9 @@ class Controller(object):
                    self.lights.values() if light.light_id in lights]
 
         xbmclog(
-            'Kodi Hue: DEBUG In Controller._calculate_subgroup'
-            '(lights={}) returning {}'.format(lights, ret)
+            'Kodi Hue: In {}._calculate_subgroup'
+            '(lights={}) returning {}'.format(
+                self.__class__.__name__, lights, ret)
         )
         return ret
 
@@ -182,3 +184,6 @@ class Controller(object):
         time = int(round(proportion * self.settings.dim_time))
 
         return time
+
+    def __repr__(self):
+        return ('<{} {}>'.format(self.__class__.__name__, self.lights))
