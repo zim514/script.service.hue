@@ -1,6 +1,5 @@
 import json
 import requests
-import time
 
 from tools import xbmclog
 
@@ -159,9 +158,18 @@ class Controller(object):
             light.save_state_as_initial()
 
     def flash_lights(self):
-        self.dim_lights()
-        time.sleep(self.settings.dim_time / 10)
-        self.undim_lights()
+        xbmclog(
+            'Kodi Hue: In {} flash_lights())'
+            .format(self.__class__.__name__)
+        )
+        self.set_state(
+            on=False,
+            force_on=self.settings.force_light_on,
+        )
+
+        self.restore_initial_state(
+            force_on=self.settings.force_light_on,
+        )
 
     def _calculate_subgroup(self, lights=None):
         if lights is None:

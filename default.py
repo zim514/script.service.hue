@@ -190,6 +190,7 @@ class Hue:
             if self.settings.misc_initialflash:
                 self.ambilight_controller.flash_lights()
                 self.theater_controller.flash_lights()
+                self.static_controller.flash_lights()
 
     def update_controllers(self):
         self.ambilight_controller = AmbilightController(
