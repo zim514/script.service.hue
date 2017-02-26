@@ -16,6 +16,7 @@ sys.path.append(__resource__)
 from settings import Settings
 from tools import get_version
 from ambilight_controller import AmbilightController
+from theater_controller import TheaterController
 import bridge
 import ui
 import lights
@@ -183,7 +184,7 @@ class Hue:
             self.settings
         )
 
-        self.theater_controller = lights.Controller(
+        self.theater_controller = TheaterController(
             bridge.get_lights_by_ids(
                 self.settings.bridge_ip,
                 self.settings.bridge_user,
@@ -273,22 +274,8 @@ def state_changed(state, duration):
         capture.capture(int(capture_width), int(capture_height))
 
     if state == "started" or state == "resumed":
-
-        # Let's keep only the last user-set state
-        # BUT! Avoid theater subgroup if enabled
-        theater_subgroup = None
-        if hue.settings.theater_pause_dim_subgroup:
-            theater_subgroup = hue.settings.theater_subgroup.split(',')
-        hue.theater_controller.save_state_as_initial(theater_subgroup)
-
+        hue.theater_controller.on_playback_start()
         hue.ambilight_controller.on_playback_start()
-
-        # Theater dimming
-        xbmc.log('Kodi Hue: DEBUG dimming theater group')
-        hue.theater_controller.set_state(
-            bri=hue.settings.theater_start_bri,
-            force_on=hue.settings.force_light_on,
-        )
 
         # Static group turn on
         xbmc.log('Kodi Hue: DEBUG turning on static group')
@@ -310,33 +297,8 @@ def state_changed(state, duration):
         ev.clear()
 
     elif state == "paused":
+        hue.theater_controller.on_playback_pause()
         hue.ambilight_controller.on_playback_pause()
-
-        # Theather dimming
-        if settings.theater_pause_dim_subgroup:
-            xbmc.log('Kodi Hue: DEBUG undimming theater subgroup')
-            if hue.settings.theater_pause_bri_override:
-                hue.theater_controller.set_state(
-                    bri=hue.settings.theater_pause_bri,
-                    lights=hue.settings.theater_subgroup.split(','),
-                    force_on=hue.settings.force_light_on,
-                )
-            else:
-                hue.theater_controller.restore_initial_state(
-                    lights=hue.settings.theater_subgroup.split(','),
-                    force_on=hue.settings.force_light_on,
-                )
-        else:
-            xbmc.log('Kodi Hue: DEBUG undimming theater group')
-            if hue.settings.theater_pause_bri_override:
-                hue.theater_controller.set_state(
-                    bri=hue.settings.theater_pause_bri,
-                    force_on=hue.settings.force_light_on,
-                )
-            else:
-                hue.theater_controller.restore_initial_state(
-                    force_on=hue.settings.force_light_on,
-                )
 
         # Static off
         hue.static_controller.set_state(
@@ -344,19 +306,8 @@ def state_changed(state, duration):
         )
 
     elif state == "stopped":
+        hue.theater_controller.on_playback_stop()
         hue.ambilight_controller.on_playback_stop()
-
-        # Theater dimming
-        xbmc.log('Kodi Hue: DEBUG undimming theater group')
-        if hue.settings.theater_stop_bri_override:
-            hue.theater_controller.set_state(
-                bri=hue.settings.theater_stop_bri,
-                force_on=hue.settings.force_light_on,
-            )
-        else:
-            hue.theater_controller.restore_initial_state(
-                force_on=hue.settings.force_light_on,
-            )
 
         # Static restore
         hue.static_controller.restore_initial_state()
