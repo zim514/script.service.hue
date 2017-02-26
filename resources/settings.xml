@@ -12,7 +12,7 @@
         <setting type="lsep" label="1200" />
         <setting id="discover_bridge" type="action" label="1210" action="RunScript(script.kodi.hue.ambilight,action=discover)" />
         <setting id="bridge_ip" type="text" label="1220" enable="!eq(-1,true)" default="" />
-        <setting id="bridge_user" type="text" label="1320" enable="!eq(-2,true)" default="" />
+        <setting id="bridge_user" type="text" label="1230" enable="!eq(-2,true)" default="" />
 
         <setting id="ambilight_group" label="1300" type="text" visible="false" default="" />
         <setting id="theater_group" label="1300" type="text" visible="false" default="" />
