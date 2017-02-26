@@ -62,7 +62,6 @@ class MyPlayer(xbmc.Player):
 
     def onPlayBackPaused(self):
         xbmc.log("Kodi Hue: DEBUG playback paused called on player")
-        ev.set()
         state_changed("paused", self.duration)
         if self.isPlayingVideo():
             self.playingvideo = False
@@ -70,7 +69,6 @@ class MyPlayer(xbmc.Player):
     def onPlayBackResumed(self):
         xbmc.log("Kodi Hue: DEBUG playback resume called on player")
         state_changed("resumed", self.duration)
-        ev.clear()
         if self.isPlayingVideo():
             self.playingvideo = True
             if self.duration == 0:
@@ -78,17 +76,14 @@ class MyPlayer(xbmc.Player):
 
     def onPlayBackStopped(self):
         xbmc.log("Kodi Hue: DEBUG playback stopped called on player")
-        ev.set()
         state_changed("stopped", self.duration)
         self.playingvideo = False
         self.playlistlen = 0
 
     def onPlayBackEnded(self):
-        ev.set()
         xbmc.log("Kodi Hue: DEBUG playback ended called on player")
         # If there are upcoming plays, ignore
         if self.playlistpos < self.playlistlen-1:
-            ev.clear()
             return
 
         self.playingvideo = False
@@ -225,8 +220,6 @@ def run():
             if player.isPlayingVideo() and not player.playingvideo:
                 player.playingvideo = True
 
-                # We will be saving state of the lights, do not interfere yet
-                ev.set()
                 state_changed("started", player.getTotalTime())
                 continue
             if player.playingvideo:  # only if there's actually video
@@ -275,17 +268,20 @@ def state_changed(state, duration):
         capture.capture(int(capture_width), int(capture_height))
 
     if state == "started" or state == "resumed":
+        ev.set()
         hue.theater_controller.on_playback_start()
         hue.ambilight_controller.on_playback_start()
         hue.static_controller.on_playback_start()
         ev.clear()
 
     elif state == "paused":
+        ev.set()
         hue.theater_controller.on_playback_pause()
         hue.ambilight_controller.on_playback_pause()
         hue.static_controller.on_playback_pause()
 
     elif state == "stopped":
+        ev.set()
         hue.theater_controller.on_playback_stop()
         hue.ambilight_controller.on_playback_stop()
         hue.static_controller.on_playback_stop()
