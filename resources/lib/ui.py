@@ -17,7 +17,7 @@ def multiselect_lights(bridge_ip, bridge_user, label, exclude,
             actual_lights.append(light)
             if str(light_id) in preselect.split(','):
                 preselect_items.append(index)
-                index += 1
+            index += 1
 
     selected = xbmcgui.Dialog().multiselect(label, items,
                                             preselect=preselect_items)
