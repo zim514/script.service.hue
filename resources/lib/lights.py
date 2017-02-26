@@ -17,12 +17,16 @@ class Light(object):
         self.livingwhite = False
         self.name = spec['name']
 
+        self.init_hue = None
+        self.hue = None
         try:
             self.init_hue = spec['state']['hue']
             self.hue = self.init_hue
         except KeyError:
             self.livingwhite = True
 
+        self.init_sat = None
+        self.sat = None
         try:
             self.init_sat = spec['state']['sat']
             self.sat = self.init_sat
