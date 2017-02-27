@@ -42,8 +42,8 @@
     <string id="3000">Ambilight</string>
 
     <string id="3100">Global Settings</string>
-    <string id="3110">Maximum Brightness</string>
-    <string id="3120">Minimum Brightness</string>
+    <string id="3110">Minimum Brightness</string>
+    <string id="3120">Maximum Brightness</string>
 
     <string id="3200">Thresholds</string>
     <string id="3210">Value</string>
