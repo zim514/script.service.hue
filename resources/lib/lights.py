@@ -43,6 +43,11 @@ class Light(object):
     def set_state(self, hue=None, sat=None, bri=None, on=None,
                   transition_time=None):
         state = {}
+        if transition_time is not None:
+            state['transitiontime'] = transition_time
+        if on is not None and on != self.on:
+            self.on = on
+            state['on'] = on
         if hue is not None and not self.livingwhite and hue != self.hue:
             self.hue = hue
             state['hue'] = hue
@@ -52,11 +57,13 @@ class Light(object):
         if bri is not None and bri != self.bri:
             self.bri = bri
             state['bri'] = bri
-        if on is not None and on != self.on:
-            self.on = on
-            state['on'] = on
-        if transition_time is not None:
-            state['transitiontime'] = transition_time
+            # Hue specific
+            if bri <= 0 and self.on:
+                self.on = False
+                state['on'] = False
+            if bri >= 1 and not self.on:
+                self.on = True
+                state['on'] = True
 
         data = json.dumps(state)
         try:
