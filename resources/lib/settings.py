@@ -67,12 +67,12 @@ class Settings():
         self.force_light_on = __addon__.getSetting("force_light_on") == "true"
 
         if self.ambilight_min > self.ambilight_max:
-            self.update("ambilight_min", self.ambilight_max)
+            self.update(ambilight_min=self.ambilight_max)
 
     def update(self, **kwargs):
         self.__dict__.update(**kwargs)
         for k, v in kwargs.iteritems():
-            __addon__.setSetting(k, v)
+            __addon__.setSetting(k, str(v))
 
     def __repr__(self):
         return '<Settings\n{}\n>'.format('\n'.join(['{}={}'.format(key, value) for key, value in self.__dict__.items()]))
