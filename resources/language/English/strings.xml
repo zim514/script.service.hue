@@ -68,6 +68,7 @@
 
     <string id="4000">Static</string>
     <string id="4100">Playback Start (or resume)</string>
+    <string id="4105">Random Color</string>
     <string id="4110">Override Hue (default initial)</string>
     <string id="4120">Choose Hue</string>
     <string id="4130">Override Saturation (default initial)</string>

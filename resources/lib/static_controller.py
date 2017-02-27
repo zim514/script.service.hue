@@ -1,3 +1,5 @@
+import random
+
 import lights
 from tools import xbmclog
 
@@ -16,6 +18,10 @@ class StaticController(lights.Controller):
         sat = None
         if self.settings.static_start_sat_override:
             sat = self.settings.static_start_sat
+
+        if self.settings.static_start_random:
+            hue = random.randint(0, 65535)
+            sat = random.randint(0, 254)
 
         self.set_state(
             hue=hue,

@@ -95,9 +95,10 @@
 
         <!-- Playback Start -->
         <setting type="lsep" label="4100" />
-        <setting id="static_start_hue_override" label="4110" type="bool" default="false" />
+        <setting id="static_start_random" label="4105" type="bool" visible="eq(1,false) + eq(3,false)" default="false" />
+        <setting id="static_start_hue_override" label="4110" visible="eq(-1,false)" type="bool" default="false" />
         <setting id="static_start_hue" label="4120" visible="eq(-1,true)" type="slider" default="30" range="0,100,65535" option="int" />
-        <setting id="static_start_sat_override" label="4130" type="bool" default="false" />
+        <setting id="static_start_sat_override" label="4130" visible="eq(-3,false)" type="bool" default="false" />
         <setting id="static_start_sat" label="4140" visible="eq(-1,true)" type="slider" default="30" range="0,5,254" option="int" />
         <setting id="static_start_bri_override" label="4150" type="bool" default="false" />
         <setting id="static_start_bri" label="4160" visible="eq(-1,true)" type="slider" default="100" range="0,5,254" option="int" />

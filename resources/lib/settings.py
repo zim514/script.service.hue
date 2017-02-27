@@ -53,6 +53,7 @@ class Settings():
         self.ambilight_stop_bri_override = __addon__.getSetting("ambilight_stop_bri_override") == "true"
         self.ambilight_stop_bri = int(__addon__.getSetting("ambilight_stop_bri").split(".")[0])
 
+        self.static_start_random = __addon__.getSetting("static_start_random") == "true"
         self.static_start_hue_override = __addon__.getSetting("static_start_hue_override") == "true"
         self.static_start_hue = int(__addon__.getSetting("static_start_hue").split(".")[0])
         self.static_start_sat_override = __addon__.getSetting("static_start_sat_override") == "true"
