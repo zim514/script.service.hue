@@ -40,6 +40,7 @@ def discover_hue_bridge(hue):
         username = bridge.create_user(hue_ip)
         hue.settings.update(bridge_ip=hue_ip)
         hue.settings.update(bridge_user=username)
+        hue.settings.update(connected="true")
         hue.connected = True
         notify("Hue Bridge Discovery", "Finished")
     else:

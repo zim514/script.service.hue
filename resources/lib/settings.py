@@ -16,6 +16,7 @@ class Settings():
         self.bridge_ip = __addon__.getSetting("bridge_ip")
         self.bridge_user = __addon__.getSetting("bridge_user")
 
+        self.connected = __addon__.getSetting("connected") == "true"
         self.ambilight_group = __addon__.getSetting("ambilight_group")
         self.theater_group = __addon__.getSetting("theater_group")
         self.theater_subgroup = __addon__.getSetting("theater_subgroup")
