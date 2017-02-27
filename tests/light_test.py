@@ -61,9 +61,9 @@ def test_set_state(m):
     assert light.hue == 47
     assert light.sat == 99
     assert light.bri == 15
-    assert light.on is False
+    assert light.on is True
 
-    assert m.last_request.json() == {u'bri': 15, u'sat': 99,
+    assert m.last_request.json() == {u'bri': 15, u'on': True, u'sat': 99,
                                      u'transitiontime': 321}
 
     assert light.init_hue == 17738
@@ -77,5 +77,5 @@ def test_set_state(m):
     assert light.bri == 254
     assert light.on is True
 
-    assert m.last_request.json() == {u'bri': 254, u'hue': 17738, u'on': True,
-                                     u'sat': 100, u'transitiontime': 0}
+    assert m.last_request.json() == {u'bri': 254, u'hue': 17738, u'sat': 100,
+                                     u'transitiontime': 0}
