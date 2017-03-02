@@ -21,7 +21,7 @@ class StaticController(lights.Controller):
 
         if self.settings.static_start_random:
             hue = random.randint(0, 65535)
-            sat = random.randint(0, 254)
+            sat = random.randint(100, 254)
 
         self.set_state(
             hue=hue,
