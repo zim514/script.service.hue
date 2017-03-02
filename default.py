@@ -109,6 +109,7 @@ class MyPlayer(xbmc.Player):
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         self.playlistlen = playlist.size()
         self.playingvideo = True
+        self.duration = self.getTotalTime()
         state_changed("started", self.duration)
 
     def onPlayBackPaused(self):
