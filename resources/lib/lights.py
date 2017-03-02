@@ -58,10 +58,10 @@ class Light(object):
             self.bri = bri
             state['bri'] = bri
             # Hue specific
-            if bri <= 0 and self.on:
+            if bri <= 0 and self.on and on is None:
                 self.on = False
                 state['on'] = False
-            if bri >= 1 and not self.on:
+            if bri >= 1 and not self.on and on is None:
                 self.on = True
                 state['on'] = True
 
