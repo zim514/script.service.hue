@@ -1,64 +1,50 @@
-script.kodi.hue.ambilight
-=========================
+#script.kodi.hue.ambilight
 
-A Kodi add-on that controls Philips Hue lights. In "Theater mode" the add-on dims the the Philips Hue lights as soon as a movie starts playing, and turns the lights back on once the movie is done. "Ambilight mode" turns your Philips Hue lights in a room-sized ambilight.
+A Kodi add-on that controls Philips Hue lights. 
 
-Support
--------
-This is a side project for me, and as such I'll update it when and if I have time . I'll happily respond to issues and feature requests (provided that they are detailed enough to realistically debug your problem (**LOGS**)). Since this is based on @cees-elzinga's original work, I've only modified some of the functions to enhance the features. I don't personally use the ambilight feature, and therefore havent done much testing with it... Again, happy to try and help out, but don't expect super-quick responses!
+##Light Groups
 
-Please fork and enhance! Pull requests welcome!
+This add-on works with a concept of groups that are different from groups defined on Hue bridge. Each group can have 0 or more lights and has default behavior settings that can be modified in the add-on settings screen. After playback ends, the add-on will try to restore the lights to where they where before it started controlling them.
 
-Debugging
----------
-Please turn on Debug Logging through the addon (Configure -> Advanced Settings -> Debug Logging) and follow the procedure at http://kodi.wiki/view/Log_file/Easy to upload a log file. Provide a link to your logfile in the issue.
+###Theater Group
 
-Installation
-------------
+Lights in the theater group act like wall lights in a typical theater. When playback starts the lights dim and they undim when playback is paused or ends. If you only want some of the lights to undim during pause, it is possible to configure "subgroup" in `add-on settings -> Theater` and only dim the subgroup.
 
-The add-on depends on the Kodi add-on "requests" for the ambilight mode.
+###Ambilight Group
+
+Ambilight group tries to control the lights similarly to modern ambilight TVs. The add-on tries to figure out the most represented colors in each frame and change the lights to reflect that. They can also be configured to work similarly to theater group when playback is paused.
+
+### Static Group
+
+Static lights act opposite to the theater lights -- they are turned on when playback starts, turned off when you pause the playback and go back to initial state after the playback stops.
+
+##Installation
+
+The add-on requires Kodi add-on "requests".
 
 **Kodi add-on script.module.requests**
 
- - Download the add-on as a ZIP file from https://github.com/beenje/script.module.requests
-  - (Click on the green "Clone or download button" then click on the "Download ZIP" link).
- - Open Kodi
- - Go to `System -> Settings -> Add-ons -> Install from zip file`
- - Select the zip file.
+ - download the add-on as a ZIP file from https://github.com/beenje/script.module.requests
+  - (click on the green "Clone or download button" then click on the "Download ZIP" link)
+ - open Kodi
+ - go to `Add-ons -> click on the opened box in top left corner -> Install from zip file -> navigate to the downloaded zip file`
+ - select the zip file.
 
 **Kodi add-on script.kodi.hue.ambilight**
 
- - Download the add-on as a ZIP file from the top of this page
-  - (Click on the green "Clone or download button" then click on the "Download ZIP" link).
- - Open Kodi
- - Kodi 16 :
- - Go to `System -> Settings -> Add-ons -> Install from zip file`
- - Kodi 17 :
- - Go to `Extensions -> Add-ons -> Install from zip file`
- -  Restart Kodi and configure the add-on:
-   - Kodi 16 :
-   - `System -> Settings -> Add-ons -> Enabled add-ons -> Services -> Kodi Philips Hue`
-   - Kodi 17 :
-   - `Extensions -> Add-ons -> My Extensions -> Services -> Kodi Philips Hue`
-   - Run `Start auto discovery of bridge IP and User`.
+ - download the add-on as a ZIP file from the top of this page
+  - (click on the green "Clone or download button" then click on the "Download ZIP" link)
+ - go to `Add-ons -> click on the opened box in top left corner -> Install from zip file -> navigate to the downloaded zip file`
+ -  restart Kodi and configure the add-on:
+   - `Add-ons -> My add-ons -> Services -> Kodi Philips Hue -> Configure`
+   - click `Discover Hue Bridge` and follow the instructions (press button on the Hue bridge)
+   - setup the groups and tweak settings to your liking
 
-Note for Raspberry Pi users:
+##Support
+If you find a problem or missing feature, open an issue or a pull requests on https://github.com/mpolednik/script.kodi.hue.ambilight.
 
+To have a higher chance of issue being solved, please attach a log file. To record one, go to `settings wheel -> System settings -> Logging -> Enable Debug Logging` and follow the procedure at http://kodi.wiki/view/Log_file/Easy
+
+##Note for Raspberry Pi users:
  - Save the add-on configuration by exiting Kodi before shutting down the Pi completely
  - Ambilight mode doesn't work on a Raspberry Pi due to the way it renders video
-
-Release history
----------------
-  * 2015-07-27 v 0.8.0 Added credit detection (through chapterdb.com), proportional transition times based on brightness
-  * 2015-11-02 v 0.7.2 Minor update, attempting to resolve autodiscover issues
-  * 2015-07-26 v 0.7.1 Updated Icon, code refactor, bugfixes, better group performance, handling of "pause during screen refresh rate change" setting
-  * 2015-01-15 v 0.7.0 Fixed Kodi references, added paused brightness override (changes beginning here by @michaelrcarroll)
-  * 2014-01-12 v 0.6.2 Minor improvements
-  * 2013-07-13 v 0.6.0 General improvements all around (by robwalch)
-  * 2013-05-25 v 0.5.0 Debug logging, livingwhite lights
-  * 2013-05-04 v 0.4.0 Advanced settings
-  * 2013-04-25 v 0.3.6 Custom dimmed brightness in theatre mode
-  * 2013-04-02 v 0.3.4 Ambilight is more responsive
-  * 2013-04-01 v 0.3.3 Rename to script.xbmc.hue.ambilight
-  * 2013-02-25 v 0.3.1 Improved handling for grouped lights
-  * 2013-01-27 v 0.1.0 Initial release

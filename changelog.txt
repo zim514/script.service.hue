@@ -1,3 +1,7 @@
+1.0
+ - [info] forked by mpolednik
+ - [info] rewritten
+
 0.8
  - [feature] detect last chapter (movies only) and optionally bring lights up (credits) (SUPER EXPERIMENTAL. ONLY ENABLE IF YOU'RE BRAVE/CRAZY AND ARE WILLING TO HAVE LIGHTS TURN ON DURING A MOVIE)
  - [feature] proportional transition times (e.g. if going from 0-30% brightness, only take 30% of transition time) (optional)
