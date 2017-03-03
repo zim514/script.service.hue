@@ -62,6 +62,8 @@
         <setting id="ambilight_min" label="3110" type="slider" default="0" range="0,5,254" option="int" />
         <setting id="ambilight_max" label="3120" type="slider" default="90" range="0,5,254" option="int" />
 
+        <setting id="ambilight_start_dim_enable" label="3130" type="bool" default="true" />
+
         <!--Thresholds-->
         <setting type="lsep" label="3200" />
         <setting id="ambilight_threshold_value" label="3210" type="slider" default="0.25" range="0,0.01,1" option="float" />
@@ -74,18 +76,17 @@
 
         <!-- Playback Start -->
         <setting type="lsep" label="3400" />
-        <setting id="ambilight_start_dim_enable" label="3410" type="bool" default="true" />
-        <setting id="ambilight_start_dim_override" label="3420" visible="eq(-1,true)" type="bool" default="false" />
+        <setting id="ambilight_start_dim_override" label="3420" visible="eq(-8,true)" type="bool" default="false" />
         <setting id="ambilight_start_dim" label="3430" visible="eq(-1,true)" type="slider" default="30" range="0,5,254" option="int" />
 
         <!-- Playback Pause -->
         <setting type="lsep" label="3500" />
-        <setting id="ambilight_pause_bri_override" label="3510" type="bool" default="false" />
+        <setting id="ambilight_pause_bri_override" label="3510" visible="eq(-11,true)"  type="bool" default="false" />
         <setting id="ambilight_pause_bri" label="3520" visible="eq(-1,true)" type="slider" default="150" range="0,5,254" option="int" />
 
         <!-- Playback Stop -->
         <setting type="lsep" label="3600" />
-        <setting id="ambilight_stop_bri_override" label="3610" type="bool" default="false" />
+        <setting id="ambilight_stop_bri_override" label="3610" visible="eq(-14,true)" type="bool" default="false" />
         <setting id="ambilight_stop_bri" label="3620" visible="eq(-1,true)" type="slider" default="150" range="0,5,254" option="int" />
     </category>
 
