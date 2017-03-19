@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- Main -->
+    <string id="1000">GENERAL</string>
+
+    <string id="1100">Asignación de luces</string>
+    <string id="1120">Luces modo Teatro</string>
+    <string id="1130">Luces modo Ambilight</string>
+    <string id="1140">Luces modo Estático</string>
+
+    <string id="1200">Datos del Puente</string>
+    <string id="1210">Descubrir Puente HUE</string>
+    <string id="1220">IP</string>
+    <string id="1230">Usuario</string>
+
+    <string id="1400">ATENCIÓN: RESETEAR TODOS LOS AJUSTES</string>
+    <string id="1410">Resetear todos los ajustes (requiere activar/desactivar el addon)</string>
+
+    <!-- Theater -->
+    <string id="2000">TEATRO</string>
+
+    <string id="2100">Ajustes generales</string>
+    <string id="2105">Comportamiento general</string>
+    <string id="2110">Tiempo de atenuación</string>
+    <string id="2120">Tiempo de atenuación proporcional</string>
+    <string id="2130">(Ejemplo: Usa el 70% del tiempo si atenuamos las luces al 70%)</string>
+
+    <string id="2200">Comportamiento durante la reproducción</string>
+    <string id="2210">Ignorar valor de intensidad inicial (por defecto: 30)</string>
+    <string id="2220">Elegir nueva intensidad</string>
+
+    <string id="2300">Reproducción en pausa</string>
+    <string id="2305">Solo atenuar un subgrupo de luces</string>
+    <string id="2310">Ignorar valor de intensidad inicial (por defecto valor: inicial)</string>
+    <string id="2320">Elegir nueva intensidad</string>
+
+    <string id="2400">Reproducción parada</string>
+    <string id="2410">Ignorar valor de intensidad inicial (por defecto valor: inicial)</string>
+    <string id="2420">Elegir nueva intensidad</string>
+
+    <!-- Ambilight -->
+    <string id="3000">AMBILIGHT</string>
+
+    <string id="3100">Ajustes generales</string>
+    <string id="3110">Intensidad mínima</string>
+    <string id="3120">Intensidad máxima</string>
+    <string id="3130">Activar atenuado</string>
+
+    <string id="3200">Valores de corte</string>
+    <string id="3210">Valor</string>
+    <string id="3220">Saturación</string>
+
+    <string id="3300">Color</string>
+    <string id="3310">Bias</string>
+    <string id="3320">Sensibilidad: 6=variedad con >1 luz, 36=precisión</string>
+
+    <string id="3400">Comportamiento durante la reproducción</string>
+    <string id="3420">Ignorar valor de intensidad inicial (por defecto: 30)</string>
+    <string id="3430">Elegir nueva intensidad</string>
+
+    <string id="3500">Reproducción en pausa</string>
+    <string id="3510">Ignorar valor de intensidad inicial (por defecto valor: inicial)</string>
+    <string id="3520">Elegir nueva intensidad</string>
+
+    <string id="3600">Reproducción parada</string>
+    <string id="3610">Ignorar valor de intensidad inicial (por defecto valor: inicial)</string>
+    <string id="3620">Elegir nueva intensidad</string>
+
+    <string id="4000">ESTÁTICA</string>
+    <string id="4100">Comportamiento durante la reproducción</string>
+    <string id="4105">Color aleatorio</string>
+    <string id="4110">Ignorar valor de color inicial (por defecto valor: inicial)</string>
+    <string id="4120">Elegir nuevo color</string>
+    <string id="4130">Ignorar valor de saturación inicial (por defecto valor: inicial)</string>
+    <string id="4140">Elegir nueva saturación</string>
+    <string id="4150">Ignorar valor de intensidad inicial (por defecto: 100)</string>
+    <string id="4160">Elegir nueva intensidad</string>
+
+    <!-- Advanced -->
+    <string id="5000">AVANZADO</string>
+
+    <string id="5100">Ajustes generales</string>
+    <string id="5110">Activar parpadeo inicial</string>
+    <string id="5120">Desactivar para videos cortos</string>
+    <string id="5130">Valor de corte para videos cortos en segundos</string>
+    <string id="5140">Forzar encendido de luces incluso si están apagadas</string>
+</strings>
