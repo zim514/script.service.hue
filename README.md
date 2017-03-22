@@ -2,6 +2,12 @@
 
 A Kodi add-on that controls Philips Hue lights. 
 
+## Compatibility
+|Kodi v16|Kodi v17+|
+|--------|---------|
+|[download](https://github.com/mpolednik/script.kodi.hue.ambilight/archive/v16.zip)|[download](https://github.com/mpolednik/script.kodi.hue.ambilight/archive/master.zip)|
+|Branch "v16"|Branch "master"|
+
 ## Light Groups
 
 This add-on works with a concept of groups that are different from groups defined on Hue bridge. Each group can have 0 or more lights and has default behavior settings that can be modified in the add-on settings screen. After playback ends, the add-on will try to restore the lights to where they where before it started controlling them.
