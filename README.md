@@ -1,5 +1,7 @@
 # script.kodi.hue.ambilight
 
+[![Build Status](https://travis-ci.org/mpolednik/script.kodi.hue.ambilight.svg?branch=master)](https://travis-ci.org/mpolednik/script.kodi.hue.ambilight)
+
 A Kodi add-on that controls Philips Hue lights. 
 
 ## Compatibility
