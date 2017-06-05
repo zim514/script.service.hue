@@ -108,6 +108,7 @@ class MyPlayer(xbmc.Player):
         xbmclog('Kodi Hue: In MyPlayer.onPlayBackStarted()')
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         self.playlistlen = playlist.size()
+        self.playlistpos = playlist.getposition()
         self.playingvideo = True
         self.duration = self.getTotalTime()
         state_changed("started", self.duration)
