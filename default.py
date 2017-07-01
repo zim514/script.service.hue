@@ -239,12 +239,6 @@ def run():
         if len(hue.ambilight_controller.lights) and not ev.is_set():
             startReadOut = False
             vals = {}
-            # live tv does not trigger playbackstart
-            if player.isPlayingVideo() and not player.playingvideo:
-                player.playingvideo = True
-
-                state_changed("started", player.getTotalTime())
-                continue
             if player.playingvideo:  # only if there's actually video
                 try:
                     vals = capture.getImage(200)
