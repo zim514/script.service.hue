@@ -53,6 +53,9 @@ If you find a problem or missing feature, open an issue or a pull requests on ht
 
 To have a higher chance of issue being solved, please attach a log file. To record one, go to `settings wheel -> System settings -> Logging -> Enable Debug Logging` and follow the procedure at http://kodi.wiki/view/Log_file/Easy
 
-## Note for Raspberry Pi users:
+# Note for ARM users #
+## Nvidia Shield / most Android boxes ##
+- _Ambilight mode_ doesn't properly work with 4k-HD codecs (>1080p) when "allow hardware acceleration - Mediacodec (Surface)" is enabled.
+## Raspberry Pi's: ##
  - Save the add-on configuration by exiting Kodi before shutting down the Pi completely
- - Ambilight mode doesn't work on a Raspberry Pi due to the way it renders video
+ - _Ambilight mode_ might work on _Raspberry Pi's_ with most codecs and contents up to 1080p (feedback from thutterer on a RPI 3)
