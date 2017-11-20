@@ -32,8 +32,11 @@ class Light(object):
         except KeyError:
             self.livingwhite = True
 
-        self.init_bri = spec['state']['bri']
-        self.bri = self.init_bri
+        try:
+            self.init_bri = spec['state']['bri']
+            self.bri = self.init_bri
+        except KeyError:
+            self.livingwhite = True
 
         self.init_on = spec['state']['on']
         self.on = self.init_on
