@@ -6,8 +6,12 @@ def transition_colorspace(hue, light, hsvratio):
     h, s, v = hsvratio.hue(
         fullspectrum, hue.settings.ambilight_min, hue.settings.ambilight_max
     )
+    if light.hue is None:
+        light.hue = 1
     hvec = abs(h - light.hue) % int(65535/2)
     hvec = float(hvec/128.0)
+    if light.sat is None:
+        light.sat = 1
     svec = s - light.sat
     vvec = v - light.bri
     # changed to squares for performance
