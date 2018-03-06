@@ -58,7 +58,7 @@ class MyMonitor(xbmc.Monitor):
                     self.settings.theater_group
                 )
                 self.settings.update(theater_group=ret)
-                self.update_controllers()
+                hue.update_controllers()
             if method == 'Other.start_setup_theater_subgroup':
                 ret = ui.multiselect_lights(
                     self.settings.bridge_ip,
@@ -69,7 +69,7 @@ class MyMonitor(xbmc.Monitor):
                     self.settings.theater_subgroup
                 )
                 self.settings.update(theater_subgroup=ret)
-                self.update_controllers()
+                hue.update_controllers()
             if method == 'Other.start_setup_ambilight_lights':
                 ret = ui.multiselect_lights(
                     self.settings.bridge_ip,
@@ -80,7 +80,7 @@ class MyMonitor(xbmc.Monitor):
                     self.settings.ambilight_group
                 )
                 self.settings.update(ambilight_group=ret)
-                self.update_controllers()
+                hue.update_controllers()
             if method == 'Other.start_setup_static_lights':
                 ret = ui.multiselect_lights(
                     self.settings.bridge_ip,
@@ -91,7 +91,7 @@ class MyMonitor(xbmc.Monitor):
                     self.settings.static_group
                 )
                 self.settings.update(static_group=ret)
-                self.update_controllers()
+                hue.update_controllers()
 
 
 class MyPlayer(xbmc.Player):
