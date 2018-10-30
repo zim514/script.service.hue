@@ -15,7 +15,7 @@ def user_exists(bridge_ip, bridge_user, notify=True):
         bridge_ip, bridge_user))
     res = req.json()
 
-    success = False
+    success = True
     try:
         success = bridge_user in res['whitelist']
     except KeyError:
