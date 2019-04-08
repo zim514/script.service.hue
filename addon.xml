@@ -8,7 +8,7 @@
 
     
   </requires>
-  <extension point="xbmc.service" library="default.py"></extension>
+  <extension point="xbmc.service" library="main.py" start="startup"></extension>
   <extension point="xbmc.addon.metadata">
     <summary>Kodi-controlled Philips Hue lights</summary>
     <description>Let Kodi control your Philips Hue lights. Either turns the lights into a room-sized ambilight, or automatically dims and un-dims them when playback starts or stops.</description>
