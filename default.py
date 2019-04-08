@@ -2,20 +2,26 @@ from threading import Event
 import os
 import sys
 import time
+import logging
 
 import xbmc
 import xbmcaddon
 #from utils import Debugger
+
+
+#import kodilogging
+#import kodiutils
 
 REMOTE_DBG = False
 
 __addon__ = xbmcaddon.Addon()
 __addondir__ = xbmc.translatePath(__addon__.getAddonInfo('profile'))
 __cwd__ = __addon__.getAddonInfo('path')
-__resource__ = xbmc.translatePath(os.path.join(__cwd__, 'resources', 'lib'))
 
+
+__resource__ = xbmc.translatePath(os.path.join(__cwd__, 'resources', 'lib'))
 sys.path.append(__resource__)
- 
+
 from settings import Settings
 from tools import get_version, xbmclog
 from ambilight_controller import AmbilightController
@@ -27,8 +33,23 @@ import ui
 import algorithm
 import image
 
-xbmclog("Kodi Hue: In .(argv={}) service started, version: {}".format(
-    sys.argv, get_version()))
+###import kodilogging
+
+
+
+#ADDON = xbmcaddon.Addon()
+#kodilogging.config()
+#logger = logging.getLogger(ADDON.getAddonInfo('id'))
+
+ 
+
+
+
+xbmclog("Kodi Hue: In .(argv={}) service started2, version: {}, SYSPATH: {}".format(
+    sys.argv, get_version(),sys.path))
+
+###logger.debug("Krishello logger! %s" % time.time())
+
 
 ev = Event()
 capture = xbmc.RenderCapture()
