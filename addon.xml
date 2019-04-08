@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<addon id="script.kodi.hue.ambilight" name="Kodi Philips Hue" version="0.0.1" provider-name="Kris">
+<addon id="script.kodi.hue.ambilight" name="Kodi Philips Hue" version="0.0.1" provider-name="zim514">
   <requires>
     <import addon="xbmc.python" version="2.25.0"/>
     <import addon="script.module.requests"/>
     
     
-<!-- <import addon="script.module.pydevd"/> -->
+
     
   </requires>
   <extension point="xbmc.service" library="default.py"></extension>
