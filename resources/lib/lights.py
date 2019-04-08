@@ -1,7 +1,18 @@
 import json
-import requests
+#import requests
+
+
+
+import tools
 
 from tools import xbmclog
+from time import sleep
+
+try:
+    import requests
+except ImportError:
+    tools.notify("Kodi Hue", "ERROR: Could not import Python requests")
+
 
 
 class Light(object):
@@ -73,6 +84,7 @@ class Light(object):
             endpoint = 'http://{}/api/{}/lights/{}/state'.format(
                 self.bridge_ip, self.username, self.light_id)
             self.session.put(endpoint, data)
+            xbmclog('Kodi Hue: In lights.set_state) endpoint:' + endpoint + ' DATA: ' +str(data))
         except Exception:
             pass
 
@@ -130,11 +142,8 @@ class Controller(object):
         for light in self._calculate_subgroup(lights):
             if not force_on and not light.init_on:
                 continue
-            if bri:
-                if self.settings.proportional_dim_time:
-                    transition_time = self._transition_time(light, bri)
-                else:
-                    transition_time = self.settings.dim_time
+            if not transition_time:
+                transition_time = self.settings.dim_time
 
             light.set_state(
                 hue=hue, sat=sat, bri=bri, on=on,
@@ -173,10 +182,14 @@ class Controller(object):
             .format(self.__class__.__name__)
         )
         self.set_state(
-            on=False,
+            on=True,
+            hue=33346,
+            bri=150,
+            sat=254,
+            transition_time=10,
             force_on=self.settings.force_light_on,
         )
-
+        sleep(5)
         self.restore_initial_state(
             force_on=self.settings.force_light_on,
         )

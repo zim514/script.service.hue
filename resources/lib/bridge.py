@@ -22,7 +22,6 @@ def user_exists(bridge_ip, bridge_user, notify=True):
         success = False
 
     if notify:
-        import tools
         if success:
             tools.notify("Kodi Hue", "Connected")
         else:
@@ -32,7 +31,8 @@ def user_exists(bridge_ip, bridge_user, notify=True):
 
 
 def discover():
-    bridge_ip = _discover_upnp()
+    #bridge_ip = _discover_upnp()
+    bridge_ip = None
     if bridge_ip is None:
         bridge_ip = _discover_nupnp()
 
@@ -40,13 +40,12 @@ def discover():
 
 
 def create_user(bridge_ip, notify=True):
-    device = 'kodi#ambilight'
+    device = 'kodi#script.kodi.hue.ambilight'
     data = '{{"devicetype": "{}"}}'.format(device)
 
     res = 'link button not pressed'
     while 'link button not pressed' in res:
         if notify:
-            import tools
             tools.notify('Kodi Hue', 'Press link button on bridge')
         req = requests.post('http://{}/api'.format(bridge_ip), data=data)
         res = req.text

@@ -1,5 +1,56 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
+
+
+<!--  GROUP SECTION -->    
+    <category label="6000">
+        <!-- Group 1 -->
+        <setting type="lsep" label="6000" />
+        <setting id="group_id" type="number"  enable ="false" label="6001" default="1" option="int" /> 
+        <setting id="group_name" type="text" label="6002"  default="Group 1"/>
+        <setting id="group_behavior" type="select" label="6201" lvalues="6202|6203|6204" />
+
+        <setting id="group_fade_time" type="slider" label="6206"  range="0,1,20" default="10" subsetting="true" enable="gt(-1,0)"/>
+        <setting id="group_force_on" type="bool" label="6207"  default="false" subsetting="true" enable="eq(-2,1)" />
+       
+        
+        <!--  Group playback start setting -->
+        <!--   Visible when group behaviour is Adjust -->
+        <setting type="lsep" label="6301" visible="eq(-3,1)"/> 
+        <setting id="group_event_start_behavior" type="select" label="6201" lvalues="6202|6203|6204" visible="eq(-4,1)"/>
+             <!-- Visible when group_event_start is Adjust (1) + group_behavior is Adjust (1)  -->
+	        <setting id="group_event_start_hue" type="slider" label="6402"  range="0,1,255" default="0" subsetting="true" visible="eq(-1,1) + eq(-5,1)" /> 
+	        <setting id="group_event_start_saturation" type="slider" label="6403"  range="0,1,255" default="100" subsetting="true" visible="eq(-2,1) + eq(-6,1)" />
+	        <setting id="group_event_start_brightness" type="slider" label="6404"  range="0,1,255" default="100" subsetting="true" visible="eq(-3,1)  + eq(-7,1)" />
+	        
+	        
+ 	        
+        <!--  Group playback pause setting -->
+        <!--   Visible when group behaviour is Adjust -->
+        <setting type="lsep" label="6302" visible="eq(-8,1)"/>   
+        <setting id="group_event_pause_behavior" type="select" label="6201" lvalues="6202|6203|6204|6205" visible="eq(-9,1)" />
+	        <!-- Visible when group_event_start is Adjust (1) + group_behavior is Adjust (1)  -->           
+	        <setting id="group_event_pause_hue" type="slider" label="6402"  range="0,1,255" default="0" subsetting="true" visible="eq(-1,1) + eq(-10,1)" />
+	        <setting id="group_event_pause_saturation" type="slider" label="6403"  range="0,1,255" default="100" subsetting="true" visible="eq(-2,1) + eq(-11,1)" />
+	        <setting id="group_event_pause_brightness" type="slider" label="6404"  range="0,1,255" default="100" subsetting="true" visible="eq(-3,1) + eq(-12,1)" />
+
+
+		<!--  Group playback stop setting --> 
+		<!--   Visible when group behaviour is Adjust -->
+        <setting type="lsep" label="6303" visible="eq(-13,1)"/>
+        <setting id="group_event_stop_behavior" type="select" label="6201" lvalues="6202|6203|6204|6205" visible="eq(-14,1)"/>
+        	<!-- Visible when group_event_start is Adjust (1) + group_behavior is Adjust (1)  -->                  
+	        <setting id="group_event_stop_hue" type="slider" label="6402"  range="0,1,255" default="0" subsetting="true" visible="eq(-1,1) + eq(-15,1)"/>
+	        <setting id="group_event_stop_saturation" type="slider" label="6403"  range="0,1,255" default="100" subsetting="true" visible="eq(-2,1) + eq(-16,1)"/>
+	        <setting id="group_event_stop_brightness" type="slider" label="6404"  range="0,1,255" default="100" subsetting="true" visible="eq(-3,1) + eq(-17,1)"/>
+    
+      
+    </category>
+    
+
+
+ 
+
     <category label="1000">
         <!-- Main SECTION -->
         <setting type="lsep" label="1000" />
@@ -24,6 +75,11 @@
         <setting type="lsep" label="1400" />
         <setting id="reset_settings" type="action" label="1410" action="RunScript(script.kodi.hue.ambilight,action=reset_settings)" option="close" />
     </category>
+
+
+
+
+
 
     <category label="2000">
         <!-- Theater -->
@@ -104,6 +160,8 @@
         <setting id="static_start_bri_override" label="4150" type="bool" default="false" />
         <setting id="static_start_bri" label="4160" visible="eq(-1,true)" type="slider" default="100" range="0,5,254" option="int" />
     </category>
+    
+
 
     <category label="5000">
         <!--Advanced SECTION-->

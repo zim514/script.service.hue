@@ -19,7 +19,7 @@ def xbmclog(message):
     if TESTING_ENV:
         pass
     else:
-        xbmc.log(message)
+        xbmc.log(message,xbmc.LOGNOTICE)
 
 
 def notify(title, msg=''):
