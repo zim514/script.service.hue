@@ -1,54 +1,47 @@
-from threading import Event
 import os
 import sys
-import time
+
+from threading import Event
+
 import logging
+import time
 
 import xbmc
 import xbmcaddon
-#from utils import Debugger
 
-
-#import kodilogging
-#import kodiutils
-
-REMOTE_DBG = False
 
 __addon__ = xbmcaddon.Addon()
 __addondir__ = xbmc.translatePath(__addon__.getAddonInfo('profile'))
 __cwd__ = __addon__.getAddonInfo('path')
 
 
-__resource__ = xbmc.translatePath(os.path.join(__cwd__, 'resources', 'lib'))
-sys.path.append(__resource__)
-
-from settings import Settings
-from tools import get_version, xbmclog
-from ambilight_controller import AmbilightController
-from theater_controller import TheaterController
-from static_controller import StaticController
-
-import bridge
-import ui
-import algorithm
-import image
-
-###import kodilogging
+from resources.lib import algorithm
+from resources.lib.ambilight_controller import AmbilightController
+from resources.lib import bridge
+from resources.lib import image
+from resources.lib import ui
 
 
+from resources.lib.settings import Settings
+from resources.lib.static_controller import StaticController
+from resources.lib.theater_controller import TheaterController
+from resources.lib.tools import get_version
+from resources.lib import kodilogging
 
-#ADDON = xbmcaddon.Addon()
-#kodilogging.config()
-#logger = logging.getLogger(ADDON.getAddonInfo('id'))
-
- 
+from resources.lib import kodiutils
 
 
+REMOTE_DBG = True
 
-xbmclog("Kodi Hue: In .(argv={}) service started2, version: {}, SYSPATH: {}".format(
+
+ADDON = xbmcaddon.Addon()
+kodilogging.config()
+logger = logging.getLogger(ADDON.getAddonInfo('id'))
+
+logger.debug("Kodi Hue: In .(argv={}) service started, version: {}, SYSPATH: {}".format(
     sys.argv, get_version(),sys.path))
 
-###logger.debug("Krishello logger! %s" % time.time())
+
 
 
 ev = Event()
@@ -57,9 +50,9 @@ fmt = capture.getImageFormat()
 # BGRA or RGBA
 fmtRGBA = fmt == 'RGBA'
 
-#xbmclog("Kodi Hue: In .(argv={}) reach debugger")
+#logger.debug("Kodi Hue: In .(argv={}) reach debugger")
 #debugger = Debugger()
-#xbmclog("Kodi Hue: In .(argv={}) after debugger")
+#logger.debug("Kodi Hue: In .(argv={}) after debugger")
 
 # append pydev remote debugger
 if REMOTE_DBG:
@@ -67,27 +60,16 @@ if REMOTE_DBG:
     # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
     try:
         #import pydevd as pydevd # with the addon script.module.pydevd, only use `import pydevd`
-
-        import sys
         sys.path.append('e:\dev\pysrc')
-        sys.stderr.write("KRISError: " +
-            "PYTHONPATH: " + str(sys.path))
-
         import pydevd
         
     # stdoutToServer and stderrToServer redirect stdout and stderr to eclipse console
-        pydevd.settrace('localhost', stdoutToServer=False, stderrToServer=False, overwrite_prev_trace=True, suspend=False,
-                        trace_only_current_thread=False,patch_multiprocessing=False)
-       
-       
-#        sys.stderr.write("KRISstderr: " +
-#            "OOGA")
-#        sys.stdout.write("KRISstdout: " +
-#            "BOOGA")
+        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True, suspend=False,
+                        trace_only_current_thread=False,patch_multiprocessing=True)
         
     except ImportError:
-        sys.stderr.write("KRISError: " +
-            "You must add org.python.pydev.debug.pysrc to your PYTHONPATH.")
+        sys.stderr.write("Kodi Hue Remote Debug Error: " +
+            "You must add org.python.pydev.debug.pysrc to your PYTHONPATH, or disable REMOTE_DBG")
         sys.exit(1)
 
 
@@ -99,11 +81,11 @@ class MyMonitor(xbmc.Monitor):
 
     def onSettingsChanged(self):
         hue.settings.readxml()
-        xbmclog('Kodi Hue: In onSettingsChanged() {}'.format(hue.settings))
+        logger.debug('Kodi Hue: In onSettingsChanged() {}'.format(hue.settings))
         hue.update_controllers()
 
     def onNotification(self, sender, method, data):
-        xbmclog('Kodi Hue: In onNotification(sender={}, method={}, data={})'
+        logger.debug('Kodi Hue: In onNotification(sender={}, method={}, data={})'
                 .format(sender, method, data))
         if sender == __addon__.getAddonInfo('id'):
             if method == 'Other.start_setup_theater_lights':
@@ -159,11 +141,11 @@ class MyPlayer(xbmc.Player):
     movie = False
 
     def __init__(self):
-        xbmclog('Kodi Hue: In MyPlayer.__init__()')
+        logger.debug('Kodi Hue: In MyPlayer.__init__()')
         xbmc.Player.__init__(self)
 
     def onPlayBackStarted(self):
-        xbmclog('Kodi Hue: In MyPlayer.onPlayBackStarted()')
+        logger.debug('Kodi Hue: In MyPlayer.onPlayBackStarted()')
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         self.playlistlen = playlist.size()
         self.playlistpos = playlist.getposition()
@@ -172,13 +154,13 @@ class MyPlayer(xbmc.Player):
         state_changed("started", self.duration)
 
     def onPlayBackPaused(self):
-        xbmclog('Kodi Hue: In MyPlayer.onPlayBackPaused()')
+        logger.debug('Kodi Hue: In MyPlayer.onPlayBackPaused()')
         state_changed("paused", self.duration)
         if self.isPlayingVideo():
             self.playingvideo = False
 
     def onPlayBackResumed(self):
-        xbmclog('Kodi Hue: In MyPlayer.onPlayBackResume()')
+        logger.debug('Kodi Hue: In MyPlayer.onPlayBackResume()')
         state_changed("resumed", self.duration)
         if self.isPlayingVideo():
             self.playingvideo = True
@@ -186,13 +168,13 @@ class MyPlayer(xbmc.Player):
                 self.duration = self.getTotalTime()
 
     def onPlayBackStopped(self):
-        xbmclog('Kodi Hue: In MyPlayer.onPlayBackStopped()')
+        logger.debug('Kodi Hue: In MyPlayer.onPlayBackStopped()')
         state_changed("stopped", self.duration)
         self.playingvideo = False
         self.playlistlen = 0
 
     def onPlayBackEnded(self):
-        xbmclog('Kodi Hue: In MyPlayer.onPlayBackEnded()')
+        logger.debug('Kodi Hue: In MyPlayer.onPlayBackEnded()')
         # If there are upcoming plays, ignore
         if self.playlistpos < self.playlistlen-1:
             return
@@ -277,7 +259,7 @@ class Hue:
             self.settings
         )
 
-        xbmclog(
+        logger.debug(
             'Kodi Hue: In Hue.update_controllers() instantiated following '
             'controllers {} {} {}'.format(
                 self.theater_controller,
@@ -290,7 +272,7 @@ class Hue:
 def run():
     player = MyPlayer()
     if player is None:
-        xbmclog('Kodi Hue: In run() could not instantiate player')
+        logger.debug('Kodi Hue: In run() could not instantiate player')
         return
 
     while not monitor.abortRequested():
@@ -319,13 +301,13 @@ def run():
                     pass
 
         if monitor.waitForAbort(0.1):
-            xbmclog('Kodi Hue: In run() deleting player')
+            logger.debug('Kodi Hue: In run() deleting player')
             del player  # might help with slow exit.
             break
 
 
 def state_changed(state, duration):
-    xbmclog('Kodi Hue: In state_changed(state={}, duration={})'.format(
+    logger.debug('Kodi Hue: In state_changed(state={}, duration={})'.format(
         state, duration))
 
     if (xbmc.getCondVisibility('Window.IsActive(screensaver-atv4.xml)') or

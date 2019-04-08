@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import logging
+import sys
+
 import xbmc
 import xbmcaddon
 import xbmcgui
-import sys
-import logging
+
 import json as json
 
 

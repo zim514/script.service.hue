@@ -1,5 +1,6 @@
-import image
 import pytest
+
+import image
 
 
 def test_hsvratio_init():

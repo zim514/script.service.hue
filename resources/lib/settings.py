@@ -2,6 +2,7 @@ import sys
 
 import xbmcaddon
 
+
 __addon__ = sys.modules["__main__"].__addon__
 
 

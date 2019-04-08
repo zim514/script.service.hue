@@ -1,9 +1,5 @@
-*.DS_Store
 *.pyc
-*.dylib
 *.pyo
-cscope.out
-tags
 /.pydevproject
 /.project
 /.settings/

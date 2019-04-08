@@ -61,6 +61,7 @@
 
     <string id="1400">WARNING: RESET ALL SETTINGS</string>
     <string id="1410">Reset all settings (requires disable/re-enable)</string>
+    <string id="1420">Debug mode</string>
 
     <!-- Theater -->
     <string id="2000">Theater</string>

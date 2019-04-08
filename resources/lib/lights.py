@@ -1,13 +1,11 @@
 import json
-#import requests
-
-
-
-import tools
-
-from tools import xbmclog
 from time import sleep
 
+from tools import xbmclog
+import tools
+
+
+#import requests
 try:
     import requests
 except ImportError:
