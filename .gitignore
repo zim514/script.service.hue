@@ -4,3 +4,6 @@
 *.pyo
 cscope.out
 tags
+/.pydevproject
+/.project
+/.settings/
