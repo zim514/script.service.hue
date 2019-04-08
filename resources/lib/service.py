@@ -17,19 +17,15 @@ from resources.lib.newDefault import MyPlayer
 import xbmc
 import xbmcaddon
 
-
-
 __addon__ = xbmcaddon.Addon()
 __addondir__ = xbmc.translatePath(__addon__.getAddonInfo('profile'))
 __cwd__ = __addon__.getAddonInfo('path')
-
 
 from resources.lib import algorithm
 from resources.lib.ambilight_controller import AmbilightController
 from resources.lib import bridge
 from resources.lib import image
 from resources.lib import ui
-
 
 from resources.lib.settings import Settings
 from resources.lib.static_controller import StaticController
@@ -39,18 +35,13 @@ from resources.lib import kodilogging
 
 from resources.lib import kodiutils
 
-
-
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 
 REMOTE_DBG = True
 
-
-
 logger.debug("Kodi Hue: In .(argv={}) service started, version: {}, SYSPATH: {}".format(
-    sys.argv, get_version(),sys.path))
-
+    sys.argv, get_version(), sys.path))
 
 ev = Event()
 capture = xbmc.RenderCapture()
@@ -59,20 +50,15 @@ fmt = capture.getImageFormat()
 fmtRGBA = fmt == 'RGBA'
 
 
-
-
-
 ##################################################
 ## RUN
 ###################
 
 
-
 def run():
     logger.debug("Kodi Hue: In .(argv={}) service started, version: {}, SYSPATH: {}".format(
-        sys.argv, get_version(),sys.path))
-    
-    
+        sys.argv, get_version(), sys.path))
+
     ev = Event()
     capture = xbmc.RenderCapture()
     fmt = capture.getImageFormat()
@@ -80,7 +66,7 @@ def run():
     fmtRGBA = fmt == 'RGBA'
 
     settings = Settings()
-    monitor = MyMonitor(settings)   
+    monitor = MyMonitor(settings)
 
     args = None
     if len(sys.argv) == 2:
@@ -88,29 +74,22 @@ def run():
 
     hue = Hue(settings, args)
 
-    
-    
-        
- 
-    
-######################    
-#    monitor = xbmc.Monitor()
-#
-#    while not monitor.abortRequested():
-#        # Sleep/wait for abort for 10 seconds
-#        if monitor.waitForAbort(10):
-#            # Abort was requested while waiting. We should exit
-#            break
-#        logger.debug("hello addon! %s" % time.time())
-#
-####################
+    ######################
+    #    monitor = xbmc.Monitor()
+    #
+    #    while not monitor.abortRequested():
+    #        # Sleep/wait for abort for 10 seconds
+    #        if monitor.waitForAbort(10):
+    #            # Abort was requested while waiting. We should exit
+    #            break
+    #        logger.debug("hello addon! %s" % time.time())
+    #
+    ####################
     player = MyPlayer()
-    
-    
+
     while not hue.connected and not monitor.abortRequested():
-            time.sleep(0.1)
-   
-    
+        time.sleep(0.1)
+
     if player is None:
         logger.debug('Kodi Hue: In run() could not instantiate player')
         return
@@ -144,7 +123,3 @@ def run():
             logger.debug('Kodi Hue: In run() deleting player')
             del player  # might help with slow exit.
             break
-        
-        
-        
-        
