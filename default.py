@@ -42,28 +42,21 @@ logger.debug("Kodi Hue: In .(argv={}) service started, version: {}, SYSPATH: {}"
     sys.argv, get_version(),sys.path))
 
 
-
-
 ev = Event()
 capture = xbmc.RenderCapture()
 fmt = capture.getImageFormat()
 # BGRA or RGBA
 fmtRGBA = fmt == 'RGBA'
 
-#logger.debug("Kodi Hue: In .(argv={}) reach debugger")
-#debugger = Debugger()
-#logger.debug("Kodi Hue: In .(argv={}) after debugger")
 
-# append pydev remote debugger
 if REMOTE_DBG:
     # Make pydev debugger works for auto reload.
     # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
     try:
-        #import pydevd as pydevd # with the addon script.module.pydevd, only use `import pydevd`
+        
         sys.path.append('e:\dev\pysrc')
         import pydevd
-        
-    # stdoutToServer and stderrToServer redirect stdout and stderr to eclipse console
+      
         pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True, suspend=False,
                         trace_only_current_thread=False,patch_multiprocessing=True)
         
@@ -87,7 +80,7 @@ class MyMonitor(xbmc.Monitor):
     def onNotification(self, sender, method, data):
         logger.debug('Kodi Hue: In onNotification(sender={}, method={}, data={})'
                 .format(sender, method, data))
-        if sender == __addon__.getAddonInfo('id'):
+        if sender == ADDON.getAddonInfo('id'):
             if method == 'Other.start_setup_theater_lights':
                 ret = ui.multiselect_lights(
                     self.settings.bridge_ip,
@@ -214,16 +207,16 @@ class Hue:
             os.unlink(os.path.join(__addondir__, "settings.xml"))
         elif params['action'] == "setup_theater_lights":
             xbmc.executebuiltin('NotifyAll({}, {})'.format(
-                __addon__.getAddonInfo('id'), 'start_setup_theater_lights'))
+                ADDON.getAddonInfo('id'), 'start_setup_theater_lights'))
         elif params['action'] == "setup_theater_subgroup":
             xbmc.executebuiltin('NotifyAll({}, {})'.format(
-                __addon__.getAddonInfo('id'), 'start_setup_theater_subgroup'))
+                ADDON.getAddonInfo('id'), 'start_setup_theater_subgroup'))
         elif params['action'] == "setup_ambilight_lights":
             xbmc.executebuiltin('NotifyAll({}, {})'.format(
-                __addon__.getAddonInfo('id'), 'start_setup_ambilight_lights'))
+                ADDON.getAddonInfo('id'), 'start_setup_ambilight_lights'))
         elif params['action'] == "setup_static_lights":
             xbmc.executebuiltin('NotifyAll({}, {})'.format(
-                __addon__.getAddonInfo('id'), 'start_setup_static_lights'))
+                ADDON.getAddonInfo('id'), 'start_setup_static_lights'))
         else:
             # not yet implemented
             pass
@@ -269,42 +262,6 @@ class Hue:
         )
 
 
-def run():
-    player = MyPlayer()
-    if player is None:
-        logger.debug('Kodi Hue: In run() could not instantiate player')
-        return
-
-    while not monitor.abortRequested():
-        if len(hue.ambilight_controller.lights) and not ev.is_set():
-            startReadOut = False
-            vals = {}
-            if player.playingvideo:  # only if there's actually video
-                try:
-                    vals = capture.getImage(200)
-                    if len(vals) > 0 and player.playingvideo:
-                        startReadOut = True
-                    if startReadOut:
-                        screen = image.Screenshot(
-                            capture.getImage())
-                        hsv_ratios = screen.spectrum_hsv(
-                            screen.pixels,
-                            hue.settings.ambilight_threshold_value,
-                            hue.settings.ambilight_threshold_saturation,
-                            hue.settings.color_bias,
-                            len(hue.ambilight_controller.lights)
-                        )
-                        for i in range(len(hue.ambilight_controller.lights)):
-                            algorithm.transition_colorspace(
-                                hue, hue.ambilight_controller.lights.values()[i], hsv_ratios[i], )
-                except ZeroDivisionError:
-                    pass
-
-        if monitor.waitForAbort(0.1):
-            logger.debug('Kodi Hue: In run() deleting player')
-            del player  # might help with slow exit.
-            break
-
 
 def state_changed(state, duration):
     logger.debug('Kodi Hue: In state_changed(state={}, duration={})'.format(
@@ -344,6 +301,47 @@ def state_changed(state, duration):
         hue.ambilight_controller.on_playback_stop()
         hue.static_controller.on_playback_stop()
 
+
+
+
+    
+    
+def run():
+    player = MyPlayer()
+    if player is None:
+        logger.debug('Kodi Hue: In run() could not instantiate player')
+        return
+
+    while not monitor.abortRequested():
+        if len(hue.ambilight_controller.lights) and not ev.is_set():
+            startReadOut = False
+            vals = {}
+            if player.playingvideo:  # only if there's actually video
+                try:
+                    vals = capture.getImage(200)
+                    if len(vals) > 0 and player.playingvideo:
+                        startReadOut = True
+                    if startReadOut:
+                        screen = image.Screenshot(
+                            capture.getImage())
+                        hsv_ratios = screen.spectrum_hsv(
+                            screen.pixels,
+                            hue.settings.ambilight_threshold_value,
+                            hue.settings.ambilight_threshold_saturation,
+                            hue.settings.color_bias,
+                            len(hue.ambilight_controller.lights)
+                        )
+                        for i in range(len(hue.ambilight_controller.lights)):
+                            algorithm.transition_colorspace(
+                                hue, hue.ambilight_controller.lights.values()[i], hsv_ratios[i], )
+                except ZeroDivisionError:
+                    pass
+
+        if monitor.waitForAbort(0.1):
+            logger.debug('Kodi Hue: In run() deleting player')
+            del player  # might help with slow exit.
+            exit()
+            
 if (__name__ == "__main__"):
     settings = Settings()
     monitor = MyMonitor(settings)
@@ -353,5 +351,6 @@ if (__name__ == "__main__"):
         args = sys.argv[1]
     hue = Hue(settings, args)
     while not hue.connected and not monitor.abortRequested():
-        time.sleep(1)
+        time.sleep(0.1)
     run()
+    exit()    
