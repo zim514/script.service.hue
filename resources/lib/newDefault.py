@@ -40,11 +40,103 @@ logger = logging.getLogger(ADDON.getAddonInfo('id'))
 
 
 
+
+class Hue:
+    theater_controller = None
+    ambilight_controller = None
+    static_controller = None
+
+    def __init__(self, settings, args):
+        self.settings = settings
+        self.connected = False
+
+        try:
+            params = dict(arg.split("=") for arg in args.split("&"))
+        except Exception:
+            params = {}
+
+        if params == {}:
+            # if there's a bridge IP, try to talk to it.
+            if self.settings.bridge_ip not in ["-", "", None]:
+                result = bridge.user_exists(
+                    self.settings.bridge_ip,
+                    self.settings.bridge_user
+                )
+                if result:
+                    self.connected = True
+                    self.update_controllers()
+        elif params['action'] == "discover":
+            ui.discover_hue_bridge(self)
+            self.update_controllers()
+        elif params['action'] == "reset_settings":
+            os.unlink(os.path.join(__addondir__, "settings.xml"))
+        elif params['action'] == "setup_theater_lights":
+            xbmc.executebuiltin('NotifyAll({}, {})'.format(
+                ADDON.getAddonInfo('id'), 'start_setup_theater_lights'))
+        elif params['action'] == "setup_theater_subgroup":
+            xbmc.executebuiltin('NotifyAll({}, {})'.format(
+                ADDON.getAddonInfo('id'), 'start_setup_theater_subgroup'))
+        elif params['action'] == "setup_ambilight_lights":
+            xbmc.executebuiltin('NotifyAll({}, {})'.format(
+                ADDON.getAddonInfo('id'), 'start_setup_ambilight_lights'))
+        elif params['action'] == "setup_static_lights":
+            xbmc.executebuiltin('NotifyAll({}, {})'.format(
+                ADDON.getAddonInfo('id'), 'start_setup_static_lights'))
+        else:
+            # not yet implemented
+            pass
+
+        if self.connected:
+            if self.settings.misc_initialflash:
+                self.ambilight_controller.flash_lights()
+                self.theater_controller.flash_lights()
+                self.static_controller.flash_lights()
+
+    def update_controllers(self):
+        self.ambilight_controller = AmbilightController(
+            bridge.get_lights_by_ids(
+                self.settings.bridge_ip,
+                self.settings.bridge_user,
+                self.settings.ambilight_group.split(',')),
+            self.settings
+        )
+
+        self.theater_controller = TheaterController(
+            bridge.get_lights_by_ids(
+                self.settings.bridge_ip,
+                self.settings.bridge_user,
+                self.settings.theater_group.split(',')),
+            self.settings
+        )
+
+        self.static_controller = StaticController(
+            bridge.get_lights_by_ids(
+                self.settings.bridge_ip,
+                self.settings.bridge_user,
+                self.settings.static_group.split(',')),
+            self.settings
+        )
+
+        logger.debug(
+            'Kodi Hue: In Hue.update_controllers() instantiated following '
+            'controllers {} {} {}'.format(
+                self.theater_controller,
+                self.ambilight_controller,
+                self.static_controller,
+            )
+        )
+
+
+
+
+
+
 class MyMonitor(xbmc.Monitor):
 
     def __init__(self, settings):
         xbmc.Monitor.__init__(self)
         self.settings = settings
+        
 
     def onSettingsChanged(self):
         hue.settings.readxml()
@@ -150,93 +242,6 @@ class MyPlayer(xbmc.Player):
         state_changed("stopped", self.duration)
 
 
-class Hue:
-    theater_controller = None
-    ambilight_controller = None
-    static_controller = None
-
-    def __init__(self, settings, args):
-        self.settings = settings
-        self.connected = False
-
-        try:
-            params = dict(arg.split("=") for arg in args.split("&"))
-        except Exception:
-            params = {}
-
-        if params == {}:
-            # if there's a bridge IP, try to talk to it.
-            if self.settings.bridge_ip not in ["-", "", None]:
-                result = bridge.user_exists(
-                    self.settings.bridge_ip,
-                    self.settings.bridge_user
-                )
-                if result:
-                    self.connected = True
-                    self.update_controllers()
-        elif params['action'] == "discover":
-            ui.discover_hue_bridge(self)
-            self.update_controllers()
-        elif params['action'] == "reset_settings":
-            os.unlink(os.path.join(__addondir__, "settings.xml"))
-        elif params['action'] == "setup_theater_lights":
-            xbmc.executebuiltin('NotifyAll({}, {})'.format(
-                ADDON.getAddonInfo('id'), 'start_setup_theater_lights'))
-        elif params['action'] == "setup_theater_subgroup":
-            xbmc.executebuiltin('NotifyAll({}, {})'.format(
-                ADDON.getAddonInfo('id'), 'start_setup_theater_subgroup'))
-        elif params['action'] == "setup_ambilight_lights":
-            xbmc.executebuiltin('NotifyAll({}, {})'.format(
-                ADDON.getAddonInfo('id'), 'start_setup_ambilight_lights'))
-        elif params['action'] == "setup_static_lights":
-            xbmc.executebuiltin('NotifyAll({}, {})'.format(
-                ADDON.getAddonInfo('id'), 'start_setup_static_lights'))
-        else:
-            # not yet implemented
-            pass
-
-        if self.connected:
-            if self.settings.misc_initialflash:
-                self.ambilight_controller.flash_lights()
-                self.theater_controller.flash_lights()
-                self.static_controller.flash_lights()
-
-    def update_controllers(self):
-        self.ambilight_controller = AmbilightController(
-            bridge.get_lights_by_ids(
-                self.settings.bridge_ip,
-                self.settings.bridge_user,
-                self.settings.ambilight_group.split(',')),
-            self.settings
-        )
-
-        self.theater_controller = TheaterController(
-            bridge.get_lights_by_ids(
-                self.settings.bridge_ip,
-                self.settings.bridge_user,
-                self.settings.theater_group.split(',')),
-            self.settings
-        )
-
-        self.static_controller = StaticController(
-            bridge.get_lights_by_ids(
-                self.settings.bridge_ip,
-                self.settings.bridge_user,
-                self.settings.static_group.split(',')),
-            self.settings
-        )
-
-        logger.debug(
-            'Kodi Hue: In Hue.update_controllers() instantiated following '
-            'controllers {} {} {}'.format(
-                self.theater_controller,
-                self.ambilight_controller,
-                self.static_controller,
-            )
-        )
-
-
-
 def state_changed(state, duration):
     logger.debug('Kodi Hue: In state_changed(state={}, duration={})'.format(
         state, duration))
@@ -274,5 +279,4 @@ def state_changed(state, duration):
         hue.theater_controller.on_playback_stop()
         hue.ambilight_controller.on_playback_stop()
         hue.static_controller.on_playback_stop()
-
 

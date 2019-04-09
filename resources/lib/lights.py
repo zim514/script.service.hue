@@ -1,5 +1,9 @@
 import json
-from time import sleep
+import xbmc
+import xbmcaddon
+
+from resources.lib import bridge
+
 
 from tools import xbmclog
 import tools
@@ -187,7 +191,7 @@ class Controller(object):
             transition_time=10,
             force_on=self.settings.force_light_on,
         )
-        sleep(5)
+        xbmc.sleep(5000)
         self.restore_initial_state(
             force_on=self.settings.force_light_on,
         )

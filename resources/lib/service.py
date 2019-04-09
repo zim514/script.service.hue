@@ -4,18 +4,27 @@ import os
 import sys
 import time
 import logging
+
+
 from threading import Event
 
 from resources.lib import kodiutils
 from resources.lib import kodilogging
 from resources.lib import settings
 
-from resources.lib.newDefault import Hue
+
+
+###TODO Ewwwww....
 from resources.lib.newDefault import MyMonitor
 from resources.lib.newDefault import MyPlayer
+from resources.lib.newDefault import Hue
+                                                                                                                                                            
+
+
 
 import xbmc
 import xbmcaddon
+from resources.lib.kodiutils import notification
 
 __addon__ = xbmcaddon.Addon()
 __addondir__ = xbmc.translatePath(__addon__.getAddonInfo('profile'))
@@ -50,51 +59,58 @@ fmt = capture.getImageFormat()
 fmtRGBA = fmt == 'RGBA'
 
 
+
 ##################################################
 ## RUN
 ###################
-
-
 def run():
-    logger.debug("Kodi Hue: In .(argv={}) service started, version: {}, SYSPATH: {}".format(
-        sys.argv, get_version(), sys.path))
+    logger.debug("Kodi Hue: In .(argv={}) service started, version: {}".format(
+        sys.argv, get_version()))
 
+    args = None
+    if len(sys.argv) == 2:
+        args = sys.argv[1]
+
+
+    
     ev = Event()
     capture = xbmc.RenderCapture()
     fmt = capture.getImageFormat()
     # BGRA or RGBA
     fmtRGBA = fmt == 'RGBA'
 
+
+    ### CIRCULAR MESS
     settings = Settings()
+    
     monitor = MyMonitor(settings)
-
-    args = None
-    if len(sys.argv) == 2:
-        args = sys.argv[1]
-
     hue = Hue(settings, args)
-
-    ######################
-    #    monitor = xbmc.Monitor()
-    #
-    #    while not monitor.abortRequested():
-    #        # Sleep/wait for abort for 10 seconds
-    #        if monitor.waitForAbort(10):
-    #            # Abort was requested while waiting. We should exit
-    #            break
-    #        logger.debug("hello addon! %s" % time.time())
-    #
-    ####################
+    
     player = MyPlayer()
+    
 
-    while not hue.connected and not monitor.abortRequested():
-        time.sleep(0.1)
+
+    logger.debug("Kodi Hue: In run() Hue connected: " + str(hue.connected))
+    if not hue.connected:
+        notification("Kodi Hue", "Kodi Hue: Bridge not connected. Go to Kodi Hue settings to configure your hue Bridge", time=5000, icon=ADDON.getAddonInfo('icon'), sound=True)
+        ##TODO localized string
+        ##Connected & configured might not be the same thing...
+#    else:
+        ##TODO Flash lights!
+
+        
+        
+    
+#    while not hue.connected and not monitor.abortRequested():
+#        xbmc.sleep(500)
 
     if player is None:
         logger.debug('Kodi Hue: In run() could not instantiate player')
         return
 
-    while not monitor.abortRequested():
+    while not monitor.abortRequested() and not hue.connected():
+        
+        
         if len(hue.ambilight_controller.lights) and not ev.is_set():
             startReadOut = False
             vals = {}
@@ -119,7 +135,12 @@ def run():
                 except ZeroDivisionError:
                     pass
 
-        if monitor.waitForAbort(0.1):
-            logger.debug('Kodi Hue: In run() deleting player')
-            del player  # might help with slow exit.
+        if monitor.waitForAbort(10):
+            logger.debug('Kodi Hue: In run() shutting down')
+#            del player  # might help with slow exit.
             break
+
+
+
+
+
