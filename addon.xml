@@ -3,10 +3,7 @@
   <requires>
     <import addon="xbmc.python" version="2.25.0"/>
     <import addon="script.module.requests"/>
-    
-    
-
-    
+   
   </requires>
   <extension point="xbmc.service" library="main.py" start="startup"></extension>
   <extension point="xbmc.addon.metadata">

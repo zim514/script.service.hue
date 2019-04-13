@@ -8,6 +8,8 @@ import logging
 
 from threading import Event
 
+from  resources.lib.qhue import Bridge
+
 from resources.lib import kodiutils
 from resources.lib import kodilogging
 from resources.lib import settings
@@ -18,13 +20,15 @@ from resources.lib import settings
 from resources.lib.newDefault import MyMonitor
 from resources.lib.newDefault import MyPlayer
 from resources.lib.newDefault import Hue
-                                                                                                                                                            
+
+from resources.lib import kodiHue                                                                                                                                                          
 
 
 
 import xbmc
 import xbmcaddon
 from resources.lib.kodiutils import notification
+
 
 __addon__ = xbmcaddon.Addon()
 __addondir__ = xbmc.translatePath(__addon__.getAddonInfo('profile'))
@@ -79,15 +83,53 @@ def run():
     # BGRA or RGBA
     fmtRGBA = fmt == 'RGBA'
 
-
+    
+    
+    
+    
     ### CIRCULAR MESS
     settings = Settings()
     
     monitor = MyMonitor(settings)
-    hue = Hue(settings, args)
+    mon=xbmc.Monitor()
+    hue = Hue(settings, args) #crashing here if bridge ip isnt blank.. beurk
     
     player = MyPlayer()
     
+    
+    bridgeIP = kodiutils.get_setting("bridgeIp")
+    bridgeUser = kodiutils.get_setting("bridgeUser")
+    
+    
+    if not bridgeIP:
+        logger.debug("Kodi Hue: No bridge IP set, calling KodiHue.discover()")
+        notification("Kodi Hue", "Bridge not configured. Starting discovery", time=5000, icon=ADDON.getAddonInfo('icon'), sound=True)
+        bridgeIP=kodiHue.discover(mon)
+        bridgeUser = kodiHue.create_user(mon,bridgeIP, True)
+        #if bridgeIP and bridgeUser:
+            #if bridge setup worked, save settings
+            #TODO: catch errors....
+            #kodiutils.set_setting("bridgeIP", bridgeIP)
+            #kodiutils.set_setting("bridgeUser", bridgeUser)
+
+    logger.debug("Kodi Hue: Bridge setup. IP: " + str(bridgeIP) + " User: " + str(bridgeUser))
+        
+    
+        # create the bridge resource, passing the captured username
+    
+    bridge = Bridge(bridgeIP, bridgeUser)
+    
+    # create a lights resource
+    lights = bridge.lights
+
+    # query the API and print the results
+    logger.debug("Kodi Hue: Qhue.Bridge" + str(bridge()))
+    
+    
+    logger.debug("Kodi Hue: Qhue.Lights" + str(lights()))
+    
+#    print(lights())
+
 
 
     logger.debug("Kodi Hue: In run() Hue connected: " + str(hue.connected))

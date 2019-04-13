@@ -12,7 +12,7 @@ ADDON = xbmcaddon.Addon()
 kodilogging.config()
 
 REMOTE_DBG = True
-REMOTE_DBG_SUSPEND = True
+REMOTE_DBG_SUSPEND = False
 
 if REMOTE_DBG:
     # Make pydev debugger works for auto reload.
