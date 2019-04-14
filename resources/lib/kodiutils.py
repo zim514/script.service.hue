@@ -10,6 +10,8 @@ import xbmcgui
 import json as json
 
 
+
+
 # read settings
 ADDON = xbmcaddon.Addon()
 

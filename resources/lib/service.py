@@ -5,6 +5,8 @@ import sys
 import time
 import logging
 
+import json
+
 
 from threading import Event
 
@@ -27,6 +29,8 @@ from resources.lib import kodiHue
 
 import xbmc
 import xbmcaddon
+from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO 
+
 from resources.lib.kodiutils import notification
 
 
@@ -101,32 +105,56 @@ def run():
     bridgeUser = kodiutils.get_setting("bridgeUser")
     
     
-    if not bridgeIP:
-        logger.debug("Kodi Hue: No bridge IP set, calling KodiHue.discover()")
-        notification("Kodi Hue", "Bridge not configured. Starting discovery", time=5000, icon=ADDON.getAddonInfo('icon'), sound=True)
-        bridgeIP=kodiHue.discover(mon)
-        bridgeUser = kodiHue.create_user(mon,bridgeIP, True)
-        #if bridgeIP and bridgeUser:
-            #if bridge setup worked, save settings
-            #TODO: catch errors....
-            #kodiutils.set_setting("bridgeIP", bridgeIP)
-            #kodiutils.set_setting("bridgeUser", bridgeUser)
+    if not bridgeIP or not bridgeUser:
+        logger.debug("Kodi Hue: Hue setup incomplete, starting setup. Bridge IP: {},Bridge User: {}".format(bridgeIP,bridgeUser))
+        notification("Kodi Hue", "Bridge not configured. Starting setup", time=5000, icon=NOTIFICATION_WARNING, sound=True)
+        kodiHue.setup(mon,True) #Start setup with notifications
+        bridgeIP = kodiutils.get_setting("bridgeIp")
+        bridgeUser = kodiutils.get_setting("bridgeUser")
+        
+        
+    if not bridgeIP or not bridgeUser:
+        
+#        notification("Kodi Hue", "Bridge not configured. Starting setup", time=5000, icon=NOTIFICATION_WARNING, sound=True)
+        logger.debug("Kodi Hue: Hue initial setup failed, exiting script")
+        sys.exit()
+        
+    
+        
+    bridge = Bridge(bridgeIP, bridgeUser)
+    bridgeAPIVersion = bridge.config()['apiversion']
+    if bridgeAPIVersion:
+        logger.debug("Kodi Hue: Connection test success. Bridge API Version:".format(bridgeAPIVersion))
+    else:
+        notification("Kodi Hue", "Bridge connection error. Check settings", time=5000, icon=NOTIFICATION_ERROR, sound=True)
+        logger.debug("Kodi Hue: Connection error - could not find Hue API version. Stopping script.")
+        sys.exit()
+        
 
     logger.debug("Kodi Hue: Bridge setup. IP: " + str(bridgeIP) + " User: " + str(bridgeUser))
         
-    
-        # create the bridge resource, passing the captured username
-    
-    bridge = Bridge(bridgeIP, bridgeUser)
+   
     
     # create a lights resource
     lights = bridge.lights
+    
+#    initialLights = lights()
 
+   
     # query the API and print the results
-    logger.debug("Kodi Hue: Qhue.Bridge" + str(bridge()))
+#    logger.debug("Kodi Hue: Qhue.Bridge" + str(bridge()))
+    logger.debug("Kodi Hue: Initial test flash")
+    bridge.lights[5].state(bri=128, xy=[0.180,0.239],on=True, alert="select")
     
     
-    logger.debug("Kodi Hue: Qhue.Lights" + str(lights()))
+#    bridge.lights.state(initialLights)
+    
+    
+    
+    
+    
+    
+    sys.exit()
     
 #    print(lights())
 

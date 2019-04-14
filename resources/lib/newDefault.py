@@ -138,10 +138,10 @@ class MyMonitor(xbmc.Monitor):
         self.settings = settings
         
 
-    def onSettingsChanged(self):
-        hue.settings.readxml()
-        logger.debug('Kodi Hue: In onSettingsChanged() {}'.format(hue.settings))
-        hue.update_controllers()
+#    def onSettingsChanged(self):
+#        hue.settings.readxml()
+#        logger.debug('Kodi Hue: In onSettingsChanged() {}'.format(hue.settings))
+#        hue.update_controllers()
 
     def onNotification(self, sender, method, data):
         logger.debug('Kodi Hue: In onNotification(sender={}, method={}, data={})'
