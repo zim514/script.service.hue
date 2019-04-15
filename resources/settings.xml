@@ -55,7 +55,7 @@
         <!-- Main SECTION -->
         <setting type="lsep" label="1000" />
         <setting id="connected" label="1001" type="bool" enable="false" visible="false" default="false" />
-        <setting id="discover_bridge" type="action" label="1210" action="RunScript(script.kodi.hue.ambilight,action=discover)" />
+        <setting id="discover_bridge" type="action" label="1210" action="RunScript(script.kodi.hue,action=discover)" />
 
         <!-- Grouping -->
         <setting type="lsep" label="1100" />

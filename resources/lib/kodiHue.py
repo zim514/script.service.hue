@@ -3,6 +3,7 @@ Created on Apr. 12, 2019
 
 @author: zim514
 '''
+import sys
 import logging
 import requests
 from socket import getfqdn
@@ -11,6 +12,7 @@ from socket import getfqdn
 import xbmc
 import xbmcaddon
 import xbmcgui
+from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
 
 from resources.lib import kodiutils
 from resources.lib import qhue, tools
@@ -19,6 +21,7 @@ from resources.lib.qhue import qhue,QhueException,Bridge
 #from resources.lib.qhue import Bridge
 
 from resources.lib.kodiutils import notification, get_string
+
 
 
 ADDON = xbmcaddon.Addon()
@@ -39,6 +42,8 @@ def discover_nupnp():
 
 
 
+
+
 def setup(monitor, notify=True):
     #Force full setup, ignore any existing settings. This may create a duplicate user as Hue API doesn't prevent multiple users with same Devicetype
     logger.debug("Kodi Hue: In kodiHue setup(mon)")
@@ -50,7 +55,7 @@ def setup(monitor, notify=True):
     
     
     
-    bridgeIP = discover(monitor)
+    bridgeIP = discoverBridgeIP(monitor)
     if bridgeIP:
         logger.debug("Kodi Hue: In setup(), bridge found: {}".format(bridgeIP))
         notification("Kodi Hue", "Bridge found, creating user. IP: {}".format(bridgeIP), time=5000, icon=ADDON.getAddonInfo('icon'), sound=False)       
@@ -72,55 +77,112 @@ def setup(monitor, notify=True):
             
         
         
+def initialSetup(monitor):
+    #Create new config if none exists. Returns success or fail as bool
+    bridgeIP = kodiutils.get_setting("bridgeIP")
+    bridgeUser = kodiutils.get_setting("bridgeUser")
+    
+    logger.debug("Kodi Hue: In InitialSetup:  Hue settings read: Bridge IP: {},Bridge User: {}".format(bridgeIP,bridgeUser))
+    
+    if bridgeIP:
+        #check if the saved IP is any good
+        if connectionTest(bridgeIP): 
+            #connection success! save IP again for good measure
+            kodiutils.set_setting("BridgeIP", bridgeIP)
+        else:
+            #connection failed, flush IP
+            bridgeIP = ""
+            kodiutils.set_setting("BridgeIP", bridgeIP)
+            
+    if not bridgeIP:
+        #IP is no good, find a new one.
+        bridgeIP = discoverBridgeIP(monitor)
+        if connectionTest(bridgeIP): 
+            #this IP is legit, save it.
+            kodiutils.set_setting("BridgeIP", bridgeIP)
+        else:
+            #this IP is still no good. Give up
+            return False
+            
+######        
+    if bridgeUser:
+        #a user is set, check if OK.
+        if userTest(bridgeIP, bridgeUser):
+            #I have a user and its valid! save it again for good measure.
+            kodiutils.set_setting("BridgeUser", bridgeUser)
+        else:
+            #configured user is unauthorized, delete it.
+            bridgeUser = ""
+            kodiutils.set_setting("BridgeUser", bridgeUser)
+    
+    
+    if not bridgeUser:
+        #STILL no legit user, create a new one.
+        bridgeUser = create_user(monitor, bridgeIP, notify=True)
+        if bridgeUser:
+            #user seems good, save
+            kodiutils.set_setting("BridgeUser", bridgeUser)
+        else:
+            #no user found, give up
+            return False
+    #everything seems ok so return a Bridge
+    return Bridge(bridgeUser,bridgeIP)
         
+
+
+       
+def connectionTest(bridgeIP):
+    logger.debug("Kodi Hue: in ConnectionTest() Attempt initial connection")
+    b = qhue.Resource("http://{}/api".format(bridgeIP))
+    try:
+        test = b.config()['apiversion']
+    except:
+        return False
+    
+    if test:
+        logger.debug("Kodi Hue: in ConnectionTest():  Connected! Test Value: {}".format(test))
+        return True
+    else:
+        return False
+
+
+
+
+
+def userTest(bridgeIP,bridgeUser):
+    logger.debug("Kodi Hue: in ConnectionTest() Attempt initial connection")
+    b = Bridge(bridgeIP,bridgeUser)
+    try:
+        zigbeechan = b.config()['zigbeechannel']
+    except:
+        return False
+    
+    if zigbeechan:
+        logger.debug("Kodi Hue: in userTest():  Authorized! Bridge Zigbee Channel: {}".format(zigbeechan))
+        return True
+    else:
+        return False                                       
+
     
         
-def discover(monitor):
+def discoverBridgeIP(monitor):
     #discover hue bridge
     logger.debug("Kodi Hue: In kodiHue discover()")
     #TODO: implement upnp discovery
     #bridge_ip = _discover_upnp()  
-    bridge_ip = None
-    if bridge_ip is None:
-        bridge_ip = discover_nupnp()
-    return bridge_ip
-
-def connect(monitor,autodiscover=True,notify=True,):
-    bridgeIP = kodiutils.get_setting("bridgeIp")
-    bridgeUser = kodiutils.get_setting("bridgeUser")
-        
-    if not bridgeIP:
-        logger.debug("Kodi Hue: No bridge IP set, calling KodiHue.discover()")
-        notification("Kodi Hue", "Bridge not configured. Starting discovery", time=5000, icon=ADDON.getAddonInfo('icon'), sound=True)
-        bridgeIP=discover(monitor)
-        notification("Kodi Hue", "Bridge found, creating user. IP: {}".format(bridgeIP), time=5000, icon=ADDON.getAddonInfo('icon'), sound=True)
-        logger.debug("Kodi Hue: Bridge found, creating user. IP: {}".format(bridgeIP))
-        bridgeUser = create_user(bridgeIP, True)
-        #if bridgeIP and bridgeUser:
-            #if bridge setup worked, save settings
-            #TODO: catch errors....
-            #kodiutils.set_setting("bridgeIP", bridgeIP)
-            #kodiutils.set_setting("bridgeUser", bridgeUser)
-
-    logger.debug("Kodi Hue: Bridge setup. IP: " + str(bridgeIP) + " User: " + str(bridgeUser))
-    return "unimplemented"    
+    bridgeIP = None
+    if bridgeIP is None:
+        bridgeIP = discover_nupnp()
     
-        # create the bridge resource, passing the captured username
-    
-    bridge = Bridge(bridgeIP, bridgeUser)
-    
-    # create a lights resource
-    lights = bridge.lights
-
-    # query the API and print the results
-    logger.debug("Kodi Hue: Qhue.Bridge" + str(bridge()))
-    logger.debug("Kodi Hue: Qhue.Lights" + str(lights()))
-    
-    
-    return 
+    if connectionTest(bridgeIP):
+        return bridgeIP
+    else:
+        return False
 
 
-def create_user(monitor, bridge_ip, notify=True):
+
+
+def create_user(monitor, bridgeIP, notify=True):
     #device = 'kodi#'+getfqdn()
     data = '{{"devicetype": "kodi#{}"}}'.format(getfqdn()) #Create a devicetype named kodi#localhostname. Eg: kodi#LibreELEC
 
@@ -128,10 +190,10 @@ def create_user(monitor, bridge_ip, notify=True):
     timeout = 0
     while 'link button not pressed' in res and not monitor.abortRequested() and timeout <= 15   :
         logger.debug("Kodi Hue: In create_user: abortRquested: {}, timer: {}".format(str(monitor.abortRequested()),timeout) )
-        req = requests.post('http://{}/api'.format(bridge_ip), data=data)
-        res = req.text
         if notify:
             notification(get_string(9000), get_string(9001), time=1000, icon=xbmcgui.NOTIFICATION_WARNING, sound=True) #9002: Press link button on bridge
+        req = requests.post('http://{}/api'.format(bridgeIP), data=data)
+        res = req.text
         xbmc.sleep(1000)
         timeout = timeout + 1
 
@@ -143,33 +205,6 @@ def create_user(monitor, bridge_ip, notify=True):
     except:
         return False
 
-
-    
-
-def create_user2(mon,bridge_ip, notify=True):
-    devicetype = "kodi#" + getfqdn()
-#    data = '{{"devicetype": "{}"}}'.format(devicetype)
-
-    res = 'link button not pressed' #string returned by Hue bridge while button needs to be pressed. 
-    b = qhue.Resource("http://{}/api'".format(bridge_ip))
-    
-    while 'link button not pressed' in res and not mon.abortRequested(): #check for button press every second until app abort. 
-        if notify:
-            notification(get_string(9000), get_string(9001), time=5000, icon=ADDON.getAddonInfo('icon'), sound=False) 
-            #String 9001: Press bridge button to connect
-        
-        logger.debug("Kodi Hue: create_user2: b: {},devicetype: {}".format(str(b),str(devicetype)))
-        try:
-            res = b(devicetype=devicetype, http_method="post")
-        except:
-            logger.debug("Kodi Hue: create_user2 loop: " + (str(res)))
-            xbmc.sleep(5000)
-            pass
-    
-    response = res[0]["success"]["username"]
-    logger.debug("Kodi Hue: create_user2: wait... did this work? "  + str(response)) 
-  #  response = res(devicetype=devicetype, http_method="post")
-    return response
 
 
 

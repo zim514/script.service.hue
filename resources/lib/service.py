@@ -29,10 +29,7 @@ from resources.lib import kodiHue
 
 import xbmc
 import xbmcaddon
-from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO 
-
-from resources.lib.kodiutils import notification
-
+from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
 
 __addon__ = xbmcaddon.Addon()
 __addondir__ = xbmc.translatePath(__addon__.getAddonInfo('profile'))
@@ -86,11 +83,10 @@ def run():
     fmt = capture.getImageFormat()
     # BGRA or RGBA
     fmtRGBA = fmt == 'RGBA'
-
+    global connected
+    connected = False
     
-    
-    
-    
+  
     ### CIRCULAR MESS
     settings = Settings()
     
@@ -100,69 +96,56 @@ def run():
     
     player = MyPlayer()
     
-    
-    bridgeIP = kodiutils.get_setting("bridgeIp")
+###########################################################
+########################################################### 
+########################################################### 
+###########################################################     
+
+
+    bridgeIP = kodiutils.get_setting("bridgeIP")
     bridgeUser = kodiutils.get_setting("bridgeUser")
+    logger.debug("Kodi Hue: Started with settings: bridgeIP: {}, bridgeUser: {}".format(bridgeIP,bridgeUser))
     
-    
-    if not bridgeIP or not bridgeUser:
-        logger.debug("Kodi Hue: Hue setup incomplete, starting setup. Bridge IP: {},Bridge User: {}".format(bridgeIP,bridgeUser))
-        notification("Kodi Hue", "Bridge not configured. Starting setup", time=5000, icon=NOTIFICATION_WARNING, sound=True)
-        kodiHue.setup(mon,True) #Start setup with notifications
-        bridgeIP = kodiutils.get_setting("bridgeIp")
-        bridgeUser = kodiutils.get_setting("bridgeUser")
+    if bridgeIP and bridgeUser:
+        if kodiHue.userTest(bridgeIP, bridgeUser):
+            bridge = Bridge(bridgeIP,bridgeUser)
+            kodiutils.notification("Kodi Hue", "Bridge connected", time=5000, icon=NOTIFICATION_INFO, sound=True)
+            logger.debug("Kodi Hue: Connected!")
+     
+        else:
+            bridge = kodiHue.initialSetup(mon)
+            if not bridge:
+                logger.debug("Kodi Hue: Connection failed, exiting script")
+                kodiutils.notification("Kodi Hue", "Bridge not found, check your network", time=5000, icon=NOTIFICATION_ERROR, sound=True)
+                return #exit run()
         
-        
-    if not bridgeIP or not bridgeUser:
-        
-#        notification("Kodi Hue", "Bridge not configured. Starting setup", time=5000, icon=NOTIFICATION_WARNING, sound=True)
-        logger.debug("Kodi Hue: Hue initial setup failed, exiting script")
-        sys.exit()
-        
-    
-        
-    bridge = Bridge(bridgeIP, bridgeUser)
-    bridgeAPIVersion = bridge.config()['apiversion']
-    if bridgeAPIVersion:
-        logger.debug("Kodi Hue: Connection test success. Bridge API Version:".format(bridgeAPIVersion))
     else:
-        notification("Kodi Hue", "Bridge connection error. Check settings", time=5000, icon=NOTIFICATION_ERROR, sound=True)
-        logger.debug("Kodi Hue: Connection error - could not find Hue API version. Stopping script.")
-        sys.exit()
-        
-
-    logger.debug("Kodi Hue: Bridge setup. IP: " + str(bridgeIP) + " User: " + str(bridgeUser))
-        
-   
+        bridge = kodiHue.initialSetup(mon)    
+        if not bridge:
+            logger.debug("Kodi Hue: Connection failed, exiting script")
+            kodiutils.notification("Kodi Hue", "Bridge not found, check your network", time=5000, icon=NOTIFICATION_ERROR, sound=True)
+            return #exit run()
     
+    #bridge = Bridge(bridgeIP,bridgeUser)
+
     # create a lights resource
-    lights = bridge.lights
+#    lights = bridge.lights()
     
-#    initialLights = lights()
 
-   
-    # query the API and print the results
-#    logger.debug("Kodi Hue: Qhue.Bridge" + str(bridge()))
+
     logger.debug("Kodi Hue: Initial test flash")
     bridge.lights[5].state(bri=128, xy=[0.180,0.239],on=True, alert="select")
-    
-    
-#    bridge.lights.state(initialLights)
-    
-    
-    
-    
-    
+    #bridge.lights[5].state(bri=128,hue=0,on=True) #, alert="select")
     
     sys.exit()
-    
-#    print(lights())
+##########################################################################################################################################    
+
 
 
 
     logger.debug("Kodi Hue: In run() Hue connected: " + str(hue.connected))
-    if not hue.connected:
-        notification("Kodi Hue", "Kodi Hue: Bridge not connected. Go to Kodi Hue settings to configure your hue Bridge", time=5000, icon=ADDON.getAddonInfo('icon'), sound=True)
+#    if not hue.connected:
+#        notification("Kodi Hue", "Kodi Hue: Bridge not connected. Go to Kodi Hue settings to configure your hue Bridge", time=5000, icon=ADDON.getAddonInfo('icon'), sound=True)
         ##TODO localized string
         ##Connected & configured might not be the same thing...
 #    else:
@@ -209,6 +192,7 @@ def run():
             logger.debug('Kodi Hue: In run() shutting down')
 #            del player  # might help with slow exit.
             break
+
 
 
 
