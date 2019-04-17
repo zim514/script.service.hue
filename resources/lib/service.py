@@ -76,6 +76,10 @@ def run():
     if len(sys.argv) == 2:
         args = sys.argv[1]
 
+    logger.debug("Kodi Hue: Args: {}".format(args))
+    
+    bridgeIP = ""
+    bridgeUser = ""
 
     
     ev = Event()
@@ -101,10 +105,14 @@ def run():
 ########################################################### 
 ###########################################################     
 
+    if args == "discover":
+        logger.debug("Kodi Hue: Discovery selected, don't load existing bridge settings.")
+    else:
+        bridgeIP = kodiutils.get_setting("bridgeIP")
+        bridgeUser = kodiutils.get_setting("bridgeUser")
 
-    bridgeIP = kodiutils.get_setting("bridgeIP")
-    bridgeUser = kodiutils.get_setting("bridgeUser")
-    logger.debug("Kodi Hue: Started with settings: bridgeIP: {}, bridgeUser: {}".format(bridgeIP,bridgeUser))
+    logger.debug("Kodi Hue: Started with args: {}, bridgeIP: {}, bridgeUser: {}".format(bridgeIP,bridgeUser))
+
     
     if bridgeIP and bridgeUser:
         if kodiHue.userTest(bridgeIP, bridgeUser):
