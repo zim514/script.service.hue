@@ -126,7 +126,7 @@ def initialSetup(monitor):
             #no user found, give up
             return False
     #everything seems ok so return a Bridge
-    return Bridge(bridgeUser,bridgeIP)
+    return Bridge(bridgeIP,bridgeUser)
         
 
 
@@ -181,6 +181,55 @@ def discoverBridgeIP(monitor):
 
 
 
+class KodiPlayer(xbmc.Player):
+    duration = 0
+    playingvideo = False
+    playlistlen = 0
+    movie = False
+
+    def __init__(self):
+        logger.debug('Kodi Hue: In MyPlayer.__init__()')
+        xbmc.Player.__init__(self)
+
+    def onPlayBackStarted(self):
+        logger.debug('Kodi Hue: In MyPlayer.onPlayBackStarted()')
+        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+        self.playlistlen = playlist.size()
+        self.playlistpos = playlist.getposition()
+        self.playingvideo = True
+        self.duration = self.getTotalTime()
+        #state_changed("started", self.duration)
+
+    def onPlayBackPaused(self):
+        logger.debug('Kodi Hue: In MyPlayer.onPlayBackPaused()')
+        #state_changed("paused", self.duration)
+        if self.isPlayingVideo():
+            self.playingvideo = False
+
+    def onPlayBackResumed(self):
+        logger.debug('Kodi Hue: In MyPlayer.onPlayBackResume()')
+        #state_changed("resumed", self.duration)
+        if self.isPlayingVideo():
+            self.playingvideo = True
+            if self.duration == 0:
+                self.duration = self.getTotalTime()
+
+    def onPlayBackStopped(self):
+        logger.debug('Kodi Hue: In MyPlayer.onPlayBackStopped()')
+        #state_changed("stopped", self.duration)
+        self.playingvideo = False
+        self.playlistlen = 0
+
+    def onPlayBackEnded(self):
+        logger.debug('Kodi Hue: In MyPlayer.onPlayBackEnded()')
+        # If there are upcoming plays, ignore
+        if self.playlistpos < self.playlistlen-1:
+            return
+
+        self.playingvideo = False
+        #state_changed("stopped", self.duration)
+        
+        
 
 def create_user(monitor, bridgeIP, notify=True):
     #device = 'kodi#'+getfqdn()

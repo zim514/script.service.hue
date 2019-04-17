@@ -1,58 +1,31 @@
 # -*- coding: utf-8 -*-
 
-import os
 import sys
-import time
 import logging
-
-import json
-
-
 from threading import Event
-
-from  resources.lib.qhue import Bridge
-
-from resources.lib import kodiutils
-from resources.lib import kodilogging
-from resources.lib import settings
-
-
-
-###TODO Ewwwww....
-from resources.lib.newDefault import MyMonitor
-from resources.lib.newDefault import MyPlayer
-from resources.lib.newDefault import Hue
-
-from resources.lib import kodiHue                                                                                                                                                          
-
-
 
 import xbmc
 import xbmcaddon
 from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
 
+
+from  resources.lib.qhue import Bridge
+from resources.lib import kodiutils
+from resources.lib import KodiGroup
+from resources.lib import kodiHue                                                                                                                                                          
+
+
+
 __addon__ = xbmcaddon.Addon()
 __addondir__ = xbmc.translatePath(__addon__.getAddonInfo('profile'))
 __cwd__ = __addon__.getAddonInfo('path')
 
-from resources.lib import algorithm
-from resources.lib.ambilight_controller import AmbilightController
-from resources.lib import bridge
-from resources.lib import image
-from resources.lib import ui
-
-from resources.lib.settings import Settings
-from resources.lib.static_controller import StaticController
-from resources.lib.theater_controller import TheaterController
 from resources.lib.tools import get_version
-from resources.lib import kodilogging
 
-from resources.lib import kodiutils
 
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 
-REMOTE_DBG = True
 
 logger.debug("Kodi Hue: In .(argv={}) service started, version: {}, SYSPATH: {}".format(
     sys.argv, get_version(), sys.path))
@@ -90,15 +63,12 @@ def run():
     global connected
     connected = False
     
-  
-    ### CIRCULAR MESS
-    settings = Settings()
     
-    monitor = MyMonitor(settings)
-    mon=xbmc.Monitor()
-    hue = Hue(settings, args) #crashing here if bridge ip isnt blank.. beurk
+    #monitor = MyMonitor(settings)
+    monitor=xbmc.Monitor()
     
-    player = MyPlayer()
+    
+
     
 ###########################################################
 ########################################################### 
@@ -111,96 +81,69 @@ def run():
         bridgeIP = kodiutils.get_setting("bridgeIP")
         bridgeUser = kodiutils.get_setting("bridgeUser")
 
-    logger.debug("Kodi Hue: Started with args: {}, bridgeIP: {}, bridgeUser: {}".format(bridgeIP,bridgeUser))
+    logger.debug("Kodi Hue: Started with args: {}, bridgeIP: {}, bridgeUser: {}".format(args,bridgeIP,bridgeUser))
 
     
     if bridgeIP and bridgeUser:
         if kodiHue.userTest(bridgeIP, bridgeUser):
             bridge = Bridge(bridgeIP,bridgeUser)
+            connected = True
             kodiutils.notification("Kodi Hue", "Bridge connected", time=5000, icon=NOTIFICATION_INFO, sound=True)
             logger.debug("Kodi Hue: Connected!")
      
         else:
-            bridge = kodiHue.initialSetup(mon)
+            bridge = kodiHue.initialSetup(monitor)
             if not bridge:
                 logger.debug("Kodi Hue: Connection failed, exiting script")
                 kodiutils.notification("Kodi Hue", "Bridge not found, check your network", time=5000, icon=NOTIFICATION_ERROR, sound=True)
                 return #exit run()
         
     else:
-        bridge = kodiHue.initialSetup(mon)    
+        bridge = kodiHue.initialSetup(monitor)    
         if not bridge:
             logger.debug("Kodi Hue: Connection failed, exiting script")
             kodiutils.notification("Kodi Hue", "Bridge not found, check your network", time=5000, icon=NOTIFICATION_ERROR, sound=True)
             return #exit run()
     
-    #bridge = Bridge(bridgeIP,bridgeUser)
-
-    # create a lights resource
-#    lights = bridge.lights()
     
-
-
+    #### Bridge is ready, lets GO
+       
+    groups=bridge.groups
+    lights=bridge.lights
+    testgroup=bridge.groups["9"]
+    
+    
     logger.debug("Kodi Hue: Initial test flash")
-    bridge.lights[5].state(bri=128, xy=[0.180,0.239],on=True, alert="select")
+    
+    #bridge.groups['9'].action(alert="select")
+    
+    testgroup.action(alert="select")
+    
+    #bridge.lights[5].state(bri=128, xy=[0.180,0.239],on=True, alert="select")
     #bridge.lights[5].state(bri=128,hue=0,on=True) #, alert="select")
     
-    sys.exit()
-##########################################################################################################################################    
+    
+    player = kodiHue.KodiPlayer()
+    kgroup=KodiGroup.KodiGroup(bridge,player,0)
 
-
-
-
-    logger.debug("Kodi Hue: In run() Hue connected: " + str(hue.connected))
-#    if not hue.connected:
-#        notification("Kodi Hue", "Kodi Hue: Bridge not connected. Go to Kodi Hue settings to configure your hue Bridge", time=5000, icon=ADDON.getAddonInfo('icon'), sound=True)
-        ##TODO localized string
-        ##Connected & configured might not be the same thing...
-#    else:
-        ##TODO Flash lights!
-
-        
+    
+    if player is None:
+        logger.debug('Kodi Hue: In run(), could not instantiate player')
+        return
         
     
-#    while not hue.connected and not monitor.abortRequested():
-#        xbmc.sleep(500)
-
-    if player is None:
-        logger.debug('Kodi Hue: In run() could not instantiate player')
-        return
-
-    while not monitor.abortRequested() and not hue.connected():
+    ##Ready to go! Start running until Kodi exit.
+    while connected and not monitor.abortRequested():
+        ####Wait for abort
+        #testgroup.action(alert="select")
+        logger.debug('Kodi Hue: In process')
+        xbmc.sleep(1000)
         
-        
-        if len(hue.ambilight_controller.lights) and not ev.is_set():
-            startReadOut = False
-            vals = {}
-            if player.playingvideo:  # only if there's actually video
-                try:
-                    vals = capture.getImage(200)
-                    if len(vals) > 0 and player.playingvideo:
-                        startReadOut = True
-                    if startReadOut:
-                        screen = image.Screenshot(
-                            capture.getImage())
-                        hsv_ratios = screen.spectrum_hsv(
-                            screen.pixels,
-                            hue.settings.ambilight_threshold_value,
-                            hue.settings.ambilight_threshold_saturation,
-                            hue.settings.color_bias,
-                            len(hue.ambilight_controller.lights)
-                        )
-                        for i in range(len(hue.ambilight_controller.lights)):
-                            algorithm.transition_colorspace(
-                                hue, hue.ambilight_controller.lights.values()[i], hsv_ratios[i], )
-                except ZeroDivisionError:
-                    pass
-
-        if monitor.waitForAbort(10):
-            logger.debug('Kodi Hue: In run() shutting down')
-#            del player  # might help with slow exit.
-            break
-
+      
+    
+    return
+    
+##########################################################################################################################################    
 
 
 

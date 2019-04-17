@@ -55,7 +55,7 @@
         <!-- Main SECTION -->
         <setting type="lsep" label="1000" />
         <setting id="connected" label="1001" type="bool" enable="false" visible="false" default="false" />
-        <setting id="discover_bridge" type="action" label="1210" action="RunScript(script.kodi.hue,discover)" />
+        <setting id="discover_bridge" type="action" label="1210" action="RunScript(script.service.hue,discover)" />
 
         <!-- Grouping -->
         <setting type="lsep" label="1100" />
@@ -64,8 +64,8 @@
         <setting id="setup_static_lights" type="action" enable="!eq(-5,false)" label="1140" action="RunScript(script.kodi.hue.ambilight,action=setup_static_lights)" />
         <!-- Bridge -->
         <setting type="lsep" label="1200" />
-        <setting id="bridge_ip" type="text" label="1220" enable="false" default="" />
-        <setting id="bridge_user" type="text" label="1230" enable="false" default="" />
+        <setting id="bridgeIP" type="text" label="1220" enable="false" default="" />
+        <setting id="bridgeUser" type="text" label="1230" enable="false" default="" />
 
         <setting id="ambilight_group" label="1300" type="text" visible="false" default="" />
         <setting id="theater_group" label="1300" type="text" visible="false" default="" />
