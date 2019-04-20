@@ -256,5 +256,15 @@ def create_user(monitor, bridgeIP, notify=True):
 
 
 
+class HuePlayer(xbmc.Player):
+    def __init__(self):
+        super().__init__(self)
+        
+    def onPlayBackStarted(self):
+        self.group.action(hue=0,sat=255,bri=150,transitiontime=100,on=True)
+        #xbmc.Player.onPlayBackStarted(self)
+        #do stuff here, i dunno
+        
+
 
     

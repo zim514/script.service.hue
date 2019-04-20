@@ -9,11 +9,11 @@ import xbmcaddon
 from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
 
 
-from  resources.lib.qhue import Bridge
+#from resources.lib.qhue import Bridge
 from resources.lib import kodiutils
-from resources.lib import KodiGroup
+from resources.lib.KodiGroup import KodiGroup
 from resources.lib import kodiHue                                                                                                                                                          
-
+from resources.lib import qhue
 
 
 __addon__ = xbmcaddon.Addon()
@@ -86,9 +86,9 @@ def run():
     
     if bridgeIP and bridgeUser:
         if kodiHue.userTest(bridgeIP, bridgeUser):
-            bridge = Bridge(bridgeIP,bridgeUser)
+            bridge = qhue.Bridge(bridgeIP,bridgeUser)
             connected = True
-            kodiutils.notification("Kodi Hue", "Bridge connected", time=5000, icon=NOTIFICATION_INFO, sound=True)
+            kodiutils.notification("Kodi Hue", "Bridge connected", time=5000, icon=NOTIFICATION_INFO, sound=False)
             logger.debug("Kodi Hue: Connected!")
      
         else:
@@ -123,25 +123,25 @@ def run():
     #bridge.lights[5].state(bri=128,hue=0,on=True) #, alert="select")
     
     
-    player = kodiHue.KodiPlayer()
-    kgroup=KodiGroup.KodiGroup(bridge,player,0)
+    player = xbmc.Player 
+    kgroup0=KodiGroup()
+    kgroup0.setup(bridge,0,9) #kodigroup 0, huetestgroup =9
 
-    
-    if player is None:
-        logger.debug('Kodi Hue: In run(), could not instantiate player')
-        return
-        
     
     ##Ready to go! Start running until Kodi exit.
     while connected and not monitor.abortRequested():
+        logger.debug('Kodi Hue: Script running...')
+        #TODO: restart script on Monitor.onSettingsChanged 
         ####Wait for abort
-        #testgroup.action(alert="select")
-        logger.debug('Kodi Hue: In process')
-        xbmc.sleep(1000)
+
+        
+        xbmc.sleep(10000)
         
       
     
     return
+
+    logger.debug('Kodi Hue: Process exiting...')
     
 ##########################################################################################################################################    
 

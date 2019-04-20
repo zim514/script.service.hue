@@ -7,25 +7,38 @@ import xbmc
 from resources.lib.qhue import qhue
 
 class KodiGroup(xbmc.Player):
-    '''
-    classdocs
-    '''
+        def __init__(self):
+            super(xbmc.Player,self).__init__()
+            
+        def setup(self,bridge,kgroupID,hgroupID):
+            self.bridge = bridge
+            self.kgroupID=kgroupID
+            self.hgroupID=hgroupID
+            bridge.groups()
+            self.group=bridge.groups[hgroupID]
+            
+        
+        def onPlayBackStarted(self):
+            #blah=1
+            self.group.action(hue=0,sat=255,bri=250,transitiontime=50,on=True)
+            
+        def onPlayBackStopped(self):
+            #blah=1
+            self.group.action(hue=0,sat=255,bri=250,transitiontime=50,on=True)
+        
+        def onPlayBackPaused(self):
+            #blah=1
+            self.group.action(hue=0,sat=255,bri=250,transitiontime=50,on=True)
+                
+        def onPlayBackResumed(self):
+            self.onPlayStarted()            
+                
+        def onPlayBackError(self):
+            self.onPlayBackStopped()            
+                
+        def onPlayBackEnded(self):
+            self.onPlayBackStopped()
+            
+            
+        
 
-    def __init__(self, bridge, player, kgroupID):
-        '''
-        Constructor
-        '''
-        xbmc.Player.__init__(self)
-        
-        self.bridge = bridge
-        self.player = player
-        self.kgroupID=kgroupID
-        self.group=bridge.groups[id]
-        
-        
-        
-        
-    def on_playback_start(self):
-        blah=1
-        self.group.action(hue=0,sat=255,bri=150,transitiontime=100,on=True)
-        
