@@ -290,6 +290,42 @@ def selectKodiGroup(bridge):
         return None
 
 
+
+
+def initialConnect(monitor,discover=False):
+    global connected
+    if discover:
+        logger.debug("Kodi Hue: Discovery selected, don't load existing bridge settings.")
+    else:
+        bridgeIP = kodiutils.get_setting("bridgeIP")
+        bridgeUser = kodiutils.get_setting("bridgeUser")
+
+    logger.debug("Kodi Hue: in initialConnect() with settings: bridgeIP: {}, bridgeUser: {}, discovery: {}".format(bridgeIP,bridgeUser,discover))
+
+    
+    if bridgeIP and bridgeUser:
+        if userTest(bridgeIP, bridgeUser):
+            bridge = qhue.Bridge(bridgeIP,bridgeUser)
+            connected = True
+            kodiutils.notification("Kodi Hue", "Bridge connected", time=5000, icon=NOTIFICATION_INFO, sound=False)
+            logger.debug("Kodi Hue: Connected!")
+            return bridge
+     
+        else:
+            bridge = initialSetup(monitor)
+            if not bridge:
+                logger.debug("Kodi Hue: Connection failed, exiting script")
+                kodiutils.notification("Kodi Hue", "Bridge not found, check your network", time=5000, icon=NOTIFICATION_ERROR, sound=True)
+                return #return nothing
+        
+    else:
+        bridge = initialSetup(monitor)    
+        if not bridge:
+            logger.debug("Kodi Hue: Connection failed, exiting script")
+            kodiutils.notification("Kodi Hue", "Bridge not found, check your network", time=5000, icon=NOTIFICATION_ERROR, sound=True)
+            return 
+    
+
 #===============================================================================
 # 
 # def multiselect_lights(bridge_ip, bridge_user, label, exclude,
