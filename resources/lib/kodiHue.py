@@ -14,13 +14,12 @@ import xbmcaddon
 import xbmcgui
 from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
 
-from resources.lib import kodiutils
-from resources.lib import qhue, tools
-from resources.lib.qhue import qhue,QhueException,Bridge
+import kodiutils
+import qhue, tools
+#from resources.lib.qhue import qhue,QhueException,Bridge
+from qhue import Bridge
 
-#from resources.lib.qhue import Bridge
-
-from resources.lib.kodiutils import notification, get_string
+from kodiutils import notification, get_string
 
 
 
@@ -271,6 +270,8 @@ def selectHueGroup(bridge):
     items=[]
     index=[]
     
+    index.append(0)
+    items.append(xbmcgui.ListItem(label="All lights"))
     for group in hueGroups:
 
         hGroup=hueGroups[group]
@@ -293,37 +294,6 @@ def selectHueGroup(bridge):
         return None
 
 
-
-
-#===============================================================================
-# 
-# def multiselect_lights(bridge_ip, bridge_user, label, exclude,
-#                        preselect):
-#     xbmclog('Kodi Hue: In multiselect_lights(bridge_ip={}, bridge_user={}, '
-#             'label={}, exclude={}, preselect={})'.format(
-#                 bridge_ip, bridge_user, label, exclude, preselect)
-#             )
-#     lights = bridge.get_lights_by_ids(bridge_ip, bridge_user)
-#     actual_lights = []
-#     items = []
-#     preselect_items = []
-#     index = 0
-#     for light_id, light in lights.items():
-#         if str(light_id) not in exclude.split(','):
-#             items.append(xbmcgui.ListItem(label=light.name))
-#             actual_lights.append(light)
-#             if str(light_id) in preselect.split(','):
-#                 preselect_items.append(index)
-#             index += 1
-# 
-#     selected = xbmcgui.Dialog().multiselect(label, items,
-#                                             preselect=preselect_items)
-# 
-#     if selected:
-#         light_ids = [str(actual_lights[idx].light_id) for idx in selected]
-#         return ','.join(light_ids)
-#     return ''
-#===============================================================================
 
 
 def initialConnect(monitor,discover=False,silent=False):

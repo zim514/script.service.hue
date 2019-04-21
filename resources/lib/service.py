@@ -10,25 +10,25 @@ from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
 
 
 #from resources.lib.qhue import Bridge
-from resources.lib import kodiutils
-from resources.lib.KodiGroup import KodiGroup
-from resources.lib import kodiHue                                                                                                                                                          
-from resources.lib import qhue
+import kodiutils
+from KodiGroup import KodiGroup
+import kodiHue                                                                                                                                                          
+import qhue
+
+
+
+import kodiHue
+
 
 
 __addon__ = xbmcaddon.Addon()
 __addondir__ = xbmc.translatePath(__addon__.getAddonInfo('profile'))
 __cwd__ = __addon__.getAddonInfo('path')
 
-from resources.lib.tools import get_version
-
 
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 
-
-logger.debug("Kodi Hue: In .(argv={}) service started, version: {}, SYSPATH: {}".format(
-    sys.argv, get_version(), sys.path))
 
 ev = Event()
 capture = xbmc.RenderCapture()
@@ -119,18 +119,19 @@ def run():
 
         
         
-        player = xbmc.Player 
+        player = xbmc.Player()
         kgroup0=KodiGroup()
         kgroup0.setup(bridge,0,4) #kodigroup 0, huetestgroup =9
-    
+        
         
 
         ##Ready to go! Start running until Kodi exit.
         while connected and not monitor.abortRequested():
-            logger.debug('Kodi Hue: Script waiting...')
+            logger.debug('Kodi Hue: Script waiting for abort...')
             #TODO: restart script on Monitor.onSettingsChanged 
             ####Wait for abort
-            xbmc.sleep(500)
+            monitor.waitForAbort(10)
+            #xbmc.sleep(5000)
         
         logger.debug('Kodi Hue: Process exiting...')
         return
