@@ -9,9 +9,10 @@
 	<!-- Strings used in settings follows: -->
     <!-- Group  -->
     <string id="6000">Group</string>
-    <string id="6001">Group ID</string>
+    <string id="6001">Kodi Group ID</string>
+    <string id="6003">Hue Group ID</string>
     
-    <string id="6002">Group Name</string>
+    <string id="6002">Hue Group Name</string>
     
     <string id="6100">Light Selection</string>
     

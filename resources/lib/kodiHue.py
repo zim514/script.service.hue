@@ -256,36 +256,39 @@ def create_user(monitor, bridgeIP, notify=True):
         return False
 
 
+def configureGroup(bridge,kGroupID):
+    hGroup=selectHueGroup(bridge)
+    kodiutils.set_setting("group{}_hGroupID".format(kGroupID), hGroup[0])
+    kodiutils.set_setting("group{}_hGroupName".format(kGroupID), hGroup[1])
+    ADDON.openSettings()
 
-def selectKodiGroup(bridge):
-    logger.debug("Kodi Hue: In selectKodiGroup{}")
+
+def selectHueGroup(bridge):
+    logger.debug("Kodi Hue: In selectHueGroup{}")
     hueGroups=bridge.groups()
-    testGroup=hueGroups["1"]
+    
     
     items=[]
     index=[]
     
     for group in hueGroups:
-        #name=hueGroups[str(group)].
-        #name = hueGroups[group].['name']
-        ####################################
-        ############# DICT type error... strings and ints...
-        hgroup=hueGroups[group]
-        name=hgroup['name']
+
+        hGroup=hueGroups[group]
+        hGroupName=hGroup['name']
         
-        logger.debug("Kodi Hue: In select group debug: {}, {}".format(hgroup,name))
+        #logger.debug("Kodi Hue: In selectHueGroup: {}, {}".format(hgroup,name))
         index.append(group)
-        items.append(xbmcgui.ListItem(label=name))
+        items.append(xbmcgui.ListItem(label=hGroupName))
         
     
-    selected = xbmcgui.Dialog().select("Select Hue group",items)
+    selected = xbmcgui.Dialog().select("Select Hue group...",items)
+    
     id = index[selected]
-    logger.debug("Kodi Hue: In selectKodiGroup: selected: {}".format(selected))
-    
-    
+    hGroupName=hueGroups[id]['name']
+    logger.debug("Kodi Hue: In selectHueGroup: selected: {}".format(selected))
     
     if id:
-        return id
+        return id, hGroupName;
     else:
         return None
 

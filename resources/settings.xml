@@ -22,10 +22,6 @@
         <setting id="bridgeIP" type="text" label="1220" enable="false" default="" />
         <setting id="bridgeUser" type="text" label="1230" enable="false" default="" />
 
-        <setting id="ambilight_group" label="1300" type="text" visible="false" default="" />
-        <setting id="theater_group" label="1300" type="text" visible="false" default="" />
-        <setting id="theater_subgroup" label="1300" type="text" visible="false" default="" />
-        <setting id="static_group" label="1300" type="text" visible="false" default="" />
 <!-- Reset
         <setting type="lsep" label="1400" />
        <setting id="reset_settings" type="action" label="1410" action="RunScript(script.kodi.hue.ambilight,action=reset_settings)" option="close" /> 
@@ -39,8 +35,9 @@
         <!-- Group 0 -->
         <setting type="lsep" label="6000" />
         <setting id="group0_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=0)"  option= "close"/>
-        <setting id="group0_id" type="number"  enable ="false" label="6001" default="0" option="int" /> 
-        <setting id="group0_name" type="text" label="6002"  default="Group 0" enable="False"/>
+        <setting id="group0_kGroupID" type="number"  enable ="false" label="6001" default="0" option="int" visible = "false"/>
+        <setting id="group0_hGroupID" type="number"  enable ="false" label="6003" default="0" option="int" /> 
+        <setting id="group0_hGroupName" type="text" label="6002"  default="Group 0" enable="False"/>
         <setting id="group0_behavior" type="select" label="6201" lvalues="6202|6203|6204" />
 
 <!--       <setting id="group0_hGroup" type="int" label="6208"  default="4" subsetting="true" range="0,1,20"  /> -->    

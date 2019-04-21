@@ -84,13 +84,12 @@ def run():
 
     elif args.startswith("groupSelect"):
         
-        hgroup=args.split("=",1)[1]
-       
-        logger.debug("Kodi Hue: Started with groupSelect. args: {}, hgroup: {}".format(args,hgroup))
+        kgroup=args.split("=",1)[1]
+        logger.debug("Kodi Hue: Started with groupSelect. args: {}, kgroup: {}".format(args,kgroup))
         
         bridge=kodiHue.initialConnect(monitor,False,True) #don't rediscover, proceed silently
         if bridge:
-            kodiHue.selectKodiGroup(bridge)
+            kodiHue.configureGroup(bridge,kgroup)
         else:
             logger.debug("Kodi Hue: No bridge found. Select group cancelled.")
             
@@ -131,10 +130,10 @@ def run():
             logger.debug('Kodi Hue: Script waiting...')
             #TODO: restart script on Monitor.onSettingsChanged 
             ####Wait for abort
-            xbmc.sleep(10000)
-            
-        return
+            xbmc.sleep(500)
+        
         logger.debug('Kodi Hue: Process exiting...')
+        return
         #### End of script
         
     else:
