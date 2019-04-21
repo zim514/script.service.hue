@@ -3,21 +3,21 @@
 
 
     <category label="1000">
-        <!-- Main SECTION -->
+<!-- MAIN SECTION -->
         <setting type="lsep" label="1000" />
         <setting id="connected" label="1001" type="bool" enable="false" visible="false" default="false" />
         <setting id="discoverBridge" type="action" label="1210" action="RunScript(script.service.hue,discover)" option = "close" />
 
         <!-- Grouping -->
         
-        <!-- 
+<!-- 
         <setting type="lsep" label="1100" />
         <setting id="setup_theater_lights" type="action" enable="!eq(-3,false)" label="1120" action="RunScript(script.kodi.hue.ambilight,action=setup_theater_lights)" />
         <setting id="setup_ambilight_lights" type="action" enable="!eq(-4,false)" label="1130" action="RunScript(script.kodi.hue.ambilight,action=setup_ambilight_lights)" />
         <setting id="setup_static_lights" type="action" enable="!eq(-5,false)" label="1140" action="RunScript(script.kodi.hue.ambilight,action=setup_static_lights)" />
         
-         -->
-        <!-- Bridge -->
+-->
+<!-- Bridge -->
         <setting type="lsep" label="1200" />
         <setting id="bridgeIP" type="text" label="1220" enable="false" default="" />
         <setting id="bridgeUser" type="text" label="1230" enable="false" default="" />
@@ -26,9 +26,10 @@
         <setting id="theater_group" label="1300" type="text" visible="false" default="" />
         <setting id="theater_subgroup" label="1300" type="text" visible="false" default="" />
         <setting id="static_group" label="1300" type="text" visible="false" default="" />
-        <!-- Reset -->
+<!-- Reset
         <setting type="lsep" label="1400" />
-       <!--   <setting id="reset_settings" type="action" label="1410" action="RunScript(script.kodi.hue.ambilight,action=reset_settings)" option="close" /> -->
+       <setting id="reset_settings" type="action" label="1410" action="RunScript(script.kodi.hue.ambilight,action=reset_settings)" option="close" /> 
+-->
     </category>
 
 
@@ -37,11 +38,12 @@
     <category label="6000">
         <!-- Group 0 -->
         <setting type="lsep" label="6000" />
+        <setting id="group0_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=0)"  option= "close"/>
         <setting id="group0_id" type="number"  enable ="false" label="6001" default="0" option="int" /> 
-        <setting id="group0_name" type="text" label="6002"  default="Group 0"/>
+        <setting id="group0_name" type="text" label="6002"  default="Group 0" enable="False"/>
         <setting id="group0_behavior" type="select" label="6201" lvalues="6202|6203|6204" />
 
-        <setting id="group0_hGroup" type="int" label="6208"  default="4" subsetting="true" range="0,1,20"  />
+<!--       <setting id="group0_hGroup" type="int" label="6208"  default="4" subsetting="true" range="0,1,20"  /> -->    
         <setting id="group0_fadeTime" type="slider" label="6206"  range="0,1,20" default="10" subsetting="true" enable="gt(-1,0)"/>
         <setting id="group0_forceOn" type="bool" label="6207"  default="false" subsetting="true" enable="eq(-2,1)" />
        

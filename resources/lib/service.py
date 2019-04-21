@@ -43,28 +43,32 @@ fmtRGBA = fmt == 'RGBA'
 ###################
 def run():
     logger.debug("Kodi Hue:  service started, version: {}".format(ADDON.getAddonInfo('version')))
-
-    args = None
-    if len(sys.argv) == 2:
-        args = sys.argv[1]
-
-    logger.debug("Kodi Hue: Args: {}".format(args))
+    monitor=xbmc.Monitor()
+    
+    global connected
+    connected = False
     
     bridgeIP = ""
     bridgeUser = ""
 
+    if len(sys.argv) == 2:
+        args = sys.argv[1]
+    else: 
+        args= ""
     
-    ev = Event()
-    capture = xbmc.RenderCapture()
-    fmt = capture.getImageFormat()
-    # BGRA or RGBA
-    fmtRGBA = fmt == 'RGBA'
-    global connected
-    connected = False
-    
-    
-    #monitor = MyMonitor(settings)
-    monitor=xbmc.Monitor()
+    logger.debug("Kodi Hue: Args: {}".format(args))
+
+
+
+#===============================================================================
+# 
+#     
+#     ev = Event()
+#     capture = xbmc.RenderCapture()
+#     fmt = capture.getImageFormat()
+#     # BGRA or RGBA
+#     fmtRGBA = fmt == 'RGBA'
+#===============================================================================
 
     
 ###########################################################
@@ -72,14 +76,32 @@ def run():
 ########################################################### 
 ###########################################################     
 
-
-
+     
+    
     if args == "discover":
-        logger.debug("Kodi Hue: Discovery selected, don't load existing bridge settings.")
+        logger.debug("Kodi Hue: Started with Discovery")
         bridge = kodiHue.initialConnect(monitor, True)
-    else:
-        bridge = kodiHue.initialConnect(monitor, False)
 
+    elif args.startswith("groupSelect"):
+        
+        hgroup=args.split("=",1)[1]
+       
+        logger.debug("Kodi Hue: Started with groupSelect. args: {}, hgroup: {}".format(args,hgroup))
+        
+        bridge=kodiHue.initialConnect(monitor,False,True) #don't rediscover, proceed silently
+        if bridge:
+            kodiHue.selectKodiGroup(bridge)
+        else:
+            logger.debug("Kodi Hue: No bridge found. Select group cancelled.")
+            
+            
+            
+    else:
+        #no arguments, proceed as normal.
+        logger.debug("Kodi Hue: Started with no arguments")
+        bridge = kodiHue.initialConnect(monitor)
+    
+    
     
     if bridge:
         #got a bridge, do main script
@@ -120,36 +142,3 @@ def run():
         return
         
     
-    #===========================================================================
-    # if bridgeIP and bridgeUser:
-    #     if kodiHue.userTest(bridgeIP, bridgeUser):
-    #         bridge = qhue.Bridge(bridgeIP,bridgeUser)
-    #         connected = True
-    #         kodiutils.notification("Kodi Hue", "Bridge connected", time=5000, icon=NOTIFICATION_INFO, sound=False)
-    #         logger.debug("Kodi Hue: Connected!")
-    #  
-    #     else:
-    #         bridge = kodiHue.initialSetup(monitor)
-    #         if not bridge:
-    #             logger.debug("Kodi Hue: Connection failed, exiting script")
-    #             kodiutils.notification("Kodi Hue", "Bridge not found, check your network", time=5000, icon=NOTIFICATION_ERROR, sound=True)
-    #             return #exit run()
-    #     
-    # else:
-    #     bridge = kodiHue.initialSetup(monitor)    
-    #     if not bridge:
-    #         logger.debug("Kodi Hue: Connection failed, exiting script")
-    #         kodiutils.notification("Kodi Hue", "Bridge not found, check your network", time=5000, icon=NOTIFICATION_ERROR, sound=True)
-    #         return #exit run()
-    # 
-    #===========================================================================
-    
-    #### Bridge is ready, lets GO
- 
-    
-##########################################################################################################################################    
-
-
-
-
-

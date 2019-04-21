@@ -3,7 +3,7 @@
     <!-- General -->
     <string id="9000">Kodi Hue</string>
     <string id="9001">Press connect button on Hue bridge</string>
-    <string id="9002">Select Hue Group</string>
+    <string id="9002">Select Hue Group...</string>
 
     
 	<!-- Strings used in settings follows: -->
