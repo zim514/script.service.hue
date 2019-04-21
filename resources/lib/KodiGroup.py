@@ -9,13 +9,17 @@ from resources.lib.qhue import qhue
 class KodiGroup(xbmc.Player):
         def __init__(self):
             super(xbmc.Player,self).__init__()
+
+        def readSettings(self):
+            a=1
             
         def setup(self,bridge,kgroupID,hgroupID):
+            self.readSettings()
             self.bridge = bridge
             self.kgroupID=kgroupID
             self.hgroupID=hgroupID
-            bridge.groups()
-            self.group=bridge.groups[hgroupID]
+#            bridge.groups()
+            self.group=bridge.groups[hgroupID]()
             
         
         def onPlayBackStarted(self):
@@ -39,6 +43,6 @@ class KodiGroup(xbmc.Player):
         def onPlayBackEnded(self):
             self.onPlayBackStopped()
             
-            
+
         
 

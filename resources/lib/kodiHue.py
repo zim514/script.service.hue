@@ -24,6 +24,7 @@ from resources.lib.kodiutils import notification, get_string
 
 
 
+
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 
@@ -256,15 +257,68 @@ def create_user(monitor, bridgeIP, notify=True):
 
 
 
-class HuePlayer(xbmc.Player):
-    def __init__(self):
-        super().__init__(self)
+def selectKodiGroup(bridge):
+    logger.debug("Kodi Hue: In selectKodiGroup{}")
+    hueGroups=bridge.groups()
+    testGroup=hueGroups["1"]
+    
+    items=[]
+    index=[]
+    
+    for group in hueGroups:
+        #name=hueGroups[str(group)].
+        #name = hueGroups[group].['name']
+        ####################################
+        ############# DICT type error... strings and ints...
+        hgroup=hueGroups[group]
+        name=hgroup['name']
         
-    def onPlayBackStarted(self):
-        self.group.action(hue=0,sat=255,bri=150,transitiontime=100,on=True)
-        #xbmc.Player.onPlayBackStarted(self)
-        #do stuff here, i dunno
+        logger.debug("Kodi Hue: In select group debug: {}, {}".format(hgroup,name))
+        index.append(group)
+        items.append(xbmcgui.ListItem(label=name))
         
+    
+    selected = xbmcgui.Dialog().select("Select Hue group",items)
+    id = index[selected]
+    logger.debug("Kodi Hue: In selectKodiGroup: selected: {}".format(selected))
+    
+    
+    
+    if id:
+        return id
+    else:
+        return None
+
+
+#===============================================================================
+# 
+# def multiselect_lights(bridge_ip, bridge_user, label, exclude,
+#                        preselect):
+#     xbmclog('Kodi Hue: In multiselect_lights(bridge_ip={}, bridge_user={}, '
+#             'label={}, exclude={}, preselect={})'.format(
+#                 bridge_ip, bridge_user, label, exclude, preselect)
+#             )
+#     lights = bridge.get_lights_by_ids(bridge_ip, bridge_user)
+#     actual_lights = []
+#     items = []
+#     preselect_items = []
+#     index = 0
+#     for light_id, light in lights.items():
+#         if str(light_id) not in exclude.split(','):
+#             items.append(xbmcgui.ListItem(label=light.name))
+#             actual_lights.append(light)
+#             if str(light_id) in preselect.split(','):
+#                 preselect_items.append(index)
+#             index += 1
+# 
+#     selected = xbmcgui.Dialog().multiselect(label, items,
+#                                             preselect=preselect_items)
+# 
+#     if selected:
+#         light_ids = [str(actual_lights[idx].light_id) for idx in selected]
+#         return ','.join(light_ids)
+#     return ''
+#===============================================================================
 
 
     

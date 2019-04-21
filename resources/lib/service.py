@@ -110,7 +110,7 @@ def run():
        
     groups=bridge.groups
     lights=bridge.lights
-    testgroup=bridge.groups["9"]
+    testgroup=bridge.groups["4"]
     
     
     logger.debug("Kodi Hue: Initial test flash")
@@ -125,8 +125,10 @@ def run():
     
     player = xbmc.Player 
     kgroup0=KodiGroup()
-    kgroup0.setup(bridge,0,9) #kodigroup 0, huetestgroup =9
+    kgroup0.setup(bridge,0,4) #kodigroup 0, huetestgroup =9
 
+    
+    #kodiHue.selectKodiGroup(bridge)
     
     ##Ready to go! Start running until Kodi exit.
     while connected and not monitor.abortRequested():

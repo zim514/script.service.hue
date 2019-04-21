@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-    <!-- Messages -->
+    <!-- General -->
     <string id="9000">Kodi Hue</string>
     <string id="9001">Press connect button on Hue bridge</string>
+    <string id="9002">Select Hue Group</string>
 
     
-
-     <!-- Group  -->
+	<!-- Strings used in settings follows: -->
+    <!-- Group  -->
     <string id="6000">Group</string>
     <string id="6001">Group ID</string>
     
@@ -28,6 +29,8 @@
         
     <string id="6206">Fade Time</string>
     <string id="6207">Force on</string>
+    <string id="6208">Hue group</string>
+    
     
     <!-- Behaviour triggers -->
     <string id="6301">Playback start / resume</string>
@@ -138,5 +141,9 @@
     <string id="5120">Disable for short movies</string>
     <string id="5130">Short Movie Threshold (seconds)</string>
     <string id="5140">Force Light(s) on (even if off)</string>
+    
+    
+
+    
 </strings>
 

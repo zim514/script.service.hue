@@ -6,22 +6,23 @@
     <category label="6000">
         <!-- Group 1 -->
         <setting type="lsep" label="6000" />
-        <setting id="group_id" type="number"  enable ="false" label="6001" default="1" option="int" /> 
-        <setting id="group_name" type="text" label="6002"  default="Group 1"/>
-        <setting id="group_behavior" type="select" label="6201" lvalues="6202|6203|6204" />
+        <setting id="group0_id" type="number"  enable ="false" label="6001" default="0" option="int" /> 
+        <setting id="group0_name" type="text" label="6002"  default="Group 0"/>
+        <setting id="group0_behavior" type="select" label="6201" lvalues="6202|6203|6204" />
 
-        <setting id="group_fade_time" type="slider" label="6206"  range="0,1,20" default="10" subsetting="true" enable="gt(-1,0)"/>
-        <setting id="group_force_on" type="bool" label="6207"  default="false" subsetting="true" enable="eq(-2,1)" />
+        <setting id="group0_hGroup" type="int" label="6208"  default="9" subsetting="true" range="0,1,20"  />
+        <setting id="group0_fadeTime" type="slider" label="6206"  range="0,1,20" default="10" subsetting="true" enable="gt(-1,0)"/>
+        <setting id="group0_forceOn" type="bool" label="6207"  default="false" subsetting="true" enable="eq(-2,1)" />
        
         
         <!--  Group playback start setting -->
         <!--   Visible when group behaviour is Adjust -->
         <setting type="lsep" label="6301" visible="eq(-3,1)"/> 
-        <setting id="group_event_start_behavior" type="select" label="6201" lvalues="6202|6203|6204" visible="eq(-4,1)"/>
+        <setting id="group0_startBehavior" type="select" label="6201" lvalues="6202|6203|6204" visible="eq(-4,1)"/>
              <!-- Visible when group_event_start is Adjust (1) + group_behavior is Adjust (1)  -->
-	        <setting id="group_event_start_hue" type="slider" label="6402"  range="0,1,255" default="0" subsetting="true" visible="eq(-1,1) + eq(-5,1)" /> 
-	        <setting id="group_event_start_saturation" type="slider" label="6403"  range="0,1,255" default="100" subsetting="true" visible="eq(-2,1) + eq(-6,1)" />
-	        <setting id="group_event_start_brightness" type="slider" label="6404"  range="0,1,255" default="100" subsetting="true" visible="eq(-3,1)  + eq(-7,1)" />
+	        <setting id="group0_event_start_hue" type="slider" label="6402"  range="0,1,255" default="0" subsetting="true" visible="eq(-1,1) + eq(-5,1)" /> 
+	        <setting id="group0_event_start_saturation" type="slider" label="6403"  range="0,1,255" default="100" subsetting="true" visible="eq(-2,1) + eq(-6,1)" />
+	        <setting id="group0_event_start_brightness" type="slider" label="6404"  range="0,1,255" default="100" subsetting="true" visible="eq(-3,1)  + eq(-7,1)" />
 	        
 	        
  	        
