@@ -21,6 +21,7 @@ import kodiutils
 import  tools
 
 from kodiutils import notification, get_string
+from __builtin__ import True
 
 
 
@@ -248,5 +249,15 @@ def initialConnect(monitor,discover=False,silent=False):
             kodiutils.notification("Kodi Hue", "Bridge not found", time=5000, icon=NOTIFICATION_ERROR, sound=True)
             return 
     
+    
+class HueMonitor(xbmc.Monitor):
+    def __init__(self):
+        super(xbmc.Monitor,self).__init__()
+        
+    def onSettingsChanged(self):
+        logger.debug("Kodi Hue: Settings changed")
+        global settingsChanged
+        settingsChanged = True
+        logger.debug("Kodi Hue: Settings changed2")        
 
     

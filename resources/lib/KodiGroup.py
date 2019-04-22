@@ -64,6 +64,7 @@ class KodiGroup(xbmc.Player):
             
             
         def flash(self):
+            logger.debug("Kodi Hue: Flash hgroup: {}".format(self.hgroupID))
             self.group.action(alert="select")
         
         def onPlayBackStarted(self):
