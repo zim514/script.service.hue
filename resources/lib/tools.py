@@ -1,6 +1,5 @@
 import os
 
-
 TESTING_ENV = False
 
 try:
@@ -20,7 +19,7 @@ def xbmclog(message):
     if TESTING_ENV:
         pass
     else:
-        xbmc.log(message,xbmc.LOGNOTICE)
+        xbmc.log(message, xbmc.LOGNOTICE)
 
 
 def notify(title, msg=''):
@@ -37,6 +36,6 @@ def get_version():
     try:
         for line in open(__xml__):
             if line.find("ambilight") != -1 and line.find("version") != -1:
-                return line[line.find("version=")+9:line.find(" provider")-1]
+                return line[line.find("version=") + 9:line.find(" provider") - 1]
     except:
         return "unknown"

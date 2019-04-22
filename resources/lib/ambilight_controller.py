@@ -3,6 +3,7 @@ from tools import xbmclog
 
 
 class AmbilightController(lights.Controller):
+
     def __init__(self, *args, **kwargs):
         super(AmbilightController, self).__init__(*args, **kwargs)
 

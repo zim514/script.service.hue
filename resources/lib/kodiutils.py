@@ -9,9 +9,6 @@ import xbmcgui
 
 import json as json
 
-
-
-
 # read settings
 ADDON = xbmcaddon.Addon()
 
@@ -70,6 +67,6 @@ def kodi_json_request(params):
             return response['result']
         return None
     except KeyError:
-        logger.warn("[%s] %s" %
+        logger.warn("[%s] %s" % 
                     (params['method'], response['error']['message']))
         return None

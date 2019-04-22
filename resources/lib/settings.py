@@ -1,20 +1,20 @@
-import sys
 import logging
+import sys
 
 import xbmcaddon
 
 from resources.lib import kodilogging
 from resources.lib import kodiutils
 
-
-#ADDON = sys.modules["__main__"].ADDON
+# ADDON = sys.modules["__main__"].ADDON
 ADDON = xbmcaddon.Addon()
 
-#kodilogging.config()
+# kodilogging.config()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 
 
 class Settings():
+
     def __init__(self, *args, **kwargs):
         self.readxml()
 
@@ -29,7 +29,7 @@ class Settings():
         self.theater_subgroup = ADDON.getSetting("theater_subgroup")
         self.static_group = ADDON.getSetting("static_group")
 
-        self.dim_time = int(float(ADDON.getSetting("dim_time"))*10)
+        self.dim_time = int(float(ADDON.getSetting("dim_time")) * 10)
         self.proportional_dim_time = ADDON.getSetting("proportional_dim_time") == "true"
 
         self.theater_start_bri_override = ADDON.getSetting("theater_start_bri_override") == "true"

@@ -1,13 +1,14 @@
 # Qhue is (c) Quentin Stafford-Fraser 2017
 # but distributed under the GPL v2.
 
-import requests
 import json
-# for hostname retrieval for registering with the bridge
-from socket import getfqdn
 import re
+from socket import getfqdn
 import sys
 
+import requests
+
+# for hostname retrieval for registering with the bridge
 __all__ = ('Bridge', 'QhueException', 'create_new_username')
 
 # default timeout in seconds
@@ -15,6 +16,7 @@ _DEFAULT_TIMEOUT = 5
 
 
 class Resource(object):
+
     def __init__(self, url, timeout=_DEFAULT_TIMEOUT, object_pairs_hook=None):
         self.url = url
         self.address = url[url.find('/api'):]
