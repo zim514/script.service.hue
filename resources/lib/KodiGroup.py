@@ -29,12 +29,10 @@ class KodiGroup(xbmc.Player):
             super(xbmc.Player,self).__init__()
 
         def readSettings(self):
-
-            
+          
             self.behavior=get_setting("group{}_behavior".format(self.kgroupID))
             self.fadeTime=get_setting_as_int("group{}_fadeTime".format(self.kgroupID))*10 #Stored as seconds, but Hue API expects multiples of 100ms.
             self.forceOn=get_setting_as_bool("group{}_forceOn".format(self.kgroupID))
-            
             
             #Hue API values start at 0, but settings UI starts at 1 for usability. -1 on XML values for 'conversion'
             self.startBehavior=get_setting_as_int("group{}_startBehavior".format(self.kgroupID))
@@ -51,9 +49,6 @@ class KodiGroup(xbmc.Player):
             self.stopHue=get_setting_as_int("group{}_stopHue".format(self.kgroupID)) -1
             self.stopSaturation=get_setting_as_int("group{}_stopSaturation".format(self.kgroupID)) -1
             self.stopBrightness=get_setting_as_int("group{}_stopBrightness".format(self.kgroupID)) -1
-
-
-
 
             
         def setup(self,bridge,kgroupID,hgroupID):

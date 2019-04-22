@@ -17,14 +17,6 @@ import qhue
 
 
 
-import kodiHue
-
-
-
-__addon__ = xbmcaddon.Addon()
-__addondir__ = xbmc.translatePath(__addon__.getAddonInfo('profile'))
-__cwd__ = __addon__.getAddonInfo('path')
-
 
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
@@ -59,16 +51,6 @@ def run():
     logger.debug("Kodi Hue: Args: {}".format(args))
 
 
-
-#===============================================================================
-# 
-#     
-#     ev = Event()
-#     capture = xbmc.RenderCapture()
-#     fmt = capture.getImageFormat()
-#     # BGRA or RGBA
-#     fmtRGBA = fmt == 'RGBA'
-#===============================================================================
 
     
 ###########################################################
