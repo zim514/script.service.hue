@@ -14,10 +14,11 @@ import xbmcaddon
 import xbmcgui
 from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
 
+
+from resources.lib.qhue import qhue,QhueException,Bridge
+
 import kodiutils
-import qhue, tools
-#from resources.lib.qhue import qhue,QhueException,Bridge
-from qhue import Bridge
+import  tools
 
 from kodiutils import notification, get_string
 
@@ -40,40 +41,6 @@ def discover_nupnp():
 
     return bridge_ip
 
-
-
-
-
-def setup(monitor, notify=True):
-    #Force full setup, ignore any existing settings. This may create a duplicate user as Hue API doesn't prevent multiple users with same Devicetype
-    logger.debug("Kodi Hue: In kodiHue setup(mon)")
-    
-    bridgeIP = ""
-    bridgeUser = ""
-    #bridgeIP = kodiutils.get_setting("bridgeIp")
-    #bridgeUser = kodiutils.get_setting("bridgeUser")
-    
-    
-    
-    bridgeIP = discoverBridgeIP(monitor)
-    if bridgeIP:
-        logger.debug("Kodi Hue: In setup(), bridge found: {}".format(bridgeIP))
-        notification("Kodi Hue", "Bridge found, creating user. IP: {}".format(bridgeIP), time=5000, icon=ADDON.getAddonInfo('icon'), sound=False)       
-        bridgeUser = create_user(monitor, bridgeIP, notify=True)
-        
-        if bridgeUser:
-            logger.debug("Kodi Hue: In setup(), user created: {}".format(bridgeUser))
-            notification("Kodi Hue", "Bridge configured", time=5000, icon=ADDON.getAddonInfo('icon'), sound=False)
-            kodiutils.set_setting("bridgeIP", bridgeIP)
-            kodiutils.set_setting("bridgeUser", bridgeUser)
-        else:
-            logger.debug("Kodi Hue: In setup(), create user returned nothing")
-        
-    else:
-        logger.debug("Kodi Hue: In setup(), bridge discovery returned nothing")
-        notification("Kodi Hue", "Could not find bridge. Check settings", time=5000, icon=ADDON.getAddonInfo('icon'), sound=True)
-
-    return
             
         
         
@@ -179,57 +146,7 @@ def discoverBridgeIP(monitor):
     else:
         return False
 
-
-
-class KodiPlayer(xbmc.Player):
-    duration = 0
-    playingvideo = False
-    playlistlen = 0
-    movie = False
-
-    def __init__(self):
-        logger.debug('Kodi Hue: In MyPlayer.__init__()')
-        xbmc.Player.__init__(self)
-
-    def onPlayBackStarted(self):
-        logger.debug('Kodi Hue: In MyPlayer.onPlayBackStarted()')
-        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-        self.playlistlen = playlist.size()
-        self.playlistpos = playlist.getposition()
-        self.playingvideo = True
-        self.duration = self.getTotalTime()
-        #state_changed("started", self.duration)
-
-    def onPlayBackPaused(self):
-        logger.debug('Kodi Hue: In MyPlayer.onPlayBackPaused()')
-        #state_changed("paused", self.duration)
-        if self.isPlayingVideo():
-            self.playingvideo = False
-
-    def onPlayBackResumed(self):
-        logger.debug('Kodi Hue: In MyPlayer.onPlayBackResume()')
-        #state_changed("resumed", self.duration)
-        if self.isPlayingVideo():
-            self.playingvideo = True
-            if self.duration == 0:
-                self.duration = self.getTotalTime()
-
-    def onPlayBackStopped(self):
-        logger.debug('Kodi Hue: In MyPlayer.onPlayBackStopped()')
-        #state_changed("stopped", self.duration)
-        self.playingvideo = False
-        self.playlistlen = 0
-
-    def onPlayBackEnded(self):
-        logger.debug('Kodi Hue: In MyPlayer.onPlayBackEnded()')
-        # If there are upcoming plays, ignore
-        if self.playlistpos < self.playlistlen-1:
-            return
-
-        self.playingvideo = False
-        #state_changed("stopped", self.duration)
-        
-        
+       
 
 def create_user(monitor, bridgeIP, notify=True):
     #device = 'kodi#'+getfqdn()

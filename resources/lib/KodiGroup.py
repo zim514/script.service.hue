@@ -59,7 +59,12 @@ class KodiGroup(xbmc.Player):
             self.readSettings()
             self.group=bridge.groups[hgroupID]
             self.group()
+            if kodiutils.get_setting_as_bool("initialFlash"):
+                self.flash()
             
+            
+        def flash(self):
+            self.group.action(alert="select")
         
         def onPlayBackStarted(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStarted".format(self.kgroupID))

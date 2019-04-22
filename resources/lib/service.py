@@ -17,22 +17,28 @@ import qhue
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 
-ev = Event()
-capture = xbmc.RenderCapture()
-fmt = capture.getImageFormat()
-# BGRA or RGBA
-fmtRGBA = fmt == 'RGBA'
+NUM_GROUPS = 1
 
+
+#===============================================================================
+# ev = Event()
+# capture = xbmc.RenderCapture()
+# fmt = capture.getImageFormat()
+# # BGRA or RGBA
+# fmtRGBA = fmt == 'RGBA'
+#===============================================================================
 
 ##################################################
 # # RUN
 ###################
 def run():
     logger.debug("Kodi Hue:  service started, version: {}".format(ADDON.getAddonInfo('version')))
+    
     monitor = xbmc.Monitor()
     
-    global connected
     connected = False
+    initialFlash = kodiutils.get_setting_as_bool("initialFlash")
+    
     
     bridgeIP = ""
     bridgeUser = ""
@@ -69,37 +75,34 @@ def run():
         logger.debug("Kodi Hue: Started with no arguments")
         bridge = kodiHue.initialConnect(monitor)
     
-    if bridge:
-        # got a bridge, do main script
-        connected = True
-        
-        groups = bridge.groups
-        lights = bridge.lights
-        testgroup = bridge.groups["4"]
-        
-        logger.debug("Kodi Hue: Initial test flash")
-        
-        # bridge.groups['9'].action(alert="select")
-        
-        testgroup.action(alert="select")
-        
-        player = xbmc.Player()
-        kgroup0 = KodiGroup()
-        kgroup0.setup(bridge, 0, 4)  # kodigroup 0, huetestgroup =9
+        if bridge:
+            # got a bridge, do main script
+            connected = True
+            
+            
+            logger.debug("Kodi Hue: Initial test flash")
+            
+            ## Initialize & groups
+            
+            kgroup0 = KodiGroup()
+            kgroup1 = KodiGroup()
 
-        # #Ready to go! Start running until Kodi exit.
-        while connected and not monitor.abortRequested():
-            logger.debug('Kodi Hue: Script waiting for abort...')
-            # TODO: restart script on Monitor.onSettingsChanged 
-            ####Wait for abort
-            monitor.waitForAbort(10)
-            # xbmc.sleep(5000)
-        
-        logger.debug('Kodi Hue: Process exiting...')
-        return
-        #### End of script
-        
-    else:
-        logger.debug('Kodi Hue: No bridge, exiting...')
-        return
+            kgroup0.setup(bridge, 0, kodiutils.get_setting_as_int("group{}_hGroupID".format(0)))
+            kgroup1.setup(bridge, 1, kodiutils.get_setting_as_int("group{}_hGroupID".format(1)))
+    
+            # #Ready to go! Start running until Kodi exit.
+            while connected and not monitor.abortRequested():
+                logger.debug('Kodi Hue: Script waiting for abort...')
+                # TODO: restart script on Monitor.onSettingsChanged 
+                ####Wait for abort
+                monitor.waitForAbort(10)
+                # xbmc.sleep(5000)
+            
+            logger.debug('Kodi Hue: Process exiting...')
+            return
+            #### End of script
+            
+        else:
+            logger.debug('Kodi Hue: No bridge, exiting...')
+            return
     

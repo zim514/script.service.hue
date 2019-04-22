@@ -21,11 +21,11 @@ if REMOTE_DBG:
     # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
     try:
 
-        # sys.path.append('e:\dev\pysrc')
+        sys.path.append('e:\dev\pysrc')
         import pydevd
 
         pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True, suspend=REMOTE_DBG_SUSPEND,
-                        trace_only_current_thread=False, overwrite_prev_trace=True, patch_multiprocessing=False)
+                        trace_only_current_thread=True, overwrite_prev_trace=True, patch_multiprocessing=False)
 
     except ImportError:
         sys.stderr.write("Kodi Hue Remote Debug Error: " + 

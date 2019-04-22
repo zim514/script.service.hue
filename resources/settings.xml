@@ -76,6 +76,56 @@
       
     </category>
     
+    
+<!--  GROUP SECTION 1-->    
+    <category label="6000">
+        <!-- Group 1 -->
+        <setting type="lsep" label="6000" />
+        <setting id="group1_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=1)"  option= "close"/>
+        <setting id="group1_kGroupID" type="number"  enable ="false" label="6001" default="0" option="int" visible = "false"/>
+        <setting id="group1_hGroupID" type="number"  enable ="false" label="6003" default="0" option="int" /> 
+        <setting id="group1_hGroupName" type="text" label="6002"  default="Group 0" enable="False"/>
+        <setting id="group1_behavior" type="select" label="6201" lvalues="6202|6203|6204" />
+
+        <setting id="group1_fadeTime" type="slider" label="6206"  range="0,1,20" default="10" subsetting="true" enable="gt(-1,0)"/>
+        <setting id="group1_forceOn" type="bool" label="6207"  default="false" subsetting="true" enable="eq(-2,1)" />
+       
+        
+        <!--  Group playback start setting -->
+        <!--   Visible when group behaviour is Adjust -->
+        <setting type="lsep" label="6301" visible="eq(-3,1)"/> 
+        <setting id="group1_startBehavior" type="select" label="6201" lvalues="6202|6203|6204" visible="eq(-4,1)"/>
+             <!-- Visible when group_event_start is Adjust (1) + group_behavior is Adjust (1)  -->
+	        <setting id="group1_startHue" type="slider" label="6402"  range="1,1,65535" default="1" subsetting="true" visible="eq(-1,1) + eq(-5,1)" /> 
+	        <setting id="group1_startSaturation" type="slider" label="6403"  range="1,1,255" default="100" subsetting="true" visible="eq(-2,1) + eq(-6,1)" />
+	        <setting id="group1_startBrightness" type="slider" label="6404"  range="1,1,255" default="100" subsetting="true" visible="eq(-3,1)  + eq(-7,1)" />
+	        
+ 	        
+        <!--  Group playback pause setting -->
+        <!--   Visible when group behaviour is Adjust -->
+        <setting type="lsep" label="6302" visible="eq(-8,1)"/>   
+        <setting id="group1_pauseBehavior" type="select" label="6201" lvalues="6202|6203|6204|6205" visible="eq(-9,1)" />
+	        <!-- Visible when group_event_start is Adjust (1) + group_behavior is Adjust (1)  -->           
+	        <setting id="group1_pauseHue" type="slider" label="6402"  range="1,1,65535" default="1" subsetting="true" visible="eq(-1,1) + eq(-10,1)" />
+	        <setting id="group1_pauseSaturation" type="slider" label="6403"  range="1,1,255" default="100" subsetting="true" visible="eq(-2,1) + eq(-11,1)" />
+	        <setting id="group1_pauseBrightness" type="slider" label="6404"  range="1,1,255" default="100" subsetting="true" visible="eq(-3,1) + eq(-12,1)" />
+
+
+		<!--  Group playback stop setting --> 
+		<!--   Visible when group behaviour is Adjust -->
+        <setting type="lsep" label="6303" visible="eq(-13,1)"/>
+        <setting id="group1_stopBehavior" type="select" label="6201" lvalues="6202|6203|6204|6205" visible="eq(-14,1)"/>
+        	<!-- Visible when group_event_start is Adjust (1) + group_behavior is Adjust (1)  -->                  
+	        <setting id="group1_stopHue" type="slider" label="6402"  range="1,1,65535" default="1" subsetting="true" visible="eq(-1,1) + eq(-15,1)"/>
+	        <setting id="group1_stopSaturation" type="slider" label="6403"  range="1,1,255" default="100" subsetting="true" visible="eq(-2,1) + eq(-16,1)"/>
+	        <setting id="group1_stopBrightness" type="slider" label="6404"  range="1,1,255" default="100" subsetting="true" visible="eq(-3,1) + eq(-17,1)"/>
+    
+      
+    </category>    
+    
+    
+    
+    
 
 
     <category label="3000">
