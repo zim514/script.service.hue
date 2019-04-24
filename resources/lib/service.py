@@ -9,19 +9,23 @@ import xbmcaddon
 from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_WARNING, NOTIFICATION_INFO
 
 # from resources.lib.qhue import Bridge
+import globals
 import kodiutils
 from KodiGroup import KodiGroup
 import kodiHue                                                                                                                                                          
 import qhue
 
-global settingsChanged
-global connected
+
+
+
 
 
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 
-NUM_GROUPS = 1
+connected = False
+settingsChanged = False
+
 
 
 #===============================================================================
@@ -38,13 +42,12 @@ NUM_GROUPS = 1
 def run():
     logger.debug("Kodi Hue:  service started, version: {}".format(ADDON.getAddonInfo('version')))
     
-    global settingsChanged
-    global connected
+    #global settingsChanged
+    #global connected
     
     monitor = kodiHue.HueMonitor()
     
-    settingsChanged = False
-    connected = False
+
     initialFlash = kodiutils.get_setting_as_bool("initialFlash")
     
     
@@ -86,8 +89,8 @@ def run():
     
         if bridge:
             # got a bridge, do main script
-            connected = True
-            settingsChanged = False
+            globals.connected = True
+            globals.settingsChanged = False
             
             
             ## Initialize & groups
@@ -99,13 +102,24 @@ def run():
             kgroup1.setup(bridge, 1, kodiutils.get_setting_as_int("group{}_hGroupID".format(1)))
     
             # #Ready to go! Start running until Kodi exit.
-            while connected and not monitor.abortRequested() and not settingsChanged:
+            while globals.connected and not monitor.abortRequested() and not globals.settingsChanged:
                 logger.debug('Kodi Hue: Script waiting for abort...')
+                
+                ################################################
+                ################################################
+                ################################################
+                ################################################
+                ################################################
+                ################################################
+                ################################################
+                ################################################
+                ################################################
+                
                 # TODO: restart script on Monitor.onSettingsChanged
                 # TODO: settings changed isnt really global for some reason, wtf.
                 ####Wait for abort
                 monitor.waitForAbort(5)
-                # xbmc.sleep(5000)
+                
             
             logger.debug('Kodi Hue: Process exiting...')
             return
@@ -115,3 +129,4 @@ def run():
             logger.debug('Kodi Hue: No bridge, exiting...')
             return
     
+

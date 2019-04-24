@@ -8,12 +8,9 @@ import qhue
 import logging
 import xbmcaddon
 import kodiutils
+import globals
+
 from kodiutils import get_setting, get_setting_as_bool, get_setting_as_int
-
-
-ADDON = xbmcaddon.Addon()
-logger = logging.getLogger(ADDON.getAddonInfo('id'))
-
 
 
 BEHAVIOR_NOTHING = 0
@@ -21,7 +18,8 @@ BEHAVIOR_ADJUST = 1
 BEHAVIOR_OFF = 2
 BEHAVIOR_INITIAL = 3
 
-
+ADDON = xbmcaddon.Addon()
+logger = logging.getLogger(ADDON.getAddonInfo('id'))
 
 
 class KodiGroup(xbmc.Player):
@@ -67,7 +65,7 @@ class KodiGroup(xbmc.Player):
             logger.debug("Kodi Hue: Flash hgroup: {}".format(self.hgroupID))
             self.group.action(alert="select")
         
-        def onPlayBackStarted(self):
+        def onPlayBackStarted(self, resume=False):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStarted".format(self.kgroupID))
 
             if self.behavior is not BEHAVIOR_NOTHING:
@@ -125,7 +123,7 @@ class KodiGroup(xbmc.Player):
                 
         def onPlayBackResumed(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackResumed".format(self.kgroupID))
-            self.onPlayBackStarted()            
+            self.onPlayBackStarted(resume=True)            
                 
         def onPlayBackError(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackError".format(self.kgroupID))

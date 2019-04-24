@@ -6,18 +6,22 @@ import xbmcaddon
 
 from resources.lib import kodilogging
 from resources.lib import service
+from resources.lib import globals
 
-global settingsChanged
-global connected
+REMOTE_DBG = True
+REMOTE_DBG_SUSPEND = False
 
 # Keep this file to a minimum, as Kodi
 # doesn't keep a compiled copy of this
 ADDON = xbmcaddon.Addon()
-logger = logging.getLogger(ADDON.getAddonInfo('id'))
-kodilogging.config()
+ADDONID = ADDON.getAddonInfo('id')
+ADDONVERSION = ADDON.getAddonInfo('version')
 
-REMOTE_DBG = True
-REMOTE_DBG_SUSPEND = False
+kodilogging.config()
+logger = logging.getLogger(__name__)
+
+logger.debug("Loading '%s' version '%s'" % (ADDONID, ADDONVERSION))
+
 
 if REMOTE_DBG:
     # Make pydev debugger works for auto reload.
@@ -31,8 +35,13 @@ if REMOTE_DBG:
                         trace_only_current_thread=True, overwrite_prev_trace=True, patch_multiprocessing=False)
 
     except ImportError:
-        sys.stderr.write("Kodi Hue Remote Debug Error: " + 
+        logger.debug("Kodi Hue Remote Debug Error: " + 
                          "You must add org.python.pydev.debug.pysrc to your PYTHONPATH, or disable REMOTE_DBG")
         sys.exit(1)
 
-service.run()
+
+    service.run()
+
+logger.debug("'%s' shutting down." % ADDONID)
+
+

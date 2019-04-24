@@ -13,22 +13,21 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
-
-
-from resources.lib.qhue import qhue,QhueException,Bridge
-
+import globals
 import kodiutils
-import  tools
+#import  tools
 
 from kodiutils import notification, get_string
-from __builtin__ import True
+3
 
 
+
+#from resources.lib import globals
+from resources.lib.qhue import qhue,QhueException,Bridge
 
 
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
-
 
 
 def discover_nupnp():
@@ -41,8 +40,6 @@ def discover_nupnp():
         bridge_ip = res[0]["internalipaddress"]
 
     return bridge_ip
-
-            
         
         
 def initialSetup(monitor):
@@ -112,8 +109,6 @@ def connectionTest(bridgeIP):
         return True
     else:
         return False
-
-
 
 
 
@@ -215,13 +210,13 @@ def selectHueGroup(bridge):
 
 
 def initialConnect(monitor,discover=False,silent=False):
-    global connected
+    
     if discover:
         logger.debug("Kodi Hue: Discovery selected, don't load existing bridge settings.")
     else:
         bridgeIP = kodiutils.get_setting("bridgeIP")
         bridgeUser = kodiutils.get_setting("bridgeUser")
-        connected = False
+        globals.connected = False
 
     logger.debug("Kodi Hue: in initialConnect() with settings: bridgeIP: {}, bridgeUser: {}, discovery: {}".format(bridgeIP,bridgeUser,discover))
 
@@ -229,7 +224,7 @@ def initialConnect(monitor,discover=False,silent=False):
     if bridgeIP and bridgeUser:
         if userTest(bridgeIP, bridgeUser):
             bridge = qhue.Bridge(bridgeIP,bridgeUser)
-            connected = True
+            globals.connected = True
             if not silent:
                 kodiutils.notification("Kodi Hue", "Bridge connected", time=5000, icon=NOTIFICATION_INFO, sound=False)
             logger.debug("Kodi Hue: Connected!")
@@ -256,8 +251,10 @@ class HueMonitor(xbmc.Monitor):
         
     def onSettingsChanged(self):
         logger.debug("Kodi Hue: Settings changed")
-        global settingsChanged
-        settingsChanged = True
+        
+        globals.settingsChanged = True
+        
+    
         logger.debug("Kodi Hue: Settings changed2")        
 
     
