@@ -17,9 +17,6 @@ import qhue
 
 
 
-
-
-
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 
@@ -120,8 +117,12 @@ def run():
                 ####Wait for abort
                 monitor.waitForAbort(5)
                 
+            if globals.settingsChanged:
+                logger.debug('Kodi Hue: Settings changed, restarting script')
+                xbmc.executescript("script.service.hue")
             
             logger.debug('Kodi Hue: Process exiting...')
+            
             return
             #### End of script
             

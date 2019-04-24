@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
 import sys
+import threading
+
 
 import xbmcaddon
 
@@ -10,6 +12,9 @@ from resources.lib import globals
 
 REMOTE_DBG = True
 REMOTE_DBG_SUSPEND = False
+
+threading.Thread.name = 'script.service.hue'
+
 
 # Keep this file to a minimum, as Kodi
 # doesn't keep a compiled copy of this
