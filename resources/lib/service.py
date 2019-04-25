@@ -102,7 +102,6 @@ def run():
                 if globals.settingsChanged:
                     kgroups = kodiHue.setupGroups(bridge)
                     globals.settingsChanged = False
-                    
 
                 
                 monitor.waitForAbort(10)

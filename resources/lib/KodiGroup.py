@@ -62,9 +62,14 @@ class KodiGroup(xbmc.Player):
             
         def saveInitialState(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], save initial state".format(self.kgroupID))
-            lights = self.group()["lights"]
-            logger.debug("Kodi Hue: In KodiGroup, save initial state, lights: ".format(self.lights))
-            a=1
+            self.savedLights = []
+            grouplights = self.group()["lights"]
+            lights=self.bridge.lights()
+            
+            for g in grouplights:
+                self.savedLights.append(lights[g]) 
+            
+            
             
             
         def flash(self):
