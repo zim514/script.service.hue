@@ -58,6 +58,7 @@ class KodiGroup(xbmc.Player):
             self.groupResource=bridge.groups[self.hgroupID]
             self.lightIDs=self.groupResource()["lights"]
             
+            self.saveInitialState()
             self.readSettings()
             
             #self.group = groupResource()
