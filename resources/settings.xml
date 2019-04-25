@@ -42,10 +42,6 @@
         <setting id="group0_fadeTime" type="slider" label="6206"  range="0,1,20" default="10" subsetting="true" enable="gt(-1,0)"/>
         <setting id="group0_forceOn" type="bool" label="6207"  default="false" subsetting="true" enable="eq(-2,1)" />
 
-        <setting type="sep" />
-       
-        <setting id="group0_kGroupID" type="number"  enable ="false" label="6001" default="0" option="int" visible = "false"/>
-        <setting id="group0_hGroupID" type="number"  enable ="false" label="6003" default="0" option="int" /> 
 
         
         <!--  Group playback start setting -->
@@ -77,6 +73,11 @@
 	        <setting id="group0_stopSaturation" type="slider" label="6403"  range="1,1,255" default="100" subsetting="true" visible="eq(-2,1) + eq(-16,1)"/>
 	        <setting id="group0_stopBrightness" type="slider" label="6404"  range="1,1,255" default="100" subsetting="true" visible="eq(-3,1) + eq(-17,1)"/>
     
+        <setting type="sep" />
+        <setting id="group0_kGroupID" type="number"  enable ="false" label="6001" default="0" option="int" />
+        <setting id="group0_hGroupID" type="number"  enable ="false" label="6003" default="0" option="int" /> 
+    
+    
       
     </category>
     
@@ -92,11 +93,7 @@
         <setting id="group1_behavior" type="select" label="6201" lvalues="6202|6203|6204" />
         <setting id="group1_fadeTime" type="slider" label="6206"  range="0,1,20" default="10" subsetting="true" enable="gt(-1,0)"/>
         <setting id="group1_forceOn" type="bool" label="6207"  default="false" subsetting="true" enable="eq(-2,1)" />
-              
-        <setting type="sep"/>
-       
-        <setting id="group1_kGroupID" type="number"  enable ="false" label="6001" default="0" option="int" visible = "false"/>
-        <setting id="group1_hGroupID" type="number"  enable ="false" label="6003" default="0" option="int" /> 
+
         
         
         <!--  Group playback start setting -->
@@ -128,7 +125,11 @@
 	        <setting id="group1_stopSaturation" type="slider" label="6403"  range="1,1,255" default="100" subsetting="true" visible="eq(-2,1) + eq(-16,1)"/>
 	        <setting id="group1_stopBrightness" type="slider" label="6404"  range="1,1,255" default="100" subsetting="true" visible="eq(-3,1) + eq(-17,1)"/>
     
-      
+              
+        <setting type="sep"/>
+       
+        <setting id="group1_kGroupID" type="number"  enable ="false" label="6001" default="0" option="int" visible = "false"/>
+        <setting id="group1_hGroupID" type="number"  enable ="false" label="6003" default="0" option="int" />       
     </category>    
     
     

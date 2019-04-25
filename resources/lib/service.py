@@ -14,6 +14,7 @@ import kodiutils
 from KodiGroup import KodiGroup
 import kodiHue                                                                                                                                                          
 import qhue
+from resources.lib.globals import NUM_GROUPS
 
 
 
@@ -93,36 +94,34 @@ def run():
             
             
             
-            ## Initialize & groups
-            
-            kgroup0 = KodiGroup()
-            kgroup1 = KodiGroup()
-
-            kgroup0.setup(bridge, 0, kodiutils.get_setting_as_int("group{}_hGroupID".format(0)))
-            kgroup1.setup(bridge, 1, kodiutils.get_setting_as_int("group{}_hGroupID".format(1)))
+            ## Initialize kodi groups
+            kgroups= [] 
+            g=0
+            while g < NUM_GROUPS:
+                kgroups.append(KodiGroup())
+                kgroups[g].setup(bridge, g, kodiutils.get_setting_as_int("group{}_hGroupID".format(g))) 
+                g = g + 1
+                
+                
+            #for g in kgroups:
+            #    kgroups[g].setup(bridge, g, kodiutils.get_setting_as_int("group{}_hGroupID".format(g)))                #kgroups.append(KodiGroup())
+            #kgroup0 = KodiGroup()
+            #kgroup1 = KodiGroup()
+            #kgroup0.setup(bridge, 0, kodiutils.get_setting_as_int("group{}_hGroupID".format(0)))
+            #kgroup1.setup(bridge, 1, kodiutils.get_setting_as_int("group{}_hGroupID".format(1)))
     
             # #Ready to go! Start running until Kodi exit.
-            while globals.connected and not monitor.abortRequested() and not globals.settingsChanged:
-                logger.debug('Kodi Hue: Script waiting for abort...')
+            while globals.connected and not monitor.abortRequested():
+                logger.debug('Kodi Hue: Service running...')
+                if globals.settingsChanged:
+                    kgroups = kodiHue.reloadGroups(bridge,kgroups)
+                    globals.settingsChanged = False
+                    
+
                 
-                ################################################
-                ################################################
-                ################################################
-                ################################################
-                ################################################
-                ################################################
-                ################################################
-                ################################################
-                ################################################
+                monitor.waitForAbort(10)
                 
-                # TODO: restart script on Monitor.onSettingsChanged
-                # TODO: settings changed isnt really global for some reason, wtf.
-                ####Wait for abort
-                monitor.waitForAbort(5)
                 
-            if globals.settingsChanged:
-                logger.debug('Kodi Hue: Settings changed, restarting script')
-                xbmc.executescript("script.service.hue")
             
             logger.debug('Kodi Hue: Process exiting...')
             

@@ -60,6 +60,7 @@ class KodiGroup(xbmc.Player):
             if kodiutils.get_setting_as_bool("initialFlash"):
                 self.flash()
             
+        
             
         def flash(self):
             logger.debug("Kodi Hue: Flash hgroup: {}".format(self.hgroupID))

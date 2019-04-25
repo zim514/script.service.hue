@@ -15,14 +15,16 @@ import xbmcgui
 from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
 import globals
 import kodiutils
+#import KodiGroup
+from KodiGroup import KodiGroup
 #import  tools
 
 from kodiutils import notification, get_string
-3
+from resources.lib.globals import NUM_GROUPS
 
 
 
-#from resources.lib import globals
+from resources.lib import globals
 from resources.lib.qhue import qhue,QhueException,Bridge
 
 
@@ -92,8 +94,6 @@ def initialSetup(monitor):
             return False
     #everything seems ok so return a Bridge
     return Bridge(bridgeIP,bridgeUser)
-        
-
 
        
 def connectionTest(bridgeIP):
@@ -109,7 +109,6 @@ def connectionTest(bridgeIP):
         return True
     else:
         return False
-
 
 
 def userTest(bridgeIP,bridgeUser):
@@ -212,6 +211,24 @@ def getDaylight(bridge):
     return bridge.sensors['1']()['state']['daylight']
             
 
+def reloadGroups(bridge,kgroups):
+    logger.debug("Kodi Hue: reloadGroups()")
+    del kgroups
+    kgroups = [] 
+    
+       
+    g=0
+    while g < NUM_GROUPS:
+        
+        kgroups.append(KodiGroup())
+        kgroups[g].setup(bridge, g, kodiutils.get_setting_as_int("group{}_hGroupID".format(g))) 
+        g = g + 1
+    
+    return kgroups
+
+                   
+
+
 def initialConnect(monitor,discover=False,silent=False):
     
     if discover:
@@ -254,10 +271,4 @@ class HueMonitor(xbmc.Monitor):
         
     def onSettingsChanged(self):
         logger.debug("Kodi Hue: Settings changed")
-        
         globals.settingsChanged = True
-        
-    
-        logger.debug("Kodi Hue: Settings changed2")        
-
-    

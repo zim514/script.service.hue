@@ -8,7 +8,7 @@ Created on Apr. 22, 2019
 settingsChanged = False
 connected = False
 
-NUM_GROUPS = 1
+NUM_GROUPS = 2
 
 
 
