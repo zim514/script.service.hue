@@ -149,13 +149,13 @@ def create_user(monitor, bridgeIP, notify=True):
 
     res = 'link button not pressed'
     timeout = 0
-    while 'link button not pressed' in res and not monitor.abortRequested() and timeout <= 15   :
+    while 'link button not pressed' in res and not monitor.abortRequested() and timeout <= 60   :
         logger.debug("Kodi Hue: In create_user: abortRquested: {}, timer: {}".format(str(monitor.abortRequested()),timeout) )
         if notify:
             notification(get_string(9000), get_string(9001), time=1000, icon=xbmcgui.NOTIFICATION_WARNING, sound=True) #9002: Press link button on bridge
         req = requests.post('http://{}/api'.format(bridgeIP), data=data)
         res = req.text
-        xbmc.sleep(1000)
+        monitor.waitForAbort(1)
         timeout = timeout + 1
 
     res = req.json()
@@ -211,12 +211,9 @@ def getDaylight(bridge):
     return bridge.sensors['1']()['state']['daylight']
             
 
-def reloadGroups(bridge,kgroups):
-    logger.debug("Kodi Hue: reloadGroups()")
-    del kgroups
-    kgroups = [] 
-    
-       
+def setupGroups(bridge):
+    logger.debug("Kodi Hue: in setupGroups()")
+    kgroups= []   
     g=0
     while g < NUM_GROUPS:
         

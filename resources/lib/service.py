@@ -92,29 +92,15 @@ def run():
             
             daylight = kodiHue.getDaylight(bridge)
             
-            
-            
             ## Initialize kodi groups
-            kgroups= [] 
-            g=0
-            while g < NUM_GROUPS:
-                kgroups.append(KodiGroup())
-                kgroups[g].setup(bridge, g, kodiutils.get_setting_as_int("group{}_hGroupID".format(g))) 
-                g = g + 1
-                
-                
-            #for g in kgroups:
-            #    kgroups[g].setup(bridge, g, kodiutils.get_setting_as_int("group{}_hGroupID".format(g)))                #kgroups.append(KodiGroup())
-            #kgroup0 = KodiGroup()
-            #kgroup1 = KodiGroup()
-            #kgroup0.setup(bridge, 0, kodiutils.get_setting_as_int("group{}_hGroupID".format(0)))
-            #kgroup1.setup(bridge, 1, kodiutils.get_setting_as_int("group{}_hGroupID".format(1)))
+            kgroups = kodiHue.setupGroups(bridge)
+
     
             # #Ready to go! Start running until Kodi exit.
             while globals.connected and not monitor.abortRequested():
                 logger.debug('Kodi Hue: Service running...')
                 if globals.settingsChanged:
-                    kgroups = kodiHue.reloadGroups(bridge,kgroups)
+                    kgroups = kodiHue.setupGroups(bridge)
                     globals.settingsChanged = False
                     
 

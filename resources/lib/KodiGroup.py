@@ -60,7 +60,12 @@ class KodiGroup(xbmc.Player):
             if kodiutils.get_setting_as_bool("initialFlash"):
                 self.flash()
             
-        
+        def saveInitialState(self):
+            logger.debug("Kodi Hue: In KodiGroup[{}], save initial state".format(self.kgroupID))
+            lights = self.group()["lights"]
+            logger.debug("Kodi Hue: In KodiGroup, save initial state, lights: ".format(self.lights))
+            a=1
+            
             
         def flash(self):
             logger.debug("Kodi Hue: Flash hgroup: {}".format(self.hgroupID))
@@ -69,9 +74,7 @@ class KodiGroup(xbmc.Player):
         def onPlayBackStarted(self, resume=False):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStarted".format(self.kgroupID))
             
-            logger.debug("Kodi Hue: In KodiGroup[{}], save initial state".format(self.kgroupID))
-            
-            self.initialGroup = self.group
+            self.saveInitialState()
 
             if self.behavior is not BEHAVIOR_NOTHING:
                 
@@ -87,7 +90,7 @@ class KodiGroup(xbmc.Player):
             
         def onPlayBackStopped(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStopped".format(self.kgroupID))
-
+            
             if self.behavior is not BEHAVIOR_NOTHING:
                 
                 if self.stopBehavior == BEHAVIOR_ADJUST:
