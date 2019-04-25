@@ -207,7 +207,10 @@ def selectHueGroup(bridge):
         return None
 
 
-
+def getDaylight(bridge):
+    sensors = bridge.sensors()
+    return bridge.sensors['1']()['state']['daylight']
+            
 
 def initialConnect(monitor,discover=False,silent=False):
     

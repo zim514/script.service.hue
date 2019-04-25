@@ -67,6 +67,10 @@ class KodiGroup(xbmc.Player):
         
         def onPlayBackStarted(self, resume=False):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStarted".format(self.kgroupID))
+            
+            logger.debug("Kodi Hue: In KodiGroup[{}], save initial state".format(self.kgroupID))
+            
+            self.initialGroup = self.group
 
             if self.behavior is not BEHAVIOR_NOTHING:
                 
@@ -78,10 +82,6 @@ class KodiGroup(xbmc.Player):
                         
                 elif self.startBehavior == BEHAVIOR_OFF:
                     self.group.action(on=False,transitiontime=self.fadeTime)
-                    
-                elif self.startBehavior == BEHAVIOR_INITIAL:
-#TODO: Support inital behaviours
-                    a=1
                 
             
         def onPlayBackStopped(self):

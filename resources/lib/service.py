@@ -89,6 +89,9 @@ def run():
             globals.connected = True
             globals.settingsChanged = False
             
+            daylight = kodiHue.getDaylight(bridge)
+            
+            
             
             ## Initialize & groups
             

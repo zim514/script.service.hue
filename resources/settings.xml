@@ -34,15 +34,19 @@
     <category label="6000">
         <!-- Group 0 -->
         <setting type="lsep" label="6000" />
-        <setting id="group0_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=0)"  option= "close"/>
-        <setting id="group0_kGroupID" type="number"  enable ="false" label="6001" default="0" option="int" visible = "false"/>
-        <setting id="group0_hGroupID" type="number"  enable ="false" label="6003" default="0" option="int" /> 
-        <setting id="group0_hGroupName" type="text" label="6002"  default="Group 0" enable="False"/>
-        <setting id="group0_behavior" type="select" label="6201" lvalues="6202|6203|6204" />
 
+        <setting id="group0_hGroupName" type="text" label="6002"  default="Group 0" enable="False"/>
+        <setting id="group0_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=0)"  option= "close"/>
+
+        <setting id="group0_behavior" type="select" label="6201" lvalues="6202|6203|6204" />
         <setting id="group0_fadeTime" type="slider" label="6206"  range="0,1,20" default="10" subsetting="true" enable="gt(-1,0)"/>
         <setting id="group0_forceOn" type="bool" label="6207"  default="false" subsetting="true" enable="eq(-2,1)" />
+
+        <setting type="sep" />
        
+        <setting id="group0_kGroupID" type="number"  enable ="false" label="6001" default="0" option="int" visible = "false"/>
+        <setting id="group0_hGroupID" type="number"  enable ="false" label="6003" default="0" option="int" /> 
+
         
         <!--  Group playback start setting -->
         <!--   Visible when group behaviour is Adjust -->
@@ -81,15 +85,19 @@
     <category label="6000">
         <!-- Group 1 -->
         <setting type="lsep" label="6000" />
-        <setting id="group1_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=1)"  option= "close"/>
-        <setting id="group1_kGroupID" type="number"  enable ="false" label="6001" default="0" option="int" visible = "false"/>
-        <setting id="group1_hGroupID" type="number"  enable ="false" label="6003" default="0" option="int" /> 
+        
         <setting id="group1_hGroupName" type="text" label="6002"  default="Group 0" enable="False"/>
+        <setting id="group1_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=1)"  option= "close"/>
+        
         <setting id="group1_behavior" type="select" label="6201" lvalues="6202|6203|6204" />
-
         <setting id="group1_fadeTime" type="slider" label="6206"  range="0,1,20" default="10" subsetting="true" enable="gt(-1,0)"/>
         <setting id="group1_forceOn" type="bool" label="6207"  default="false" subsetting="true" enable="eq(-2,1)" />
+              
+        <setting type="sep"/>
        
+        <setting id="group1_kGroupID" type="number"  enable ="false" label="6001" default="0" option="int" visible = "false"/>
+        <setting id="group1_hGroupID" type="number"  enable ="false" label="6003" default="0" option="int" /> 
+        
         
         <!--  Group playback start setting -->
         <!--   Visible when group behaviour is Adjust -->
@@ -167,16 +175,18 @@
 
 
 
-
+<!-- 
     <category label="5000">
-        <!--Advanced SECTION-->
+        <!--Advanced SECTION
         <setting type="lsep" label="5000" />
-        <!--Miscellaneous-->
+        <!--Miscellaneous
         <setting type="lsep" label="5100" />
         <setting id="initialFlash" type="bool" label="5110" default="true" />
-<!--        <setting id="misc_disableshort" type="bool" label="5120" default="false" />
+       <setting id="misc_disableshort" type="bool" label="5120" default="false" />
         <setting id="misc_disableshort_threshold" type="number" label="5130" default="120" enable="eq(-1,true)" />
         <setting id="force_light_on" type="bool" label="5140" default="false" />
-   -->        
+           
     </category>
+    
+-->    
 </settings>
