@@ -51,7 +51,8 @@ class KodiGroup(xbmc.Player):
             
         def setup(self,bridge,kgroupID,hgroupID):
             self.bridge = bridge
-           
+            
+            self.lights = bridge.lights 
             self.kgroupID=kgroupID
             self.hgroupID=hgroupID
             self.groupResource=bridge.groups[self.hgroupID]
@@ -66,7 +67,7 @@ class KodiGroup(xbmc.Player):
         def saveInitialState(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], save initial state".format(self.kgroupID))
             initialState = {}
-            lights = self.bridge.lights
+            lights = self.lights
                         
             for x in self.lightIDs:
                 light=lights[x]()
@@ -78,15 +79,25 @@ class KodiGroup(xbmc.Player):
             
         def applyInitialState(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], apply initial state".format(self.kgroupID))
+            initialState = self.initialState
+            lights = self.lights 
             
-            #===================================================================
-            # lights = self.bridge.lights
-            # 
-            # for l in self.InitialState:
-            #     a=1
-            # 
-            #===================================================================
+            for x in initialState:
+                #apply initial state for each light.
+                i = initialState[x]
+                logger.debug("Kodi Hue: In KodiGroup[{}], apply initial state: {}, {}".format(self.kgroupID,x,i))   
+                lights[x].state(on=i['on'],
+#                                ct=i['ct'],
+                                xy=i['xy'],
+#                                bri=i['bri'],
+#                                hue=i['hue'],
+#                                sat=i['sat'],
+                                transitiontime=self.fadeTime)
+                                
+                
             
+            logger.debug("Kodi Hue: In KodiGroup[{}], apply initial state ENDDDDD".format(self.kgroupID))    
+ 
             
         def flash(self):
             logger.debug("Kodi Hue: Flash hgroup: {}".format(self.hgroupID))
