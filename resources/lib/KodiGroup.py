@@ -51,30 +51,46 @@ class KodiGroup(xbmc.Player):
             
         def setup(self,bridge,kgroupID,hgroupID):
             self.bridge = bridge
+           
             self.kgroupID=kgroupID
             self.hgroupID=hgroupID
+            self.groupResource=bridge.groups[self.hgroupID]
+            self.lightIDs=self.groupResource()["lights"]
             
             self.readSettings()
-            self.group=bridge.groups[hgroupID]
-            self.group()
+            
+            #self.group = groupResource()
             if kodiutils.get_setting_as_bool("initialFlash"):
                 self.flash()
             
         def saveInitialState(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], save initial state".format(self.kgroupID))
-            self.savedLights = []
-            grouplights = self.group()["lights"]
-            lights=self.bridge.lights()
+            initialState = {}
+            lights = self.bridge.lights
+                        
+            for x in self.lightIDs:
+                light=lights[x]()
+                initialState[x] = light['state'] 
+                #self.initialState.append(lights.l()['state'])
+
+            self.initialState=initialState
+             
             
-            for g in grouplights:
-                self.savedLights.append(lights[g]) 
+        def applyInitialState(self):
+            logger.debug("Kodi Hue: In KodiGroup[{}], apply initial state".format(self.kgroupID))
             
-            
+            #===================================================================
+            # lights = self.bridge.lights
+            # 
+            # for l in self.InitialState:
+            #     a=1
+            # 
+            #===================================================================
             
             
         def flash(self):
             logger.debug("Kodi Hue: Flash hgroup: {}".format(self.hgroupID))
-            self.group.action(alert="select")
+            self.groupResource.action(alert="select")
         
         def onPlayBackStarted(self, resume=False):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStarted".format(self.kgroupID))
@@ -85,12 +101,12 @@ class KodiGroup(xbmc.Player):
                 
                 if self.startBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn:
-                        self.group.action(sat=self.startSaturation,hue=self.startHue,bri=self.startBrightness,transitiontime=self.fadeTime,on=True)
+                        self.groupResource.action(sat=self.startSaturation,hue=self.startHue,bri=self.startBrightness,transitiontime=self.fadeTime,on=True)
                     else:
-                        self.group.action(sat=self.startSaturation,hue=self.startHue,bri=self.startBrightness,transitiontime=self.fadeTime)  
+                        self.groupResource.action(sat=self.startSaturation,hue=self.startHue,bri=self.startBrightness,transitiontime=self.fadeTime)  
                         
                 elif self.startBehavior == BEHAVIOR_OFF:
-                    self.group.action(on=False,transitiontime=self.fadeTime)
+                    self.groupResource.action(on=False,transitiontime=self.fadeTime)
                 
             
         def onPlayBackStopped(self):
@@ -100,18 +116,18 @@ class KodiGroup(xbmc.Player):
                 
                 if self.stopBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn:
-                        self.group.action(sat=self.stopSaturation,hue=self.stopHue,bri=self.stopBrightness,transitiontime=self.fadeTime,on=True)
+                        self.groupResource.action(sat=self.stopSaturation,hue=self.stopHue,bri=self.stopBrightness,transitiontime=self.fadeTime,on=True)
                     else:
-                        self.group.action(sat=self.stopSaturation,hue=self.stopHue,bri=self.stopBrightness,transitiontime=self.fadeTime)  
+                        self.groupResource.action(sat=self.stopSaturation,hue=self.stopHue,bri=self.stopBrightness,transitiontime=self.fadeTime)  
                         
                 elif self.stopBehavior == BEHAVIOR_OFF:
-                    self.group.action(on=False,transitiontime=self.fadeTime)
+                    self.groupResource.action(on=False,transitiontime=self.fadeTime)
                     
                 elif self.stopBehavior == BEHAVIOR_INITIAL:
-#TODO: Support inital behaviours
-                    a=1
+                    self.applyInitialState()
+                    
 
-            #self.group.action(hue=0,sat=255,bri=250,transitiontime=50,on=True)
+            
         
         def onPlayBackPaused(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackPaused".format(self.kgroupID))
@@ -119,16 +135,16 @@ class KodiGroup(xbmc.Player):
                 
                 if self.pauseBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn:
-                        self.group.action(sat=self.pauseSaturation,hue=self.pauseHue,bri=self.pauseBrightness,transitiontime=self.fadeTime,on=True)
+                        self.groupResource.action(sat=self.pauseSaturation,hue=self.pauseHue,bri=self.pauseBrightness,transitiontime=self.fadeTime,on=True)
                     else:
-                        self.group.action(sat=self.pauseSaturation,hue=self.pauseHue,bri=self.pauseBrightness,transitiontime=self.fadeTime)  
+                        self.groupResource.action(sat=self.pauseSaturation,hue=self.pauseHue,bri=self.pauseBrightness,transitiontime=self.fadeTime)  
                         
                 elif self.startBehavior == BEHAVIOR_OFF:
-                    self.group.action(on=False,transitiontime=self.fadeTime)
+                    self.groupResource.action(on=False,transitiontime=self.fadeTime)
                     
                 elif self.startBehavior == BEHAVIOR_INITIAL:
-#TODO: Support inital behaviours
-                    a=1            
+                    self.applyInitialState()
+   
                 
         def onPlayBackResumed(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackResumed".format(self.kgroupID))
