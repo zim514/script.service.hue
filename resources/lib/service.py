@@ -44,7 +44,6 @@ def run():
     #global connected
     
     monitor = kodiHue.HueMonitor()
-    
 
     initialFlash = kodiutils.get_setting_as_bool("initialFlash")
     
@@ -82,7 +81,7 @@ def run():
     else:
         # no arguments, proceed as normal.
         logger.debug("Kodi Hue: Started with no arguments")
-        bridge = kodiHue.initialConnect(monitor)
+        bridge = kodiHue.initialConnect(monitor,silent = False)
         
     
         if bridge:
