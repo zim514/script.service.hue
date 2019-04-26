@@ -31,7 +31,7 @@
     <!-- Group behaviour setting -->
     <string id="6200">Group Behavior</string>
     
-    <string id="6201">Behavior</string>
+    <string id="6201">Enabled</string>
     <string id="6202">Do nothing</string>
     <string id="6203">Adjust lights</string>
     <string id="6204">Turn off lights</string>
