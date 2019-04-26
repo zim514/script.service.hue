@@ -7,7 +7,8 @@ import sys
 import logging
 import requests
 from socket import getfqdn
-from contextlib import contextmanager
+
+import globals
 
 import xbmc
 import xbmcaddon
@@ -47,6 +48,7 @@ def bridgeDiscover(monitor):
     #Create new config if none exists. Returns success or fail as bool
     kodiutils.set_setting("bridgeIP","")
     kodiutils.set_setting("bridgeUser","")
+    globals.connected = False
     
     
     progressBar = xbmcgui.DialogProgress()
@@ -234,40 +236,46 @@ def setupGroups(bridge):
                    
 
 
-def connect(monitor,discover=False,silent=False):
-    
-    if discover:
-        logger.debug("Kodi Hue: Discovery selected, don't load existing bridge settings.")
-    else:
-        bridgeIP = kodiutils.get_setting("bridgeIP")
-        bridgeUser = kodiutils.get_setting("bridgeUser")
-        globals.connected = False
-
-    logger.debug("Kodi Hue: in initialConnect() with settings: bridgeIP: {}, bridgeUser: {}, discovery: {}".format(bridgeIP,bridgeUser,discover))
+def connectBridge(monitor,silent=False):
+    bridgeIP = kodiutils.get_setting("bridgeIP")
+    bridgeUser = kodiutils.get_setting("bridgeUser")
+    logger.debug("Kodi Hue: in Connect() with settings: bridgeIP: {}, bridgeUser: {}".format(bridgeIP,bridgeUser))
 
     
     if bridgeIP and bridgeUser:
-        if userTest(bridgeIP, bridgeUser):
-            bridge = qhue.Bridge(bridgeIP,bridgeUser)
-            globals.connected = True
-            if not silent:
-                kodiutils.notification("Kodi Hue", "Bridge connected", time=5000, icon=NOTIFICATION_INFO)
-            logger.debug("Kodi Hue: Connected!")
-            return bridge
-     
+        if connectionTest(bridgeIP):
+            logger.debug("Kodi Hue: in Connect(): Bridge responding to connection test.")
+
         else:
-            bridge = initialSetup(monitor)
-            if not bridge:
-                logger.debug("Kodi Hue: Connection failed, exiting script")
-                kodiutils.notification("Kodi Hue", "Bridge not found", time=5000, icon=NOTIFICATION_ERROR)
-                return #return nothing
+            logger.debug("Kodi Hue: in Connect(): Bridge not responding to connection test, attempt finding a new bridge IP.")
+            bridgeIP = discoverBridgeIP(monitor)
+            if bridgeIP:
+                logger.debug("Kodi Hue: in Connect(): New IP found: {}. Saving".format(bridgeIP))
+                kodiutils.set_setting("bridgeIP",bridgeIP)
+                        
         
+        if bridgeIP:
+            logger.debug("Kodi Hue: in Connect(): Checking User")
+            if userTest(bridgeIP, bridgeUser):
+                bridge = qhue.Bridge(bridgeIP,bridgeUser)
+                globals.connected = True
+                logger.debug("Kodi Hue: Connected!")
+                if not silent:
+                    kodiutils.notification("Kodi Hue", "Hue connected", icon=NOTIFICATION_INFO)
+                return bridge
+        else: 
+            logger.debug("Kodi Hue: Bridge not responding")
+            kodiutils.notification("Kodi Hue", "Bridge connection failed", icon=NOTIFICATION_ERROR)
+            globals.connected = False
+            return False
+            
+         
+            
     else:
-        bridge = initialSetup(monitor)    
-        if not bridge:
-            logger.debug("Kodi Hue: Connection failed, exiting script")
-            kodiutils.notification("Kodi Hue", "Bridge not found", time=5000, icon=NOTIFICATION_ERROR)
-            return 
+        logger.debug("Kodi Hue: Bridge not configured")
+        kodiutils.notification("Kodi Hue", "Bridge not configured", icon=NOTIFICATION_ERROR)
+        globals.connected = False
+        return False
     
     
 class HueMonitor(xbmc.Monitor):

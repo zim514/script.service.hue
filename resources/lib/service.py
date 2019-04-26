@@ -62,12 +62,11 @@ def run():
 ########################################################### 
 ########################################################### 
 ###########################################################     
-    
-    if args == "discover":
-        logger.debug("Kodi Hue: Started with Discovery")
-        bridge = kodiHue.bridgeDiscover(monitor)()
 
-    elif args.startswith("groupSelect"):
+
+
+
+    if args.startswith("groupSelect"):
         
         kgroup = args.split("=", 1)[1]
         logger.debug("Kodi Hue: Started with groupSelect. args: {}, kgroup: {}".format(args, kgroup))
@@ -79,46 +78,49 @@ def run():
             logger.debug("Kodi Hue: No bridge found. Select group cancelled.")
             
     else:
-        sys.exit(1)
-        # no arguments, proceed as normal.
-        #if no bridge just shut down
-        #if bridge proceed
-        #if i just found a bridge, should en up here and proceed as well.
-        logger.debug("Kodi Hue: Started with no arguments")
-        bridge = kodiHue.connect(monitor,silent = False)
-        
-    
-        if bridge:
-            # got a bridge, do main script
-            globals.connected = True
-            globals.settingsChanged = False
-            
-            daylight = kodiHue.getDaylight(bridge)
-            
-            ## Initialize kodi groups
-            kgroups = kodiHue.setupGroups(bridge)
-
-    
-            # #Ready to go! Start running until Kodi exit.
-            while globals.connected and not monitor.abortRequested():
-                logger.debug('Kodi Hue: Service running...')
-                if globals.settingsChanged:
-                    kgroups = kodiHue.setupGroups(bridge)
-                    globals.settingsChanged = False
-
-                
-                monitor.waitForAbort(10)
-                
-                
-            
-            logger.debug('Kodi Hue: Process exiting...')
-            
-            return
-            #### End of script
+        if args == "discover":
+            logger.debug("Kodi Hue: Started with Discovery")
+            bridge = kodiHue.bridgeDiscover(monitor)()
             
         else:
-            kodiutils.notification("Philips Hue Service", "No Hue bridge configured, check settings")
-            logger.debug('Kodi Hue: No bridge, exiting...')
-            return
+            # no arguments, proceed as normal.
+            #if no bridge just shut down
+            #if bridge proceed
+            #if i just found a bridge, should en up here and proceed as well.
+            logger.debug("Kodi Hue: Main service started...")
+            
+            bridge = kodiHue.connectBridge(monitor,silent = False)
+                    
+            if bridge:
+                globals.settingsChanged = False
+                
+                daylight = kodiHue.getDaylight(bridge)
+                
+                ## Initialize kodi groups
+                kgroups = kodiHue.setupGroups(bridge)
     
-
+        
+                # #Ready to go! Start running until Kodi exit.
+                while globals.connected and not monitor.abortRequested():
+                    logger.debug('Kodi Hue: Service running...')
+                    if globals.settingsChanged:
+                        kgroups = kodiHue.setupGroups(bridge)
+                        globals.settingsChanged = False
+    
+                    
+                    monitor.waitForAbort(10)
+                    
+                    
+                
+                logger.debug('Kodi Hue: Process exiting...')
+                
+                return
+                #### End of script
+                
+            else:
+                
+                logger.debug('Kodi Hue: No connected bridge, exiting...')
+                return
+        
+    
+    logger.debug('Kodi Hue: Process exiting...')
