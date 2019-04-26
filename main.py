@@ -8,7 +8,7 @@ from resources.lib import kodilogging
 from resources.lib import service
 from resources.lib import globals
 
-REMOTE_DBG = True
+REMOTE_DBG = False
 REMOTE_DBG_SUSPEND = False
 
 
