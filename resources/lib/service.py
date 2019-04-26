@@ -79,7 +79,7 @@ def run():
     else:
         if args == "discover":
             logger.debug("Kodi Hue: Started with Discovery")
-            bridge = kodiHue.bridgeDiscover(monitor)()
+            bridge = kodiHue.bridgeDiscover(monitor)
             
         else:
             # no arguments, proceed as normal.
