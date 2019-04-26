@@ -65,23 +65,27 @@ def run():
     
     if args == "discover":
         logger.debug("Kodi Hue: Started with Discovery")
-        bridge = kodiHue.initialConnect(monitor, True)
+        bridge = kodiHue.bridgeDiscover(monitor)()
 
     elif args.startswith("groupSelect"):
         
         kgroup = args.split("=", 1)[1]
         logger.debug("Kodi Hue: Started with groupSelect. args: {}, kgroup: {}".format(args, kgroup))
         
-        bridge = kodiHue.initialConnect(monitor, False, True)  # don't rediscover, proceed silently
+        bridge = kodiHue.connect(monitor, False, True)  # don't rediscover, proceed silently
         if bridge:
             kodiHue.configureGroup(bridge, kgroup)
         else:
             logger.debug("Kodi Hue: No bridge found. Select group cancelled.")
             
     else:
+        sys.exit(1)
         # no arguments, proceed as normal.
+        #if no bridge just shut down
+        #if bridge proceed
+        #if i just found a bridge, should en up here and proceed as well.
         logger.debug("Kodi Hue: Started with no arguments")
-        bridge = kodiHue.initialConnect(monitor,silent = False)
+        bridge = kodiHue.connect(monitor,silent = False)
         
     
         if bridge:
@@ -113,6 +117,7 @@ def run():
             #### End of script
             
         else:
+            kodiutils.notification("Philips Hue Service", "No Hue bridge configured, check settings")
             logger.debug('Kodi Hue: No bridge, exiting...')
             return
     

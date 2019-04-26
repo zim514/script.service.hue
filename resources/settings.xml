@@ -270,20 +270,4 @@
         <setting id="ambilight_stop_bri" label="3620" visible="eq(-1,true)" type="slider" default="150" range="0,5,254" option="int" />
     </category>
 
-
-
-<!-- 
-    <category label="5000">
-        <!--Advanced SECTION
-        <setting type="lsep" label="5000" />
-        <!--Miscellaneous
-        <setting type="lsep" label="5100" />
-        <setting id="initialFlash" type="bool" label="5110" default="true" />
-       <setting id="misc_disableshort" type="bool" label="5120" default="false" />
-        <setting id="misc_disableshort_threshold" type="number" label="5130" default="120" enable="eq(-1,true)" />
-        <setting id="force_light_on" type="bool" label="5140" default="false" />
-           
-    </category>
-    
--->    
 </settings>

@@ -7,7 +7,7 @@ import sys
 import logging
 import requests
 from socket import getfqdn
-
+from contextlib import contextmanager
 
 import xbmc
 import xbmcaddon
@@ -15,9 +15,7 @@ import xbmcgui
 from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
 import globals
 import kodiutils
-#import KodiGroup
 from KodiGroup import KodiGroup
-#import  tools
 
 from kodiutils import notification, get_string
 from resources.lib.globals import NUM_GROUPS
@@ -32,7 +30,7 @@ ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 
 
-def discover_nupnp():
+def _discoverNupnp():
     logger.debug("Kodi Hue: In kodiHue discover_nupnp()")
   
     req = requests.get('https://discovery.meethue.com/')
@@ -44,57 +42,57 @@ def discover_nupnp():
     return bridge_ip
         
         
-def initialSetup(monitor):
+def bridgeDiscover(monitor):
+    logger.debug("Kodi Hue: In bridgeDiscover:")
     #Create new config if none exists. Returns success or fail as bool
-    bridgeIP = kodiutils.get_setting("bridgeIP")
-    bridgeUser = kodiutils.get_setting("bridgeUser")
-    
-    logger.debug("Kodi Hue: In InitialSetup:  Hue settings read: Bridge IP: {},Bridge User: {}".format(bridgeIP,bridgeUser))
-    
-    if bridgeIP:
-        #check if the saved IP is any good
-        if connectionTest(bridgeIP): 
-            #connection success! save IP again for good measure
-            kodiutils.set_setting("BridgeIP", bridgeIP)
-        else:
-            #connection failed, flush IP
-            bridgeIP = ""
-            kodiutils.set_setting("BridgeIP", bridgeIP)
-            
-    if not bridgeIP:
-        #IP is no good, find a new one.
-        bridgeIP = discoverBridgeIP(monitor)
-        if connectionTest(bridgeIP): 
-            #this IP is legit, save it.
-            kodiutils.set_setting("BridgeIP", bridgeIP)
-        else:
-            #this IP is still no good. Give up
-            return False
-            
-######        
-    if bridgeUser:
-        #a user is set, check if OK.
-        if userTest(bridgeIP, bridgeUser):
-            #I have a user and its valid! save it again for good measure.
-            kodiutils.set_setting("BridgeUser", bridgeUser)
-        else:
-            #configured user is unauthorized, delete it.
-            bridgeUser = ""
-            kodiutils.set_setting("BridgeUser", bridgeUser)
+    kodiutils.set_setting("bridgeIP","")
+    kodiutils.set_setting("bridgeUser","")
     
     
-    if not bridgeUser:
-        #STILL no legit user, create a new one.
-        bridgeUser = create_user(monitor, bridgeIP, notify=True)
-        if bridgeUser:
-            #user seems good, save
-            kodiutils.set_setting("BridgeUser", bridgeUser)
-        else:
-            #no user found, give up
-            return False
-    #everything seems ok so return a Bridge
-    return Bridge(bridgeIP,bridgeUser)
+    progressBar = xbmcgui.DialogProgress()
+    progressBar.create('Discover bridge...')
+    progressBar.update(5, "Discovery started")
+    
+    complete = False
+    while not progressBar.iscanceled() and not complete:
 
+#TODO: ADD DISCOVERY METHODS in their own method with progress bar support (or not) and support for initial connect        
+        #bridgeIP = discoverBridgeIP..
+        progressBar.update(10, "nupnp discovery... ")
+        bridgeIP =_discoverNupnp()
+        
+        if connectionTest(bridgeIP):
+            progressBar.update(100, "Found bridge: " + bridgeIP)
+            xbmc.sleep(1000)
+                     
+            bridgeUser = createUser(monitor, bridgeIP, progressBar)
+            if bridgeUser:
+                progressBar.update(90,"User Found!","Saving settings")
+                
+                kodiutils.set_setting("bridgeIP",bridgeIP)
+                kodiutils.set_setting("bridgeUser",bridgeUser)
+                complete = True
+                progressBar.update(100, "Complete!")
+                monitor.waitForAbort(5)
+                progressBar.close()
+            else:
+                progressBar.update(100, "User not found","Check your bridge and network")
+                monitor.waitForAbort(5)
+                complete = True
+           
+                progressBar.close()
+            
+        else:
+            progressBar.update(100, "Bridge not found","Check your bridge and network")
+            monitor.waitForAbort(5)
+            complete = True
+            progressBar.close()
+
+    if progressBar.iscanceled():
+        progressBar.update(100,"Cancelled")
+        complete = True
+        progressBar.close()
+        
        
 def connectionTest(bridgeIP):
     logger.debug("Kodi Hue: in ConnectionTest() Attempt initial connection")
@@ -129,12 +127,12 @@ def userTest(bridgeIP,bridgeUser):
         
 def discoverBridgeIP(monitor):
     #discover hue bridge
-    logger.debug("Kodi Hue: In kodiHue discover()")
+    logger.debug("Kodi Hue: In discoverBridgeIP")
     #TODO: implement upnp discovery
     #bridge_ip = _discover_upnp()  
     bridgeIP = None
     if bridgeIP is None:
-        bridgeIP = discover_nupnp()
+        bridgeIP = _discoverNupnp()
     
     if connectionTest(bridgeIP):
         return bridgeIP
@@ -143,20 +141,30 @@ def discoverBridgeIP(monitor):
 
        
 
-def create_user(monitor, bridgeIP, notify=True):
+def createUser(monitor, bridgeIP, progressBar=False):
     #device = 'kodi#'+getfqdn()
     data = '{{"devicetype": "kodi#{}"}}'.format(getfqdn()) #Create a devicetype named kodi#localhostname. Eg: kodi#LibreELEC
 
+    req = requests
     res = 'link button not pressed'
     timeout = 0
-    while 'link button not pressed' in res and not monitor.abortRequested() and timeout <= 60   :
+    progress=0
+    if progressBar:        
+        progressBar.update(progress,get_string(9001),"Waiting for 90 seconds...") #press link button on bridge
+    
+    
+    while 'link button not pressed' in res and timeout <= 90  and not monitor.abortRequested() and not progressBar.iscanceled():
         logger.debug("Kodi Hue: In create_user: abortRquested: {}, timer: {}".format(str(monitor.abortRequested()),timeout) )
-        if notify:
-            notification(get_string(9000), get_string(9001), time=1000, icon=xbmcgui.NOTIFICATION_WARNING, sound=True) #9002: Press link button on bridge
+        
+        if progressBar:
+            progressBar.update(progress,get_string(9001)) #press link button on bridge
+             #notification(get_string(9000), get_string(9001), time=1000, icon=xbmcgui.NOTIFICATION_WARNING) #9002: Press link button on bridge
+            
         req = requests.post('http://{}/api'.format(bridgeIP), data=data)
         res = req.text
         monitor.waitForAbort(1)
         timeout = timeout + 1
+        progress = progress + 1
 
     res = req.json()
     
@@ -178,7 +186,7 @@ def selectHueGroup(bridge):
     logger.debug("Kodi Hue: In selectHueGroup{}")
     hueGroups=bridge.groups()
     
-    
+    xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
     items=[]
     index=[]
     
@@ -193,7 +201,7 @@ def selectHueGroup(bridge):
         index.append(group)
         items.append(xbmcgui.ListItem(label=hGroupName))
         
-    
+    xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
     selected = xbmcgui.Dialog().select("Select Hue group...",items)
     
     id = index[selected]
@@ -226,7 +234,7 @@ def setupGroups(bridge):
                    
 
 
-def initialConnect(monitor,discover=False,silent=False):
+def connect(monitor,discover=False,silent=False):
     
     if discover:
         logger.debug("Kodi Hue: Discovery selected, don't load existing bridge settings.")
@@ -243,7 +251,7 @@ def initialConnect(monitor,discover=False,silent=False):
             bridge = qhue.Bridge(bridgeIP,bridgeUser)
             globals.connected = True
             if not silent:
-                kodiutils.notification("Kodi Hue", "Bridge connected", time=5000, icon=NOTIFICATION_INFO, sound=False)
+                kodiutils.notification("Kodi Hue", "Bridge connected", time=5000, icon=NOTIFICATION_INFO)
             logger.debug("Kodi Hue: Connected!")
             return bridge
      
@@ -251,14 +259,14 @@ def initialConnect(monitor,discover=False,silent=False):
             bridge = initialSetup(monitor)
             if not bridge:
                 logger.debug("Kodi Hue: Connection failed, exiting script")
-                kodiutils.notification("Kodi Hue", "Bridge not found", time=5000, icon=NOTIFICATION_ERROR, sound=True)
+                kodiutils.notification("Kodi Hue", "Bridge not found", time=5000, icon=NOTIFICATION_ERROR)
                 return #return nothing
         
     else:
         bridge = initialSetup(monitor)    
         if not bridge:
             logger.debug("Kodi Hue: Connection failed, exiting script")
-            kodiutils.notification("Kodi Hue", "Bridge not found", time=5000, icon=NOTIFICATION_ERROR, sound=True)
+            kodiutils.notification("Kodi Hue", "Bridge not found", time=5000, icon=NOTIFICATION_ERROR)
             return 
     
     
