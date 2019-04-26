@@ -58,13 +58,14 @@ class KodiGroup(xbmc.Player):
             self.hgroupID=hgroupID
             
             self.readSettings()
-            if self.enabled:
-                self.groupResource=bridge.groups[self.hgroupID]
-                self.lightIDs=self.groupResource()["lights"]
-                self.saveInitialState()
+            
+            self.groupResource=bridge.groups[self.hgroupID]
+            self.lightIDs=self.groupResource()["lights"]
+            self.saveInitialState()
 
-                if kodiutils.get_setting_as_bool("kgroup0_initialFlash"):
-                    self.flash()
+            if kodiutils.get_setting_as_bool("initialFlash"):
+                self.flash()
+                    
                     
                 
         def saveInitialState(self):
@@ -111,7 +112,7 @@ class KodiGroup(xbmc.Player):
             
             self.saveInitialState()
 
-            if self.behavior is not BEHAVIOR_NOTHING:
+            if self.enabled:
                 
                 if self.startBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn:
@@ -126,7 +127,7 @@ class KodiGroup(xbmc.Player):
         def onPlayBackStopped(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStopped".format(self.kgroupID))
             
-            if self.behavior is not BEHAVIOR_NOTHING:
+            if self.enabled:
                 
                 if self.stopBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn:
@@ -143,7 +144,7 @@ class KodiGroup(xbmc.Player):
         
         def onPlayBackPaused(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackPaused".format(self.kgroupID))
-            if self.behavior is not BEHAVIOR_NOTHING:
+            if self.enabled:
                 
                 if self.pauseBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn:

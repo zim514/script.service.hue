@@ -19,7 +19,7 @@ import kodiutils
 from KodiGroup import KodiGroup
 
 from kodiutils import notification, get_string
-from resources.lib.globals import NUM_GROUPS
+
 
 
 
@@ -225,11 +225,11 @@ def setupGroups(bridge):
     logger.debug("Kodi Hue: in setupGroups()")
     kgroups= []   
     g=0
-    while g < NUM_GROUPS:
-        if kodiutils.get_setting_as_int("group{}_enabled"):
+    while g < globals.NUM_GROUPS:
+        if kodiutils.get_setting_as_bool("group{}_enabled".format(g)):
             kgroups.append(KodiGroup())
             kgroups[g].setup(bridge, g, kodiutils.get_setting_as_int("group{}_hGroupID".format(g))) 
-            g = g + 1
+        g = g + 1
         
     return kgroups
 
