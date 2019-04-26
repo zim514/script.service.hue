@@ -45,7 +45,7 @@ if REMOTE_DBG:
         sys.exit(1)
 
 
-    service.run()
+service.run()
 
 logger.debug("'%s' shutting down." % ADDONID)
 
