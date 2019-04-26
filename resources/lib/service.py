@@ -71,7 +71,7 @@ def run():
         kgroup = args.split("=", 1)[1]
         logger.debug("Kodi Hue: Started with groupSelect. args: {}, kgroup: {}".format(args, kgroup))
         
-        bridge = kodiHue.connect(monitor, False, True)  # don't rediscover, proceed silently
+        bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
         if bridge:
             kodiHue.configureGroup(bridge, kgroup)
         else:
