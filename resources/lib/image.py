@@ -97,7 +97,7 @@ class Screenshot:
             for ratio in hsv_ratios:
                 ratio.average_value(overall_value)
             if len(hsv_ratios) < num_hsv:
-                hsv_ratios += [hsv_ratios[--1]] * (num_hsv - len(hsv_ratios))
+                hsv_ratios += [hsv_ratios[- -1]] * (num_hsv - len(hsv_ratios))
             return hsv_ratios
 
         return [HSVRatio()] * num_hsv

@@ -1,7 +1,68 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-    <!-- Main -->
+    <!-- General -->
+    <string id="9000">Kodi Hue</string>
+    <string id="9001">Press connect button on Hue bridge</string>
+    <string id="9002">Select Hue Group...</string>
+    
+    
+    <string id="1001">Group 1</string>
+    <string id="1002">Group 2</string>
+    <string id="1003">Group 3</string>
+    <string id="1004">Group 4</string>
+    
+    
+    
+
+    
+	<!-- Strings used in settings follows: -->
+    <!-- Group  -->
+    <string id="6000">Group</string>
+    <string id="6001">Kodi Group ID</string>
+    <string id="6003">Hue Group ID</string>
+    
+    <string id="6002">Hue Group Name</string>
+    
+    <string id="6100">Light Selection</string>
+    
+    <string id="6101">Select Lights</string>
+    <string id="6102">Select Hue Group</string>
+    
+    <!-- Group behaviour setting -->
+    <string id="6200">Group Behavior</string>
+    
+    <string id="6201">Behavior</string>
+    <string id="6202">Do nothing</string>
+    <string id="6203">Adjust lights</string>
+    <string id="6204">Turn off lights</string>
+    <string id="6205">Initial state</string>
+        
+    <string id="6206">Fade Time</string>
+    <string id="6207">Force on</string>
+    <string id="6208">Hue group</string>
+    
+    
+    <!-- Behaviour triggers -->
+    <string id="6301">Playback start / resume</string>
+    <string id="6302">Playback pause</string>
+    <string id="6303">Playback stop</string>
+    
+    
+    
+    <!-- Light settings -->
+    <string id="6400">Light settings</string>
+    <string id="6401">Initial State</string>
+    <string id="6402">Hue</string>
+    <string id="6403">Saturation</string>
+    <string id="6404">Brightness</string>
+    
+
+  <!-- ORIGINAL STUFF -->  
+    
+       
+    
     <string id="1000">General</string>
+    
 
     <string id="1100">Light Groups</string>
     <string id="1120">Setup Theater Lights</string>
@@ -15,6 +76,7 @@
 
     <string id="1400">WARNING: RESET ALL SETTINGS</string>
     <string id="1410">Reset all settings (requires disable/re-enable)</string>
+    <string id="1420">Debug mode</string>
 
     <!-- Theater -->
     <string id="2000">Theater</string>
@@ -66,6 +128,8 @@
     <string id="3610">Override Brightness (default initial)</string>
     <string id="3620">Choose Brightness</string>
 
+
+     <!-- Static  -->
     <string id="4000">Static</string>
     <string id="4100">Playback Start (or resume)</string>
     <string id="4105">Random Color</string>
@@ -76,6 +140,9 @@
     <string id="4150">Override Brightness (default 100)</string>
     <string id="4160">Choose Brightness</string>
 
+
+
+
     <!-- Advanced -->
     <string id="5000">Advanced</string>
 
@@ -84,4 +151,9 @@
     <string id="5120">Disable for short movies</string>
     <string id="5130">Short Movie Threshold (seconds)</string>
     <string id="5140">Force Light(s) on (even if off)</string>
+    
+    
+
+    
 </strings>
+
