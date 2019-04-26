@@ -84,16 +84,16 @@ class KodiGroup(xbmc.Player):
             lights = self.lights 
             
             for x in initialState:
-                #apply initial state for each light.
                 i = initialState[x]
-                logger.debug("Kodi Hue: In KodiGroup[{}], apply initial state: {}, {}".format(self.kgroupID,x,i))   
+                logger.debug("Kodi Hue: In KodiGroup[{}], apply initial state: {}, {}".format(self.kgroupID,x,i))
                 lights[x].state(on=i['on'],
-#                                ct=i['ct'],
+                                ct=i['ct'],
                                 xy=i['xy'],
-#                                bri=i['bri'],
-#                                hue=i['hue'],
-#                                sat=i['sat'],
+                                bri=i['bri'],
+                                hue=i['hue'],
+                                sat=i['sat'],
                                 transitiontime=self.fadeTime)
+                
                                 
                 
             
