@@ -29,7 +29,7 @@ class KodiGroup(xbmc.Player):
 
         def readSettings(self):
           
-            self.enabled=get_setting("group{}_enabled".format(self.kgroupID))
+            self.enabled=get_setting_as_bool("group{}_enabled".format(self.kgroupID))
             self.fadeTime=get_setting_as_int("group{}_fadeTime".format(self.kgroupID))*10 #Stored as seconds, but Hue API expects multiples of 100ms.
             self.forceOn=get_setting_as_bool("group{}_forceOn".format(self.kgroupID))
             
@@ -108,7 +108,7 @@ class KodiGroup(xbmc.Player):
             self.groupResource.action(alert="select")
         
         def onPlayBackStarted(self, resume=False):
-            logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStarted. Group behavior: {}, forceOn: {}".format(self.kgroupID, self.behavior, self.forceOn))
+            logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, forceOn: {}".format(self.kgroupID, self.enabled, self.forceOn))
             
             self.saveInitialState()
 

@@ -120,6 +120,3 @@ def run():
                 
                 logger.debug('Kodi Hue: No connected bridge, exiting...')
                 return
-        
-    
-    logger.debug('Kodi Hue: Process exiting...')
