@@ -12,7 +12,8 @@ from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_WARNING, NOTIFICATION_INFO
 import globals
 import kodiutils
 from KodiGroup import KodiGroup
-import kodiHue                                                                                                                                                          
+import kodiHue
+                                                                                                                                                        
 import qhue
 from resources.lib.globals import NUM_GROUPS
 
