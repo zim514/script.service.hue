@@ -6,6 +6,7 @@ import xbmcaddon
 from resources.lib import kodilogging
 from resources.lib import kodiutils
 
+
 # ADDON = sys.modules["__main__"].ADDON
 ADDON = xbmcaddon.Addon()
 

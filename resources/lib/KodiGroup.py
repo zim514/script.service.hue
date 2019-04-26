@@ -3,14 +3,15 @@ Created on Apr. 17, 2019
 
 @author: Kris
 '''
-import xbmc
-import qhue
 import logging
-import xbmcaddon
-import kodiutils
-import globals
 
+import xbmc
+import xbmcaddon
+
+import globals
 from kodiutils import get_setting, get_setting_as_bool, get_setting_as_int
+import kodiutils
+import qhue
 
 
 BEHAVIOR_NOTHING = 0

@@ -1,24 +1,22 @@
 # -*- coding: utf-8 -*-
 
-import sys
 import logging
+import sys
 from threading import Event
 
 import xbmc
 import xbmcaddon
 from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_WARNING, NOTIFICATION_INFO
 
-# from resources.lib.qhue import Bridge
-import globals
-import kodiutils
 from KodiGroup import KodiGroup
+import globals
 import kodiHue
-                                                                                                                                                        
+import kodiutils
 import qhue
 from resources.lib.globals import NUM_GROUPS
 
 
-
+# from resources.lib.qhue import Bridge
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 
