@@ -29,7 +29,7 @@ class KodiGroup(xbmc.Player):
 
         def readSettings(self):
           
-            self.behavior=get_setting("group{}_behavior".format(self.kgroupID))
+            self.enabled=get_setting("group{}_enabled".format(self.kgroupID))
             self.fadeTime=get_setting_as_int("group{}_fadeTime".format(self.kgroupID))*10 #Stored as seconds, but Hue API expects multiples of 100ms.
             self.forceOn=get_setting_as_bool("group{}_forceOn".format(self.kgroupID))
             
@@ -56,16 +56,17 @@ class KodiGroup(xbmc.Player):
             self.lights = bridge.lights 
             self.kgroupID=kgroupID
             self.hgroupID=hgroupID
-            self.groupResource=bridge.groups[self.hgroupID]
-            self.lightIDs=self.groupResource()["lights"]
             
-            self.saveInitialState()
             self.readSettings()
-            
-            #self.group = groupResource()
-            if kodiutils.get_setting_as_bool("kgroup0_initialFlash"):
-                self.flash()
-            
+            if self.enabled:
+                self.groupResource=bridge.groups[self.hgroupID]
+                self.lightIDs=self.groupResource()["lights"]
+                self.saveInitialState()
+
+                if kodiutils.get_setting_as_bool("kgroup0_initialFlash"):
+                    self.flash()
+                    
+                
         def saveInitialState(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], save initial state".format(self.kgroupID))
             initialState = {}

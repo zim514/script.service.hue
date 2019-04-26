@@ -226,11 +226,11 @@ def setupGroups(bridge):
     kgroups= []   
     g=0
     while g < NUM_GROUPS:
+        if kodiutils.get_setting_as_int("group{}_enabled"):
+            kgroups.append(KodiGroup())
+            kgroups[g].setup(bridge, g, kodiutils.get_setting_as_int("group{}_hGroupID".format(g))) 
+            g = g + 1
         
-        kgroups.append(KodiGroup())
-        kgroups[g].setup(bridge, g, kodiutils.get_setting_as_int("group{}_hGroupID".format(g))) 
-        g = g + 1
-    
     return kgroups
 
                    
