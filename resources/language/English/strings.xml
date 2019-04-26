@@ -4,6 +4,15 @@
     <string id="9000">Kodi Hue</string>
     <string id="9001">Press connect button on Hue bridge</string>
     <string id="9002">Select Hue Group...</string>
+    
+    
+    <string id="1001">Group 1</string>
+    <string id="1002">Group 2</string>
+    <string id="1003">Group 3</string>
+    <string id="1004">Group 4</string>
+    
+    
+    
 
     
 	<!-- Strings used in settings follows: -->
