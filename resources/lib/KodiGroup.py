@@ -50,7 +50,7 @@ class KodiGroup(xbmc.Player):
             self.stopBrightness=get_setting_as_int("group{}_stopBrightness".format(self.kgroupID)) -1
 
             
-        def setup(self,bridge,kgroupID,hgroupID):
+        def setup(self,bridge,kgroupID,hgroupID,flash = False):
             self.bridge = bridge
             
             self.lights = bridge.lights 
@@ -63,7 +63,7 @@ class KodiGroup(xbmc.Player):
             self.lightIDs=self.groupResource()["lights"]
             self.saveInitialState()
 
-            if kodiutils.get_setting_as_bool("initialFlash"):
+            if flash:
                 self.flash()
                     
                     

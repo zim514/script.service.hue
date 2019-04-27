@@ -39,12 +39,10 @@ settingsChanged = False
 def run():
     logger.debug("Kodi Hue:  service started, version: {}".format(ADDON.getAddonInfo('version')))
     
-    #global settingsChanged
-    #global connected
-    
     monitor = kodiHue.HueMonitor()
 
     initialFlash = kodiutils.get_setting_as_bool("initialFlash")
+    
     
     
     bridgeIP = ""
@@ -82,41 +80,36 @@ def run():
             bridge = kodiHue.bridgeDiscover(monitor)
             
         else:
-            # no arguments, proceed as normal.
-            #if no bridge just shut down
-            #if bridge proceed
-            #if i just found a bridge, should en up here and proceed as well.
             logger.debug("Kodi Hue: Main service started...")
-            
-            bridge = kodiHue.connectBridge(monitor,silent = False)
+            bridge = kodiHue.connectBridge(monitor,silent=False)
                     
             if bridge:
                 globals.settingsChanged = False
-                
                 daylight = kodiHue.getDaylight(bridge)
-                
-                ## Initialize kodi groups
-                kgroups = kodiHue.setupGroups(bridge)
+                kgroups = kodiHue.setupGroups(bridge,initialFlash)
     
-        
-                # #Ready to go! Start running until Kodi exit.
+                timer = 0
+                # #Ready to go! Start running until Kodi exit.            
                 while globals.connected and not monitor.abortRequested():
-                    logger.debug('Kodi Hue: Service running...')
+                    
                     if globals.settingsChanged:
-                        kgroups = kodiHue.setupGroups(bridge)
+                        reloadFlash = kodiutils.get_setting_as_bool("reloadFlash")
+                        kgroups = kodiHue.setupGroups(bridge, reloadFlash)
                         globals.settingsChanged = False
-    
                     
-                    monitor.waitForAbort(10)
+                    timer = timer + 1
+                    if timer > 60:
+                        daylight = kodiHue.getDaylight(bridge)
+                        
+                        logger.debug('Kodi Hue: Service running...')
+                        timer = 0
+                        
+
                     
-                    
-                
+                    monitor.waitForAbort(1)
                 logger.debug('Kodi Hue: Process exiting...')
-                
                 return
-                #### End of script
                 
             else:
-                
                 logger.debug('Kodi Hue: No connected bridge, exiting...')
                 return

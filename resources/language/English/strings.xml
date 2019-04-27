@@ -147,7 +147,8 @@
     <string id="5000">Advanced</string>
 
     <string id="5100">Misc. Settings</string>
-    <string id="5110">Enable initial flash</string>
+    <string id="5110">Initial flash</string>
+    <string id="5111">Flash on settings reload</string>
     <string id="5120">Disable for short movies</string>
     <string id="5130">Short Movie Threshold (seconds)</string>
     <string id="5140">Force Light(s) on (even if off)</string>

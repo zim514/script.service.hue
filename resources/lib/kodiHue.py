@@ -221,14 +221,14 @@ def getDaylight(bridge):
     return bridge.sensors['1']()['state']['daylight']
             
 
-def setupGroups(bridge):
+def setupGroups(bridge,flash=False):
     logger.debug("Kodi Hue: in setupGroups()")
     kgroups= []   
     g=0
     while g < globals.NUM_GROUPS:
         if kodiutils.get_setting_as_bool("group{}_enabled".format(g)):
             kgroups.append(KodiGroup())
-            kgroups[g].setup(bridge, g, kodiutils.get_setting_as_int("group{}_hGroupID".format(g))) 
+            kgroups[g].setup(bridge, g, kodiutils.get_setting_as_int("group{}_hGroupID".format(g)), flash)  
         g = g + 1
         
     return kgroups
