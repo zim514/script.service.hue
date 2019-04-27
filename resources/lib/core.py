@@ -7,6 +7,7 @@ from threading import Event
 import xbmc
 import xbmcaddon
 from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_WARNING, NOTIFICATION_INFO
+import xbmcgui
 
 from KodiGroup import KodiGroup
 import globals
@@ -49,11 +50,11 @@ def menu():
 
     logger.debug("Kodi Hue: Args: {}".format(args))
 
-    if command == "discover":
+    if args == "discover":
         logger.debug("Kodi Hue: Started with Discovery")
         bridge = kodiHue.bridgeDiscover(monitor)
         
-    elif command.startswith("groupSelect"):
+    elif args.startswith("groupSelect"):
         kgroup = args.split("=", 1)[1]
         logger.debug("Kodi Hue: Started with groupSelect. args: {}, kgroup: {}".format(args, kgroup))
         
@@ -61,7 +62,22 @@ def menu():
         if bridge:
             kodiHue.configureGroup(bridge, kgroup)
         else:
-            logger.debug("Kodi Hue: No bridge found. Select group cancelled.")        
+            logger.debug("Kodi Hue: No bridge found. Select group cancelled.")
+    else:
+        list = []
+        list.append(xbmcgui.ListItem("Open settings"))
+        list.append(xbmcgui.ListItem("Discover bridge"))
+        list.append(xbmcgui.ListItem("Create Hue Group"))
+        selection = xbmcgui.Dialog().select("Hue", list)
+        if selection == 0:
+            ADDON.openSettings()
+        elif selection == 1:
+            #discover bridge
+            bridge = kodiHue.bridgeDiscover(monitor)
+        elif selection == 2:
+            #create Hue Group
+            a=1
+         
     
     
     
@@ -91,7 +107,7 @@ def service():
 ########################################################### 
 ###########################################################     
 
-    if command.startswith("groupSelect"):
+    if args.startswith("groupSelect"):
         
         kgroup = args.split("=", 1)[1]
         logger.debug("Kodi Hue: Started with groupSelect. args: {}, kgroup: {}".format(args, kgroup))
