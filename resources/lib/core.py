@@ -33,10 +33,17 @@ settingsChanged = False
 # fmtRGBA = fmt == 'RGBA'
 #===============================================================================
 
+
+
+def menu():
+    logger.debug("Kodi Hue:  menu started, version: {}".format(ADDON.getAddonInfo('version')))
+    a=1
+
+
 ##################################################
 # # RUN
 ###################
-def run():
+def service():
     logger.debug("Kodi Hue:  service started, version: {}".format(ADDON.getAddonInfo('version')))
     
     monitor = kodiHue.HueMonitor()
