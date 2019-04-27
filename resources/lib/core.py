@@ -53,6 +53,15 @@ def menu():
     if args == "discover":
         logger.debug("Kodi Hue: Started with Discovery")
         bridge = kodiHue.bridgeDiscover(monitor)
+    elif args == "createGroup":
+        logger.debug("Kodi Hue: Started with createGroup")
+        bridge = kodiHue.connectBridge(monitor, silent=True)
+        if bridge:
+            kodiHue.createHueGroup(bridge)
+        else: 
+            
+            logger.debug("Kodi Hue: Menu() createGroup: No bridge") 
+                
         
     elif args.startswith("groupSelect"):
         kgroup = args.split("=", 1)[1]
@@ -76,7 +85,8 @@ def menu():
             bridge = kodiHue.bridgeDiscover(monitor)
         elif selection == 2:
             #create Hue Group
-            a=1
+            bridge = kodiHue.connectBridge(monitor, silent=True)
+            kodiHue.createHueGroup(bridge)
          
     
     

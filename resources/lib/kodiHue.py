@@ -30,6 +30,23 @@ from resources.lib.qhue import qhue,QhueException,Bridge
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 
+def createHueGroup(bridge):
+    logger.debug("Kodi Hue: In kodiHue createHueGroup")
+    groupName = xbmcgui.Dialog().input("Group Name")
+    if groupName:              
+        selected = selectHueLights(bridge)
+        if selected:
+            groups=bridge.groups
+            res=groups(lights=selected,name=groupName,http_method='post')
+            logger.debug("Kodi Hue: In kodiHue createHueGroup. Res:".format(res))
+            if res[0]["success"]:
+                xbmcgui.Dialog().notification("Hue", "Group Created")
+            else:
+                xbmcgui.Dialog().notification("Hue", "ERROR: Group not created")
+                 
+        
+        
+    
 
 def _discoverNupnp():
     logger.debug("Kodi Hue: In kodiHue discover_nupnp()")
@@ -182,6 +199,49 @@ def configureGroup(bridge,kGroupID):
     kodiutils.set_setting("group{}_hGroupID".format(kGroupID), hGroup[0])
     kodiutils.set_setting("group{}_hGroupName".format(kGroupID), hGroup[1])
     ADDON.openSettings()
+
+
+
+def selectHueLights(bridge):
+    logger.debug("Kodi Hue: In selectHueLights{}")
+    hueLights=bridge.lights()
+    
+    xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
+    items=[]
+    index=[]
+    lightIDs=[]
+    
+    for light in hueLights:
+
+        hLight=hueLights[light]
+        hLightName=hLight['name']
+        
+        #logger.debug("Kodi Hue: In selectHueGroup: {}, {}".format(hgroup,name))
+        index.append(light)
+        items.append(xbmcgui.ListItem(label=hLightName))
+        
+    xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
+    selected = xbmcgui.Dialog().multiselect("Select Hue Lights...",items)
+    
+    #id = index[selected]
+    for s in selected:
+        lightIDs.append(index[s])
+        
+    
+    logger.debug("Kodi Hue: In selectHueGroup: selected: {}".format(selected))
+    
+    if lightIDs:
+        return lightIDs;
+    else:
+        return None    
+    
+    
+    
+    if selected:
+        return selected
+    else:
+        return None
+
 
 
 def selectHueGroup(bridge):
