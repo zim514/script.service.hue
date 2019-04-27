@@ -9,6 +9,8 @@ connected = False
 
 NUM_GROUPS = 4
 
+REMOTE_DBG = False
+REMOTE_DBG_SUSPEND = False
 
 
 

@@ -3,14 +3,15 @@ Created on Apr. 17, 2019
 
 @author: Kris
 '''
-import xbmc
-import qhue
 import logging
-import xbmcaddon
-import kodiutils
-import globals
 
+import xbmc
+import xbmcaddon
+
+import globals
 from kodiutils import get_setting, get_setting_as_bool, get_setting_as_int
+import kodiutils
+import qhue
 
 
 BEHAVIOR_NOTHING = 0
@@ -28,7 +29,7 @@ class KodiGroup(xbmc.Player):
 
         def readSettings(self):
           
-            self.behavior=get_setting("group{}_behavior".format(self.kgroupID))
+            self.enabled=get_setting_as_bool("group{}_enabled".format(self.kgroupID))
             self.fadeTime=get_setting_as_int("group{}_fadeTime".format(self.kgroupID))*10 #Stored as seconds, but Hue API expects multiples of 100ms.
             self.forceOn=get_setting_as_bool("group{}_forceOn".format(self.kgroupID))
             
@@ -49,22 +50,24 @@ class KodiGroup(xbmc.Player):
             self.stopBrightness=get_setting_as_int("group{}_stopBrightness".format(self.kgroupID)) -1
 
             
-        def setup(self,bridge,kgroupID,hgroupID):
+        def setup(self,bridge,kgroupID,hgroupID,flash = False):
             self.bridge = bridge
             
             self.lights = bridge.lights 
             self.kgroupID=kgroupID
             self.hgroupID=hgroupID
-            self.groupResource=bridge.groups[self.hgroupID]
-            self.lightIDs=self.groupResource()["lights"]
             
-            self.saveInitialState()
             self.readSettings()
             
-            #self.group = groupResource()
-            if kodiutils.get_setting_as_bool("initialFlash"):
+            self.groupResource=bridge.groups[self.hgroupID]
+            self.lightIDs=self.groupResource()["lights"]
+            self.saveInitialState()
+
+            if flash:
                 self.flash()
-            
+                    
+                    
+                
         def saveInitialState(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], save initial state".format(self.kgroupID))
             initialState = {}
@@ -105,11 +108,11 @@ class KodiGroup(xbmc.Player):
             self.groupResource.action(alert="select")
         
         def onPlayBackStarted(self, resume=False):
-            logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStarted".format(self.kgroupID))
+            logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, forceOn: {}".format(self.kgroupID, self.enabled, self.forceOn))
             
             self.saveInitialState()
 
-            if self.behavior is not BEHAVIOR_NOTHING:
+            if self.enabled:
                 
                 if self.startBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn:
@@ -124,7 +127,7 @@ class KodiGroup(xbmc.Player):
         def onPlayBackStopped(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStopped".format(self.kgroupID))
             
-            if self.behavior is not BEHAVIOR_NOTHING:
+            if self.enabled:
                 
                 if self.stopBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn:
@@ -137,13 +140,11 @@ class KodiGroup(xbmc.Player):
                     
                 elif self.stopBehavior == BEHAVIOR_INITIAL:
                     self.applyInitialState()
-                    
-
             
         
         def onPlayBackPaused(self):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackPaused".format(self.kgroupID))
-            if self.behavior is not BEHAVIOR_NOTHING:
+            if self.enabled:
                 
                 if self.pauseBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn:

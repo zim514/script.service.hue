@@ -1,19 +1,12 @@
 # -*- coding: utf-8 -*-
 import logging
 import sys
-import threading
-
 
 import xbmcaddon
 
 from resources.lib import kodilogging
-from resources.lib import service
+from resources.lib import core
 from resources.lib import globals
-
-REMOTE_DBG = False
-REMOTE_DBG_SUSPEND = False
-
-threading.Thread.name = 'script.service.hue'
 
 
 # Keep this file to a minimum, as Kodi
@@ -28,15 +21,18 @@ logger = logging.getLogger(__name__)
 logger.debug("Loading '%s' version '%s'" % (ADDONID, ADDONVERSION))
 
 
-if REMOTE_DBG:
+if globals.REMOTE_DBG:
     # Make pydev debugger works for auto reload.
     # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
+    
     try:
 
         sys.path.append('e:\dev\pysrc')
+        import threading
         import pydevd
 
-        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True, suspend=REMOTE_DBG_SUSPEND,
+        threading.Thread.name = 'script.service.hue'
+        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True, suspend=globals.REMOTE_DBG_SUSPEND,
                         trace_only_current_thread=True, overwrite_prev_trace=True, patch_multiprocessing=False)
 
     except ImportError:
@@ -45,8 +41,8 @@ if REMOTE_DBG:
         sys.exit(1)
 
 
-    service.run()
 
-logger.debug("'%s' shutting down." % ADDONID)
+core.menu()
+logger.debug("'%s' shutting down menu" % ADDONID)
 
 

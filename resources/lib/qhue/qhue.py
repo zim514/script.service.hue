@@ -8,6 +8,7 @@ import sys
 
 import requests
 
+
 # for hostname retrieval for registering with the bridge
 __all__ = ('Bridge', 'QhueException', 'create_new_username')
 
