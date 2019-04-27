@@ -37,7 +37,34 @@ settingsChanged = False
 
 def menu():
     logger.debug("Kodi Hue:  menu started, version: {}".format(ADDON.getAddonInfo('version')))
-    a=1
+    monitor = kodiHue.HueMonitor()
+    command = getCommand()
+    
+    logger.debug("Kodi Hue:  menu started, command: {}".format(command))
+
+    if len(sys.argv) == 2:
+        args = sys.argv[1]
+    else: 
+        args = ""
+
+    logger.debug("Kodi Hue: Args: {}".format(args))
+
+    if command == "discover":
+        logger.debug("Kodi Hue: Started with Discovery")
+        bridge = kodiHue.bridgeDiscover(monitor)
+        
+    elif command.startswith("groupSelect"):
+        kgroup = args.split("=", 1)[1]
+        logger.debug("Kodi Hue: Started with groupSelect. args: {}, kgroup: {}".format(args, kgroup))
+        
+        bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
+        if bridge:
+            kodiHue.configureGroup(bridge, kgroup)
+        else:
+            logger.debug("Kodi Hue: No bridge found. Select group cancelled.")        
+    
+    
+    
 
 
 ##################################################
@@ -45,12 +72,9 @@ def menu():
 ###################
 def service():
     logger.debug("Kodi Hue:  service started, version: {}".format(ADDON.getAddonInfo('version')))
-    
     monitor = kodiHue.HueMonitor()
-
     initialFlash = kodiutils.get_setting_as_bool("initialFlash")
-    
-    
+    command = getCommand()
     
     bridgeIP = ""
     bridgeUser = ""
@@ -67,10 +91,7 @@ def service():
 ########################################################### 
 ###########################################################     
 
-
-
-
-    if args.startswith("groupSelect"):
+    if command.startswith("groupSelect"):
         
         kgroup = args.split("=", 1)[1]
         logger.debug("Kodi Hue: Started with groupSelect. args: {}, kgroup: {}".format(args, kgroup))
@@ -82,7 +103,7 @@ def service():
             logger.debug("Kodi Hue: No bridge found. Select group cancelled.")
             
     else:
-        if args == "discover":
+        if command == "discover":
             logger.debug("Kodi Hue: Started with Discovery")
             bridge = kodiHue.bridgeDiscover(monitor)
             
@@ -120,3 +141,12 @@ def service():
             else:
                 logger.debug('Kodi Hue: No connected bridge, exiting...')
                 return
+            
+            
+def getCommand():
+    command = {}
+    for i in range(1, len(sys.argv)):
+        arg = sys.argv[i].split("=")
+        command[arg[0].strip().lower()] = arg[1].strip() if len(arg) > 1 else True
+
+    return command            

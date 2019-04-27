@@ -14,12 +14,14 @@
   <extension point="xbmc.python.script" library="default.py"></extension>
   	<provides>executable</provides>
   <extension point="xbmc.addon.metadata">
+  
     <summary>Philips Hue Lights Service</summary>
     <description>Let Kodi control your Philips Hue lights. Either turns the lights into a room-sized ambilight, or automatically dims and un-dims them when playback starts or stops.</description>
     <platform>all</platform>
     <assets>
   		<icon>resources/icon.png</icon>
   	</assets>
+    <source>https://github.com/zim514/script.service.hue</source>
   </extension>
   
 </addon>
