@@ -32,8 +32,8 @@ if globals.REMOTE_DBG:
         import pydevd
 
         threading.Thread.name = 'script.service.hue.menu'
-        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True, suspend=globals.REMOTE_DBG_SUSPEND,
-                        trace_only_current_thread=False, overwrite_prev_trace=True, patch_multiprocessing=True)
+        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True, suspend=globals.REMOTE_DBG_SUSPEND)
+                        #trace_only_current_thread=True, overwrite_prev_trace=True, patch_multiprocessing=False)
 
     except ImportError:
         logger.debug("Kodi Hue Remote Debug Error: " + 

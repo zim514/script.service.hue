@@ -53,16 +53,26 @@ def menu():
     if args == "discover":
         logger.debug("Kodi Hue: Started with Discovery")
         bridge = kodiHue.bridgeDiscover(monitor)
-    elif args == "createGroup":
+    
+    elif args == "createHueGroup":
         logger.debug("Kodi Hue: Started with createGroup")
         bridge = kodiHue.connectBridge(monitor, silent=True)
         if bridge:
             kodiHue.createHueGroup(bridge)
         else: 
-            
             logger.debug("Kodi Hue: Menu() createGroup: No bridge") 
-                
+
+    elif args == ("deleteHueGroup"):
         
+        logger.debug("Kodi Hue: Started with deleteGroup.")
+        
+        bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
+        if bridge:
+            
+            kodiHue.deleteHueGroup(bridge)
+        else:
+            logger.debug("Kodi Hue: No bridge found. deleteGroup cancelled.")
+
     elif args.startswith("groupSelect"):
         kgroup = args.split("=", 1)[1]
         logger.debug("Kodi Hue: Started with groupSelect. args: {}, kgroup: {}".format(args, kgroup))
@@ -72,21 +82,13 @@ def menu():
             kodiHue.configureGroup(bridge, kgroup)
         else:
             logger.debug("Kodi Hue: No bridge found. Select group cancelled.")
+
+
+    
+    
+    
     else:
-        list = []
-        list.append(xbmcgui.ListItem("Open settings"))
-        list.append(xbmcgui.ListItem("Discover bridge"))
-        list.append(xbmcgui.ListItem("Create Hue Group"))
-        selection = xbmcgui.Dialog().select("Hue", list)
-        if selection == 0:
-            ADDON.openSettings()
-        elif selection == 1:
-            #discover bridge
-            bridge = kodiHue.bridgeDiscover(monitor)
-        elif selection == 2:
-            #create Hue Group
-            bridge = kodiHue.connectBridge(monitor, silent=True)
-            kodiHue.createHueGroup(bridge)
+        ADDON.openSettings()
          
     
     

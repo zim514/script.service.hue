@@ -44,7 +44,21 @@ def createHueGroup(bridge):
             else:
                 xbmcgui.Dialog().notification("Hue", "ERROR: Group not created")
                  
-        
+def deleteHueGroup(bridge):
+    logger.debug("Kodi Hue: In kodiHue deleteHueGroup")
+    group = selectHueGroup(bridge)
+    if group:
+        confirm = xbmcgui.Dialog().yesno("Delete Hue Group", "Are you sure you want to delete this group: ", unicode(group[1]))
+    if group and confirm:              
+        groups=bridge.groups
+        res=groups[group[0]](http_method='delete')
+        logger.debug("Kodi Hue: In kodiHue createHueGroup. Res:".format(res))
+        if res[0]["success"]:
+            xbmcgui.Dialog().notification("Hue", "Group deleted")
+        else:
+            xbmcgui.Dialog().notification("Hue", "ERROR: Group not created")
+
+            
         
     
 
@@ -222,11 +236,11 @@ def selectHueLights(bridge):
         
     xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
     selected = xbmcgui.Dialog().multiselect("Select Hue Lights...",items)
-    
-    #id = index[selected]
-    for s in selected:
-        lightIDs.append(index[s])
-        
+    if selected:
+        #id = index[selected]
+        for s in selected:
+            lightIDs.append(index[s])
+            
     
     logger.debug("Kodi Hue: In selectHueGroup: selected: {}".format(selected))
     
@@ -251,9 +265,10 @@ def selectHueGroup(bridge):
     xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
     items=[]
     index=[]
+    id = 0
     
-    index.append(0)
-    items.append(xbmcgui.ListItem(label="All lights"))
+#    index.append(0)
+#    items.append(xbmcgui.ListItem(label="All lights"))
     for group in hueGroups:
 
         hGroup=hueGroups[group]
@@ -265,10 +280,10 @@ def selectHueGroup(bridge):
         
     xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
     selected = xbmcgui.Dialog().select("Select Hue group...",items)
-    
-    id = index[selected]
-    hGroupName=hueGroups[id]['name']
-    logger.debug("Kodi Hue: In selectHueGroup: selected: {}".format(selected))
+    if selected > 0 :
+        id = index[selected]
+        hGroupName=hueGroups[id]['name']
+        logger.debug("Kodi Hue: In selectHueGroup: selected: {}".format(selected))
     
     if id:
         return id, hGroupName;
