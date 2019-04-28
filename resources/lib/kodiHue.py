@@ -27,6 +27,7 @@ from resources.lib import globals
 from resources.lib.qhue import qhue,QhueException,Bridge
 
 
+
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
 
@@ -108,6 +109,7 @@ def bridgeDiscover(monitor):
                 progressBar.update(100, "Complete!")
                 monitor.waitForAbort(5)
                 progressBar.close()
+                
             else:
                 progressBar.update(100, "User not found","Check your bridge and network")
                 monitor.waitForAbort(5)
@@ -295,6 +297,18 @@ def getDaylight(bridge):
     sensors = bridge.sensors()
     return bridge.sensors['1']()['state']['daylight']
             
+
+def sunset(bridge,kgroups):
+    logger.debug("Kodi Hue: in sunset()")
+    
+    for g in kgroups:
+        if kodiutils.get_setting_as_bool("group{}_enabled".format(g)):
+            g.sunset()
+            
+    return        
+        
+    
+    
 
 def setupGroups(bridge,flash=False):
     logger.debug("Kodi Hue: in setupGroups()")

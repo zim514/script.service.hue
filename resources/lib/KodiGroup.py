@@ -9,6 +9,7 @@ import xbmc
 import xbmcaddon
 
 import globals
+from globals import forceOnSunset
 from kodiutils import get_setting, get_setting_as_bool, get_setting_as_int
 import kodiutils
 import qhue
@@ -18,6 +19,12 @@ BEHAVIOR_NOTHING = 0
 BEHAVIOR_ADJUST = 1
 BEHAVIOR_OFF = 2
 BEHAVIOR_INITIAL = 3
+
+STATE_IDLE = 0
+STATE_PLAYING = 1
+STATE_PAUSED = 2
+
+state = 0
 
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(ADDON.getAddonInfo('id'))
@@ -109,13 +116,13 @@ class KodiGroup(xbmc.Player):
         
         def onPlayBackStarted(self, resume=False):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, forceOn: {}".format(self.kgroupID, self.enabled, self.forceOn))
-            
+            self.state = STATE_PLAYING
             self.saveInitialState()
 
             if self.enabled:
                 
                 if self.startBehavior == BEHAVIOR_ADJUST:
-                    if self.forceOn:
+                    if self.forceOn or globals.forceOnSunset:
                         self.groupResource.action(sat=self.startSaturation,hue=self.startHue,bri=self.startBrightness,transitiontime=self.fadeTime,on=True)
                     else:
                         self.groupResource.action(sat=self.startSaturation,hue=self.startHue,bri=self.startBrightness,transitiontime=self.fadeTime)  
@@ -125,6 +132,7 @@ class KodiGroup(xbmc.Player):
                 
             
         def onPlayBackStopped(self):
+            self.state = STATE_IDLE
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStopped".format(self.kgroupID))
             
             if self.enabled:
@@ -143,6 +151,7 @@ class KodiGroup(xbmc.Player):
             
         
         def onPlayBackPaused(self):
+            self.state = STATE_PAUSED
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackPaused".format(self.kgroupID))
             if self.enabled:
                 
@@ -171,6 +180,18 @@ class KodiGroup(xbmc.Player):
             logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackEnded".format(self.kgroupID))
             self.onPlayBackStopped()
             
-
+        def sunset(self):
+            previousForce = self.forceOn
+            self.forceOn = True
+            if self.state == STATE_PLAYING:
+                self.onPlayBackStarted()
+            elif self.state == STATE_PAUSED:
+                self.onPlayBackPaused()
+            elif self.state == STATE_IDLE:
+                self.onPlayBackStopped()()
+                
+            self.forceOn = previousForce
+                
+                
         
 

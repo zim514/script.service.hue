@@ -6,6 +6,8 @@ Created on Apr. 22, 2019
 
 settingsChanged = False
 connected = False
+daylight = False
+forceOnSunset = True
 
 NUM_GROUPS = 4
 

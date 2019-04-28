@@ -6,11 +6,15 @@
 <!-- MAIN SECTION -->
         <setting type="lsep" label="1000" />
         <setting id="connected" label="1001" type="bool" enable="false" visible="false" default="false" />
-        <setting id="discoverBridge" type="action" label="1210" action="RunScript(script.service.hue,discover)" />
-        <setting id="createGroup" type="action" label="9003" action="RunScript(script.service.hue,createHueGroup)" />
-        <setting id="deleteGroup" type="action" label="9004" action="RunScript(script.service.hue,deleteHueGroup)" />
+
         <setting id="initialFlash" type="bool" label="5110" default="False" />
         <setting id="reloadFlash" type="bool" label="5111" default="False" />
+        <setting id="forceOnSunset" type="bool" label="9005" default="True" />
+        
+        <setting type="sep" />
+        <setting id="createGroup" type="action" label="9003" action="RunScript(script.service.hue,createHueGroup)" />
+        <setting id="deleteGroup" type="action" label="9004" action="RunScript(script.service.hue,deleteHueGroup)" />
+        
 
         <!-- Grouping -->
         
@@ -23,6 +27,7 @@
 -->
 <!-- Bridge -->
         <setting type="lsep" label="1200" />
+        <setting id="discoverBridge" type="action" label="1210" action="RunScript(script.service.hue,discover)" />
         <setting id="bridgeIP" type="text" label="1220" enable="false" default="" />
         <setting id="bridgeUser" type="text" label="1230" enable="false" default="" />
 
