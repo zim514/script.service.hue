@@ -45,7 +45,7 @@
         <setting type="lsep" label="6000" />
 
         <setting id="group0_hGroupName" type="text" label="6002"  default="Group 0" enable="False"/>
-        <setting id="group0_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=0)"  option= "close"/>
+        <setting id="group0_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=0)" />
 
         <setting id="group0_enabled" type="bool" label="6201" default="false" />
         <setting id="group0_fadeTime" type="slider" label="6206"  range="0,1,20" default="10" subsetting="true" enable="eq(-1,true)"/>
@@ -93,7 +93,7 @@
         <setting type="lsep" label="6000" />
         
         <setting id="group1_hGroupName" type="text" label="6002"  default="Group 0" enable="False"/>
-        <setting id="group1_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=1)"  option= "close"/>
+        <setting id="group1_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=1)"  />
         
         <setting id="group1_enabled" type="bool" label="6201" default="false" />
         <setting id="group1_fadeTime" type="slider" label="6206"  range="0,1,20" default="10" subsetting="true" enable="eq(-1,true)"/>
@@ -143,7 +143,7 @@
         <setting type="lsep" label="6000" />
 
         <setting id="group2_hGroupName" type="text" label="6002"  default="Group 0" enable="False"/>
-        <setting id="group2_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=2)"  option= "close"/>
+        <setting id="group2_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=2)"  />
 
         <setting id="group2_enabled" type="bool" label="6201" default="false" />
         <setting id="group2_fadeTime" type="slider" label="6206"  range="0,1,20" default="10" subsetting="true" enable="eq(-1,true)"/>
@@ -193,7 +193,7 @@
         <setting type="lsep" label="6000" />
 
         <setting id="group3_hGroupName" type="text" label="6002"  default="Group 0" enable="False"/>
-        <setting id="group3_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=3)"  option= "close"/>
+        <setting id="group3_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=3)"  />
 
         <setting id="group3_enabled" type="bool" label="6201" default="false" />
         <setting id="group3_fadeTime" type="slider" label="6206"  range="0,1,20" default="10" subsetting="true" enable="eq(-1,true)"/>

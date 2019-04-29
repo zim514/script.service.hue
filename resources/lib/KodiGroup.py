@@ -76,7 +76,7 @@ class KodiGroup(xbmc.Player):
                     
                 
         def saveInitialState(self):
-            logger.debug("Kodi Hue: In KodiGroup[{}], save initial state".format(self.kgroupID))
+            logger.info("Kodi Hue: In KodiGroup[{}], save initial state".format(self.kgroupID))
             initialState = {}
             lights = self.lights
                         
@@ -89,13 +89,13 @@ class KodiGroup(xbmc.Player):
              
             
         def applyInitialState(self):
-            logger.debug("Kodi Hue: In KodiGroup[{}], apply initial state".format(self.kgroupID))
+            logger.info("Kodi Hue: In KodiGroup[{}], apply initial state".format(self.kgroupID))
             initialState = self.initialState
             lights = self.lights 
             
             for x in initialState:
                 i = initialState[x]
-                logger.debug("Kodi Hue: In KodiGroup[{}], apply initial state: {}, {}".format(self.kgroupID,x,i))
+                logger.info("Kodi Hue: In KodiGroup[{}], apply initial state: {}, {}".format(self.kgroupID,x,i))
                 lights[x].state(on=i['on'],
                                 ct=i['ct'],
                                 xy=i['xy'],
@@ -107,15 +107,15 @@ class KodiGroup(xbmc.Player):
                                 
                 
             
-            logger.debug("Kodi Hue: In KodiGroup[{}], apply initial state ENDDDDD".format(self.kgroupID))    
+            logger.info("Kodi Hue: In KodiGroup[{}], apply initial state ENDDDDD".format(self.kgroupID))    
  
             
         def flash(self):
-            logger.debug("Kodi Hue: Flash hgroup: {}".format(self.hgroupID))
+            logger.info("Kodi Hue: Flash hgroup: {}".format(self.hgroupID))
             self.groupResource.action(alert="select")
         
         def onPlayBackStarted(self, resume=False):
-            logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, forceOn: {}".format(self.kgroupID, self.enabled, self.forceOn))
+            logger.info("Kodi Hue: In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, forceOn: {}".format(self.kgroupID, self.enabled, self.forceOn))
             self.state = STATE_PLAYING
             self.saveInitialState()
 
@@ -133,7 +133,7 @@ class KodiGroup(xbmc.Player):
             
         def onPlayBackStopped(self):
             self.state = STATE_IDLE
-            logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackStopped".format(self.kgroupID))
+            logger.info("Kodi Hue: In KodiGroup[{}], onPlaybackStopped".format(self.kgroupID))
             
             if self.enabled:
                 
@@ -152,7 +152,7 @@ class KodiGroup(xbmc.Player):
         
         def onPlayBackPaused(self):
             self.state = STATE_PAUSED
-            logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackPaused".format(self.kgroupID))
+            logger.info("Kodi Hue: In KodiGroup[{}], onPlaybackPaused".format(self.kgroupID))
             if self.enabled:
                 
                 if self.pauseBehavior == BEHAVIOR_ADJUST:
@@ -169,15 +169,15 @@ class KodiGroup(xbmc.Player):
    
                 
         def onPlayBackResumed(self):
-            logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackResumed".format(self.kgroupID))
+            logger.info("Kodi Hue: In KodiGroup[{}], onPlaybackResumed".format(self.kgroupID))
             self.onPlayBackStarted(resume=True)            
                 
         def onPlayBackError(self):
-            logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackError".format(self.kgroupID))
+            logger.info("Kodi Hue: In KodiGroup[{}], onPlaybackError".format(self.kgroupID))
             self.onPlayBackStopped()            
                 
         def onPlayBackEnded(self):
-            logger.debug("Kodi Hue: In KodiGroup[{}], onPlaybackEnded".format(self.kgroupID))
+            logger.info("Kodi Hue: In KodiGroup[{}], onPlaybackEnded".format(self.kgroupID))
             self.onPlayBackStopped()
             
         def sunset(self):

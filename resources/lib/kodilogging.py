@@ -42,4 +42,4 @@ class KodiLogHandler(logging.StreamHandler):
 def config():
     logger = logging.getLogger()
     logger.addHandler(KodiLogHandler())
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)

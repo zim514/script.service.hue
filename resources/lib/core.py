@@ -37,7 +37,7 @@ settingsChanged = False
 
 
 def menu():
-    logger.debug("Kodi Hue:  menu started, version: {}".format(ADDON.getAddonInfo('version')))
+    logger.info("Kodi Hue:  menu started, version: {}".format(ADDON.getAddonInfo('version')))
     monitor = kodiHue.HueMonitor()
 
     if len(sys.argv) == 2:
@@ -45,42 +45,42 @@ def menu():
     else: 
         args = ""
 
-    logger.debug("Kodi Hue: Args: {}".format(args))
+    logger.info("Kodi Hue: Args: {}".format(args))
 
     if args == "discover":
-        logger.debug("Kodi Hue: Started with Discovery")
+        logger.info("Kodi Hue: Started with Discovery")
         bridge = kodiHue.bridgeDiscover(monitor)
         if bridge:
             service() #restart service
     
     elif args == "createHueGroup":
-        logger.debug("Kodi Hue: Started with createGroup")
+        logger.info("Kodi Hue: Started with createGroup")
         bridge = kodiHue.connectBridge(monitor, silent=True)
         if bridge:
             kodiHue.createHueGroup(bridge)
         else: 
-            logger.debug("Kodi Hue: Menu() createGroup: No bridge") 
+            logger.info("Kodi Hue: Menu() createGroup: No bridge") 
 
     elif args == ("deleteHueGroup"):
         
-        logger.debug("Kodi Hue: Started with deleteGroup.")
+        logger.info("Kodi Hue: Started with deleteGroup.")
         
         bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
         if bridge:
             
             kodiHue.deleteHueGroup(bridge)
         else:
-            logger.debug("Kodi Hue: No bridge found. deleteGroup cancelled.")
+            logger.info("Kodi Hue: No bridge found. deleteGroup cancelled.")
 
     elif args.startswith("groupSelect"):
         kgroup = args.split("=", 1)[1]
-        logger.debug("Kodi Hue: Started with groupSelect. args: {}, kgroup: {}".format(args, kgroup))
+        logger.info("Kodi Hue: Started with groupSelect. args: {}, kgroup: {}".format(args, kgroup))
         
         bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
         if bridge:
             kodiHue.configureGroup(bridge, kgroup)
         else:
-            logger.debug("Kodi Hue: No bridge found. Select group cancelled.")
+            logger.info("Kodi Hue: No bridge found. Select group cancelled.")
     
     
     else:
@@ -95,7 +95,7 @@ def menu():
 # # RUN
 ###################
 def service():
-    logger.debug("Kodi Hue:  service started, version: {}".format(ADDON.getAddonInfo('version')))
+    logger.info("Kodi Hue:  service started, version: {}".format(ADDON.getAddonInfo('version')))
     monitor = kodiHue.HueMonitor()
     
     initialFlash = kodiutils.get_setting_as_bool("initialFlash")
@@ -110,10 +110,10 @@ def service():
     else: 
         args = ""
     
-    logger.debug("Kodi Hue: Args: {}".format(args))
+    logger.info("Kodi Hue: Args: {}".format(args))
 
 
-    logger.debug("Kodi Hue: Main service started...")
+    logger.info("Kodi Hue: Main service started...")
     bridge = kodiHue.connectBridge(monitor,silent=False)
             
     if bridge:
@@ -139,17 +139,17 @@ def service():
                     if not globals.daylight:
                         kodiHue.sunset(bridge,kgroups)
                 
-                logger.debug('Kodi Hue: Service running...')
+                logger.info('Kodi Hue: Service running...')
                 timer = 0
                 
 
             
             monitor.waitForAbort(1)
-        logger.debug('Kodi Hue: Process exiting...')
+        logger.info('Kodi Hue: Process exiting...')
         return
         
     else:
-        logger.debug('Kodi Hue: No connected bridge, exiting...')
+        logger.info('Kodi Hue: No connected bridge, exiting...')
         return
     
             
