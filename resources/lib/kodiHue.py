@@ -295,6 +295,7 @@ def selectHueGroup(bridge):
 
 
 def getDaylight(bridge):
+    logger.info("Kodi Hue: in getDaylight()")
     sensors = bridge.sensors()
     return bridge.sensors['1']()['state']['daylight']
             
