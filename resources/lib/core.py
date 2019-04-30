@@ -138,6 +138,7 @@ def service():
                 logger.info('Kodi Hue: Daylight check: current: {}, previous: {}'.format(globals.daylight, previousDaylight))
                 if globals.daylight != previousDaylight :
                     logger.info('Kodi Hue: Daylight change! current: {}, previous: {}'.format(globals.daylight, previousDaylight))
+                    xbmcgui.Dialog().notification("Hue", "Daylight change!", time=5000)
                     #oooh daylight changed.
                     globals.daylight = kodiHue.getDaylight(bridge)
                     if not globals.daylight:
