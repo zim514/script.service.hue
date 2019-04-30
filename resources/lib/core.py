@@ -100,7 +100,7 @@ def service():
     
     initialFlash = kodiutils.get_setting_as_bool("initialFlash")
     globals.forceOnSunset = kodiutils.get_setting_as_bool("forceOnSunset")
-
+    globals.daylightDisable = kodiutils.get_setting_as_bool("daylightDisable")
     
     bridgeIP = ""
     bridgeUser = ""
@@ -121,26 +121,30 @@ def service():
         globals.daylight = kodiHue.getDaylight(bridge)
         kgroups = kodiHue.setupGroups(bridge,initialFlash)
 
-        timer = 0
+        timer = 1
         # #Ready to go! Start running until Kodi exit.            
         while globals.connected and not monitor.abortRequested():
             
             if globals.settingsChanged:
                 reloadFlash = kodiutils.get_setting_as_bool("reloadFlash")
                 forceOnSunset = kodiutils.get_setting_as_bool("forceOnSunset")
+                globals.daylightDisable = kodiutils.get_setting_as_bool("daylightDisable")
                 kgroups = kodiHue.setupGroups(bridge, reloadFlash)
                 globals.settingsChanged = False
             
             timer = timer + 1
-            if timer > 60:
-                if globals.daylight != kodiHue.getDaylight(bridge):
+            if timer > 59:
+                previousDaylight = kodiHue.getDaylight(bridge)
+                logger.info('Kodi Hue: Daylight check: current: {}, previous: {}'.format(globals.daylight, previousDaylight))
+                if globals.daylight != previousDaylight :
+                    logger.info('Kodi Hue: Daylight change! current: {}, previous: {}'.format(globals.daylight, previousDaylight))
                     #oooh daylight changed.
                     globals.daylight = kodiHue.getDaylight(bridge)
                     if not globals.daylight:
                         kodiHue.sunset(bridge,kgroups)
                 
                 logger.info('Kodi Hue: Service running...')
-                timer = 0
+                timer = 1
                 
 
             

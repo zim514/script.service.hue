@@ -103,12 +103,6 @@ class KodiGroup(xbmc.Player):
                                 hue=i['hue'],
                                 sat=i['sat'],
                                 transitiontime=self.fadeTime)
-                
-                                
-                
-            
-            logger.info("Kodi Hue: In KodiGroup[{}], apply initial state ENDDDDD".format(self.kgroupID))    
- 
             
         def flash(self):
             logger.info("Kodi Hue: Flash hgroup: {}".format(self.hgroupID))
@@ -119,7 +113,7 @@ class KodiGroup(xbmc.Player):
             self.state = STATE_PLAYING
             self.saveInitialState()
 
-            if self.enabled:
+            if self.enabled and not (globals.daylightDisable == globals.daylight) :
                 
                 if self.startBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn or globals.forceOnSunset:
@@ -135,7 +129,7 @@ class KodiGroup(xbmc.Player):
             self.state = STATE_IDLE
             logger.info("Kodi Hue: In KodiGroup[{}], onPlaybackStopped".format(self.kgroupID))
             
-            if self.enabled:
+            if self.enabled and not (globals.daylightDisable == globals.daylight):
                 
                 if self.stopBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn:
@@ -153,7 +147,8 @@ class KodiGroup(xbmc.Player):
         def onPlayBackPaused(self):
             self.state = STATE_PAUSED
             logger.info("Kodi Hue: In KodiGroup[{}], onPlaybackPaused".format(self.kgroupID))
-            if self.enabled:
+            
+            if self.enabled and not (globals.daylightDisable == globals.daylight):
                 
                 if self.pauseBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn:
@@ -181,8 +176,10 @@ class KodiGroup(xbmc.Player):
             self.onPlayBackStopped()
             
         def sunset(self):
+            logger.info("Kodi Hue: In KodiGroup[{}], sunset".format(self.kgroupID))
             previousForce = self.forceOn
             self.forceOn = True
+            
             if self.state == STATE_PLAYING:
                 self.onPlayBackStarted()
             elif self.state == STATE_PAUSED:

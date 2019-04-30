@@ -8,10 +8,11 @@ settingsChanged = False
 connected = False
 daylight = False
 forceOnSunset = True
+daylightDisable = True
 
 NUM_GROUPS = 4
 
-REMOTE_DBG = False
+REMOTE_DBG = True
 REMOTE_DBG_SUSPEND = False
 
 
