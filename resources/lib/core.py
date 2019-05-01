@@ -59,15 +59,13 @@ def menu():
         if bridge:
             kodiHue.createHueGroup(bridge)
         else: 
-            logger.info("Kodi Hue: Menu() createGroup: No bridge") 
+            logger.info("Kodi Hue: Menu() createGroup: No bridge")
+
 
     elif args == ("deleteHueGroup"):
-        
         logger.info("Kodi Hue: Started with deleteGroup.")
-        
         bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
         if bridge:
-            
             kodiHue.deleteHueGroup(bridge)
         else:
             logger.info("Kodi Hue: No bridge found. deleteGroup cancelled.")

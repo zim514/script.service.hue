@@ -304,7 +304,8 @@ def sunset(bridge,kgroups):
     logger.info("Kodi Hue: in sunset()")
     
     for g in kgroups:
-        if kodiutils.get_setting_as_bool("group{}_enabled".format(g)):
+        logger.info("Kodi Hue: in sunset() g: {}, kgroupID: {}".format(g,g.kgroupID))
+        if kodiutils.get_setting_as_bool("group{}_enabled".format(g.kgroupID)):
             g.sunset()
             
     return        
