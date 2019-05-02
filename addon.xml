@@ -11,8 +11,9 @@
   
   
   <extension point="xbmc.service" library="service.py"></extension>
-  <extension point="xbmc.python.script" library="default.py"></extension>
+  <extension point="xbmc.python.script" library="default.py">
   	<provides>executable</provides>
+  </extension>
   <extension point="xbmc.addon.metadata">
   
     <summary>Philips Hue Lights Service</summary>
