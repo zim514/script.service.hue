@@ -19,8 +19,7 @@ from resources.lib.globals import NUM_GROUPS
 
 # from resources.lib.qhue import Bridge
 ADDON = xbmcaddon.Addon()
-logger = logging.getLogger(ADDON.getAddonInfo('id'))
-
+logger = logging.getLogger(__name__)
 connected = False
 settingsChanged = False
 
@@ -37,7 +36,7 @@ settingsChanged = False
 
 
 def menu():
-    logger.info("Kodi Hue:  menu started, version: {}".format(ADDON.getAddonInfo('version')))
+    logger.debug("menu started, version: {}".format(ADDON.getAddonInfo('version')))
     monitor = kodiHue.HueMonitor()
 
     if len(sys.argv) == 2:
@@ -45,40 +44,40 @@ def menu():
     else: 
         args = ""
 
-    logger.info("Kodi Hue: Args: {}".format(args))
+    logger.debug("Args: {}".format(args))
 
     if args == "discover":
-        logger.info("Kodi Hue: Started with Discovery")
+        logger.debug("Started with Discovery")
         bridge = kodiHue.bridgeDiscover(monitor)
         if bridge:
             service() #restart service
     
     elif args == "createHueGroup":
-        logger.info("Kodi Hue: Started with createGroup")
+        logger.debug("Started with createGroup")
         bridge = kodiHue.connectBridge(monitor, silent=True)
         if bridge:
             kodiHue.createHueGroup(bridge)
         else: 
-            logger.info("Kodi Hue: Menu() createGroup: No bridge")
+            logger.debug("Menu() createGroup: No bridge")
 
 
     elif args == ("deleteHueGroup"):
-        logger.info("Kodi Hue: Started with deleteGroup.")
+        logger.debug("Started with deleteGroup.")
         bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
         if bridge:
             kodiHue.deleteHueGroup(bridge)
         else:
-            logger.info("Kodi Hue: No bridge found. deleteGroup cancelled.")
+            logger.debug("No bridge found. deleteGroup cancelled.")
 
     elif args.startswith("groupSelect"):
         kgroup = args.split("=", 1)[1]
-        logger.info("Kodi Hue: Started with groupSelect. args: {}, kgroup: {}".format(args, kgroup))
+        logger.debug("Started with groupSelect. args: {}, kgroup: {}".format(args, kgroup))
         
         bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
         if bridge:
             kodiHue.configureGroup(bridge, kgroup)
         else:
-            logger.info("Kodi Hue: No bridge found. Select group cancelled.")
+            logger.debug("No bridge found. Select group cancelled.")
     
     
     else:
@@ -93,7 +92,7 @@ def menu():
 # # RUN
 ###################
 def service():
-    logger.info("Kodi Hue:  service started, version: {}".format(ADDON.getAddonInfo('version')))
+    logger.debug(" service started, version: {}".format(ADDON.getAddonInfo('version')))
     monitor = kodiHue.HueMonitor()
     
     initialFlash = kodiutils.get_setting_as_bool("initialFlash")
@@ -108,10 +107,10 @@ def service():
     else: 
         args = ""
     
-    logger.info("Kodi Hue: Args: {}".format(args))
+    logger.debug("Args: {}".format(args))
 
 
-    logger.info("Kodi Hue: Main service started...")
+    logger.debug("Main service started...")
     bridge = kodiHue.connectBridge(monitor,silent=False)
             
     if bridge:
@@ -133,26 +132,24 @@ def service():
             timer = timer + 1
             if timer > 59:
                 previousDaylight = kodiHue.getDaylight(bridge)
-                logger.info('Kodi Hue: Daylight check: current: {}, previous: {}'.format(globals.daylight, previousDaylight))
+                logger.debug('Daylight check: current: {}, previous: {}'.format(globals.daylight, previousDaylight))
                 if globals.daylight != previousDaylight :
-                    logger.info('Kodi Hue: Daylight change! current: {}, previous: {}'.format(globals.daylight, previousDaylight))
-                    xbmcgui.Dialog().notification("Hue", "Daylight change!", time=5000)
-                    #oooh daylight changed.
+                    logger.debug('Daylight change! current: {}, previous: {}'.format(globals.daylight, previousDaylight))
                     globals.daylight = kodiHue.getDaylight(bridge)
                     if not globals.daylight:
                         kodiHue.sunset(bridge,kgroups)
                 
-                logger.info('Kodi Hue: Service running...')
+                logger.debug('Service running...')
                 timer = 1
                 
 
             
             monitor.waitForAbort(1)
-        logger.info('Kodi Hue: Process exiting...')
+        logger.debug('Process exiting...')
         return
         
     else:
-        logger.info('Kodi Hue: No connected bridge, exiting...')
+        logger.debug('No connected bridge, exiting...')
         return
     
             

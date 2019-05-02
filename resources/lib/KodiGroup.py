@@ -27,7 +27,7 @@ STATE_PAUSED = 2
 state = 0
 
 ADDON = xbmcaddon.Addon()
-logger = logging.getLogger(ADDON.getAddonInfo('id'))
+logger = logging.getLogger(__name__)
 
 
 class KodiGroup(xbmc.Player):
@@ -76,7 +76,7 @@ class KodiGroup(xbmc.Player):
                     
                 
         def saveInitialState(self):
-            logger.info("Kodi Hue: In KodiGroup[{}], save initial state".format(self.kgroupID))
+            logger.debug("In KodiGroup[{}], save initial state".format(self.kgroupID))
             initialState = {}
             lights = self.lights
                         
@@ -89,13 +89,13 @@ class KodiGroup(xbmc.Player):
              
             
         def applyInitialState(self):
-            logger.info("Kodi Hue: In KodiGroup[{}], apply initial state".format(self.kgroupID))
+            logger.debug("In KodiGroup[{}], apply initial state".format(self.kgroupID))
             initialState = self.initialState
             lights = self.lights 
             
             for x in initialState:
                 i = initialState[x]
-                logger.info("Kodi Hue: In KodiGroup[{}], apply initial state: {}, {}".format(self.kgroupID,x,i))
+                logger.debug("In KodiGroup[{}], apply initial state: {}, {}".format(self.kgroupID,x,i))
                 lights[x].state(on=i['on'],
                                 ct=i['ct'],
                                 xy=i['xy'],
@@ -105,11 +105,11 @@ class KodiGroup(xbmc.Player):
                                 transitiontime=self.fadeTime)
             
         def flash(self):
-            logger.info("Kodi Hue: Flash hgroup: {}".format(self.hgroupID))
+            logger.debug("Flash hgroup: {}".format(self.hgroupID))
             self.groupResource.action(alert="select")
         
         def onPlayBackStarted(self, saveInitial=False):
-            logger.info("Kodi Hue: In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, forceOn: {}".format(self.kgroupID, self.enabled, self.forceOn))
+            logger.debug("In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, forceOn: {}".format(self.kgroupID, self.enabled, self.forceOn))
             self.state = STATE_PLAYING
             if saveInitial:
                 self.saveInitialState()
@@ -128,7 +128,7 @@ class KodiGroup(xbmc.Player):
             
         def onPlayBackStopped(self):
             self.state = STATE_IDLE
-            logger.info("Kodi Hue: In KodiGroup[{}], onPlaybackStopped() ".format(self.kgroupID))
+            logger.debug("In KodiGroup[{}], onPlaybackStopped() ".format(self.kgroupID))
             
             if self.enabled and not (globals.daylightDisable == globals.daylight):
                 
@@ -147,7 +147,7 @@ class KodiGroup(xbmc.Player):
         
         def onPlayBackPaused(self):
             self.state = STATE_PAUSED
-            logger.info("Kodi Hue: In KodiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
+            logger.debug("In KodiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
             
             if self.enabled and not (globals.daylightDisable == globals.daylight):
                 
@@ -165,19 +165,19 @@ class KodiGroup(xbmc.Player):
    
                 
         def onPlayBackResumed(self):
-            logger.info("Kodi Hue: In KodiGroup[{}], onPlaybackResumed()".format(self.kgroupID))
+            logger.debug("In KodiGroup[{}], onPlaybackResumed()".format(self.kgroupID))
             self.onPlayBackStarted(saveInitial=False)            
                 
         def onPlayBackError(self):
-            logger.info("Kodi Hue: In KodiGroup[{}], onPlaybackError()".format(self.kgroupID))
+            logger.debug("In KodiGroup[{}], onPlaybackError()".format(self.kgroupID))
             self.onPlayBackStopped()            
                 
         def onPlayBackEnded(self):
-            logger.info("Kodi Hue: In KodiGroup[{}], onPlaybackEnded()".format(self.kgroupID))
+            logger.debug("In KodiGroup[{}], onPlaybackEnded()".format(self.kgroupID))
             self.onPlayBackStopped()
             
         def sunset(self):
-            logger.info("Kodi Hue: In KodiGroup[{}], in sunset()".format(self.kgroupID))
+            logger.debug("In KodiGroup[{}], in sunset()".format(self.kgroupID))
             previousForce = self.forceOn
             self.forceOn = True
             

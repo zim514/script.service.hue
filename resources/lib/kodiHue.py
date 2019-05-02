@@ -29,31 +29,31 @@ from resources.lib.qhue import qhue,QhueException,Bridge
 
 
 ADDON = xbmcaddon.Addon()
-logger = logging.getLogger(ADDON.getAddonInfo('id'))
+logger = logging.getLogger(__name__)
 
 def createHueGroup(bridge):
-    logger.info("Kodi Hue: In kodiHue createHueGroup")
+    logger.debug("In kodiHue createHueGroup")
     groupName = xbmcgui.Dialog().input("Group Name")
     if groupName:              
         selected = selectHueLights(bridge)
         if selected:
             groups=bridge.groups
             res=groups(lights=selected,name=groupName,http_method='post')
-            logger.info("Kodi Hue: In kodiHue createHueGroup. Res:".format(res))
+            logger.debug("In kodiHue createHueGroup. Res:".format(res))
             if res[0]["success"]:
                 xbmcgui.Dialog().notification("Hue", "Group Created")
             else:
                 xbmcgui.Dialog().notification("Hue", "ERROR: Group not created")
                  
 def deleteHueGroup(bridge):
-    logger.info("Kodi Hue: In kodiHue deleteHueGroup")
+    logger.debug("In kodiHue deleteHueGroup")
     group = selectHueGroup(bridge)
     if group:
         confirm = xbmcgui.Dialog().yesno("Delete Hue Group", "Are you sure you want to delete this group: ", unicode(group[1]))
     if group and confirm:              
         groups=bridge.groups
         res=groups[group[0]](http_method='delete')
-        logger.info("Kodi Hue: In kodiHue createHueGroup. Res:".format(res))
+        logger.debug("In kodiHue createHueGroup. Res:".format(res))
         if res[0]["success"]:
             xbmcgui.Dialog().notification("Hue", "Group deleted")
         else:
@@ -64,7 +64,7 @@ def deleteHueGroup(bridge):
     
 
 def _discoverNupnp():
-    logger.info("Kodi Hue: In kodiHue discover_nupnp()")
+    logger.debug("In kodiHue discover_nupnp()")
   
     req = requests.get('https://discovery.meethue.com/')
     res = req.json()
@@ -76,7 +76,7 @@ def _discoverNupnp():
         
         
 def bridgeDiscover(monitor):
-    logger.info("Kodi Hue: In bridgeDiscover:")
+    logger.debug("In bridgeDiscover:")
     #Create new config if none exists. Returns success or fail as bool
     kodiutils.set_setting("bridgeIP","")
     kodiutils.set_setting("bridgeUser","")
@@ -130,7 +130,7 @@ def bridgeDiscover(monitor):
         
        
 def connectionTest(bridgeIP):
-    logger.info("Kodi Hue: in ConnectionTest() Attempt initial connection")
+    logger.debug("in ConnectionTest() Attempt initial connection")
     b = qhue.Resource("http://{}/api".format(bridgeIP))
     try:
         test = b.config()['apiversion']
@@ -138,14 +138,14 @@ def connectionTest(bridgeIP):
         return False
     
     if test:
-        logger.info("Kodi Hue: in ConnectionTest():  Connected! Test Value: {}".format(test))
+        logger.debug("in ConnectionTest():  Connected! Test Value: {}".format(test))
         return True
     else:
         return False
 
 
 def userTest(bridgeIP,bridgeUser):
-    logger.info("Kodi Hue: in ConnectionTest() Attempt initial connection")
+    logger.debug("in ConnectionTest() Attempt initial connection")
     b = Bridge(bridgeIP,bridgeUser)
     try:
         zigbeechan = b.config()['zigbeechannel']
@@ -153,7 +153,7 @@ def userTest(bridgeIP,bridgeUser):
         return False
     
     if zigbeechan:
-        logger.info("Kodi Hue: in userTest():  Authorized! Bridge Zigbee Channel: {}".format(zigbeechan))
+        logger.debug("in userTest():  Authorized! Bridge Zigbee Channel: {}".format(zigbeechan))
         return True
     else:
         return False                                       
@@ -162,7 +162,7 @@ def userTest(bridgeIP,bridgeUser):
         
 def discoverBridgeIP(monitor):
     #discover hue bridge
-    logger.info("Kodi Hue: In discoverBridgeIP")
+    logger.debug("In discoverBridgeIP")
     #TODO: implement upnp discovery
     #bridge_ip = _discover_upnp()  
     bridgeIP = None
@@ -189,7 +189,7 @@ def createUser(monitor, bridgeIP, progressBar=False):
     
     
     while 'link button not pressed' in res and timeout <= 90  and not monitor.abortRequested() and not progressBar.iscanceled():
-        logger.info("Kodi Hue: In create_user: abortRquested: {}, timer: {}".format(str(monitor.abortRequested()),timeout) )
+        logger.debug("In create_user: abortRquested: {}, timer: {}".format(str(monitor.abortRequested()),timeout) )
         
         if progressBar:
             progressBar.update(progress,get_string(9001)) #press link button on bridge
@@ -220,7 +220,7 @@ def configureGroup(bridge,kGroupID):
 
 
 def selectHueLights(bridge):
-    logger.info("Kodi Hue: In selectHueLights{}")
+    logger.debug("In selectHueLights{}")
     hueLights=bridge.lights()
     
     xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
@@ -233,7 +233,7 @@ def selectHueLights(bridge):
         hLight=hueLights[light]
         hLightName=hLight['name']
         
-        #logger.info("Kodi Hue: In selectHueGroup: {}, {}".format(hgroup,name))
+        #logger.debug("In selectHueGroup: {}, {}".format(hgroup,name))
         index.append(light)
         items.append(xbmcgui.ListItem(label=hLightName))
         
@@ -245,7 +245,7 @@ def selectHueLights(bridge):
             lightIDs.append(index[s])
             
     
-    logger.info("Kodi Hue: In selectHueGroup: selected: {}".format(selected))
+    logger.debug("In selectHueGroup: selected: {}".format(selected))
     
     if lightIDs:
         return lightIDs;
@@ -262,7 +262,7 @@ def selectHueLights(bridge):
 
 
 def selectHueGroup(bridge):
-    logger.info("Kodi Hue: In selectHueGroup{}")
+    logger.debug("In selectHueGroup{}")
     hueGroups=bridge.groups()
     
     xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
@@ -277,7 +277,7 @@ def selectHueGroup(bridge):
         hGroup=hueGroups[group]
         hGroupName=hGroup['name']
         
-        #logger.info("Kodi Hue: In selectHueGroup: {}, {}".format(hgroup,name))
+        #logger.debug("In selectHueGroup: {}, {}".format(hgroup,name))
         index.append(group)
         items.append(xbmcgui.ListItem(label=hGroupName))
         
@@ -286,7 +286,7 @@ def selectHueGroup(bridge):
     if selected > 0 :
         id = index[selected]
         hGroupName=hueGroups[id]['name']
-        logger.info("Kodi Hue: In selectHueGroup: selected: {}".format(selected))
+        logger.debug("In selectHueGroup: selected: {}".format(selected))
     
     if id:
         return id, hGroupName;
@@ -295,16 +295,16 @@ def selectHueGroup(bridge):
 
 
 def getDaylight(bridge):
-    logger.info("Kodi Hue: in getDaylight()")
+    logger.debug("in getDaylight()")
     sensors = bridge.sensors()
     return bridge.sensors['1']()['state']['daylight']
             
 
 def sunset(bridge,kgroups):
-    logger.info("Kodi Hue: in sunset()")
+    logger.debug("in sunset()")
     
     for g in kgroups:
-        logger.info("Kodi Hue: in sunset() g: {}, kgroupID: {}".format(g,g.kgroupID))
+        logger.debug("in sunset() g: {}, kgroupID: {}".format(g,g.kgroupID))
         if kodiutils.get_setting_as_bool("group{}_enabled".format(g.kgroupID)):
             g.sunset()
             
@@ -314,7 +314,7 @@ def sunset(bridge,kgroups):
     
 
 def setupGroups(bridge,flash=False):
-    logger.info("Kodi Hue: in setupGroups()")
+    logger.debug("in setupGroups()")
     kgroups= []   
     g=0
     while g < globals.NUM_GROUPS:
@@ -331,32 +331,32 @@ def setupGroups(bridge,flash=False):
 def connectBridge(monitor,silent=False):
     bridgeIP = kodiutils.get_setting("bridgeIP")
     bridgeUser = kodiutils.get_setting("bridgeUser")
-    logger.info("Kodi Hue: in Connect() with settings: bridgeIP: {}, bridgeUser: {}".format(bridgeIP,bridgeUser))
+    logger.debug("in Connect() with settings: bridgeIP: {}, bridgeUser: {}".format(bridgeIP,bridgeUser))
 
     
     if bridgeIP and bridgeUser:
         if connectionTest(bridgeIP):
-            logger.info("Kodi Hue: in Connect(): Bridge responding to connection test.")
+            logger.debug("in Connect(): Bridge responding to connection test.")
 
         else:
-            logger.info("Kodi Hue: in Connect(): Bridge not responding to connection test, attempt finding a new bridge IP.")
+            logger.debug("in Connect(): Bridge not responding to connection test, attempt finding a new bridge IP.")
             bridgeIP = discoverBridgeIP(monitor)
             if bridgeIP:
-                logger.info("Kodi Hue: in Connect(): New IP found: {}. Saving".format(bridgeIP))
+                logger.debug("in Connect(): New IP found: {}. Saving".format(bridgeIP))
                 kodiutils.set_setting("bridgeIP",bridgeIP)
                         
         
         if bridgeIP:
-            logger.info("Kodi Hue: in Connect(): Checking User")
+            logger.debug("in Connect(): Checking User")
             if userTest(bridgeIP, bridgeUser):
                 bridge = qhue.Bridge(bridgeIP,bridgeUser)
                 globals.connected = True
-                logger.info("Kodi Hue: Connected!")
+                logger.debug("Connected!")
                 if not silent:
                     kodiutils.notification("Kodi Hue", "Hue connected", icon=NOTIFICATION_INFO)
                 return bridge
         else: 
-            logger.info("Kodi Hue: Bridge not responding")
+            logger.debug("Bridge not responding")
             kodiutils.notification("Kodi Hue", "Bridge connection failed", icon=NOTIFICATION_ERROR)
             globals.connected = False
             return False
@@ -364,7 +364,7 @@ def connectBridge(monitor,silent=False):
          
             
     else:
-        logger.info("Kodi Hue: Bridge not configured")
+        logger.debug("Bridge not configured")
         kodiutils.notification("Kodi Hue", "Bridge not configured", icon=NOTIFICATION_ERROR)
         globals.connected = False
         return False
@@ -375,5 +375,5 @@ class HueMonitor(xbmc.Monitor):
         super(xbmc.Monitor,self).__init__()
         
     def onSettingsChanged(self):
-        logger.info("Kodi Hue: Settings changed")
+        logger.debug("Settings changed")
         globals.settingsChanged = True
