@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <addon id="script.service.hue" 
 	name="Philips Hue Service" 
@@ -26,3 +27,28 @@
   </extension>
   
 </addon>
+=======
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<addon id="script.service.hue" 
+	name="Philips Hue Service" 
+	version="0.0.2~alpha" 
+	provider-name="zim514">
+	
+  <requires>
+    <import addon="xbmc.python" version="2.25.0"/>
+    <import addon="script.module.requests"/>
+  </requires>
+  
+  
+  <extension point="xbmc.service" library="main.py"></extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>Philips Hue Lights Service</summary>
+    <description>Let Kodi control your Philips Hue lights. Either turns the lights into a room-sized ambilight, or automatically dims and un-dims them when playback starts or stops.</description>
+    <platform>all</platform>
+    <assets>
+  		<icon>resources/icon.png</icon>
+  	</assets>
+  </extension>
+  
+</addon>
+>>>>>>> refs/remotes/origin/master
