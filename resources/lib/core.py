@@ -9,6 +9,8 @@ import xbmcaddon
 from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_WARNING, NOTIFICATION_INFO
 import xbmcgui
 
+from resources.lib.qhue import QhueException
+
 from KodiGroup import KodiGroup
 import globals
 import kodiHue
@@ -118,7 +120,7 @@ def service():
         globals.daylight = kodiHue.getDaylight(bridge)
         kgroups = kodiHue.setupGroups(bridge,initialFlash)
 
-        timer = 1
+        timer = 60
         # #Ready to go! Start running until Kodi exit.            
         while globals.connected and not monitor.abortRequested():
             
@@ -131,8 +133,14 @@ def service():
             
             timer = timer + 1
             if timer > 59:
-                previousDaylight = kodiHue.getDaylight(bridge)
-                logger.debug('Daylight check: current: {}, previous: {}'.format(globals.daylight, previousDaylight))
+                try:
+                    previousDaylight = kodiHue.getDaylight(bridge)
+                    logger.debug('Daylight check: current: {}, previous: {}'.format(globals.daylight, previousDaylight))
+                except Exception as error:
+                    logger.debug('Get daylight exception: {}'.format(error))
+                    
+
+
                 if globals.daylight != previousDaylight :
                     logger.debug('Daylight change! current: {}, previous: {}'.format(globals.daylight, previousDaylight))
                     globals.daylight = kodiHue.getDaylight(bridge)
