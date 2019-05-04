@@ -1,0 +1,435 @@
+# Kodi Media Center language file
+# Addon Name: Philips Hue Service
+# Addon id: script.service.hue
+# Addon Provider: zim514
+"Project-Id-Version: Kodi Addons\n"
+"Report-Msgid-Bugs-To: https://forum.kodi.tv/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: Team-Kodi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#1000"
+msgid "General"
+msgstr ""
+
+msgctxt "#1001"
+msgid "Group 1"
+msgstr ""
+
+msgctxt "#1002"
+msgid "Group 2"
+msgstr ""
+
+msgctxt "#1003"
+msgid "Group 3"
+msgstr ""
+
+msgctxt "#1004"
+msgid "Group 4"
+msgstr ""
+
+msgctxt "#1100"
+msgid "Light Groups"
+msgstr ""
+
+msgctxt "#1120"
+msgid "Setup Theater Lights"
+msgstr ""
+
+msgctxt "#1130"
+msgid "Setup Ambilight Lights"
+msgstr ""
+
+msgctxt "#1140"
+msgid "Setup Static Lights"
+msgstr ""
+
+msgctxt "#1200"
+msgid "Bridge"
+msgstr ""
+
+msgctxt "#1210"
+msgid "Discover Hue Bridge"
+msgstr ""
+
+msgctxt "#1220"
+msgid "Bridge IP"
+msgstr ""
+
+msgctxt "#1230"
+msgid "Bridge User"
+msgstr ""
+
+msgctxt "#1400"
+msgid "WARNING: RESET ALL SETTINGS"
+msgstr ""
+
+msgctxt "#1410"
+msgid "Reset all settings (requires disable/re-enable)"
+msgstr ""
+
+msgctxt "#1420"
+msgid "Debug mode"
+msgstr ""
+
+msgctxt "#2000"
+msgid "Theater"
+msgstr ""
+
+msgctxt "#2100"
+msgid "Global Settings"
+msgstr ""
+
+msgctxt "#2105"
+msgid "Setup Theater Subgroup"
+msgstr ""
+
+msgctxt "#2110"
+msgid "Dim Time"
+msgstr ""
+
+msgctxt "#2120"
+msgid "Proportional Dim Time"
+msgstr ""
+
+msgctxt "#2130"
+msgid "Example: Take 70% of transition time if dimming 70%"
+msgstr ""
+
+msgctxt "#2200"
+msgid "Playback Start (or Resume)"
+msgstr ""
+
+msgctxt "#2210"
+msgid "Override Brightness (default 30)"
+msgstr ""
+
+msgctxt "#2220"
+msgid "Choose Brightness"
+msgstr ""
+
+msgctxt "#2300"
+msgid "Playback Pause"
+msgstr ""
+
+msgctxt "#2305"
+msgid "Only Undim Subgroup"
+msgstr ""
+
+msgctxt "#2310"
+msgid "Override Brightness (default initial)"
+msgstr ""
+
+msgctxt "#2320"
+msgid "Choose Brightness"
+msgstr ""
+
+msgctxt "#2400"
+msgid "Playback Stop"
+msgstr ""
+
+msgctxt "#2410"
+msgid "Override Brightness (default initial)"
+msgstr ""
+
+msgctxt "#2420"
+msgid "Choose Brightness"
+msgstr ""
+
+msgctxt "#3000"
+msgid "Ambilight"
+msgstr ""
+
+msgctxt "#3100"
+msgid "Global Settings"
+msgstr ""
+
+msgctxt "#3110"
+msgid "Minimum Brightness"
+msgstr ""
+
+msgctxt "#3120"
+msgid "Maximum Brightness"
+msgstr ""
+
+msgctxt "#3130"
+msgid "Enable Dimming"
+msgstr ""
+
+msgctxt "#3200"
+msgid "Thresholds"
+msgstr ""
+
+msgctxt "#3210"
+msgid "Value"
+msgstr ""
+
+msgctxt "#3220"
+msgid "Saturation"
+msgstr ""
+
+msgctxt "#3300"
+msgid "Color"
+msgstr ""
+
+msgctxt "#3310"
+msgid "Bias"
+msgstr ""
+
+msgctxt "#3320"
+msgid "Sensitivity: 6=variety with >1 light, 36=accuracy"
+msgstr ""
+
+msgctxt "#3400"
+msgid "Playback Start (or resume)"
+msgstr ""
+
+msgctxt "#3420"
+msgid "Override Brightness (default 30)"
+msgstr ""
+
+msgctxt "#3430"
+msgid "Choose Brightness"
+msgstr ""
+
+msgctxt "#3500"
+msgid "Playback Pause"
+msgstr ""
+
+msgctxt "#3510"
+msgid "Override Brightness (default initial)"
+msgstr ""
+
+msgctxt "#3520"
+msgid "Choose Brightness"
+msgstr ""
+
+msgctxt "#3600"
+msgid "Playback Stop"
+msgstr ""
+
+msgctxt "#3610"
+msgid "Override Brightness (default initial)"
+msgstr ""
+
+msgctxt "#3620"
+msgid "Choose Brightness"
+msgstr ""
+
+msgctxt "#4000"
+msgid "Static"
+msgstr ""
+
+msgctxt "#4100"
+msgid "Playback Start (or resume)"
+msgstr ""
+
+msgctxt "#4105"
+msgid "Random Color"
+msgstr ""
+
+msgctxt "#4110"
+msgid "Override Hue (default initial)"
+msgstr ""
+
+msgctxt "#4120"
+msgid "Choose Hue"
+msgstr ""
+
+msgctxt "#4130"
+msgid "Override Saturation (default initial)"
+msgstr ""
+
+msgctxt "#4140"
+msgid "Choose Saturation"
+msgstr ""
+
+msgctxt "#4150"
+msgid "Override Brightness (default 100)"
+msgstr ""
+
+msgctxt "#4160"
+msgid "Choose Brightness"
+msgstr ""
+
+msgctxt "#5000"
+msgid "Advanced"
+msgstr ""
+
+msgctxt "#5100"
+msgid "Misc. Settings"
+msgstr ""
+
+msgctxt "#5110"
+msgid "Initial flash"
+msgstr ""
+
+msgctxt "#5111"
+msgid "Flash on settings reload"
+msgstr ""
+
+msgctxt "#5120"
+msgid "Disable for short movies"
+msgstr ""
+
+msgctxt "#5130"
+msgid "Short Movie Threshold (seconds)"
+msgstr ""
+
+msgctxt "#5140"
+msgid "Force Light(s) on (even if off)"
+msgstr ""
+
+msgctxt "#6000"
+msgid "Group"
+msgstr ""
+
+msgctxt "#6001"
+msgid "Kodi Group ID"
+msgstr ""
+
+msgctxt "#6002"
+msgid "Hue Group Name"
+msgstr ""
+
+msgctxt "#6003"
+msgid "Hue Group ID"
+msgstr ""
+
+msgctxt "#6100"
+msgid "Light Selection"
+msgstr ""
+
+msgctxt "#6101"
+msgid "Select Lights"
+msgstr ""
+
+msgctxt "#6102"
+msgid "Select Hue Group"
+msgstr ""
+
+msgctxt "#6200"
+msgid "Group Behavior"
+msgstr ""
+
+msgctxt "#6201"
+msgid "Enabled"
+msgstr ""
+
+msgctxt "#6202"
+msgid "Do nothing"
+msgstr ""
+
+msgctxt "#6203"
+msgid "Adjust lights"
+msgstr ""
+
+msgctxt "#6204"
+msgid "Turn off lights"
+msgstr ""
+
+msgctxt "#6205"
+msgid "Initial state"
+msgstr ""
+
+msgctxt "#6206"
+msgid "Fade Time"
+msgstr ""
+
+msgctxt "#6207"
+msgid "Force on"
+msgstr ""
+
+msgctxt "#6208"
+msgid "Hue group"
+msgstr ""
+
+msgctxt "#6301"
+msgid "Playback start / resume"
+msgstr ""
+
+msgctxt "#6302"
+msgid "Playback pause"
+msgstr ""
+
+msgctxt "#6303"
+msgid "Playback stop"
+msgstr ""
+
+msgctxt "#6400"
+msgid "Light settings"
+msgstr ""
+
+msgctxt "#6401"
+msgid "Initial State"
+msgstr ""
+
+msgctxt "#6402"
+msgid "Hue"
+msgstr ""
+
+msgctxt "#6403"
+msgid "Saturation"
+msgstr ""
+
+msgctxt "#6404"
+msgid "Brightness"
+msgstr ""
+
+msgctxt "#9000"
+msgid "Kodi Hue"
+msgstr ""
+
+msgctxt "#9001"
+msgid "Press connect button on Hue bridge"
+msgstr ""
+
+msgctxt "#9002"
+msgid "Select Hue Group..."
+msgstr ""
+
+msgctxt "#9003"
+msgid "Create Hue Group..."
+msgstr ""
+
+msgctxt "#9004"
+msgid "Delete Hue Group..."
+msgstr ""
+
+msgctxt "#9005"
+msgid "Force on at sunset"
+msgstr ""
+
+msgctxt "#9006"
+msgid "Disable during daytime"
+msgstr ""
+
+
+
+
+
+
+msgid ""
+msgstr ""
+
+msgctxt "#30000"
+msgid "Hue"
+msgstr ""
+
+msgctxt "#30001"
+msgid "ERROR: Group not created"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Localized notification"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Group deleted"
+msgstr ""
