@@ -25,6 +25,8 @@ from kodiutils import notification, get_string
 
 from resources.lib import globals
 from resources.lib.qhue import qhue,QhueException,Bridge
+from language import get_string as _
+
 
 
 
@@ -363,7 +365,7 @@ def connectBridge(monitor,silent=False):
             
     else:
         logger.debug("Bridge not configured")
-        kodiutils.notification(_("Kodi Hue"), _("Bridge not configured"), icon=NOTIFICATION_ERROR)
+        kodiutils.notification(_("Hue Service"), _("Bridge not configured"), icon=NOTIFICATION_ERROR)
         globals.connected = False
         return False
     
