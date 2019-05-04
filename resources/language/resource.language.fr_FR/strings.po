@@ -1,0 +1,502 @@
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Kodi Hue Service\n"
+"Language: fr\n"
+
+#: 
+msgctxt "#1000"
+msgid "General"
+msgstr "Général"
+
+#: 
+msgctxt "#1001"
+msgid "Group 1"
+msgstr "Groupe 1"
+
+#: 
+msgctxt "#1002"
+msgid "Group 2"
+msgstr "Groupe 2"
+
+#: 
+msgctxt "#1003"
+msgid "Group 3"
+msgstr "Groupe 3"
+
+#: 
+msgctxt "#1004"
+msgid "Group 4"
+msgstr "Groupe 4"
+
+#: 
+msgctxt "#1100"
+msgid "Light Groups"
+msgstr "Groupes de lumière"
+
+#: 
+msgctxt "#1120"
+msgid "Setup Theater Lights"
+msgstr "Configuration des lumières de théâtre"
+
+#: 
+msgctxt "#1130"
+msgid "Setup Ambilight Lights"
+msgstr "Configuration des lumières Ambilight"
+
+#: 
+msgctxt "#1140"
+msgid "Setup Static Lights"
+msgstr "Configurer les lumières statiques"
+
+#: 
+msgctxt "#1200"
+msgid "Bridge"
+msgstr "Pont"
+
+#: 
+msgctxt "#1210"
+msgid "Discover Hue Bridge"
+msgstr "Découvrez le pont de Hue"
+
+#: 
+msgctxt "#1220"
+msgid "Bridge IP"
+msgstr "IP pont"
+
+#: 
+msgctxt "#1230"
+msgid "Bridge User"
+msgstr "Utilisateur de pont"
+
+#: 
+msgctxt "#1400"
+msgid "WARNING: RESET ALL SETTINGS"
+msgstr "AVERTISSEMENT: RÉINITIALISER TOUS LES RÉGLAGES"
+
+#: 
+msgctxt "#1410"
+msgid "Reset all settings (requires disable/re-enable)"
+msgstr "Réinitialiser tous les paramètres (nécessite l'activation / la réactivation)"
+
+#: 
+msgctxt "#1420"
+msgid "Debug mode"
+msgstr "Mode débogage"
+
+#: 
+msgctxt "#2000"
+msgid "Theater"
+msgstr "Théâtre"
+
+#: 
+msgctxt "#2100"
+msgid "Global Settings"
+msgstr "Paramètres globaux"
+
+#: 
+msgctxt "#2105"
+msgid "Setup Theater Subgroup"
+msgstr "Configuration du sous-groupe de théâtre"
+
+#: 
+msgctxt "#2110"
+msgid "Dim Time"
+msgstr "Dim Time"
+
+#: 
+msgctxt "#2120"
+msgid "Proportional Dim Time"
+msgstr "Dim temps proportionnel"
+
+#: 
+msgctxt "#2130"
+msgid "Example: Take 70% of transition time if dimming 70%"
+msgstr "Exemple: prenez 70% du temps de transition si la gradation est de 70%"
+
+#: 
+msgctxt "#2200"
+msgid "Playback Start (or Resume)"
+msgstr "Début de la lecture (ou reprise)"
+
+#: 
+msgctxt "#2210"
+msgid "Override Brightness (default 30)"
+msgstr "Ignorer la luminosité (30 par défaut)"
+
+#: 
+msgctxt "#2220"
+msgid "Choose Brightness"
+msgstr "Choisissez la luminosité"
+
+#: 
+msgctxt "#2300"
+msgid "Playback Pause"
+msgstr "Pause de lecture"
+
+#: 
+msgctxt "#2305"
+msgid "Only Undim Subgroup"
+msgstr "Seulement sous-groupe"
+
+#: 
+msgctxt "#2310"
+msgid "Override Brightness (default initial)"
+msgstr "Ignorer la luminosité (initiale par défaut)"
+
+#: 
+msgctxt "#2320"
+msgid "Choose Brightness"
+msgstr "Choisissez la luminosité"
+
+#: 
+msgctxt "#2400"
+msgid "Playback Stop"
+msgstr "Arrêt de la lecture"
+
+#: 
+msgctxt "#2410"
+msgid "Override Brightness (default initial)"
+msgstr "Ignorer la luminosité (initiale par défaut)"
+
+#: 
+msgctxt "#2420"
+msgid "Choose Brightness"
+msgstr "Choisissez la luminosité"
+
+#: 
+msgctxt "#3000"
+msgid "Ambilight"
+msgstr "Ambilight"
+
+#: 
+msgctxt "#3100"
+msgid "Global Settings"
+msgstr "Paramètres globaux"
+
+#: 
+msgctxt "#3110"
+msgid "Minimum Brightness"
+msgstr "Luminosité minimale"
+
+#: 
+msgctxt "#3120"
+msgid "Maximum Brightness"
+msgstr "Luminosité maximale"
+
+#: 
+msgctxt "#3130"
+msgid "Enable Dimming"
+msgstr "Activer la gradation"
+
+#: 
+msgctxt "#3200"
+msgid "Thresholds"
+msgstr "Seuils"
+
+#: 
+msgctxt "#3210"
+msgid "Value"
+msgstr "Valeur"
+
+#: 
+msgctxt "#3220"
+msgid "Saturation"
+msgstr "Saturation"
+
+#: 
+msgctxt "#3300"
+msgid "Color"
+msgstr "Couleur"
+
+#: 
+msgctxt "#3310"
+msgid "Bias"
+msgstr "Biais"
+
+#: 
+msgctxt "#3320"
+msgid "Sensitivity: 6=variety with >1 light, 36=accuracy"
+msgstr "Sensibilité: 6 = variété avec> 1 lumière, 36 = précision"
+
+#: 
+msgctxt "#3400"
+msgid "Playback Start (or resume)"
+msgstr "Lecture Démarrer (ou reprendre)"
+
+#: 
+msgctxt "#3420"
+msgid "Override Brightness (default 30)"
+msgstr "Ignorer la luminosité (30 par défaut)"
+
+#: 
+msgctxt "#3430"
+msgid "Choose Brightness"
+msgstr "Choisissez la luminosité"
+
+#: 
+msgctxt "#3500"
+msgid "Playback Pause"
+msgstr "Pause de lecture"
+
+#: 
+msgctxt "#3510"
+msgid "Override Brightness (default initial)"
+msgstr "Ignorer la luminosité (initiale par défaut)"
+
+#: 
+msgctxt "#3520"
+msgid "Choose Brightness"
+msgstr "Choisissez la luminosité"
+
+#: 
+msgctxt "#3600"
+msgid "Playback Stop"
+msgstr "Arrêt de la lecture"
+
+#: 
+msgctxt "#3610"
+msgid "Override Brightness (default initial)"
+msgstr "Ignorer la luminosité (initiale par défaut)"
+
+#: 
+msgctxt "#3620"
+msgid "Choose Brightness"
+msgstr "Choisissez la luminosité"
+
+#: 
+msgctxt "#4000"
+msgid "Static"
+msgstr "Statique"
+
+#: 
+msgctxt "#4100"
+msgid "Playback Start (or resume)"
+msgstr "Lecture Démarrer (ou reprendre)"
+
+#: 
+msgctxt "#4105"
+msgid "Random Color"
+msgstr "Couleur aléatoire"
+
+#: 
+msgctxt "#4110"
+msgid "Override Hue (default initial)"
+msgstr "Remplacer la teinte (initiale par défaut)"
+
+#: 
+msgctxt "#4120"
+msgid "Choose Hue"
+msgstr "Choisissez la teinte"
+
+#: 
+msgctxt "#4130"
+msgid "Override Saturation (default initial)"
+msgstr "Remplacer Saturation (initiale par défaut)"
+
+#: 
+msgctxt "#4140"
+msgid "Choose Saturation"
+msgstr "Choisissez la saturation"
+
+#: 
+msgctxt "#4150"
+msgid "Override Brightness (default 100)"
+msgstr "Ignorer la luminosité (par défaut 100)"
+
+#: 
+msgctxt "#4160"
+msgid "Choose Brightness"
+msgstr "Choisissez la luminosité"
+
+#: 
+msgctxt "#5000"
+msgid "Advanced"
+msgstr "Avancée"
+
+#: 
+msgctxt "#5100"
+msgid "Misc. Settings"
+msgstr "Divers Réglages"
+
+#: 
+msgctxt "#5110"
+msgid "Initial flash"
+msgstr "Flash initial"
+
+#: 
+msgctxt "#5111"
+msgid "Flash on settings reload"
+msgstr "Flash sur les paramètres recharger"
+
+#: 
+msgctxt "#5120"
+msgid "Disable for short movies"
+msgstr "Désactiver pour les courts métrages"
+
+#: 
+msgctxt "#5130"
+msgid "Short Movie Threshold (seconds)"
+msgstr "Seuil court métrage (secondes)"
+
+#: 
+msgctxt "#5140"
+msgid "Force Light(s) on (even if off)"
+msgstr "Force l'éclairage (même s'il est éteint)"
+
+#: 
+msgctxt "#6000"
+msgid "Group"
+msgstr "Groupe"
+
+#: 
+msgctxt "#6001"
+msgid "Kodi Group ID"
+msgstr "Identifiant de groupe Kodi"
+
+#: 
+msgctxt "#6002"
+msgid "Hue Group Name"
+msgstr "Nom du groupe de teintes"
+
+#: 
+msgctxt "#6003"
+msgid "Hue Group ID"
+msgstr "Hue Group ID"
+
+#: 
+msgctxt "#6100"
+msgid "Light Selection"
+msgstr "Sélection de la lumière"
+
+#: 
+msgctxt "#6101"
+msgid "Select Lights"
+msgstr "Sélectionnez les lumières"
+
+#: 
+msgctxt "#6102"
+msgid "Select Hue Group"
+msgstr "Sélectionnez le groupe de teintes"
+
+#: 
+msgctxt "#6200"
+msgid "Group Behavior"
+msgstr "Comportement de groupe"
+
+#: 
+msgctxt "#6201"
+msgid "Enabled"
+msgstr "Activée"
+
+#: 
+msgctxt "#6202"
+msgid "Do nothing"
+msgstr "Ne fais rien"
+
+#: 
+msgctxt "#6203"
+msgid "Adjust lights"
+msgstr "Ajuster les lumières"
+
+#: 
+msgctxt "#6204"
+msgid "Turn off lights"
+msgstr "Éteindre les lumières"
+
+#: 
+msgctxt "#6205"
+msgid "Initial state"
+msgstr "Etat initial"
+
+#: 
+msgctxt "#6206"
+msgid "Fade Time"
+msgstr "Temps de fondu"
+
+#: 
+msgctxt "#6207"
+msgid "Force on"
+msgstr "Force sur"
+
+#: 
+msgctxt "#6208"
+msgid "Hue group"
+msgstr "Groupe de teinte"
+
+#: 
+msgctxt "#6301"
+msgid "Playback start / resume"
+msgstr "Lecture démarrer / reprendre"
+
+#: 
+msgctxt "#6302"
+msgid "Playback pause"
+msgstr "Pause de lecture"
+
+#: 
+msgctxt "#6303"
+msgid "Playback stop"
+msgstr "Arrêt de la lecture"
+
+#: 
+msgctxt "#6400"
+msgid "Light settings"
+msgstr "Réglages de lumière"
+
+#: 
+msgctxt "#6401"
+msgid "Initial State"
+msgstr "Etat initial"
+
+#: 
+msgctxt "#6402"
+msgid "Hue"
+msgstr "Teinte"
+
+#: 
+msgctxt "#6403"
+msgid "Saturation"
+msgstr "Saturation"
+
+#: 
+msgctxt "#6404"
+msgid "Brightness"
+msgstr "Luminosité"
+
+#: 
+msgctxt "#9000"
+msgid "Kodi Hue"
+msgstr "Kodi Hue"
+
+#: 
+msgctxt "#9001"
+msgid "Press connect button on Hue bridge"
+msgstr "Appuyez sur le bouton de connexion sur le pont Hue"
+
+#: 
+msgctxt "#9002"
+msgid "Select Hue Group..."
+msgstr "Sélectionnez le groupe de teintes ..."
+
+#: 
+msgctxt "#9003"
+msgid "Create Hue Group..."
+msgstr "Créer un groupe de teintes ..."
+
+#: 
+msgctxt "#9004"
+msgid "Delete Hue Group..."
+msgstr "Supprimer le groupe de teintes ..."
+
+#: 
+msgctxt "#9005"
+msgid "Force on at sunset"
+msgstr "Force au coucher du soleil"
+
+#: 
+msgctxt "#9006"
+msgid "Disable during daytime"
+msgstr "Désactiver pendant la journée"
+
