@@ -1,15 +1,16 @@
-<addon id="script.service.hue" name="Philips Hue Service" provider-name="zim514" version="0.1.0">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.1.0">
 	
   <requires>
     <import addon="xbmc.python" version="2.25.0" />
     <import addon="script.module.requests" />
   </requires>
   
-  
-  <extension library="service.py" point="xbmc.service" />
-  <extension library="default.py" point="xbmc.python.script">
+   
+  <extension  point="xbmc.python.script" library="default.py">
   	<provides>executable</provides>
   </extension>
+  <extension  point="xbmc.service" name="service.hue" library="service.py" start="login"/>
+  
   <extension point="xbmc.addon.metadata">
   
     <summary lang="en_GB">Philips Hue Lights Service</summary>
