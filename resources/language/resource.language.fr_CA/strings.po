@@ -522,3 +522,103 @@ msgctxt "#30003"
 msgid "Group deleted"
 msgstr "Groupe supprimé"
 
+#: 
+msgctxt "#30004"
+msgid "Check your bridge and network"
+msgstr "Vérifiez votre pont et votre réseau"
+
+#: 
+msgctxt "#30005"
+msgid "nupnp discovery... "
+msgstr "découverte nupnp ... "
+
+#: 
+msgctxt "#30006"
+msgid "Hue connected"
+msgstr "Hue connecté"
+
+#: 
+msgctxt "#30007"
+msgid "Press link button on bridge"
+msgstr "Appuyez sur le lien sur le pont"
+
+#: 
+msgctxt "#30008"
+msgid "Bridge not found"
+msgstr "Pont non trouvé"
+
+#: 
+msgctxt "#30009"
+msgid "Waiting for 90 seconds..."
+msgstr "En attente de 90 secondes ..."
+
+#: 
+msgctxt "#30010"
+msgid "User not found"
+msgstr "Utilisateur non trouvé"
+
+#: 
+msgctxt "#30011"
+msgid "Complete!"
+msgstr "Achevée!"
+
+#: 
+msgctxt "#30012"
+msgid "Group Created"
+msgstr "Groupe créé"
+
+#: 
+msgctxt "#30013"
+msgid "Cancelled"
+msgstr "Annulé"
+
+#: 
+msgctxt "#30014"
+msgid "Saving settings"
+msgstr "Enregistrement des paramètres"
+
+#: 
+msgctxt "#30015"
+msgid "Select Hue Lights..."
+msgstr "Sélectionnez Hue Lights ..."
+
+#: 
+msgctxt "#30016"
+msgid "Are you sure you want to delete this group: "
+msgstr "Êtes-vous sûr de vouloir supprimer ce groupe: "
+
+#: 
+msgctxt "#30017"
+msgid "Found bridge: "
+msgstr "Pont trouvé: "
+
+#: 
+msgctxt "#30018"
+msgid "Discover bridge..."
+msgstr "Découvrez le pont ..."
+
+#: 
+msgctxt "#30019"
+msgid "User Found!"
+msgstr "Utilisateur trouvé!"
+
+#: 
+msgctxt "#30020"
+msgid "Delete Hue Group"
+msgstr "Supprimer le groupe de teintes"
+
+#: 
+msgctxt "#30021"
+msgid "Bridge connection failed"
+msgstr "La connexion du pont a échoué"
+
+#: 
+msgctxt "#30022"
+msgid "Discovery started"
+msgstr "Découverte a commencé"
+
+#: 
+msgctxt "#30023"
+msgid "Bridge not configured"
+msgstr "Pont non configuré"
+
