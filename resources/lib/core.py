@@ -10,7 +10,7 @@ from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_WARNING, NOTIFICATION_INFO
 import xbmcgui
 
 from resources.lib.qhue import QhueException
-from simpleplugin import Plugin
+from language import get_string as _
 
 
 
@@ -27,10 +27,6 @@ ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(__name__)
 connected = False
 settingsChanged = False
-
-
-plugin = Plugin()
-_ = plugin.initialize_gettext()
 
 
 
@@ -119,7 +115,7 @@ def service():
     logger.debug("Args: {}".format(args))
 
 
-    logger.debug("Main service started...")
+
     bridge = kodiHue.connectBridge(monitor,silent=False)
             
     if bridge:

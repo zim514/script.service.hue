@@ -41,23 +41,23 @@ def createHueGroup(bridge):
             res=groups(lights=selected,name=groupName,http_method='post')
             logger.debug("In kodiHue createHueGroup. Res:".format(res))
             if res[0]["success"]:
-                xbmcgui.Dialog().notification("Hue", "Group Created")
+                xbmcgui.Dialog().notification(_("Hue Service"), _("Group Created"))
             else:
-                xbmcgui.Dialog().notification("Hue", "ERROR: Group not created")
+                xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Group not created"))
                  
 def deleteHueGroup(bridge):
     logger.debug("In kodiHue deleteHueGroup")
     group = selectHueGroup(bridge)
     if group:
-        confirm = xbmcgui.Dialog().yesno("Delete Hue Group", "Are you sure you want to delete this group: ", unicode(group[1]))
+        confirm = xbmcgui.Dialog().yesno(_("Delete Hue Group"), _("Are you sure you want to delete this group: "), unicode(group[1]))
     if group and confirm:              
         groups=bridge.groups
         res=groups[group[0]](http_method='delete')
         logger.debug("In kodiHue createHueGroup. Res:".format(res))
         if res[0]["success"]:
-            xbmcgui.Dialog().notification("Hue", "Group deleted")
+            xbmcgui.Dialog().notification(_("Hue Service"), _("Group deleted"))
         else:
-            xbmcgui.Dialog().notification("Hue", "ERROR: Group not created")
+            xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Group not created"))
 
             
         
@@ -84,47 +84,47 @@ def bridgeDiscover(monitor):
     
     
     progressBar = xbmcgui.DialogProgress()
-    progressBar.create('Discover bridge...')
-    progressBar.update(5, "Discovery started")
+    progressBar.create(_('Discover bridge...'))
+    progressBar.update(5, _("Discovery started"))
     
     complete = False
     while not progressBar.iscanceled() and not complete:
 
 #TODO: ADD DISCOVERY METHODS in their own method with progress bar support (or not) and support for initial connect        
         #bridgeIP = discoverBridgeIP..
-        progressBar.update(10, "nupnp discovery... ")
+        progressBar.update(10, _("nupnp discovery... "))
         bridgeIP =_discoverNupnp()
         
         if connectionTest(bridgeIP):
-            progressBar.update(100, "Found bridge: " + bridgeIP)
+            progressBar.update(100, _("Found bridge: ") + bridgeIP)
             xbmc.sleep(1000)
                      
             bridgeUser = createUser(monitor, bridgeIP, progressBar)
             if bridgeUser:
-                progressBar.update(90,"User Found!","Saving settings")
+                progressBar.update(90,_("User Found!"),_("Saving settings"))
                 
                 kodiutils.set_setting("bridgeIP",bridgeIP)
                 kodiutils.set_setting("bridgeUser",bridgeUser)
                 complete = True
-                progressBar.update(100, "Complete!")
+                progressBar.update(100, _("Complete!"))
                 monitor.waitForAbort(5)
                 progressBar.close()
                 
             else:
-                progressBar.update(100, "User not found","Check your bridge and network")
+                progressBar.update(100, _("User not found"),_("Check your bridge and network"))
                 monitor.waitForAbort(5)
                 complete = True
            
                 progressBar.close()
             
         else:
-            progressBar.update(100, "Bridge not found","Check your bridge and network")
+            progressBar.update(100, _("Bridge not found"),_("Check your bridge and network"))
             monitor.waitForAbort(5)
             complete = True
             progressBar.close()
 
     if progressBar.iscanceled():
-        progressBar.update(100,"Cancelled")
+        progressBar.update(100,_("Cancelled"))
         complete = True
         progressBar.close()
         
@@ -185,14 +185,14 @@ def createUser(monitor, bridgeIP, progressBar=False):
     timeout = 0
     progress=0
     if progressBar:        
-        progressBar.update(progress,get_string(9001),"Waiting for 90 seconds...") #press link button on bridge
+        progressBar.update(progress,_("Press link button on bridge"),_("Waiting for 90 seconds...")) #press link button on bridge
     
     
     while 'link button not pressed' in res and timeout <= 90  and not monitor.abortRequested() and not progressBar.iscanceled():
         logger.debug("In create_user: abortRquested: {}, timer: {}".format(str(monitor.abortRequested()),timeout) )
         
         if progressBar:
-            progressBar.update(progress,get_string(9001)) #press link button on bridge
+            progressBar.update(progress,_("Press link button on bridge")) #press link button on bridge
              #notification(get_string(9000), get_string(9001), time=1000, icon=xbmcgui.NOTIFICATION_WARNING) #9002: Press link button on bridge
             
         req = requests.post('http://{}/api'.format(bridgeIP), data=data)
@@ -238,7 +238,7 @@ def selectHueLights(bridge):
         items.append(xbmcgui.ListItem(label=hLightName))
         
     xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
-    selected = xbmcgui.Dialog().multiselect("Select Hue Lights...",items)
+    selected = xbmcgui.Dialog().multiselect(_("Select Hue Lights..."),items)
     if selected:
         #id = index[selected]
         for s in selected:
@@ -353,19 +353,17 @@ def connectBridge(monitor,silent=False):
                 globals.connected = True
                 logger.debug("Connected!")
                 if not silent:
-                    kodiutils.notification("Kodi Hue", "Hue connected", icon=NOTIFICATION_INFO)
+                    kodiutils.notification(_("Hue Service"), _("Hue connected"), icon=NOTIFICATION_INFO)
                 return bridge
         else: 
             logger.debug("Bridge not responding")
-            kodiutils.notification("Kodi Hue", "Bridge connection failed", icon=NOTIFICATION_ERROR)
+            kodiutils.notification(_("Hue Service"), _("Bridge connection failed"), icon=NOTIFICATION_ERROR)
             globals.connected = False
             return False
             
-         
-            
     else:
         logger.debug("Bridge not configured")
-        kodiutils.notification("Kodi Hue", "Bridge not configured", icon=NOTIFICATION_ERROR)
+        kodiutils.notification(_("Kodi Hue"), _("Bridge not configured"), icon=NOTIFICATION_ERROR)
         globals.connected = False
         return False
     

@@ -413,3 +413,83 @@ msgstr "Localized notification"
 msgctxt "#30003"
 msgid "Group deleted"
 msgstr "Group deleted"
+
+msgctxt "#30004"
+msgid "Check your bridge and network"
+msgstr ""
+
+msgctxt "#30005"
+msgid "nupnp discovery... "
+msgstr ""
+
+msgctxt "#30006"
+msgid "Hue connected"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Press link button on bridge"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Bridge not found"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Waiting for 90 seconds..."
+msgstr ""
+
+msgctxt "#30010"
+msgid "User not found"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Complete!"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Group Created"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Cancelled"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Saving settings"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Select Hue Lights..."
+msgstr ""
+
+msgctxt "#30016"
+msgid "Are you sure you want to delete this group: "
+msgstr ""
+
+msgctxt "#30017"
+msgid "Found bridge: "
+msgstr ""
+
+msgctxt "#30018"
+msgid "Discover bridge..."
+msgstr ""
+
+msgctxt "#30019"
+msgid "User Found!"
+msgstr ""
+
+msgctxt "#30020"
+msgid "Delete Hue Group"
+msgstr ""
+
+msgctxt "#30021"
+msgid "Bridge connection failed"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Discovery started"
+msgstr ""
+
+msgctxt "#30023"
+msgid "Bridge not configured"
+msgstr ""
