@@ -10,6 +10,10 @@ from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_WARNING, NOTIFICATION_INFO
 import xbmcgui
 
 from resources.lib.qhue import QhueException
+from simpleplugin import Plugin
+
+
+
 
 from KodiGroup import KodiGroup
 import globals
@@ -19,11 +23,14 @@ import qhue
 from resources.lib.globals import NUM_GROUPS
 
 
-# from resources.lib.qhue import Bridge
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(__name__)
 connected = False
 settingsChanged = False
+
+
+plugin = Plugin()
+_ = plugin.initialize_gettext()
 
 
 

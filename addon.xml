@@ -1,23 +1,20 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<addon id="script.service.hue" 
-	name="Philips Hue Service" 
-	version="0.0.9~beta" 
-	provider-name="zim514">
+<addon id="script.service.hue" name="Philips Hue Service" provider-name="zim514" version="0.0.9~beta">
 	
   <requires>
-    <import addon="xbmc.python" version="2.25.0"/>
-    <import addon="script.module.requests"/>
+    <import addon="xbmc.python" version="2.25.0" />
+    <import addon="script.module.requests" />
+    <import addon="script.module.simpleplugin" />
   </requires>
   
   
-  <extension point="xbmc.service" library="service.py"></extension>
-  <extension point="xbmc.python.script" library="default.py">
+  <extension library="service.py" point="xbmc.service" />
+  <extension library="default.py" point="xbmc.python.script">
   	<provides>executable</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
   
-    <summary>Philips Hue Lights Service</summary>
-    <description>Let Kodi control your Philips Hue lights. Either turns the lights into a room-sized ambilight, or automatically dims and un-dims them when playback starts or stops.</description>
+    <summary lang="en_GB">Philips Hue Lights Service</summary>
+    <description lang="en_GB">Automate your Philips Hue lights with Kodi. Automatically change brightness, colour and state of your light groups when you start, pause or stop media, with flexible settings for each group.</description>
     <platform>all</platform>
     <assets>
   		<icon>resources/icon.png</icon>
