@@ -1,3 +1,5 @@
+msgid ""
+msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -499,4 +501,24 @@ msgstr "Force au coucher du soleil"
 msgctxt "#9006"
 msgid "Disable during daytime"
 msgstr "Désactiver pendant la journée"
+
+#: 
+msgctxt "#30000"
+msgid "Hue Service"
+msgstr "Hue Service"
+
+#: 
+msgctxt "#30001"
+msgid "ERROR: Group not created"
+msgstr "ERREUR: groupe non créé"
+
+#: 
+msgctxt "#30002"
+msgid "Localized notification"
+msgstr "Notification localisée"
+
+#: 
+msgctxt "#30003"
+msgid "Group deleted"
+msgstr "Groupe supprimé"
 
