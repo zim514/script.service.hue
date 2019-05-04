@@ -1,9 +1,8 @@
-<addon id="script.service.hue" name="Philips Hue Service" provider-name="zim514" version="0.0.10~beta">
+<addon id="script.service.hue" name="Philips Hue Service" provider-name="zim514" version="0.1.0">
 	
   <requires>
     <import addon="xbmc.python" version="2.25.0" />
     <import addon="script.module.requests" />
-    <import addon="script.module.simpleplugin" />
   </requires>
   
   
