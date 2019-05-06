@@ -44,5 +44,5 @@ if globals.REMOTE_DBG:
 
 core.menu()
 logger.debug("'%s' shutting down menu" % ADDONID)
-
+sys.exit()
 

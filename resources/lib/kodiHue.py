@@ -1,7 +1,7 @@
 '''
 Created on Apr. 12, 2019
 
-@author: zim514
+
 '''
 import sys
 import logging
@@ -108,9 +108,11 @@ def bridgeDiscover(monitor):
                 kodiutils.set_setting("bridgeIP",bridgeIP)
                 kodiutils.set_setting("bridgeUser",bridgeUser)
                 complete = True
+                globals.connected = True
                 progressBar.update(100, _("Complete!"))
                 monitor.waitForAbort(5)
                 progressBar.close()
+                return True
                 
             else:
                 progressBar.update(100, _("User not found"),_("Check your bridge and network"))

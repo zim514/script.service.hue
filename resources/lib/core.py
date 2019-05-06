@@ -55,6 +55,7 @@ def menu():
         logger.debug("Started with Discovery")
         bridge = kodiHue.bridgeDiscover(monitor)
         if bridge:
+            logger.debug("Found bridge, starting service.")
             service() #restart service
     
     elif args == "createHueGroup":
@@ -87,6 +88,7 @@ def menu():
     
     else:
         ADDON.openSettings()
+        return
          
     
     
@@ -104,15 +106,19 @@ def service():
     globals.forceOnSunset = kodiutils.get_setting_as_bool("forceOnSunset")
     globals.daylightDisable = kodiutils.get_setting_as_bool("daylightDisable")
     
-    bridgeIP = ""
-    bridgeUser = ""
-
-    if len(sys.argv) == 2:
-        args = sys.argv[1]
-    else: 
-        args = ""
-    
-    logger.debug("Args: {}".format(args))
+    #===========================================================================
+    # bridgeIP = ""
+    # bridgeUser = ""
+    #===========================================================================
+#===============================================================================
+# 
+#     if len(sys.argv) == 2:
+#         args = sys.argv[1]
+#     else: 
+#         args = ""
+#     
+#     logger.debug("Args: {}".format(args))
+#===============================================================================
 
 
 

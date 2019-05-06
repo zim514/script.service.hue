@@ -1,7 +1,7 @@
 '''
 Created on Apr. 22, 2019
 
-@author: Kris
+
 '''
 
 settingsChanged = False
