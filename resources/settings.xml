@@ -28,7 +28,7 @@
 -->
 <!-- Bridge -->
         <setting type="lsep" label="1200" />
-        <setting id="discoverBridge" type="action" label="1210" action="RunScript(script.service.hue,discover)" />
+        <setting id="discoverBridge" type="action" label="1210" action="RunScript(script.service.hue,discover)" option="close"/>
         <setting id="bridgeIP" type="text" label="1220" enable="false" default="" />
         <setting id="bridgeUser" type="text" label="1230" enable="false" default="" />
 
