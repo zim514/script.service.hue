@@ -186,7 +186,7 @@ class KodiGroup(xbmc.Player):
             elif self.state == STATE_PAUSED:
                 self.onPlayBackPaused()
             elif self.state == STATE_IDLE:
-                self.onPlayBackStopped()()
+                self.onPlayBackStopped()
                 
             self.forceOn = previousForce
                 
