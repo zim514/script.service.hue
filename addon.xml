@@ -9,7 +9,7 @@
   <extension  point="xbmc.python.script" library="default.py">
   	<provides>executable</provides>
   </extension>
-  <extension  point="xbmc.service" name="service.hue" library="service.py" start="login"/>
+  <extension  point="xbmc.service" name="service.hue" library="service.py" />
   
   <extension point="xbmc.addon.metadata">
   
