@@ -44,9 +44,9 @@ if globals.DEBUG:
 
 core.service()
 
-
+logger.debug("'%s' shutting down service" % ADDONID)
 if globals.DEBUG is True:
     pydevd.stoptrace()
-logger.debug("'%s' shutting down service" % ADDONID)
+
 
 

@@ -48,5 +48,4 @@ logger.debug("'%s' shutting down menu" % ADDONID)
 
 if globals.DEBUG is True:
     pydevd.stoptrace()
-sys.exit()
 
