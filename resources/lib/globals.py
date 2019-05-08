@@ -10,9 +10,9 @@ daylight = False
 forceOnSunset = True
 daylightDisable = True
 
-NUM_GROUPS = 4
+NUM_GROUPS = 1
 
-REMOTE_DBG = False
+DEBUG = True
 REMOTE_DBG_SUSPEND = False
 
 

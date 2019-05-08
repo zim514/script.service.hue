@@ -9,6 +9,7 @@ from resources.lib import core
 from resources.lib import globals
 
 
+
 # Keep this file to a minimum, as Kodi
 # doesn't keep a compiled copy of this
 ADDON = xbmcaddon.Addon()
@@ -21,7 +22,7 @@ logger = logging.getLogger(__name__)
 logger.debug("Loading '%s' version '%s'" % (ADDONID, ADDONVERSION))
 
 
-if globals.REMOTE_DBG:
+if globals.DEBUG:
     # Make pydev debugger works for auto reload.
     # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
     
@@ -44,5 +45,8 @@ if globals.REMOTE_DBG:
 
 core.menu()
 logger.debug("'%s' shutting down menu" % ADDONID)
+
+if globals.DEBUG is True:
+    pydevd.stoptrace()
 sys.exit()
 
