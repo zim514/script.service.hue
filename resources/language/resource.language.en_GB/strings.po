@@ -12,22 +12,6 @@ msgctxt "#1000"
 msgid "General"
 msgstr "General"
 
-msgctxt "#1001"
-msgid "Group 1"
-msgstr "Group 1"
-
-msgctxt "#1002"
-msgid "Group 2"
-msgstr "Group 2"
-
-msgctxt "#1003"
-msgid "Group 3"
-msgstr "Group 3"
-
-msgctxt "#1004"
-msgid "Group 4"
-msgstr "Group 4"
-
 msgctxt "#1100"
 msgid "Light Groups"
 msgstr "Light Groups"
@@ -237,8 +221,8 @@ msgid "Disable during daytime"
 msgstr "Disable during daytime"
 
 msgctxt "#9007"
-msgid "Save lights to new Scene"
-msgstr "Save lights to new Scene"
+msgid "Save light state as new Scene"
+msgstr "Save light state as new Scene"
 
 msgctxt "#9008"
 msgid "Delete Scene"
