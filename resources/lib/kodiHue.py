@@ -397,7 +397,7 @@ def setupGroups(bridge,flash=False):
     while g < globals.NUM_GROUPS:
         if kodiutils.get_setting_as_bool("group{}_enabled".format(g)):
             kgroups.append(KodiGroup())
-            kgroups[g].setup(bridge, g, kodiutils.get_setting_as_int("group{}_hGroupID".format(g)), flash)  
+            kgroups[g].setup(bridge, g, flash)  
         g = g + 1
         
     return kgroups

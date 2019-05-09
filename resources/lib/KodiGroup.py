@@ -37,36 +37,31 @@ class KodiGroup(xbmc.Player):
         def readSettings(self):
           
             self.enabled=get_setting_as_bool("group{}_enabled".format(self.kgroupID))
-            self.fadeTime=get_setting_as_int("group{}_fadeTime".format(self.kgroupID))*10 #Stored as seconds, but Hue API expects multiples of 100ms.
+            self.fadeTime=get_setting_as_int("group{}_fadeTime".format(self.kgroupID)) * 10 #Stored as seconds, but Hue API expects multiples of 100ms.
             self.forceOn=get_setting_as_bool("group{}_forceOn".format(self.kgroupID))
             
-            #Hue API values start at 0, but settings UI starts at 1 for usability. -1 on XML values for 'conversion'
+            
             self.startBehavior=get_setting_as_int("group{}_startBehavior".format(self.kgroupID))
-            self.startHue=get_setting_as_int("group{}_startHue".format(self.kgroupID)) - 1
-            self.startSaturation=get_setting_as_int("group{}_startSaturation".format(self.kgroupID)) - 1
-            self.startBrightness=get_setting_as_int("group{}_startBrightness".format(self.kgroupID)) - 1
+            self.startScene=get_setting("group{}_startSceneID".format(self.kgroupID))
             
             self.pauseBehavior=get_setting_as_int("group{}_pauseBehavior".format(self.kgroupID))
-            self.pauseHue=get_setting_as_int("group{}_pauseHue".format(self.kgroupID)) -1
-            self.pauseSaturation=get_setting_as_int("group{}_pauseSaturation".format(self.kgroupID)) -1
-            self.pauseBrightness=get_setting_as_int("group{}_pauseBrightness".format(self.kgroupID)) -1
+            self.pauseScene=get_setting("group{}_pauseSceneID".format(self.kgroupID))
             
             self.stopBehavior=get_setting_as_int("group{}_stopBehavior".format(self.kgroupID))
-            self.stopHue=get_setting_as_int("group{}_stopHue".format(self.kgroupID)) -1
-            self.stopSaturation=get_setting_as_int("group{}_stopSaturation".format(self.kgroupID)) -1
-            self.stopBrightness=get_setting_as_int("group{}_stopBrightness".format(self.kgroupID)) -1
-
+            self.stopScene=get_setting("group{}_stopSceneID".format(self.kgroupID))
             
-        def setup(self,bridge,kgroupID,hgroupID,flash = False):
+            
+        def setup(self,bridge,kgroupID,flash = False):
             self.bridge = bridge
+            
             
             self.lights = bridge.lights 
             self.kgroupID=kgroupID
-            self.hgroupID=hgroupID
             
             self.readSettings()
             
-            self.groupResource=bridge.groups[self.hgroupID]
+            self.groupResource=bridge.groups[0]
+            #TODO: Get scene lights to save initial state
             self.lightIDs=self.groupResource()["lights"]
             self.saveInitialState()
 
@@ -76,6 +71,7 @@ class KodiGroup(xbmc.Player):
                     
                 
         def saveInitialState(self):
+            #TODO: Get scene lights to save initial state
             logger.debug("In KodiGroup[{}], save initial state".format(self.kgroupID))
             initialState = {}
             lights = self.lights
@@ -105,7 +101,7 @@ class KodiGroup(xbmc.Player):
                                 transitiontime=self.fadeTime)
             
         def flash(self):
-            logger.debug("Flash hgroup: {}".format(self.hgroupID))
+            logger.debug("in KodiGroup Flash")
             self.groupResource.action(alert="select")
         
         def onPlayBackStarted(self, saveInitial=False):
@@ -118,9 +114,9 @@ class KodiGroup(xbmc.Player):
                 
                 if self.startBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn or globals.forceOnSunset:
-                        self.groupResource.action(sat=self.startSaturation,hue=self.startHue,bri=self.startBrightness,transitiontime=self.fadeTime,on=True)
+                        self.groupResource.action(scene=self.startScene,transitiontime=self.fadeTime,on=True)
                     else:
-                        self.groupResource.action(sat=self.startSaturation,hue=self.startHue,bri=self.startBrightness,transitiontime=self.fadeTime)  
+                        self.groupResource.action(scene=self.startScene,transitiontime=self.fadeTime)  
                         
                 elif self.startBehavior == BEHAVIOR_OFF:
                     self.groupResource.action(on=False,transitiontime=self.fadeTime)
@@ -134,9 +130,9 @@ class KodiGroup(xbmc.Player):
                 
                 if self.stopBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn:
-                        self.groupResource.action(sat=self.stopSaturation,hue=self.stopHue,bri=self.stopBrightness,transitiontime=self.fadeTime,on=True)
+                        self.groupResource.action(scene=self.stopScene,transitiontime=self.fadeTime,on=True)
                     else:
-                        self.groupResource.action(sat=self.stopSaturation,hue=self.stopHue,bri=self.stopBrightness,transitiontime=self.fadeTime)  
+                        self.groupResource.action(scene=self.stopScene,transitiontime=self.fadeTime)  
                         
                 elif self.stopBehavior == BEHAVIOR_OFF:
                     self.groupResource.action(on=False,transitiontime=self.fadeTime)
@@ -153,9 +149,9 @@ class KodiGroup(xbmc.Player):
                 
                 if self.pauseBehavior == BEHAVIOR_ADJUST:
                     if self.forceOn:
-                        self.groupResource.action(sat=self.pauseSaturation,hue=self.pauseHue,bri=self.pauseBrightness,transitiontime=self.fadeTime,on=True)
+                        self.groupResource.action(scene=self.pauseScene,transitiontime=self.fadeTime,on=True)
                     else:
-                        self.groupResource.action(sat=self.pauseSaturation,hue=self.pauseHue,bri=self.pauseBrightness,transitiontime=self.fadeTime)  
+                        self.groupResource.action(scene=self.pauseScene,transitiontime=self.fadeTime)  
                         
                 elif self.startBehavior == BEHAVIOR_OFF:
                     self.groupResource.action(on=False,transitiontime=self.fadeTime)

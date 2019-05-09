@@ -17,9 +17,10 @@
         <setting type="sep" />
         <setting id="createGroup" type="action" label="9003" action="RunScript(script.service.hue,createHueGroup)" />
         <setting id="deleteGroup" type="action" label="9004" action="RunScript(script.service.hue,deleteHueGroup)" />
-        <setting type="sep" />
+ -->           
         
- -->        
+        <setting type="sep" />
+     
         <setting id="createScene" type="action" label="9007" action="RunScript(script.service.hue,createHueScene)" />
         <setting id="deleteScene" type="action" label="9008" action="RunScript(script.service.hue,deleteHueScene)" />
 
