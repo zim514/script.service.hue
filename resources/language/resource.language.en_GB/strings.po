@@ -347,3 +347,43 @@ msgstr ""
 msgctxt "#30028"
 msgid "Delete Hue Scene"
 msgstr ""
+
+msgctxt "#30029"
+msgid "Create a Hue Scene from current light state"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Enter Scene Name"
+msgstr ""
+
+msgctxt "#30031"
+msgid "Transition Time:"
+msgstr ""
+
+msgctxt "#30032"
+msgid "Fade time must be saved as part of the scene."
+msgstr ""
+
+msgctxt "#30033"
+msgid "{} secs."
+msgstr ""
+
+msgctxt "#30034"
+msgid "Cancel"
+msgstr ""
+
+msgctxt "#30035"
+msgid "Lights:"
+msgstr ""
+
+msgctxt "#30036"
+msgid "Scene Name:"
+msgstr ""
+
+msgctxt "#30037"
+msgid "Save"
+msgstr ""
+
+msgctxt "#30038"
+msgid "Create Hue Scene"
+msgstr ""

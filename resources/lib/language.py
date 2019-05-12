@@ -87,10 +87,6 @@ else:
 
 #GENERATED
 _strings['general'] = 1000
-_strings['group 1'] = 1001
-_strings['group 2'] = 1002
-_strings['group 3'] = 1003
-_strings['group 4'] = 1004
 _strings['light groups'] = 1100
 _strings['playback actions'] = 32100
 _strings['start/resume media'] = 32201
@@ -143,7 +139,7 @@ _strings['create hue group...'] = 9003
 _strings['delete hue group...'] = 9004
 _strings['force on at sunset'] = 9005
 _strings['disable during daytime'] = 9006
-_strings['save lights to new scene'] = 9007
+_strings['save light state as new scene'] = 9007
 _strings['delete scene'] = 9008
 _strings['select scene'] = 9009
 _strings['hue service'] = 30000
@@ -175,3 +171,13 @@ _strings['error: scene not created'] = 30025
 _strings['scene created'] = 30026
 _strings['are you sure you want to delete this scene: '] = 30027
 _strings['delete hue scene'] = 30028
+_strings['create a hue scene from current light state'] = 30029
+_strings['enter scene name'] = 30030
+_strings['transition time:'] = 30031
+_strings['fade time must be saved as part of the scene.'] = 30032
+_strings['{} secs.'] = 30033
+_strings['cancel'] = 30034
+_strings['lights:'] = 30035
+_strings['scene name:'] = 30036
+_strings['save'] = 30037
+_strings['create hue scene'] = 30038
