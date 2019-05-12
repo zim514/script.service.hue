@@ -120,8 +120,12 @@ def menu():
                 xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))    
     
     else:
+        
         #No command
-        ADDON.openSettings()
+        #ADDON.openSettings()
+        
+        
+        
         return
          
 

@@ -20,6 +20,9 @@ import globals
 import kodiutils
 from KodiGroup import KodiGroup
 
+import pyxbmct
+
+
 from kodiutils import notification, get_string
 
 
