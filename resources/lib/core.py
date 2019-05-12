@@ -21,6 +21,7 @@ import kodiHue
 import kodiutils
 import qhue
 from resources.lib.globals import NUM_GROUPS
+from resources.lib.CreateSceneUI import CreateSceneUI
 
 
 ADDON = xbmcaddon.Addon()
@@ -120,7 +121,7 @@ def menu():
                 xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))    
     
     else:
-        
+        sceneUI=CreateSceneUI()
         #No command
         #ADDON.openSettings()
         
