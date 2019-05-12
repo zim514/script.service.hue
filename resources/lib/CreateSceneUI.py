@@ -5,13 +5,20 @@ Created on May 12, 2019
 '''
 
 import logging
-import xbmcaddon
-import xbmc
 
-import globals
-from language import get_string as _
+import xbmc
+import xbmcaddon
+import xbmcgui
 
 import pyxbmct
+import qhue
+
+
+#import kodiHue
+from language import get_string as _
+
+
+
 
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(__name__)
@@ -22,15 +29,20 @@ class CreateSceneUI(pyxbmct.AddonDialogWindow):
     classdocs
     '''
 
-    def __init__(self):
+    def __init__(self,bridge=qhue.Bridge):
         '''
         Constructor
         '''
         xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
+        
+        self.bridge=bridge
+        self.hueLights=bridge.lights
+        
         super(CreateSceneUI, self).__init__(_("Create Hue Scene"))
         
         self.setGeometry(600, 500, 10, 4)
         self.setControls()
+        #self.populateLights()
         self.setNavigation()
         # self.set_info_controls()
         # self.set_active_controls()
@@ -52,10 +64,10 @@ class CreateSceneUI(pyxbmct.AddonDialogWindow):
         #####################
         self.placeControl(pyxbmct.Label(_("Scene Name:")), 2, 0,)
         
-        self.sceneName = pyxbmct.Edit('Scene Name')
+        self.sceneName = pyxbmct.Edit(_('Scene Name'))
         self.placeControl(self.sceneName, 3, 0,columnspan=2)
         # Additional properties must be changed after (!) displaying a control.
-        self.sceneName.setText('Enter text here')
+        self.sceneName.setText(_("Enter Scene Name"))
         
         
         ############ Transition Time
@@ -82,20 +94,23 @@ class CreateSceneUI(pyxbmct.AddonDialogWindow):
         
         
         #####
-        list_label = pyxbmct.Label(_("Lights:"))
-        self.placeControl(list_label, 2, 2)
+        #list_label = pyxbmct.Label(_("Lights:"))
+        self.placeControl(pyxbmct.Label(_("Lights:")), 2, 2)
         #
         self.list_item_label = pyxbmct.Label('', textColor='0xFF808080')
         self.placeControl(self.list_item_label, 4, 2)
         # List
-        self.list = pyxbmct.List()
-        self.placeControl(self.list, 3, 2, rowspan=6, columnspan=2)
+        self.listLights = pyxbmct.List()
+        self.placeControl(self.listLights, 3, 2, rowspan=6, columnspan=2)
         # Add items to the list
-        items = ['Item {0}'.format(i) for i in range(1, 8)]
-        self.list.addItems(items)
+        items = ['Item {0}'.format(i) for i in range(1, 15)]
+        
+        
+        
+        self.listLights.addItems(self.getLights())
         # Connect the list to a function to display which list item is selected.
-        self.connect(self.list, lambda: xbmc.executebuiltin('Notification(Note!,{0} selected.)'.format(
-            self.list.getListItem(self.list.getSelectedPosition()).getLabel())))
+        self.connect(self.listLights, lambda: xbmc.executebuiltin('Notification(Note!,{0} selected.)'.format(
+            self.listLights.getListItem(self.listLights.getSelectedPosition()).getLabel())))
         # Connect key and mouse events for list navigation feedback.
         self.connectEventList(
             [pyxbmct.ACTION_MOVE_DOWN,
@@ -106,9 +121,7 @@ class CreateSceneUI(pyxbmct.AddonDialogWindow):
             self.listUpdate)
         
         
-        self.buttonSelectLights = pyxbmct.Button(_('Select Lights'))
-        self.placeControl(self.buttonSelectLights, 8, 2,columnspan=2)
-        
+
         # Bottom Buttons
         
         self.buttonSave = pyxbmct.Button(_('Save'))
@@ -122,27 +135,41 @@ class CreateSceneUI(pyxbmct.AddonDialogWindow):
     def setNavigation(self):
         # Set navigation between controls
         self.sceneName.controlDown(self.transitionTimeSlider)
-        self.sceneName.controlRight(self.buttonSelectLights)
-        self.sceneName.controlRight(self.list)
-        
-        
+        self.sceneName.controlRight(self.listLights)
         
         self.transitionTimeSlider.controlUp(self.sceneName)
         self.transitionTimeSlider.controlDown(self.buttonSave)
         
-        
         self.buttonSave.controlUp(self.transitionTimeSlider)
         self.buttonSave.controlRight(self.buttonClose)
         
-        
         self.buttonClose.controlLeft(self.buttonSave)
-
 
         # Set initial focus
         self.setFocus(self.sceneName)            
 
 
-
+    def getLights(self):
+        
+        items=[]
+        index=[]
+        lights = {}
+        listItems=[]
+        hueLights = self.hueLights()
+        
+        for light in hueLights:
+            hLight=hueLights[light]
+            hLightName=hLight['name']
+            
+            #logger.debug("In selectHueGroup: {}, {}".format(hgroup,name))
+            lights[light] = xbmcgui.ListItem(label=str(hLightName))
+            listItems.append(xbmcgui.ListItem(label2=light,label=str(hLightName))  )
+            #index.append(light)
+            #items.append(xbmcgui.ListItem(label=hLightName))
+        
+        return listItems 
+        
+        
             
     def sliderUpdate(self):
         # Update slider value label when the slider nib moves
