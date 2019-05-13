@@ -123,6 +123,7 @@ def menu():
     else:
         bridge = kodiHue.connectBridge(monitor, silent=True)
         sceneUI=CreateSceneUI(bridge)
+        del sceneUI
         #No command
         #ADDON.openSettings()
         
