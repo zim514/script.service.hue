@@ -18,8 +18,8 @@
     <description lang="en_GB">Automate your Philips Hue lights with Kodi. Automatically change brightness, colour and state of your light groups when you start, pause or stop media, with flexible settings for each group.</description>
     <platform>all</platform>
     <assets>
-  		<icon>resources/icon.png</icon>
-  		<fanart>resources/fanart.jpg</fanart>
+  		<icon>resources/icons/icon.png</icon>
+  		<fanart>resources/icons/fanart.jpg</fanart>
   	</assets>
     <source>https://github.com/zim514/script.service.hue</source>
   </extension>

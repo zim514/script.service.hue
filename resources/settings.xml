@@ -12,13 +12,7 @@
         <setting id="reloadFlash" type="bool" label="5111" default="False" />
         <setting id="forceOnSunset" type="bool" label="9005" default="True" />
         <setting id="daylightDisable" type="bool" label="9006" default="True" />
-        
-<!--         
-        <setting type="sep" />
-        <setting id="createGroup" type="action" label="9003" action="RunScript(script.service.hue,createHueGroup)" />
-        <setting id="deleteGroup" type="action" label="9004" action="RunScript(script.service.hue,deleteHueGroup)" />
- -->           
-        
+     
         <setting type="sep" />
      
         <setting id="createScene" type="action" label="9007" action="RunScript(script.service.hue,createHueScene)" />
@@ -38,10 +32,7 @@
     <category label="32100">
         
      <!--  <setting type="lsep" label="6000" /> -->
-<!--  
-        <setting id="group0_hGroupName" type="text" label="6002"  default="Group 0" enable="False"/>
-        <setting id="group0_selectGroup" type="action" label="9002" action="RunScript(script.service.hue,groupSelect=0)" />
- -->
+
         <setting id="group0_enabled" type="bool" label="6201" default="false" />
         <setting id="group0_fadeTime" type="slider" label="6206"  range="0,1,20" default="10" subsetting="true" enable="eq(-1,true)" />
         <setting id="group0_forceOn" type="bool" label="6207"  default="false" subsetting="true" enable="eq(-2,true)" />
@@ -50,19 +41,19 @@
         <!--   Visible when group behaviour is Adjust -->
         <setting type="lsep" label="32201" visible="eq(-3,1)" /> 
         <setting id="group0_startBehavior" type="select" label="6201" lvalues="6202|6210|6204" visible="eq(-4,true)" />
-             <!-- Visible when group_event_start is Adjust (1) + group_behavior is Adjust (1)  -->
-            <setting id="group0_startSelectScene" type="action" label="32512" subsetting="true" action="RunScript(script.service.hue,sceneSelect,0,start)" visible="eq(-1,1) + eq(-5,true)" option="close"/>
-            <setting id="group0_startSceneName" type="text" label="32510"default="Not selected" subsetting="true" enable="false" visible="eq(-2,1) + eq(-6,true)" />
-            <setting id="group0_startSceneID" type="text" label="32511"  default="-1" subsetting="Not configured" enable="false" visible="eq(-3,1) + eq(-7,true)" />
-            
+        <!--HERE-->
+        <setting id="group0_startSelectScene" type="action" label="32512" subsetting="true" action="RunScript(script.service.hue,sceneSelect,0,start)" visible="eq(-1,1) + eq(-5,true)" option="close" />
+        <setting id="group0_startSceneName" type="text" label="32510" default="Not selected" subsetting="true" enable="false" visible="eq(-2,1) + eq(-6,true)" />
+        <setting id="group0_startSceneID" type="text" label="32511"  default="-1" subsetting="Not configured" enable="false" visible="eq(-3,1) + eq(-7,true)" />
+        
  	        
         <!--  Group playback pause setting -->
         <!--   Visible when group behaviour is Adjust -->
         <setting type="lsep" label="32202" visible="eq(-8,1)"/>   
         <setting id="group0_pauseBehavior" type="select" label="6201" lvalues="6202|6210|6204|6205" visible="eq(-9,true)" />
-	        <!-- Visible when group_event_start is Adjust (1) + group_behavior is Adjust (1)  -->           
+	    <!-- Visible when group_event_start is Adjust (1) + group_behavior is Adjust (1)  -->           
         <setting id="group0_pauseSelectScene" type="action" label="32512" subsetting="true" action="RunScript(script.service.hue,sceneSelect,0,pause)" visible="eq(-1,1) + eq(-10,true)" option="close"/>
-        <setting id="group0_pauseSceneName" type="text" label="32510"default="Not selected" subsetting="true" enable="false" visible="eq(-2,1) + eq(-11,true)" />
+        <setting id="group0_pauseSceneName" type="text" label="32510" default="Not selected" subsetting="true" enable="false" visible="eq(-2,1) + eq(-11,true)" />
         <setting id="group0_pauseSceneID" type="text" label="32511"  default="-1" subsetting="true" enable="false" visible="eq(-3,1) + eq(-12,true)" />
 
 
@@ -72,7 +63,7 @@
         <setting id="group0_stopBehavior" type="select" label="6201" lvalues="6202|6210|6204|6205" visible="eq(-14,true)"/>
         	<!-- Visible when group_event_start is Adjust (1) + group_behavior is Adjust (1)  -->
         <setting id="group0_stopSelectScene" type="action" label="32512" subsetting="true" action="RunScript(script.service.hue,sceneSelect,0,stop)" visible="eq(-1,1) + eq(-15,true)" option="close"/>
-        <setting id="group0_stopSceneName" type="text" label="32510"default="Not selected" subsetting="true" enable="false" visible="eq(-2,1) + eq(-16,true)" />
+        <setting id="group0_stopSceneName" type="text" label="32510" default="Not selected" subsetting="true" enable="false" visible="eq(-2,1) + eq(-16,true)" />
         <setting id="group0_stopSceneID" type="text" label="32511"  default="-1" subsetting="true" enable="false" visible="eq(-3,1) + eq(-17,true)" />
         	                  
       
@@ -80,46 +71,4 @@
     
 <!--  /GROUP SECTION  0-->   
 
-<!--Ambilight
-    <category label="3000">
-        
-        <setting type="lsep" label="3000" />
-
-        <!-- Global Setting
-        <setting type="lsep" label="3100" />
-        <setting id="ambilight_min" label="3110" type="slider" default="0" range="0,5,254" option="int" />
-        <setting id="ambilight_max" label="3120" type="slider" default="90" range="0,5,254" option="int" />
-
-        <setting id="ambilight_start_dim_enable" label="3130" type="bool" default="true" />
-
-        <!--Thresholds
-        <setting type="lsep" label="3200" />
-        <setting id="ambilight_threshold_value" label="3210" type="slider" default="0.25" range="0,0.01,1" option="float" />
-        <setting id="ambilight_threshold_saturation" label="3220" type="slider" default="0.33" range="0,0.01,1" option="float" />
-
-        <!--Color
-        <setting type="lsep" label="3300" />
-        <setting id="color_bias" label="3310" type="slider" default="18" range="6,3,36" option="int" />
-        <setting label="3320" type="lsep" subsetting="true" /> <!--Color Bias Explainer-->
-
-        <!-- Playback Start 
-        <setting type="lsep" label="3400" />
-        <setting id="ambilight_start_dim_override" label="3420" visible="eq(-8,true)" type="bool" default="false" />
-        <setting id="ambilight_start_dim" label="3430" visible="eq(-1,true)" type="slider" default="30" range="0,5,254" option="int" />
-
-        <!-- Playback Pause 
-        <setting type="lsep" label="3500" />
-        <setting id="ambilight_pause_bri_override" label="3510" visible="eq(-11,true)"  type="bool" default="false" />
-        <setting id="ambilight_pause_bri" label="3520" visible="eq(-1,true)" type="slider" default="150" range="0,5,254" option="int" />
-        
-        <!-- Playback Stop 
-        <setting type="lsep" label="3600" />
-        <setting id="ambilight_stop_bri_override" label="3610" visible="eq(-14,true)" type="bool" default="false" />
-        <setting id="ambilight_stop_bri" label="3620" visible="eq(-1,true)" type="slider" default="150" range="0,5,254" option="int" />
-    </category>
-
-
-
- --> 
 </settings>
-</xml>
