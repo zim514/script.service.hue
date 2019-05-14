@@ -10,4 +10,4 @@ install:
   - pip install kodi-addon-checker
 
 script:
-  - kodi-addon-checker --branch $BRANCH $ADDON_ID
+  - kodi-addon-checker --branch $BRANCH
