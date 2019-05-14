@@ -3,11 +3,11 @@ python: "3.6"
 
 env:
    - ADDON_ID=service.script.hue
-     BRANCH=leia
+     BRANCH=krypton
      
 # command to install dependencies
 install: 
   - pip install kodi-addon-checker
 
 script:
-  - kodi-addon-checker --branch $BRANCH $ADDON_ID
+  - kodi-addon-checker --branch $BRANCH
