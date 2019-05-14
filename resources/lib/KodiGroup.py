@@ -11,8 +11,9 @@ import xbmcaddon
 import globals
 from globals import forceOnSunset
 from kodiutils import get_setting, get_setting_as_bool, get_setting_as_int
-import kodiutils
-import qhue
+#import kodiutils
+#import qhue
+from qhue import QhueException
 
 
 BEHAVIOR_NOTHING = 0
@@ -116,7 +117,10 @@ class KodiGroup(xbmc.Player):
                     if self.forceOn or globals.forceOnSunset:
                         self.groupResource.action(scene=self.startScene,transitiontime=self.fadeTime,on=True)
                     else:
-                        self.groupResource.action(scene=self.startScene,transitiontime=self.fadeTime)  
+                        try:
+                            self.groupResource.action(scene=self.startScene,transitiontime=self.fadeTime)
+                        except QhueException as e:
+                            logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))  
                         
                 elif self.startBehavior == BEHAVIOR_OFF:
                     self.groupResource.action(on=False,transitiontime=self.fadeTime)
@@ -132,7 +136,11 @@ class KodiGroup(xbmc.Player):
                     if self.forceOn:
                         self.groupResource.action(scene=self.stopScene,transitiontime=self.fadeTime,on=True)
                     else:
-                        self.groupResource.action(scene=self.stopScene,transitiontime=self.fadeTime)  
+                        try:
+                            self.groupResource.action(scene=self.stopScene,transitiontime=self.fadeTime)
+                        except QhueException as e:
+                            logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))
+                            
                         
                 elif self.stopBehavior == BEHAVIOR_OFF:
                     self.groupResource.action(on=False,transitiontime=self.fadeTime)
@@ -151,7 +159,10 @@ class KodiGroup(xbmc.Player):
                     if self.forceOn:
                         self.groupResource.action(scene=self.pauseScene,transitiontime=self.fadeTime,on=True)
                     else:
-                        self.groupResource.action(scene=self.pauseScene,transitiontime=self.fadeTime)  
+                        try:
+                            self.groupResource.action(scene=self.pauseScene,transitiontime=self.fadeTime)
+                        except QhueException as e:
+                            logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))  
                         
                 elif self.startBehavior == BEHAVIOR_OFF:
                     self.groupResource.action(on=False,transitiontime=self.fadeTime)
