@@ -122,7 +122,7 @@ class KodiGroup(xbmc.Player):
                         self.groupResource.action(sat=self.startSaturation,hue=self.startHue,bri=self.startBrightness,transitiontime=self.fadeTime,on=True)
                     else:
                         try:
-                            self.groupResource.action(scene=self.startScene,transitiontime=self.fadeTime)
+                            self.groupResource.action(sat=self.startSaturation,hue=self.startHue,bri=self.startBrightness,transitiontime=self.fadeTime)
                         except QhueException as e:
                             logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))  
                         
@@ -141,7 +141,7 @@ class KodiGroup(xbmc.Player):
                         self.groupResource.action(sat=self.stopSaturation,hue=self.stopHue,bri=self.stopBrightness,transitiontime=self.fadeTime,on=True)
                     else:
                         try:
-                            self.groupResource.action(scene=self.stopScene,transitiontime=self.fadeTime)
+                            self.groupResource.action(sat=self.stopSaturation,hue=self.stopHue,bri=self.stopBrightness,transitiontime=self.fadeTime)
                         except QhueException as e:
                             logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))
                             
@@ -164,7 +164,7 @@ class KodiGroup(xbmc.Player):
                         self.groupResource.action(sat=self.pauseSaturation,hue=self.pauseHue,bri=self.pauseBrightness,transitiontime=self.fadeTime,on=True)
                     else:
                         try:
-                            self.groupResource.action(scene=self.pauseScene,transitiontime=self.fadeTime)
+                            self.groupResource.action(sat=self.pauseSaturation,hue=self.pauseHue,bri=self.pauseBrightness,transitiontime=self.fadeTime)
                         except QhueException as e:
                             logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))  
                         
