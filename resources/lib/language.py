@@ -14,8 +14,8 @@ if __name__ == "__main__":
     
     import polib
 
-    print "PATH: {}".format(sys.path)
-    print "executable: " + sys.executable
+    print("PATH: {}".format(sys.path))
+    print("executable: " + sys.executable)
     
     dirpath = os.getcwd()
     print("current directory is : " + dirpath)
@@ -24,48 +24,36 @@ if __name__ == "__main__":
     
     file = "..\\language\\resource.language.en_GB\\strings.po"
     
-    print "input file: " + file
+    print("input file: " + file)
     
     po = polib.pofile(file)
     
     try:
         import re, subprocess
         command = ["grep", "-hnr", "_([\'\"]", "..\\.."]
-        print "grep command: {}".format(command)
+        print("grep command: {}".format(command))
         r = subprocess.check_output(command)
         
         
-        print r
+        print(r)
         
         
         strings = re.compile("_\([\"'](.*?)[\"']\)", re.IGNORECASE).findall(r)
         translated = [m.msgid.lower().replace("'", "\\'") for m in po]
         missing = set([s for s in strings if s.lower() not in translated])
         
-        #=======================================================================
-        # print "R: #################"
-        # print r
-        # print "Strings: ##########################"
-        # print strings
-        # print "translateD: ##########################"
-        # print translated
-        # print "missing: ##########################"
-        # print missing
-        # 
-        #=======================================================================
-        
         if missing:
             ids_range = range(30000, 31000)
             ids_reserved = [int(m.msgctxt[1:]) for m in po]
             ids_available = [x for x in ids_range if x not in ids_reserved]
-            print "WARNING: missing translation for '%s'" % missing
+            print("WARNING: missing translation for '%s'" % missing)
             for text in missing:
                 id = ids_available.pop(0)
                 entry = polib.POEntry(msgid=text, msgstr=u'', msgctxt="#{0}".format(id))
                 po.append(entry)
             po.save(file)
     except Exception as e:
-        print e
+        print(e)
     content = []
     with open(__file__, "r") as me:
         content = me.readlines()

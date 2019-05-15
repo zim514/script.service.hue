@@ -11,8 +11,9 @@ import xbmcaddon
 import globals
 from globals import forceOnSunset
 from kodiutils import get_setting, get_setting_as_bool, get_setting_as_int
-import kodiutils
-import qhue
+#import kodiutils
+#import qhue
+from qhue import QhueException
 
 
 BEHAVIOR_NOTHING = 0
@@ -120,7 +121,10 @@ class KodiGroup(xbmc.Player):
                     if self.forceOn or globals.forceOnSunset:
                         self.groupResource.action(sat=self.startSaturation,hue=self.startHue,bri=self.startBrightness,transitiontime=self.fadeTime,on=True)
                     else:
-                        self.groupResource.action(sat=self.startSaturation,hue=self.startHue,bri=self.startBrightness,transitiontime=self.fadeTime)  
+                        try:
+                            self.groupResource.action(sat=self.startSaturation,hue=self.startHue,bri=self.startBrightness,transitiontime=self.fadeTime)
+                        except QhueException as e:
+                            logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))  
                         
                 elif self.startBehavior == BEHAVIOR_OFF:
                     self.groupResource.action(on=False,transitiontime=self.fadeTime)
@@ -136,7 +140,11 @@ class KodiGroup(xbmc.Player):
                     if self.forceOn:
                         self.groupResource.action(sat=self.stopSaturation,hue=self.stopHue,bri=self.stopBrightness,transitiontime=self.fadeTime,on=True)
                     else:
-                        self.groupResource.action(sat=self.stopSaturation,hue=self.stopHue,bri=self.stopBrightness,transitiontime=self.fadeTime)  
+                        try:
+                            self.groupResource.action(sat=self.stopSaturation,hue=self.stopHue,bri=self.stopBrightness,transitiontime=self.fadeTime)
+                        except QhueException as e:
+                            logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))
+                            
                         
                 elif self.stopBehavior == BEHAVIOR_OFF:
                     self.groupResource.action(on=False,transitiontime=self.fadeTime)
@@ -155,7 +163,10 @@ class KodiGroup(xbmc.Player):
                     if self.forceOn:
                         self.groupResource.action(sat=self.pauseSaturation,hue=self.pauseHue,bri=self.pauseBrightness,transitiontime=self.fadeTime,on=True)
                     else:
-                        self.groupResource.action(sat=self.pauseSaturation,hue=self.pauseHue,bri=self.pauseBrightness,transitiontime=self.fadeTime)  
+                        try:
+                            self.groupResource.action(sat=self.pauseSaturation,hue=self.pauseHue,bri=self.pauseBrightness,transitiontime=self.fadeTime)
+                        except QhueException as e:
+                            logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))  
                         
                 elif self.startBehavior == BEHAVIOR_OFF:
                     self.groupResource.action(on=False,transitiontime=self.fadeTime)
