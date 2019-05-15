@@ -197,7 +197,10 @@ class KodiGroup(xbmc.Player):
             elif self.state == STATE_PAUSED:
                 self.onPlayBackPaused()
             elif self.state == STATE_IDLE:
-                self.onPlayBackStopped()
+                #self.onPlayBackStopped()
+                #if not playing and sunset happens, probably should do nothing.
+                logger.debug("In KodiGroup[{}], in sunset(). playback stopped, doing nothing. ".format(self.kgroupID))                
+                pass
                 
             self.forceOn = previousForce
                 
