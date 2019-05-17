@@ -12,7 +12,7 @@ daylightDisable = True
 
 NUM_GROUPS = 1
 
-STRDEBUG = True
+STRDEBUG = False
 
 DEBUG = False
 REMOTE_DBG_SUSPEND = False

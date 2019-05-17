@@ -201,8 +201,8 @@ msgid "Delete Hue Group..."
 msgstr "Delete Hue Group..."
 
 msgctxt "#9005"
-msgid "Force on after sunset"
-msgstr "Force on after sunset"
+msgid "Activate during playback at sunset"
+msgstr "Activate during playback at sunset"
 
 msgctxt "#9006"
 msgid "Disable during daytime"

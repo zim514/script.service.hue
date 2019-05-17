@@ -111,16 +111,13 @@ class KodiGroup(xbmc.Player):
             if self.enabled and not (globals.daylightDisable == globals.daylight) :
                 
                 if self.startBehavior == BEHAVIOR_ADJUST:
-                    if self.forceOn or globals.forceOnSunset:
-                        self.groupResource.action(scene=self.startScene,transitiontime=self.fadeTime,on=True)
-                    else:
-                        try:
-                            self.groupResource.action(scene=self.startScene,transitiontime=self.fadeTime)
-                        except QhueException as e:
-                            logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))  
+                    try:
+                        self.groupResource.action(scene=self.startScene)
+                    except QhueException as e:
+                        logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))  
                         
                 elif self.startBehavior == BEHAVIOR_OFF:
-                    self.groupResource.action(on=False,transitiontime=self.fadeTime)
+                    self.groupResource.action(on=False)
                 
             
         def onPlayBackStopped(self):
@@ -130,17 +127,14 @@ class KodiGroup(xbmc.Player):
             if self.enabled and not (globals.daylightDisable == globals.daylight):
                 
                 if self.stopBehavior == BEHAVIOR_ADJUST:
-                    if self.forceOn:
-                        self.groupResource.action(scene=self.stopScene,transitiontime=self.fadeTime,on=True)
-                    else:
-                        try:
-                            self.groupResource.action(scene=self.stopScene,transitiontime=self.fadeTime)
-                        except QhueException as e:
-                            logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))
+                    try:
+                        self.groupResource.action(scene=self.stopScene)
+                    except QhueException as e:
+                        logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))
                             
                         
                 elif self.stopBehavior == BEHAVIOR_OFF:
-                    self.groupResource.action(on=False,transitiontime=self.fadeTime)
+                    self.groupResource.action(on=False)
                     
                 elif self.stopBehavior == BEHAVIOR_INITIAL:
                     self.applyInitialState()
@@ -153,16 +147,13 @@ class KodiGroup(xbmc.Player):
             if self.enabled and not (globals.daylightDisable == globals.daylight):
                 
                 if self.pauseBehavior == BEHAVIOR_ADJUST:
-                    if self.forceOn:
-                        self.groupResource.action(scene=self.pauseScene,transitiontime=self.fadeTime,on=True)
-                    else:
-                        try:
-                            self.groupResource.action(scene=self.pauseScene,transitiontime=self.fadeTime)
-                        except QhueException as e:
-                            logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))  
+                    try:
+                        self.groupResource.action(scene=self.pauseScene)
+                    except QhueException as e:
+                        logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))  
                         
                 elif self.startBehavior == BEHAVIOR_OFF:
-                    self.groupResource.action(on=False,transitiontime=self.fadeTime)
+                    self.groupResource.action(on=False)
                     
                 elif self.startBehavior == BEHAVIOR_INITIAL:
                     self.applyInitialState()
