@@ -2,7 +2,7 @@
 import os
 import sys
 
-import globals
+from . import globals
 
 
 ######### Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
@@ -52,7 +52,7 @@ if __name__ == "__main__":
                 po.append(entry)
             po.save(file)
     except Exception as e:
-    content = []
+        content = []
     with open(__file__, "r") as me:
         content = me.readlines()
         content = content[:content.index("#GENERATED\n") + 1]
