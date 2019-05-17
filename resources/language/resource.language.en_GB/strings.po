@@ -17,20 +17,20 @@ msgid "Light Groups"
 msgstr "Light Groups"
 
 msgctxt "#32100"
-msgid "Playback Actions"
-msgstr "Playback Actions"
+msgid "Player Actions"
+msgstr "Player Actions"
 
 msgctxt "#32201"
-msgid "Start/Resume Media"
-msgstr "Start/Resume Media"
+msgid "Start/Resume Video"
+msgstr "Start/Resume Video"
 
 msgctxt "#32202"
-msgid "Pause Media"
-msgstr "Pause Media"
+msgid "Pause Video"
+msgstr "Pause Video"
 
 msgctxt "#32203"
-msgid "Stop Media"
-msgstr "Stop Media"
+msgid "Stop Video"
+msgstr "Stop Video"
 
 msgctxt "#32510"
 msgid "Scene Name"
@@ -79,18 +79,6 @@ msgstr "Initial flash"
 msgctxt "#5111"
 msgid "Flash on settings reload"
 msgstr "Flash on settings reload"
-
-msgctxt "#5120"
-msgid "Disable for short movies"
-msgstr "Disable for short movies"
-
-msgctxt "#5130"
-msgid "Short Movie Threshold (seconds)"
-msgstr "Short Movie Threshold (seconds)"
-
-msgctxt "#5140"
-msgid "Force Light(s) on (even if off)"
-msgstr "Force Light(s) on (even if off)"
 
 msgctxt "#6000"
 msgid "Group"
@@ -153,8 +141,8 @@ msgid "Fade Time"
 msgstr "Fade Time"
 
 msgctxt "#6207"
-msgid "Force on"
-msgstr "Force on"
+msgid "Always force on"
+msgstr "Always force on"
 
 msgctxt "#6208"
 msgid "Hue group"
@@ -213,16 +201,16 @@ msgid "Delete Hue Group..."
 msgstr "Delete Hue Group..."
 
 msgctxt "#9005"
-msgid "Force on at sunset"
-msgstr "Force on at sunset"
+msgid "Force on after sunset"
+msgstr "Force on after sunset"
 
 msgctxt "#9006"
 msgid "Disable during daytime"
 msgstr "Disable during daytime"
 
 msgctxt "#9007"
-msgid "Save light state as new Scene"
-msgstr "Save light state as new Scene"
+msgid "Create Scene"
+msgstr "Create Scene"
 
 msgctxt "#9008"
 msgid "Delete Scene"
@@ -239,10 +227,6 @@ msgstr "Hue Service"
 msgctxt "#30001"
 msgid "ERROR: Group not created"
 msgstr "ERROR: Group not created"
-
-msgctxt "#30002"
-msgid "Localized notification"
-msgstr "Localized notification"
 
 msgctxt "#30003"
 msgid "Group deleted"
@@ -386,4 +370,41 @@ msgstr ""
 
 msgctxt "#30038"
 msgid "Create Hue Scene"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Error: Scene not created."
+msgstr ""
+
+msgctxt "#30039"
+msgid ""
+"Set a fade time in seconds, or set to 0 seconds for an instant transition."
+msgstr ""
+
+msgctxt "#30040"
+msgid "Scene deleted"
+msgstr ""
+
+msgctxt "#30041"
+msgid "You may now assign your Scene to player actions."
+msgstr ""
+
+msgctxt "#30042"
+msgid "Fade Time (Seconds)"
+msgstr ""
+
+msgctxt "#30043"
+msgid "Error"
+msgstr ""
+
+msgctxt "#30044"
+msgid "Create New Scene"
+msgstr ""
+
+msgctxt "#30045"
+msgid "Scene successfully created!"
+msgstr ""
+
+msgctxt "#30046"
+msgid "Adjust lights to desired state in the Hue App to save as new scene."
 msgstr ""
