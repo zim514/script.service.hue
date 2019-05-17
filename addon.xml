@@ -5,11 +5,11 @@
     <import addon="script.module.requests" />
   </requires>
   
-   
+  <extension  point="xbmc.service" name="service.hue" library="service.py" /> 
   <extension  point="xbmc.python.script" library="default.py">
   	<provides>executable</provides>
   </extension>
-  <extension  point="xbmc.service" name="service.hue" library="service.py" />
+  
   
   <extension point="xbmc.addon.metadata">
   
