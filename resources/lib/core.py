@@ -2,25 +2,23 @@
 
 import logging
 import sys
-import json
-from threading import Event
 
-import xbmc
+
+
 import xbmcaddon
-from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_WARNING, NOTIFICATION_INFO
+#from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_WARNING, NOTIFICATION_INFO
 import xbmcgui
 
 
-from resources.lib.qhue import QhueException
+#from .qhue import QhueException
 from language import get_string as _
 
 
-from KodiGroup import KodiGroup
-import globals
-import kodiHue
-import kodiutils
-import qhue
-from resources.lib.globals import NUM_GROUPS
+from . import globals
+from . import KodiGroup
+from . import kodiHue
+from . import kodiutils
+
 from resources.lib.CreateSceneUI import CreateSceneUI
 
 

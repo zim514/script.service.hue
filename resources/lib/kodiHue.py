@@ -3,34 +3,22 @@ Created on Apr. 12, 2019
 
 
 '''
-import sys
+
 import logging
 import requests
 from socket import getfqdn
 
 
-
-import globals
-
 import xbmc
 import xbmcaddon
 import xbmcgui
 from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
-import globals
-import kodiutils
-from KodiGroup import KodiGroup
 
-import pyxbmct
-
-
-from kodiutils import notification, get_string
-
-
-
-
-from resources.lib import globals
-from resources.lib.qhue import qhue,QhueException,Bridge
-from language import get_string as _
+from . import globals
+from . import kodiutils
+from . import KodiGroup
+from . import qhue
+from .language import get_string as _
 
 
 ADDON = xbmcaddon.Addon()
@@ -166,7 +154,7 @@ def bridgeDiscover(monitor):
        
 def connectionTest(bridgeIP):
     logger.debug("in ConnectionTest() Attempt initial connection")
-    b = qhue.Resource("http://{}/api".format(bridgeIP))
+    b = qhue.qhue.Resource("http://{}/api".format(bridgeIP))
     try:
         apiversion = b.config()['apiversion']
     except:
@@ -185,7 +173,7 @@ def connectionTest(bridgeIP):
 
 def userTest(bridgeIP,bridgeUser):
     logger.debug("in ConnectionTest() Attempt initial connection")
-    b = Bridge(bridgeIP,bridgeUser)
+    b = qhue.Bridge(bridgeIP,bridgeUser)
     try:
         zigbeechan = b.config()['zigbeechannel']
     except:
@@ -399,7 +387,7 @@ def setupGroups(bridge,flash=False):
     g=0
     while g < globals.NUM_GROUPS:
         if kodiutils.get_setting_as_bool("group{}_enabled".format(g)):
-            kgroups.append(KodiGroup())
+            kgroups.append(KodiGroup.KodiGroup())
             kgroups[g].setup(bridge, g, flash)  
         g = g + 1
         
