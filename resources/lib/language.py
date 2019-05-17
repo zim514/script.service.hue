@@ -2,6 +2,8 @@
 import os
 import sys
 
+import globals
+
 
 ######### Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
 ######### https://forum.kodi.tv/showthread.php?tid=268081&highlight=generate+.po+python+gettext
@@ -72,7 +74,7 @@ else:
             xbmc.log("LANGUAGE: missing translation for '%s'" % t.lower())
             return t
         else:
-            if globals.DEBUG is True:
+            if globals.STRDEBUG is True:
                 return  "STR:{} {}".format(id,ADDON.getLocalizedString(id))
             else:
                 return ADDON.getLocalizedString(id)
