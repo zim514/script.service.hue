@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
-import sys
 
 import xbmcaddon
 
 from resources.lib import kodilogging
 from resources.lib import core
 from resources.lib import globals
-
 
 
 # Keep this file to a minimum, as Kodi
@@ -27,8 +25,6 @@ if globals.DEBUG:
     # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
     
     try:
-
-        sys.path.append('e:\dev\pysrc')
         import threading
         import pydevd
 
@@ -39,7 +35,7 @@ if globals.DEBUG:
     except ImportError:
         logger.debug("Kodi Hue Remote Debug Error: " + 
                          "You must add org.python.pydev.debug.pysrc to your PYTHONPATH, or disable REMOTE_DBG")
-        sys.exit(1)
+        exit(1)
 
 
 core.service()
@@ -47,6 +43,3 @@ core.service()
 logger.debug("'%s' shutting down service" % ADDONID)
 if globals.DEBUG is True:
     pydevd.stoptrace()
-
-
-

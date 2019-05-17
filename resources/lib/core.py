@@ -19,8 +19,6 @@ from . import KodiGroup
 from . import kodiHue
 from . import kodiutils
 
-from resources.lib.CreateSceneUI import CreateSceneUI
-
 
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(__name__)

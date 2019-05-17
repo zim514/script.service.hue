@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-import sys
 
 import xbmcaddon
 
@@ -27,8 +26,6 @@ if globals.DEBUG:
     # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
     
     try:
-
-        sys.path.append('e:\dev\pysrc')
         import threading
         import pydevd
 
@@ -39,9 +36,7 @@ if globals.DEBUG:
     except ImportError:
         logger.debug("Kodi Hue Remote Debug Error: " + 
                          "You must add org.python.pydev.debug.pysrc to your PYTHONPATH, or disable REMOTE_DBG")
-        sys.exit(1)
-
-
+        exit(1)
 
 core.menu()
 logger.debug("'%s' shutting down menu" % ADDONID)
