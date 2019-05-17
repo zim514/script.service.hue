@@ -42,7 +42,7 @@ if __name__ == "__main__":
         missing = set([s for s in strings if s.lower() not in translated])
         
         if missing:
-            ids_range = range(30000, 31000)
+            ids_range = list(range(30000, 31000))
             ids_reserved = [int(m.msgctxt[1:]) for m in po]
             ids_available = [x for x in ids_range if x not in ids_reserved]
             print("WARNING: adding missing translation for '%s'" % missing)
