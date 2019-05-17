@@ -119,13 +119,11 @@ def menu():
                 xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))    
     
     else:
-        bridge = kodiHue.connectBridge(monitor, silent=True)
-        sceneUI=CreateSceneUI(bridge)
-        del sceneUI
+        #bridge = kodiHue.connectBridge(monitor, silent=True)
+        #sceneUI=CreateSceneUI(bridge)
+        #del sceneUI
         #No command
-        #ADDON.openSettings()
-        
-        
+        ADDON.openSettings()
         
         return
          

@@ -56,16 +56,24 @@ def deleteHueGroup(bridge):
 def createHueScene(bridge):
     logger.debug("In kodiHue createHueScene")
     scenes=bridge.scenes
-    sceneName = xbmcgui.Dialog().input("Scene Name")
-    if sceneName:              
+    
+    xbmcgui.Dialog().ok(_("Create New Scene"),_("Adjust lights to desired state in the Hue App to save as new scene."),
+                        _("Set a fade time in seconds, or set to 0 seconds for an instant transition."))
+    
+    sceneName = xbmcgui.Dialog().input(_("Scene Name"))
+    
+    if len(sceneName) > 0:
+        transitionTime= xbmcgui.Dialog().numeric(0,_("Fade Time (Seconds)"),defaultt="10")
         selected = selectHueLights(bridge)
+        
         if selected:
-            res=scenes(lights=selected,name=sceneName,recycle=False,type='LightScene',http_method='post')
+            res=scenes(lights=selected,name=sceneName,recycle=False,type='LightScene',http_method='post',transitiontime=int(transitionTime)*10) #Hue API transition time is in 100msec. *10 to convert to seconds.
             logger.debug("In kodiHue createHueScene. Res:".format(res))
             if res[0]["success"]:
-                xbmcgui.Dialog().notification(_("Hue Service"), _("Scene Created"))
+                xbmcgui.Dialog().ok(_("Create New Scene"),_("Scene successfully created!"),_("You may now assign your Scene to player actions."))   
+            #   xbmcgui.Dialog().notification(_("Hue Service"), _("Scene Created"))
             else:
-                xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not created"))
+                xbmcgui.Dialog().ok(_("Error"),_("Error: Scene not created."))
     
 
 def deleteHueScene(bridge):
@@ -78,9 +86,9 @@ def deleteHueScene(bridge):
         res=scenes[scene[0]](http_method='delete')
         logger.debug("In kodiHue createHueGroup. Res:".format(res))
         if res[0]["success"]:
-            xbmcgui.Dialog().notification(_("Hue Service"), _("Group deleted"))
+            xbmcgui.Dialog().notification(_("Hue Service"), _("Scene deleted"))
         else:
-            xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Group not created"))
+            xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not created"))
 
 
 
