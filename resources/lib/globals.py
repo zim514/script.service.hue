@@ -14,7 +14,7 @@ NUM_GROUPS = 1
 
 STRDEBUG = True
 
-DEBUG = True
+DEBUG = False
 REMOTE_DBG_SUSPEND = False
 
 
