@@ -8,12 +8,9 @@ import logging
 import xbmc
 import xbmcaddon
 
-import globals
-from globals import forceOnSunset
-from kodiutils import get_setting, get_setting_as_bool, get_setting_as_int
-#import kodiutils
-#import qhue
-from qhue import QhueException
+from . import globals
+from .kodiutils import get_setting, get_setting_as_bool, get_setting_as_int
+from .qhue import QhueException
 
 
 BEHAVIOR_NOTHING = 0

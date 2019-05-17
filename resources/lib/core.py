@@ -11,7 +11,7 @@ import xbmcgui
 
 
 #from .qhue import QhueException
-from language import get_string as _
+from .language import get_string as _
 
 
 from . import globals
