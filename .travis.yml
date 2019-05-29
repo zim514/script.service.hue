@@ -10,4 +10,24 @@ install:
   - pip install kodi-addon-checker
 
 script:
-  - kodi-addon-checker --branch $BRANCH
+  - kodi-addon-checker --branch $BRANCH $ADDON_ID
+ 
+before_deploy:
+  - pip install -q git+https://github.com/romanvm/kodi-addon-submitter.git
+  - submit-addon -z $ADDON_ID
+  - export RELEASE_ZIP=$(ls *.zip)
+
+
+#deploy:
+#  - provider: releases
+#    api_key: $GH_TOKEN
+#    file_glob: true
+#    file: $RELEASE_ZIP
+#    skip_cleanup: true
+#    on:
+#      tags: true
+#  - provider: script
+#    script: submit-addon -r repo-scripts -b $BRANCH -s --pull-request $ADDON_ID
+#    on:
+#      tags: true 
+ 
