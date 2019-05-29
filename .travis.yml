@@ -2,7 +2,7 @@ language:  python
 python: "3.6"
 
 env:
-   - ADDON_ID=service.script.hue
+   - ADDON_ID=script.service.hue
      BRANCH=krypton
      
 # command to install dependencies
