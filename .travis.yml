@@ -7,7 +7,7 @@ branches:
 
 env:
    - ADDON_ID=script.service.hue
-     BRANCH=krypton
+     BRANCH=leia
      
 # command to install dependencies
 install: 
@@ -17,8 +17,8 @@ script:
   - kodi-addon-checker --branch $BRANCH $ADDON_ID
  
 before_deploy:
-  - pip install -q git+https://github.com/romanvm/kodi-addon-submitter.git
-  - submit-addon -z $ADDON_ID
+  - pip install  git+https://github.com/romanvm/kodi-addon-submitter.git
+  - submit-addon -s -z $ADDON_ID
   - export RELEASE_ZIP=$(ls *.zip)
 
 
