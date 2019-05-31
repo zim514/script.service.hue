@@ -2,6 +2,7 @@
 import logging
 
 import xbmcaddon
+from xbmc import getInfoLabel
 
 from resources.lib import kodilogging
 from resources.lib import core
@@ -16,7 +17,7 @@ ADDONVERSION = ADDON.getAddonInfo('version')
 kodilogging.config()
 logger = logging.getLogger(__name__)
 
-logger.debug("Loading '%s' version '%s'" % (ADDONID, ADDONVERSION))
+logger.debug("Loading {} version {}, Kodi: {}".format(ADDONID, ADDONVERSION, getInfoLabel('System.BuildVersion') ) )
 
 
 if globals.DEBUG:
