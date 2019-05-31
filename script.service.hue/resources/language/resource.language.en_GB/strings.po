@@ -64,13 +64,60 @@ msgctxt "#2100"
 msgid "Global Settings"
 msgstr "Global Settings"
 
-msgctxt "#5000"
+msgctxt "#32101"
 msgid "Advanced"
 msgstr "Advanced"
 
-msgctxt "#5100"
-msgid "Misc. Settings"
-msgstr "Misc. Settings"
+msgctxt "#32102"
+msgid "Debug Logs"
+msgstr "Debug Logs"
+
+
+msgctxt "#32105"
+msgid "Log destination"
+msgstr "Log destination"
+
+msgctxt "#32106"
+msgid "Default (kodi.log)"
+msgstr "Default (kodi.log)"
+
+msgctxt "#32107"
+msgid "Separate (kodiHue.log)"
+msgstr "Separate (kodiHue.log)"
+
+
+msgctxt "#32108"
+msgid "Logging level"
+msgstr "Logging level"
+
+msgctxt "#32301"
+msgid "Debug"
+msgstr "Debug"
+
+msgctxt "#32302"
+msgid "Info"
+msgstr "Info"
+
+msgctxt "#32303"
+msgid "Notice"
+msgstr "Notice"
+
+msgctxt "#32304"
+msgid "Warning"
+msgstr "Warning"
+
+msgctxt "#32305"
+msgid "Error"
+msgstr "Error"
+
+msgctxt "#32306"
+msgid "Severe"
+msgstr "Severe"
+
+msgctxt "#32307"
+msgid "Fatal"
+msgstr "Fatal"
+
 
 msgctxt "#5110"
 msgid "Initial flash"
