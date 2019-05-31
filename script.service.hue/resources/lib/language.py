@@ -2,8 +2,6 @@
 import os
 import sys
 
-from . import globals
-
 
 ######### Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
 ######### https://forum.kodi.tv/showthread.php?tid=268081&highlight=generate+.po+python+gettext
@@ -99,8 +97,19 @@ _strings['discover hue bridge'] = 1210
 _strings['bridge ip'] = 1220
 _strings['bridge user'] = 1230
 _strings['global settings'] = 2100
-_strings['advanced'] = 5000
-_strings['misc. settings'] = 5100
+_strings['advanced'] = 32101
+_strings['debug logs'] = 32102
+_strings['log destination'] = 32105
+_strings['default (kodi.log)'] = 32106
+_strings['separate (kodihue.log)'] = 32107
+_strings['logging level'] = 32108
+_strings['debug'] = 32301
+_strings['info'] = 32302
+_strings['notice'] = 32303
+_strings['warning'] = 32304
+_strings['error'] = 32305
+_strings['severe'] = 32306
+_strings['fatal'] = 32307
 _strings['initial flash'] = 5110
 _strings['flash on settings reload'] = 5111
 _strings['group'] = 6000
@@ -133,7 +142,7 @@ _strings['press connect button on hue bridge'] = 9001
 _strings['select hue group...'] = 9002
 _strings['create hue group...'] = 9003
 _strings['delete hue group...'] = 9004
-_strings['force on after sunset'] = 9005
+_strings['activate during playback at sunset'] = 9005
 _strings['disable during daytime'] = 9006
 _strings['create scene'] = 9007
 _strings['delete scene'] = 9008
