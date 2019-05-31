@@ -30,9 +30,8 @@ deploy:
     skip_cleanup: true
     draft: true
     on:
-       all_branches: true
-#    on:
-#      tags: true
+      all_branches: true
+      tags: true
     
 #  - provider: script
 #    script: submit-addon -r repo-scripts -b $BRANCH -s --pull-request $ADDON_ID
