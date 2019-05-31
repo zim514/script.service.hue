@@ -1,36 +1,19 @@
 # -*- coding: utf-8 -*-
 import logging
-import sys
 
 import xbmcaddon
+from xbmc import getInfoLabel
 
+from resources.lib import globals
 from resources.lib import kodilogging
 from resources.lib import core
-from resources.lib import globals
-
-
-
-
-
-# Keep this file to a minimum, as Kodi
-# doesn't keep a compiled copy of this
-ADDON = xbmcaddon.Addon()
-ADDONID = ADDON.getAddonInfo('id')
-ADDONVERSION = ADDON.getAddonInfo('version')
 
 kodilogging.config()
 logger = logging.getLogger(__name__)
+logger.debug("Loading {} service.py, version {}, Kodi: {}".format(globals.ADDONID, globals.ADDONVERSION, globals.KODIVERSION ) )
 
-logger.debug("Loading '%s' version '%s'" % (ADDONID, ADDONVERSION))
-
-
-if globals.REMOTE_DBG:
-    # Make pydev debugger works for auto reload.
-    # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
-    
+if globals.DEBUG:
     try:
-
-        sys.path.append('e:\dev\pysrc')
         import threading
         import pydevd
 
@@ -41,10 +24,11 @@ if globals.REMOTE_DBG:
     except ImportError:
         logger.debug("Kodi Hue Remote Debug Error: " + 
                          "You must add org.python.pydev.debug.pysrc to your PYTHONPATH, or disable REMOTE_DBG")
-        sys.exit(1)
+        exit(1)
 
 
-core.service()
-logger.debug("'%s' shutting down service" % ADDONID)
+core.service() #Run Hue service
+logger.debug("'%s' shutting down service" % globals.ADDONID)
 
-
+if globals.DEBUG is True:
+    pydevd.stoptrace()

@@ -7,8 +7,6 @@ import logging
 import xbmc
 import xbmcaddon
 
-from kodiutils import get_setting_as_bool
-
 
 class KodiLogHandler(logging.StreamHandler):
 

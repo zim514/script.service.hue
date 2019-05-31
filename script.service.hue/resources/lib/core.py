@@ -2,31 +2,24 @@
 
 import logging
 import sys
-from threading import Event
 
-import xbmc
+
+
 import xbmcaddon
-from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_WARNING, NOTIFICATION_INFO
+#from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_WARNING, NOTIFICATION_INFO
 import xbmcgui
 
-from resources.lib.qhue import QhueException
-from language import get_string as _
+
+#from .qhue import QhueException
+from .language import get_string as _
 
 
+from . import globals
+from . import KodiGroup
+from . import kodiHue
+from . import kodiutils
 
-
-from KodiGroup import KodiGroup
-import globals
-import kodiHue
-import kodiutils
-import qhue
-from resources.lib.globals import NUM_GROUPS
-
-
-ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(__name__)
-connected = False
-settingsChanged = False
 
 
 
@@ -39,16 +32,16 @@ settingsChanged = False
 #===============================================================================
 
 
-
 def menu():
-    logger.debug("menu started, version: {}".format(ADDON.getAddonInfo('version')))
+    logger.debug("menu started, version: {}".format(globals.ADDON.getAddonInfo('version')))
     monitor = kodiHue.HueMonitor()
 
-    if len(sys.argv) == 2:
+    if len(sys.argv) >1:
         args = sys.argv[1]
     else: 
         args = ""
 
+    logger.debug("Argv {}".format(sys.argv))
     logger.debug("Args: {}".format(args))
 
     if args == "discover":
@@ -65,15 +58,16 @@ def menu():
             kodiHue.createHueGroup(bridge)
         else: 
             logger.debug("Menu() createGroup: No bridge")
+            xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
-
-    elif args == ("deleteHueGroup"):
+    elif args == "deleteHueGroup":
         logger.debug("Started with deleteGroup.")
         bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
         if bridge:
             kodiHue.deleteHueGroup(bridge)
         else:
             logger.debug("No bridge found. deleteGroup cancelled.")
+            xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif args.startswith("groupSelect"):
         kgroup = args.split("=", 1)[1]
@@ -84,43 +78,58 @@ def menu():
             kodiHue.configureGroup(bridge, kgroup)
         else:
             logger.debug("No bridge found. Select group cancelled.")
+            xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
     
+    elif args == "createHueScene":
+        logger.debug("Started with {}".format(args))
+        bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
+        if bridge:
+            kodiHue.createHueScene(bridge)
+        else:
+            logger.debug("No bridge found. createHueScene cancelled.")
+            xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+        
+    elif args == "deleteHueScene":
+        logger.debug("Started with {}".format(args))
+
+        bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
+        if bridge:
+            kodiHue.deleteHueScene(bridge)
+        else:
+            logger.debug("No bridge found. deleteHueScene cancelled.")
+            xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+    
+    elif args == "sceneSelect": # sceneSelect=kgroup,action  / sceneSelect=0,play
+            kgroup = sys.argv[2] 
+            action = sys.argv[3]
+            logger.debug("Started with {}, kgroup: {}, kaction: {}".format(args, kgroup, action))
+            
+            bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
+            if bridge:
+                kodiHue.configureScene(bridge, kgroup, action)
+                
+                #TODO: save selection
+            else:
+                logger.debug("No bridge found. sceneSelect cancelled.")
+                xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))    
     
     else:
-        ADDON.openSettings()
+        #bridge = kodiHue.connectBridge(monitor, silent=True)
+        #sceneUI=CreateSceneUI(bridge)
+        #del sceneUI
+        #No command
+        globals.ADDON.openSettings()
+        
         return
          
-    
-    
-    
 
-
-##################################################
-# # RUN
-###################
 def service():
-    logger.debug(" service started, version: {}".format(ADDON.getAddonInfo('version')))
+    logger.debug(" service started, version: {}".format(globals.ADDON.getAddonInfo('version')))
     monitor = kodiHue.HueMonitor()
     
     initialFlash = kodiutils.get_setting_as_bool("initialFlash")
     globals.forceOnSunset = kodiutils.get_setting_as_bool("forceOnSunset")
     globals.daylightDisable = kodiutils.get_setting_as_bool("daylightDisable")
-    
-    #===========================================================================
-    # bridgeIP = ""
-    # bridgeUser = ""
-    #===========================================================================
-#===============================================================================
-# 
-#     if len(sys.argv) == 2:
-#         args = sys.argv[1]
-#     else: 
-#         args = ""
-#     
-#     logger.debug("Args: {}".format(args))
-#===============================================================================
-
-
 
     bridge = kodiHue.connectBridge(monitor,silent=False)
             
@@ -158,7 +167,6 @@ def service():
                 
                 logger.debug('Service running...')
                 timer = 1
-                
 
             
             monitor.waitForAbort(1)

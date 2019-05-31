@@ -3,34 +3,25 @@ Created on Apr. 12, 2019
 
 
 '''
-import sys
+
 import logging
 import requests
 from socket import getfqdn
 
-import globals
 
 import xbmc
 import xbmcaddon
 import xbmcgui
 from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
-import globals
-import kodiutils
-from KodiGroup import KodiGroup
 
-from kodiutils import notification, get_string
-
-
-
-
-from resources.lib import globals
-from resources.lib.qhue import qhue,QhueException,Bridge
-from language import get_string as _
+from . import globals
+from . import kodiutils
+from . import KodiGroup
+from . import qhue
+from .language import get_string as _
 
 
 
-
-ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(__name__)
 
 def createHueGroup(bridge):
@@ -62,8 +53,44 @@ def deleteHueGroup(bridge):
             xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Group not created"))
 
             
-        
+def createHueScene(bridge):
+    logger.debug("In kodiHue createHueScene")
+    scenes=bridge.scenes
     
+    xbmcgui.Dialog().ok(_("Create New Scene"),_("Adjust lights to desired state in the Hue App to save as new scene."),
+                        _("Set a fade time in seconds, or set to 0 seconds for an instant transition."))
+    
+    sceneName = xbmcgui.Dialog().input(_("Scene Name"))
+    
+    if len(sceneName) > 0:
+        transitionTime= xbmcgui.Dialog().numeric(0,_("Fade Time (Seconds)"),defaultt="10")
+        selected = selectHueLights(bridge)
+        
+        if selected:
+            res=scenes(lights=selected,name=sceneName,recycle=False,type='LightScene',http_method='post',transitiontime=int(transitionTime)*10) #Hue API transition time is in 100msec. *10 to convert to seconds.
+            logger.debug("In kodiHue createHueScene. Res:".format(res))
+            if res[0]["success"]:
+                xbmcgui.Dialog().ok(_("Create New Scene"),_("Scene successfully created!"),_("You may now assign your Scene to player actions."))   
+            #   xbmcgui.Dialog().notification(_("Hue Service"), _("Scene Created"))
+            else:
+                xbmcgui.Dialog().ok(_("Error"),_("Error: Scene not created."))
+    
+
+def deleteHueScene(bridge):
+    logger.debug("In kodiHue deleteHueScene")
+    scene = selectHueScene(bridge)
+    if scene:
+        confirm = xbmcgui.Dialog().yesno(_("Delete Hue Scene"), _("Are you sure you want to delete this scene: "), unicode(scene[1]))
+    if scene and confirm:              
+        scenes=bridge.scenes
+        res=scenes[scene[0]](http_method='delete')
+        logger.debug("In kodiHue createHueGroup. Res:".format(res))
+        if res[0]["success"]:
+            xbmcgui.Dialog().notification(_("Hue Service"), _("Scene deleted"))
+        else:
+            xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not created"))
+
+
 
 def _discoverNupnp():
     logger.debug("In kodiHue discover_nupnp()")
@@ -99,7 +126,7 @@ def bridgeDiscover(monitor):
         
         if connectionTest(bridgeIP):
             progressBar.update(100, _("Found bridge: ") + bridgeIP)
-            xbmc.sleep(1000)
+            monitor.waitForAbort(1)
                      
             bridgeUser = createUser(monitor, bridgeIP, progressBar)
             if bridgeUser:
@@ -135,22 +162,26 @@ def bridgeDiscover(monitor):
        
 def connectionTest(bridgeIP):
     logger.debug("in ConnectionTest() Attempt initial connection")
-    b = qhue.Resource("http://{}/api".format(bridgeIP))
+    b = qhue.qhue.Resource("http://{}/api".format(bridgeIP))
     try:
-        test = b.config()['apiversion']
+        apiversion = b.config()['apiversion']
     except:
         return False
-    
-    if test:
-        logger.debug("in ConnectionTest():  Connected! Test Value: {}".format(test))
+
+#TODO: compare API version properly, ensure api version >= 1.28    
+    if apiversion: 
+        logger.debug("in ConnectionTest():  Connected! Hue API version: {}".format(apiversion))
         return True
     else:
+        logger.debug("in ConnectionTest():  Connected! Bridge too old: {}".format(apiversion))
+        kodiutils.notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)), icon=NOTIFICATION_ERROR)
+        
         return False
 
 
 def userTest(bridgeIP,bridgeUser):
     logger.debug("in ConnectionTest() Attempt initial connection")
-    b = Bridge(bridgeIP,bridgeUser)
+    b = qhue.Bridge(bridgeIP,bridgeUser)
     try:
         zigbeechan = b.config()['zigbeechannel']
     except:
@@ -219,7 +250,19 @@ def configureGroup(bridge,kGroupID):
     if hGroup > 0:
         kodiutils.set_setting("group{}_hGroupID".format(kGroupID), hGroup[0])
         kodiutils.set_setting("group{}_hGroupName".format(kGroupID), hGroup[1])
-        ADDON.openSettings()
+        globals.ADDON.openSettings()
+
+
+def configureScene(bridge,kGroupID,action):
+    scene = "none"
+    scene=selectHueScene(bridge)
+    if scene is not "none":
+        #group0_startSceneID
+        kodiutils.set_setting("group{}_{}SceneID".format(kGroupID, action),scene[0])
+        kodiutils.set_setting("group{}_{}SceneName".format(kGroupID,action), scene[1])
+        
+        globals.ADDON.openSettings()
+
 
 
 
@@ -297,6 +340,37 @@ def selectHueGroup(bridge):
     else:
         return None
 
+def selectHueScene(bridge):
+    logger.debug("In selectHueScene{}")
+    hueScenes=bridge.scenes()
+    
+    xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
+    items=[]
+    index=[]
+    selectedId = -1
+    
+    for scene in hueScenes:
+
+        hScene=hueScenes[scene]
+        hSceneName=hScene['name']
+        
+        #logger.debug("In selectHueGroup: {}, {}".format(hgroup,name))
+        if hScene['version'] == 2 and hScene["recycle"] is False and hScene["type"] == "LightScene":
+            index.append(scene)
+            items.append(xbmcgui.ListItem(label=hSceneName))
+        
+    xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
+    selected = xbmcgui.Dialog().select("Select Hue scene...",items)
+    if selected > -1 :
+        selectedId = index[selected]
+        hSceneName=hueScenes[selectedId]['name']
+        logger.debug("In selectHueScene: selected: {}".format(selected))
+    
+    if selectedId:
+        return selectedId, hSceneName;
+    else:
+        return None    
+    
 
 def getDaylight(bridge):
     logger.debug("in getDaylight()")
@@ -313,8 +387,6 @@ def sunset(bridge,kgroups):
             g.sunset()
             
     return        
-        
-    
     
 
 def setupGroups(bridge,flash=False):
@@ -323,8 +395,8 @@ def setupGroups(bridge,flash=False):
     g=0
     while g < globals.NUM_GROUPS:
         if kodiutils.get_setting_as_bool("group{}_enabled".format(g)):
-            kgroups.append(KodiGroup())
-            kgroups[g].setup(bridge, g, kodiutils.get_setting_as_int("group{}_hGroupID".format(g)), flash)  
+            kgroups.append(KodiGroup.KodiGroup())
+            kgroups[g].setup(bridge, g, flash)  
         g = g + 1
         
     return kgroups
