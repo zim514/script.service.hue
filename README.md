@@ -1,3 +1,6 @@
+Master: [![Build Status](https://travis-ci.com/zim514/script.service.hue.svg?branch=master)](https://travis-ci.com/zim514/script.service.hue)
+Dev: [![Build Status](https://travis-ci.com/zim514/script.service.hue.svg?branch=dev)](https://travis-ci.com/zim514/script.service.hue)
+
 # script.service.hue
 Kodi add-on for Philips Hue. Use at your own risk
 
