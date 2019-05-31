@@ -3,6 +3,10 @@ Created on Apr. 22, 2019
 
 
 '''
+import xbmcaddon
+from xbmc import getInfoLabel
+
+
 global settingsChanged
 global connected 
 global forceOnSunset
@@ -26,6 +30,10 @@ DEBUG = False # Enable python remote debug
 REMOTE_DBG_SUSPEND = False #Auto suspend thread when debugger attached
 
 
+ADDON = xbmcaddon.Addon()
+ADDONID = ADDON.getAddonInfo('id')
+ADDONVERSION = ADDON.getAddonInfo('version')
+KODIVERSION = getInfoLabel('System.BuildVersion')
 
 
 

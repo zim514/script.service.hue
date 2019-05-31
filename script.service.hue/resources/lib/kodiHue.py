@@ -21,7 +21,7 @@ from . import qhue
 from .language import get_string as _
 
 
-ADDON = xbmcaddon.Addon()
+
 logger = logging.getLogger(__name__)
 
 def createHueGroup(bridge):
@@ -250,7 +250,7 @@ def configureGroup(bridge,kGroupID):
     if hGroup > 0:
         kodiutils.set_setting("group{}_hGroupID".format(kGroupID), hGroup[0])
         kodiutils.set_setting("group{}_hGroupName".format(kGroupID), hGroup[1])
-        ADDON.openSettings()
+        globals.ADDON.openSettings()
 
 
 def configureScene(bridge,kGroupID,action):
@@ -261,7 +261,7 @@ def configureScene(bridge,kGroupID,action):
         kodiutils.set_setting("group{}_{}SceneID".format(kGroupID, action),scene[0])
         kodiutils.set_setting("group{}_{}SceneName".format(kGroupID,action), scene[1])
         
-        ADDON.openSettings()
+        globals.ADDON.openSettings()
 
 
 

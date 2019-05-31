@@ -4,26 +4,15 @@ import logging
 import xbmcaddon
 from xbmc import getInfoLabel
 
+from resources.lib import globals
 from resources.lib import kodilogging
 from resources.lib import core
-from resources.lib import globals
-
-# Keep this file to a minimum, as Kodi
-# doesn't keep a compiled copy of this
-ADDON = xbmcaddon.Addon()
-ADDONID = ADDON.getAddonInfo('id')
-ADDONVERSION = ADDON.getAddonInfo('version')
 
 kodilogging.config()
 logger = logging.getLogger(__name__)
-
-logger.debug("Loading {} version {}, Kodi: {}".format(ADDONID, ADDONVERSION, getInfoLabel('System.BuildVersion') ) )
-
+logger.debug("Loading {} service.py, version {}, Kodi: {}".format(globals.ADDONID, globals.ADDONVERSION, globals.KODIVERSION ) )
 
 if globals.DEBUG:
-    # Make pydev debugger works for auto reload.
-    # Note pydevd module need to be copied in XBMC\system\python\Lib\pysrc
-    
     try:
         import threading
         import pydevd
@@ -38,8 +27,8 @@ if globals.DEBUG:
         exit(1)
 
 
-core.service()
+core.service() #Run Hue service
+logger.debug("'%s' shutting down service" % globals.ADDONID)
 
-logger.debug("'%s' shutting down service" % ADDONID)
 if globals.DEBUG is True:
     pydevd.stoptrace()

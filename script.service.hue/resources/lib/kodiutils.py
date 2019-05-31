@@ -1,35 +1,33 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import sys
 
-import xbmc
-import xbmcaddon
 import xbmcgui
 
-import json as json
+
+from . import globals
+
 
 
 # read settings
-ADDON = xbmcaddon.Addon()
 
 logger = logging.getLogger(__name__)
 
 
-def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), sound=True):
+def notification(header, message, time=5000, icon=globals.ADDON.getAddonInfo('icon'), sound=True):
     xbmcgui.Dialog().notification(header, message, icon, time, sound)
 
 
 def show_settings():
-    ADDON.openSettings()
+    globals.ADDON.openSettings()
 
 
 def get_setting(setting):
-    return ADDON.getSetting(setting).strip().decode('utf-8')
+    return globals.ADDON.getSetting(setting).strip().decode('utf-8')
 
 
 def set_setting(setting, value):
-    ADDON.setSetting(setting, str(value))
+    globals.ADDON.setSetting(setting, str(value))
 
 
 def get_setting_as_bool(setting):
@@ -51,23 +49,5 @@ def get_setting_as_int(setting):
 
 
 def get_string(string_id):
-    return ADDON.getLocalizedString(string_id).encode('utf-8', 'ignore')
+    return globals.ADDON.getLocalizedString(string_id).encode('utf-8', 'ignore')
 
-
-def kodi_json_request(params):
-    data = json.dumps(params)
-    request = xbmc.executeJSONRPC(data)
-
-    try:
-        response = json.loads(request)
-    except UnicodeDecodeError:
-        response = json.loads(request.decode('utf-8', 'ignore'))
-
-    try:
-        if 'result' in response:
-            return response['result']
-        return None
-    except KeyError:
-        logger.warn("[%s] %s" % 
-                    (params['method'], response['error']['message']))
-        return None

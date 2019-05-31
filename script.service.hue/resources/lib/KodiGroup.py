@@ -6,7 +6,6 @@ Created on Apr. 17, 2019
 import logging
 
 import xbmc
-import xbmcaddon
 
 from . import globals
 from .kodiutils import get_setting, get_setting_as_bool, get_setting_as_int
@@ -24,7 +23,7 @@ STATE_PAUSED = 2
 
 state = 0
 
-ADDON = xbmcaddon.Addon()
+
 logger = logging.getLogger(__name__)
 
 

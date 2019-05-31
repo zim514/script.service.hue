@@ -19,8 +19,6 @@ from . import KodiGroup
 from . import kodiHue
 from . import kodiutils
 
-
-ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(__name__)
 
 
@@ -35,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 def menu():
-    logger.debug("menu started, version: {}".format(ADDON.getAddonInfo('version')))
+    logger.debug("menu started, version: {}".format(globals.ADDON.getAddonInfo('version')))
     monitor = kodiHue.HueMonitor()
 
     if len(sys.argv) >1:
@@ -120,13 +118,13 @@ def menu():
         #sceneUI=CreateSceneUI(bridge)
         #del sceneUI
         #No command
-        ADDON.openSettings()
+        globals.ADDON.openSettings()
         
         return
          
 
 def service():
-    logger.debug(" service started, version: {}".format(ADDON.getAddonInfo('version')))
+    logger.debug(" service started, version: {}".format(globals.ADDON.getAddonInfo('version')))
     monitor = kodiHue.HueMonitor()
     
     initialFlash = kodiutils.get_setting_as_bool("initialFlash")
