@@ -22,8 +22,7 @@ from . import kodiutils
 
 ADDON = xbmcaddon.Addon()
 logger = logging.getLogger(__name__)
-connected = False
-settingsChanged = False
+
 
 
 #===============================================================================
