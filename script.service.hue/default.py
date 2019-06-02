@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 
-import xbmcaddon
-from xbmc import getInfoLabel
-
 from resources.lib import globals
 from resources.lib import kodilogging
 from resources.lib import core
@@ -23,12 +20,12 @@ if globals.DEBUG:
 
     except ImportError:
         logger.debug("Kodi Hue Remote Debug Error: " + 
-                         "You must add org.python.pydev.debug.pysrc to your PYTHONPATH, or disable REMOTE_DBG")
+                         "You must add org.python.pydev.debug.pysrc to your PYTHONPATH, or disable DEBUG")
         exit(1)
 
 
 core.menu() #Run menu
-logger.debug("'%s' shutting down menu" % globals.ADDONID)
+logger.debug("Shutting down menu")
 
 if globals.DEBUG is True:
     pydevd.stoptrace()

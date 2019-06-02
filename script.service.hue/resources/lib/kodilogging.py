@@ -3,18 +3,16 @@
 from __future__ import unicode_literals
 
 import logging
-
+from globals import ADDONID
 import xbmc
-import xbmcaddon
-
 
 class KodiLogHandler(logging.StreamHandler):
 
     def __init__(self):
         logging.StreamHandler.__init__(self)
-        addon_id = xbmcaddon.Addon().getAddonInfo('id')
-        prefix = b"[%s] " % addon_id
-        formatter = logging.Formatter(prefix + b'%(name)s: %(message)s\n')
+        
+        prefix = b"[%s] " % ADDONID
+        formatter = logging.Formatter(prefix + b'%(name) $(funcName)s: %(message)s\n')
         self.setFormatter(formatter)
 
     def emit(self, record):
@@ -26,7 +24,6 @@ class KodiLogHandler(logging.StreamHandler):
             logging.DEBUG: xbmc.LOGDEBUG,
             logging.NOTSET: xbmc.LOGNONE,
         }
-# 3        if get_setting_as_bool('debug'):
         try:
             xbmc.log(self.format(record), levels[record.levelno])
         except UnicodeEncodeError:
@@ -36,8 +33,9 @@ class KodiLogHandler(logging.StreamHandler):
     def flush(self):
         pass
 
-
 def config():
     logger = logging.getLogger()
     logger.addHandler(KodiLogHandler())
     logger.setLevel(logging.DEBUG)
+    return logger
+    
