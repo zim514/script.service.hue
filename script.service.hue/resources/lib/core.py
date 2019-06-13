@@ -3,11 +3,10 @@
 import logging
 import sys
 
-
-
-import xbmcaddon
+#import xbmcaddon
 #from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_WARNING, NOTIFICATION_INFO
 import xbmcgui
+
 
 
 #from .qhue import QhueException
@@ -15,11 +14,15 @@ from .language import get_string as _
 
 
 from . import globals
-from . import KodiGroup
+
+#from . import KodiGroup
 from . import kodiHue
 from . import kodiutils
+#from . import kodilogging
 
-logger = logging.getLogger(__name__)
+#kodilogging.config()
+logger = logging.getLogger(globals.ADDONID)
+
 
 
 
@@ -100,7 +103,7 @@ def menu():
             xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
     
     elif args == "sceneSelect": # sceneSelect=kgroup,action  / sceneSelect=0,play
-            kgroup = sys.argv[2] 
+            kgroup = sys.argv[2]
             action = sys.argv[3]
             logger.debug("Started with {}, kgroup: {}, kaction: {}".format(args, kgroup, action))
             
@@ -139,13 +142,14 @@ def service():
         kgroups = kodiHue.setupGroups(bridge,initialFlash)
 
         timer = 60
-        # #Ready to go! Start running until Kodi exit.            
+        # #Ready to go! Start running until Kodi exit.
         while globals.connected and not monitor.abortRequested():
             
             if globals.settingsChanged:
                 reloadFlash = kodiutils.get_setting_as_bool("reloadFlash")
-                forceOnSunset = kodiutils.get_setting_as_bool("forceOnSunset")
+                globals.forceOnSunset = kodiutils.get_setting_as_bool("forceOnSunset")
                 globals.daylightDisable = kodiutils.get_setting_as_bool("daylightDisable")
+                
                 kgroups = kodiHue.setupGroups(bridge, reloadFlash)
                 globals.settingsChanged = False
             
@@ -177,5 +181,3 @@ def service():
         logger.debug('No connected bridge, exiting...')
         return
     
-            
-         

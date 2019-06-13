@@ -1,8 +1,8 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.2.5">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.2.6">
 	
   <requires>
     <import addon="xbmc.python" version="2.26.0" />
-    <import addon="script.module.requests" version="2.21.0"/>
+    <import addon="script.module.requests" version="2.22.0"/>
   </requires>
   
   <extension  point="xbmc.service" name="service.hue" library="service.py">
@@ -19,7 +19,9 @@
     <disclaimer lang="en_GB">Automate Hue with Kodi</disclaimer>
     <platform>all</platform>
     <license>MIT License</license>
-    <news>- Initial release
+    <news>
+    v0.2.6: 
+    - Improve logging system
 	</news>
     <assets>
   		<icon>resources/icons/icon.png</icon>

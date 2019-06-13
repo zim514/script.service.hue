@@ -25,8 +25,9 @@ logLevel = 0
 
 
 NUM_GROUPS = 1
-STRDEBUG = False #Show string ID in UI 
+STRDEBUG = False #Show string ID in UI
 DEBUG = False # Enable python remote debug
+LOGDEBUG = True #Enable logging
 REMOTE_DBG_SUSPEND = False #Auto suspend thread when debugger attached
 
 

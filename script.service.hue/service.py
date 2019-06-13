@@ -1,34 +1,36 @@
 # -*- coding: utf-8 -*-
 import logging
-
-import xbmcaddon
-from xbmc import getInfoLabel
+import xbmc
 
 from resources.lib import globals
 from resources.lib import kodilogging
 from resources.lib import core
+from resources.lib import kodiutils
 
 kodilogging.config()
-logger = logging.getLogger(__name__)
-logger.debug("Loading {} service.py, version {}, Kodi: {}".format(globals.ADDONID, globals.ADDONVERSION, globals.KODIVERSION ) )
+logger = logging.getLogger(globals.ADDONID)
+
+
 
 if globals.DEBUG:
     try:
-        import threading
+#        import threading
+        import sys;sys.path.append("e:\dev\pysrc")
         import pydevd
 
-        threading.Thread.name = 'script.service.hue.service'
-        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True, suspend=globals.REMOTE_DBG_SUSPEND,
-                        trace_only_current_thread=True, overwrite_prev_trace=True, patch_multiprocessing=False)
+#        threading.Thread.name = 'script.service.hue.service'
+        pydevd.settrace('localhost', stdoutToServer=False, stderrToServer=False, suspend=globals.REMOTE_DBG_SUSPEND,
+                        trace_only_current_thread=False, overwrite_prev_trace=True, patch_multiprocessing=True)
 
     except ImportError:
-        logger.debug("Kodi Hue Remote Debug Error: " + 
-                         "You must add org.python.pydev.debug.pysrc to your PYTHONPATH, or disable REMOTE_DBG")
-        exit(1)
+        xbmc.log("Kodi Hue Remote Debug Error: You must add org.python.pydev.debug.pysrc to your PYTHONPATH, or disable DEBUG",xbmc.LOGERROR)
 
 
+
+logger.info("Starting service.py, version {}, Kodi: {}".format(globals.ADDONVERSION, globals.KODIVERSION ))
 core.service() #Run Hue service
-logger.debug("'%s' shutting down service" % globals.ADDONID)
+logger.info("Shutting down service.py, version {}, Kodi: {}".format(globals.ADDONVERSION, globals.KODIVERSION ))
+#xbmc.log("Shutting down service",xbmc.LOGNOTICE)
 
 if globals.DEBUG is True:
     pydevd.stoptrace()
