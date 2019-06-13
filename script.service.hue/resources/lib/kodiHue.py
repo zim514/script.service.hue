@@ -22,7 +22,7 @@ from .language import get_string as _
 
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(globals.ADDONID)
 
 def createHueGroup(bridge):
     logger.debug("In kodiHue createHueGroup")
@@ -32,7 +32,7 @@ def createHueGroup(bridge):
         if selected:
             groups=bridge.groups
             res=groups(lights=selected,name=groupName,http_method='post')
-            logger.debug("In kodiHue createHueGroup. Res:".format(res))
+            logger.debug("In kodiHue createHueGroup. Res: {}".format(res))
             if res[0]["success"]:
                 xbmcgui.Dialog().notification(_("Hue Service"), _("Group Created"))
             else:
