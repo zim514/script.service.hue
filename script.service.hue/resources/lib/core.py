@@ -143,8 +143,9 @@ def service():
             
             if globals.settingsChanged:
                 reloadFlash = kodiutils.get_setting_as_bool("reloadFlash")
-                forceOnSunset = kodiutils.get_setting_as_bool("forceOnSunset")
+                globals.forceOnSunset = kodiutils.get_setting_as_bool("forceOnSunset")
                 globals.daylightDisable = kodiutils.get_setting_as_bool("daylightDisable")
+                
                 kgroups = kodiHue.setupGroups(bridge, reloadFlash)
                 globals.settingsChanged = False
             

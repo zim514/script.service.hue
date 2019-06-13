@@ -65,7 +65,7 @@ else:
     def get_string(t):
         import xbmc, xbmcaddon
         ADDON = xbmcaddon.Addon()
-        ADDON_ID = ADDON.getAddonInfo("id")
+#        ADDON_ID = ADDON.getAddonInfo("id")
         id = _strings.get(t.lower())
         if not id:
             xbmc.log("LANGUAGE: missing translation for '%s'" % t.lower())
