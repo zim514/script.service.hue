@@ -28,7 +28,7 @@ class KodiLogHandler(logging.StreamHandler):
             logging.DEBUG: xbmc.LOGDEBUG,
             logging.NOTSET: xbmc.LOGNONE,
         }
-        if globals.DEBUG:
+        if globals.LOGDEBUG:
             try:
                 xbmc.log(self.format(record), levels[record.levelno])
             except UnicodeEncodeError:
