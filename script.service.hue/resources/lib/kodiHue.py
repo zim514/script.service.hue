@@ -10,7 +10,7 @@ from socket import getfqdn
 
 
 import xbmc
-import xbmcaddon
+
 import xbmcgui
 from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
 
@@ -70,7 +70,7 @@ def createHueScene(bridge):
             res=scenes(lights=selected,name=sceneName,recycle=False,type='LightScene',http_method='post',transitiontime=int(transitionTime)*10) #Hue API transition time is in 100msec. *10 to convert to seconds.
             logger.debug("In kodiHue createHueScene. Res:".format(res))
             if res[0]["success"]:
-                xbmcgui.Dialog().ok(_("Create New Scene"),_("Scene successfully created!"),_("You may now assign your Scene to player actions."))   
+                xbmcgui.Dialog().ok(_("Create New Scene"),_("Scene successfully created!"),_("You may now assign your Scene to player actions."))
             #   xbmcgui.Dialog().notification(_("Hue Service"), _("Scene Created"))
             else:
                 xbmcgui.Dialog().ok(_("Error"),_("Error: Scene not created."))
@@ -84,7 +84,7 @@ def deleteHueScene(bridge):
     if scene and confirm:              
         scenes=bridge.scenes
         res=scenes[scene[0]](http_method='delete')
-        logger.debug("In kodiHue createHueGroup. Res:".format(res))
+        logger.debug("In kodiHue createHueGroup. Res: {}".format(res))
         if res[0]["success"]:
             xbmcgui.Dialog().notification(_("Hue Service"), _("Scene deleted"))
         else:
@@ -168,8 +168,8 @@ def connectionTest(bridgeIP):
     except:
         return False
 
-#TODO: compare API version properly, ensure api version >= 1.28    
-    if apiversion: 
+#TODO: compare API version properly, ensure api version >= 1.28
+    if apiversion:
         logger.debug("in ConnectionTest():  Connected! Hue API version: {}".format(apiversion))
         return True
     else:
@@ -199,7 +199,7 @@ def discoverBridgeIP(monitor):
     #discover hue bridge
     logger.debug("In discoverBridgeIP")
     #TODO: implement upnp discovery
-    #bridge_ip = _discover_upnp()  
+    #bridge_ip = _discover_upnp()
     bridgeIP = None
     if bridgeIP is None:
         bridgeIP = _discoverNupnp()
@@ -369,12 +369,12 @@ def selectHueScene(bridge):
     if selectedId:
         return selectedId, hSceneName;
     else:
-        return None    
+        return None
     
 
 def getDaylight(bridge):
     logger.debug("in getDaylight()")
-    sensors = bridge.sensors()
+#    sensors = bridge.sensors()
     return bridge.sensors['1']()['state']['daylight']
             
 
@@ -386,12 +386,12 @@ def sunset(bridge,kgroups):
         if kodiutils.get_setting_as_bool("group{}_enabled".format(g.kgroupID)):
             g.sunset()
             
-    return        
+    return
     
 
 def setupGroups(bridge,flash=False):
     logger.debug("in setupGroups()")
-    kgroups= []   
+    kgroups= []
     g=0
     while g < globals.NUM_GROUPS:
         if kodiutils.get_setting_as_bool("group{}_enabled".format(g)):
@@ -447,7 +447,7 @@ def connectBridge(monitor,silent=False):
 class HueMonitor(xbmc.Monitor):
     def __init__(self):
         super(xbmc.Monitor,self).__init__()
-        
+
     def onSettingsChanged(self):
         logger.debug("Settings changed")
         globals.settingsChanged = True

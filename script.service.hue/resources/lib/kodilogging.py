@@ -14,6 +14,9 @@ class KodiLogHandler(logging.StreamHandler):
         prefix = b"[%s] " % ADDONID
         formatter = logging.Formatter(prefix + b'%(name) $(funcName)s: %(message)s\n')
         self.setFormatter(formatter)
+        
+        
+        
 
     def emit(self, record):
         levels = {
