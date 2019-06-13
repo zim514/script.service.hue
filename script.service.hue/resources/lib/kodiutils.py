@@ -27,33 +27,42 @@ def configLog():
     
     formatter = logging.Formatter(b'[{}][%(funcName)s] %(filename)s(%(lineno)d): %(message)s\n'.format(globals.ADDONID))
     kodilogger = logging.getLogger(globals.ADDONID)
-    kodilogger.setFormatter(formatter)
+    
+    
+
+    
+    
+    a=1+1
+
+#    kodilogger.setFormatter(formatter)
     
     
     # prepare datadir
     # directory and file is local to the filesystem
     # no need to use xbmcvfs
-    if not os.path.isdir(__addonworkdir__):
-        xbmc.log("Hue: profile directory doesn't exist: " + __addonworkdir__.encode('utf-8') + "   Trying to create.", level=xbmc.LOGNOTICE)
-        try:
-            os.mkdir(__addonworkdir__)
-            xbmc.log("Hue: profile directory created: " + __addonworkdir__.encode('utf-8'), level=xbmc.LOGNOTICE)
-        except OSError as e:
-            xbmc.log("Hue: Log: can't create directory: " + __addonworkdir__.encode('utf-8'), level=xbmc.LOGERROR)
-            xbmc.log("Exception: " + str(e.message).encode('utf-8'), xbmc.LOGERROR)
-     
-    # prepare external log handler
-    # https://docs.python.org/2/library/logging.handlers.html
-    global filelogger
-    filelogger = logging.getLogger(__name__)
-    loghandler = logging.handlers.TimedRotatingFileHandler(os.path.join(__addonworkdir__, 'kodiHue.log',), when="midnight", interval=1, backupCount=2)
-    
-#    rootlogger = logging.getLogger()
-    
-    filelogger.addHandler(loghandler)
-    formatter = logging.Formatter(b'[{}][%(funcName)s] %(filename)s(%(lineno)d): %(message)s\n'.format(globals.ADDONID))
+#===============================================================================
+#     if not os.path.isdir(__addonworkdir__):
+#         xbmc.log("Hue: profile directory doesn't exist: " + __addonworkdir__.encode('utf-8') + "   Trying to create.", level=xbmc.LOGNOTICE)
+#         try:
+#             os.mkdir(__addonworkdir__)
+#             xbmc.log("Hue: profile directory created: " + __addonworkdir__.encode('utf-8'), level=xbmc.LOGNOTICE)
+#         except OSError as e:
+#             xbmc.log("Hue: Log: can't create directory: " + __addonworkdir__.encode('utf-8'), level=xbmc.LOGERROR)
+#             xbmc.log("Exception: " + str(e.message).encode('utf-8'), xbmc.LOGERROR)
+#      
+#     # prepare external log handler
+#     # https://docs.python.org/2/library/logging.handlers.html
+#     global filelogger
+#     filelogger = logging.getLogger(__name__)
+#     loghandler = logging.handlers.TimedRotatingFileHandler(os.path.join(__addonworkdir__, 'kodiHue.log',), when="midnight", interval=1, backupCount=2)
+#     
+# #    rootlogger = logging.getLogger()
+#     
+#     filelogger.addHandler(loghandler)
+#     formatter = logging.Formatter(b'[{}][%(funcName)s] %(filename)s(%(lineno)d): %(message)s\n'.format(globals.ADDONID))
+#===============================================================================
 
-    #filelogger.setFormatter(formatter)
+#    filelogger.setFormatter(formatter)
 
     
     
@@ -67,56 +76,70 @@ def configLog():
     # 6 = LOGFATAL
     # 7 = LOGNONE
 
-def log(message, severity=xbmc.LOGDEBUG):
-    """Log message to internal Kodi log or external log file.
 
-    Arguments:
-        message {str} -- message text
 
-    Keyword Arguments:
-        severity {int} -- log level (default: {xbmc.LOGDEBUG})
-    """
 
-    # get log level settings
-    setting_LogLevel = int(globals.ADDON.getSetting("logLevel"))
-    setting_SeparateLogFile = int(globals.ADDON.getSetting("separateLogFile"))
 
-    if severity >= setting_LogLevel:
-        # log the message to Log
-        if setting_SeparateLogFile == 0:
-            # use kodi.log for logging
-            # check if string is str
-            if isinstance(message, str):
-                # convert to unicode string
-                message = message.decode('utf-8')
-            # re-encode to utf-8
-            xbmc.log("[SCRIPT.SERVICE.HUE]: " + message.encode('utf-8'), level=xbmc.LOGNONE)
-        else:
-            # use smangler's own log file located in addon's datadir
-            # construct log text
-            # cut last 3 trailing zero's from timestamp
-            logtext = str(datetime.now)[:-3]
-            if severity == xbmc.LOGDEBUG:
-                logtext += "   DEBUG: "
-            elif severity == xbmc.LOGINFO:
-                logtext += "    INFO: "
-            elif severity == xbmc.LOGNOTICE:
-                logtext += "  NOTICE: "
-            elif severity == xbmc.LOGWARNING:
-                logtext += " WARNING: "
-            elif severity == xbmc.LOGERROR:
-                logtext += "   ERROR: "
-            elif severity == xbmc.LOGSEVERE:
-                logtext += "  SEVERE: "
-            elif severity == xbmc.LOGFATAL:
-                logtext += "   FATAL: "
-            else:
-                logtext += "    NONE: "
-            logtext += message
-            # append line to external log file
-            # logging via warning level to prevent filtering of messages by default filtering level of ROOT logger
-            filelogger.warning(logtext)
+def log(message,level):
+    prefix = b"[%s] " % globals.ADDONID
+    formatter = prefix + b'%(name)s: %(message)s'
+    try:
+        xbmc.log(formatter, level)
+    except UnicodeEncodeError:
+        xbmc.log(formatter.encode(
+            'utf-8', 'ignore'), level)
 
+#===============================================================================
+# def log(message, severity=xbmc.LOGDEBUG):
+#     """Log message to internal Kodi log or external log file.
+# 
+#     Arguments:
+#         message {str} -- message text
+# 
+#     Keyword Arguments:
+#         severity {int} -- log level (default: {xbmc.LOGDEBUG})
+#     """
+# 
+#     # get log level settings
+#     setting_LogLevel = int(globals.ADDON.getSetting("logLevel"))
+#     setting_SeparateLogFile = int(globals.ADDON.getSetting("separateLogFile"))
+# 
+#     if severity >= setting_LogLevel:
+#         # log the message to Log
+#         if setting_SeparateLogFile == 0:
+#             # use kodi.log for logging
+#             # check if string is str
+#             if isinstance(message, str):
+#                 # convert to unicode string
+#                 message = message.decode('utf-8')
+#             # re-encode to utf-8
+#             xbmc.log("[SCRIPT.SERVICE.HUE]: " + message.encode('utf-8'), level=xbmc.LOGNONE)
+#         else:
+#             # use smangler's own log file located in addon's datadir
+#             # construct log text
+#             # cut last 3 trailing zero's from timestamp
+#             logtext = str(datetime.now)[:-3]
+#             if severity == xbmc.LOGDEBUG:
+#                 logtext += "   DEBUG: "
+#             elif severity == xbmc.LOGINFO:
+#                 logtext += "    INFO: "
+#             elif severity == xbmc.LOGNOTICE:
+#                 logtext += "  NOTICE: "
+#             elif severity == xbmc.LOGWARNING:
+#                 logtext += " WARNING: "
+#             elif severity == xbmc.LOGERROR:
+#                 logtext += "   ERROR: "
+#             elif severity == xbmc.LOGSEVERE:
+#                 logtext += "  SEVERE: "
+#             elif severity == xbmc.LOGFATAL:
+#                 logtext += "   FATAL: "
+#             else:
+#                 logtext += "    NONE: "
+#             logtext += message
+#             # append line to external log file
+#             # logging via warning level to prevent filtering of messages by default filtering level of ROOT logger
+#             filelogger.warning(logtext)
+#===============================================================================
 
 
 def notification(header, message, time=5000, icon=globals.ADDON.getAddonInfo('icon'), sound=True):
