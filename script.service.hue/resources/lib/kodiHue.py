@@ -46,7 +46,7 @@ def deleteHueGroup(bridge):
     if group and confirm:              
         groups=bridge.groups
         res=groups[group[0]](http_method='delete')
-        logger.debug("In kodiHue createHueGroup. Res:".format(res))
+        logger.debug("In kodiHue createHueGroup. Res: {}".format(res))
         if res[0]["success"]:
             xbmcgui.Dialog().notification(_("Hue Service"), _("Group deleted"))
         else:
@@ -68,7 +68,7 @@ def createHueScene(bridge):
         
         if selected:
             res=scenes(lights=selected,name=sceneName,recycle=False,type='LightScene',http_method='post',transitiontime=int(transitionTime)*10) #Hue API transition time is in 100msec. *10 to convert to seconds.
-            logger.debug("In kodiHue createHueScene. Res:".format(res))
+            logger.debug("In kodiHue createHueScene. Res: {}".format(res))
             if res[0]["success"]:
                 xbmcgui.Dialog().ok(_("Create New Scene"),_("Scene successfully created!"),_("You may now assign your Scene to player actions."))
             #   xbmcgui.Dialog().notification(_("Hue Service"), _("Scene Created"))

@@ -48,11 +48,11 @@ def configLog():
     filelogger = logging.getLogger(__name__)
     loghandler = logging.handlers.TimedRotatingFileHandler(os.path.join(__addonworkdir__, 'kodiHue.log',), when="midnight", interval=1, backupCount=2)
     
-    rootlogger = logging.getLogger()
+#    rootlogger = logging.getLogger()
     
     filelogger.addHandler(loghandler)
     formatter = logging.Formatter(b'[{}][%(funcName)s] %(filename)s(%(lineno)d): %(message)s\n'.format(globals.ADDONID))
-    pass
+
     #filelogger.setFormatter(formatter)
 
     
