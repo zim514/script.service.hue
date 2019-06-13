@@ -32,31 +32,31 @@ class KodiGroup(xbmc.Player):
             super(xbmc.Player,self).__init__()
 
         def readSettings(self):
-          
+
             self.enabled=get_setting_as_bool("group{}_enabled".format(self.kgroupID))
             self.fadeTime=get_setting_as_int("group{}_fadeTime".format(self.kgroupID)) * 10 #Stored as seconds, but Hue API expects multiples of 100ms.
             self.forceOn=get_setting_as_bool("group{}_forceOn".format(self.kgroupID))
-            
-            
+
+
             self.startBehavior=get_setting_as_int("group{}_startBehavior".format(self.kgroupID))
             self.startScene=get_setting("group{}_startSceneID".format(self.kgroupID))
-            
+
             self.pauseBehavior=get_setting_as_int("group{}_pauseBehavior".format(self.kgroupID))
             self.pauseScene=get_setting("group{}_pauseSceneID".format(self.kgroupID))
-            
+
             self.stopBehavior=get_setting_as_int("group{}_stopBehavior".format(self.kgroupID))
             self.stopScene=get_setting("group{}_stopSceneID".format(self.kgroupID))
-            
-            
+
+
         def setup(self,bridge,kgroupID,flash = False):
             self.bridge = bridge
-            
-            
-            self.lights = bridge.lights 
+
+
+            self.lights = bridge.lights
             self.kgroupID=kgroupID
-            
+
             self.readSettings()
-            
+
             self.groupResource=bridge.groups[0]
             #TODO: Get scene lights to save initial state
             self.lightIDs=self.groupResource()["lights"]
@@ -64,28 +64,27 @@ class KodiGroup(xbmc.Player):
 
             if flash:
                 self.flash()
-                    
-                    
-                
+
+
+
         def saveInitialState(self):
             #TODO: Get scene lights to save initial state
             logger.debug("In KodiGroup[{}], save initial state".format(self.kgroupID))
             initialState = {}
             lights = self.lights
-                        
+
             for x in self.lightIDs:
                 light=lights[x]()
                 initialState[x] = light['state'] 
                 #self.initialState.append(lights.l()['state'])
 
             self.initialState=initialState
-             
-            
+
         def applyInitialState(self):
             logger.debug("In KodiGroup[{}], apply initial state".format(self.kgroupID))
             initialState = self.initialState
             lights = self.lights 
-            
+
             for x in initialState:
                 i = initialState[x]
                 logger.debug("In KodiGroup[{}], apply initial state: {}, {}".format(self.kgroupID,x,i))
@@ -96,11 +95,11 @@ class KodiGroup(xbmc.Player):
                                 hue=i['hue'],
                                 sat=i['sat'],
                                 transitiontime=self.fadeTime)
-            
+
         def flash(self):
             logger.debug("in KodiGroup Flash")
             self.groupResource.action(alert="select")
-        
+
         def onPlayBackStarted(self, saveInitial=False):
             logger.debug("In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, forceOn: {}".format(self.kgroupID, self.enabled, self.forceOn))
             self.state = STATE_PLAYING
@@ -130,42 +129,42 @@ class KodiGroup(xbmc.Player):
                         self.groupResource.action(scene=self.stopScene)
                     except QhueException as e:
                         logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))
-                            
-                        
+
+
                 elif self.stopBehavior == BEHAVIOR_OFF:
                     self.groupResource.action(on=False)
-                    
+
                 elif self.stopBehavior == BEHAVIOR_INITIAL:
                     self.applyInitialState()
-            
-        
+
+
         def onPlayBackPaused(self):
             self.state = STATE_PAUSED
             logger.debug("In KodiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
-            
+
             if self.enabled and not (globals.daylightDisable == globals.daylight):
-                
+
                 if self.pauseBehavior == BEHAVIOR_ADJUST:
                     try:
                         self.groupResource.action(scene=self.pauseScene)
                     except QhueException as e:
-                        logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))  
-                        
+                        logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))
+
                 elif self.startBehavior == BEHAVIOR_OFF:
                     self.groupResource.action(on=False)
-                    
+
                 elif self.startBehavior == BEHAVIOR_INITIAL:
                     self.applyInitialState()
    
-                
+
         def onPlayBackResumed(self):
             logger.debug("In KodiGroup[{}], onPlaybackResumed()".format(self.kgroupID))
-            self.onPlayBackStarted(saveInitial=False)            
-                
+            self.onPlayBackStarted(saveInitial=False)
+
         def onPlayBackError(self):
             logger.debug("In KodiGroup[{}], onPlaybackError()".format(self.kgroupID))
-            self.onPlayBackStopped()            
-                
+            self.onPlayBackStopped()
+
         def onPlayBackEnded(self):
             logger.debug("In KodiGroup[{}], onPlaybackEnded()".format(self.kgroupID))
             self.onPlayBackStopped()
@@ -182,11 +181,7 @@ class KodiGroup(xbmc.Player):
             elif self.state == STATE_IDLE:
                 #self.onPlayBackStopped()
                 #if not playing and sunset happens, probably should do nothing.
-                logger.debug("In KodiGroup[{}], in sunset(). playback stopped, doing nothing. ".format(self.kgroupID))                
-                pass
-                
-            self.forceOn = previousForce
-                
-                
-        
+                logger.debug("In KodiGroup[{}], in sunset(). playback stopped, doing nothing. ".format(self.kgroupID))
 
+
+            self.forceOn = previousForce

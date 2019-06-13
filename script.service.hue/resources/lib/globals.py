@@ -25,9 +25,9 @@ logLevel = 0
 
 
 NUM_GROUPS = 1
-STRDEBUG = False #Show string ID in UI 
-DEBUG = False # Enable python remote debug
-REMOTE_DBG_SUSPEND = False #Auto suspend thread when debugger attached
+STRDEBUG = False #Show string ID in UI
+DEBUG = True # Enable python remote debug
+REMOTE_DBG_SUSPEND = True #Auto suspend thread when debugger attached
 
 
 ADDON = xbmcaddon.Addon()
