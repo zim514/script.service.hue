@@ -12,7 +12,7 @@ global connected
 global forceOnSunset
 global daylightDisable
 global separateLogFile
-global logLevel
+
 
 
 settingsChanged = False
@@ -21,7 +21,7 @@ daylight = False
 forceOnSunset = True
 daylightDisable = True
 separateLogFile = False
-logLevel = 0
+
 
 
 NUM_GROUPS = 1

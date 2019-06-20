@@ -13,6 +13,9 @@ class KodiLogHandler(logging.StreamHandler):
 
     def __init__(self):
         logging.StreamHandler.__init__(self)
+        #logging.NOTICE ==25 
+        logging.Logger.notice=25
+        logging.addLevelName(25, "NOTICE")
         #addon_id = xbmcaddon.Addon().getAddonInfo('id')
         prefix = b"[%s] " % globals.ADDONID
         formatter = logging.Formatter(prefix + b'[%(module)s][%(funcName)s](%(lineno)d): %(message)s')
@@ -23,7 +26,7 @@ class KodiLogHandler(logging.StreamHandler):
             logging.CRITICAL: xbmc.LOGFATAL,
             logging.ERROR: xbmc.LOGERROR,
             logging.WARNING: xbmc.LOGWARNING,
-#            logging.NOTICE: xbmc.LOGNOTICE,
+#            logging.NOTICE == 25: xbmc.LOGNOTICE,  
             logging.INFO: xbmc.LOGINFO,
             logging.DEBUG: xbmc.LOGDEBUG,
             logging.NOTSET: xbmc.LOGNONE,

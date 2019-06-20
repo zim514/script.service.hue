@@ -3,40 +3,27 @@
 import logging
 import sys
 
-#import xbmcaddon
-#from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_WARNING, NOTIFICATION_INFO
 import xbmcgui
+import xbmc
 
 
-
-#from .qhue import QhueException
 from .language import get_string as _
 
 
 from . import globals
 
-#from . import KodiGroup
+
 from . import kodiHue
 from . import kodiutils
-#from . import kodilogging
 
-#kodilogging.config()
+
+
 logger = logging.getLogger(globals.ADDONID)
 
 
 
-
-#===============================================================================
-# ev = Event()
-# capture = xbmc.RenderCapture()
-# fmt = capture.getImageFormat()
-# # BGRA or RGBA
-# fmtRGBA = fmt == 'RGBA'
-#===============================================================================
-
-
 def menu():
-    logger.debug("menu started, version: {}".format(globals.ADDON.getAddonInfo('version')))
+    
     monitor = kodiHue.HueMonitor()
 
     if len(sys.argv) >1:
@@ -44,9 +31,10 @@ def menu():
     else: 
         args = ""
 
-    logger.debug("Argv {}".format(sys.argv))
-    logger.debug("Args: {}".format(args))
+    logger.info("menu started, version: {}, Arguments: {}".format(globals.ADDON.getAddonInfo('version'), args))
+    
 
+    
     if args == "discover":
         logger.debug("Started with Discovery")
         bridge = kodiHue.bridgeDiscover(monitor)
@@ -127,7 +115,7 @@ def menu():
          
 
 def service():
-    logger.debug(" service started, version: {}".format(globals.ADDON.getAddonInfo('version')))
+    logger.info("service started, version: {}".format(globals.ADDON.getAddonInfo('version')))
     monitor = kodiHue.HueMonitor()
     
     initialFlash = kodiutils.get_setting_as_bool("initialFlash")
