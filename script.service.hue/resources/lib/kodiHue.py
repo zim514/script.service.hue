@@ -372,7 +372,6 @@ def selectHueScene(bridge):
 
 
 def getDaylight(bridge):
-    logger.debug("in getDaylight()")
     return bridge.sensors['1']()['state']['daylight']
 
 

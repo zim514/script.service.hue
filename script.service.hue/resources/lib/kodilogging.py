@@ -18,17 +18,10 @@ formatter = logging.Formatter(prefix + b'[%(module)s][%(funcName)s](%(lineno)d):
 fileFormatter = logging.Formatter(b'%(asctime)s %(levelname)s [%(module)s][%(funcName)s](%(lineno)d): %(message)s')
 
 
-
-
-
 class KodiLogHandler(logging.StreamHandler):
 
     def __init__(self):
         logging.StreamHandler.__init__(self)
-        #logging.NOTICE ==25 
-        #addon_id = xbmcaddon.Addon().getAddonInfo('id')
-        prefix = b"[{}]".format(globals.ADDONID)
-        formatter = logging.Formatter(prefix + b'[%(module)s][%(funcName)s](%(lineno)d): %(message)s')
         self.setFormatter(formatter)
 
     def emit(self, record):
@@ -41,12 +34,12 @@ class KodiLogHandler(logging.StreamHandler):
             logging.DEBUG: xbmc.LOGDEBUG,
             logging.NOTSET: xbmc.LOGNONE,
         }
-        if globals.LOGDEBUG:
-            try:
-                xbmc.log(self.format(record), levels[record.levelno])
-            except UnicodeEncodeError:
-                xbmc.log(self.format(record).encode(
-                    'utf-8', 'ignore'), levels[record.levelno])
+
+        try:
+            xbmc.log(self.format(record), levels[record.levelno])
+        except UnicodeEncodeError:
+            xbmc.log(self.format(record).encode(
+                'utf-8', 'ignore'), levels[record.levelno])
 
     def flush(self):
         pass
