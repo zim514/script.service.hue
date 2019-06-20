@@ -170,7 +170,7 @@ def connectionTest(bridgeIP):
 
 #TODO: compare API version properly, ensure api version >= 1.28
     if apiversion:
-        logger.info("Connected! Hue API version: {}".format(apiversion))
+        logger.info("Bridge Found! Hue API version: {}".format(apiversion))
         return True
     else:
         logger.debug("in ConnectionTest():  Connected! Bridge too old: {}".format(apiversion))
@@ -188,7 +188,7 @@ def userTest(bridgeIP,bridgeUser):
         return False
     
     if zigbeechan:
-        logger.info("Hue User Authorized! Bridge Zigbee Channel: {}".format(zigbeechan))
+        logger.info("Hue User Authorized. Bridge Zigbee Channel: {}".format(zigbeechan))
         return True
     else:
         return False
@@ -424,7 +424,7 @@ def connectBridge(monitor,silent=False):
             if userTest(bridgeIP, bridgeUser):
                 bridge = qhue.Bridge(bridgeIP,bridgeUser)
                 globals.connected = True
-                logger.debug("Connected!")
+                logger.info("Successfully connected to Hue Bridge: {}".format(bridgeIP))
                 if not silent:
                     kodiutils.notification(_("Hue Service"), _("Hue connected"), icon=NOTIFICATION_INFO)
                 return bridge

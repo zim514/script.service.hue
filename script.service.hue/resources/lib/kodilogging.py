@@ -47,7 +47,6 @@ class KodiLogHandler(logging.StreamHandler):
 
 def config():
     separateLogFile=get_setting_as_bool("separateLogFile")
-    global logger
     logger = logging.getLogger(globals.ADDONID)
 
     if separateLogFile:
