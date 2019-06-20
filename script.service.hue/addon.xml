@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.2.6">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.2.7">
 	
   <requires>
     <import addon="xbmc.python" version="2.26.0" />
@@ -20,6 +20,9 @@
     <platform>all</platform>
     <license>MIT License</license>
     <news>
+    v0.2.7:
+    - Support optional logging to external file
+    - Removed half translated French 
     v0.2.6: 
     - Improve logging system
 	</news>

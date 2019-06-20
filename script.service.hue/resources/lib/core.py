@@ -3,24 +3,16 @@
 import logging
 import sys
 
-import xbmcgui
 import xbmc
 
+import xbmcgui
 
 from .language import get_string as _
-
-
 from . import globals
-
-
 from . import kodiHue
 from . import kodiutils
 
-
-
 logger = logging.getLogger(globals.ADDONID)
-
-
 
 def menu():
     
@@ -116,6 +108,8 @@ def menu():
 
 def service():
     logger.info("service started, version: {}".format(globals.ADDON.getAddonInfo('version')))
+    
+    
     monitor = kodiHue.HueMonitor()
     
     initialFlash = kodiutils.get_setting_as_bool("initialFlash")
@@ -123,7 +117,7 @@ def service():
     globals.daylightDisable = kodiutils.get_setting_as_bool("daylightDisable")
 
     bridge = kodiHue.connectBridge(monitor,silent=False)
-            
+
     if bridge:
         globals.settingsChanged = False
         globals.daylight = kodiHue.getDaylight(bridge)
@@ -131,6 +125,7 @@ def service():
 
         timer = 60
         # #Ready to go! Start running until Kodi exit.
+        logger.debug('Main service loop starting')
         while globals.connected and not monitor.abortRequested():
             
             if globals.settingsChanged:
@@ -145,9 +140,9 @@ def service():
             if timer > 59:
                 try:
                     previousDaylight = kodiHue.getDaylight(bridge)
-                    logger.debug('Daylight check: current: {}, previous: {}'.format(globals.daylight, previousDaylight))
+                    #logger.debug('Daylight check: current: {}, previous: {}'.format(globals.daylight, previousDaylight))
                 except Exception as error:
-                    logger.debug('Get daylight exception: {}'.format(error))
+                    logger.error('Get daylight exception: {}'.format(error))
                     
 
 
@@ -157,7 +152,7 @@ def service():
                     if not globals.daylight:
                         kodiHue.sunset(bridge,kgroups)
                 
-                logger.debug('Service running...')
+                
                 timer = 1
 
             
