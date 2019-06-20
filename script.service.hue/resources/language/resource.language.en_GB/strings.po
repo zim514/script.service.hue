@@ -71,49 +71,8 @@ msgstr "Debug Logs"
 
 
 msgctxt "#32105"
-msgid "Log destination"
-msgstr "Log destination"
-
-msgctxt "#32106"
-msgid "Default (kodi.log)"
-msgstr "Default (kodi.log)"
-
-msgctxt "#32107"
-msgid "Separate (kodiHue.log)"
-msgstr "Separate (kodiHue.log)"
-
-
-msgctxt "#32108"
-msgid "Logging level"
-msgstr "Logging level"
-
-msgctxt "#32301"
-msgid "Debug"
-msgstr "Debug"
-
-msgctxt "#32302"
-msgid "Info"
-msgstr "Info"
-
-msgctxt "#32303"
-msgid "Notice"
-msgstr "Notice"
-
-msgctxt "#32304"
-msgid "Warning"
-msgstr "Warning"
-
-msgctxt "#32305"
-msgid "Error"
-msgstr "Error"
-
-msgctxt "#32306"
-msgid "Severe"
-msgstr "Severe"
-
-msgctxt "#32307"
-msgid "Fatal"
-msgstr "Fatal"
+msgid "Separate debug log"
+msgstr "Separate debug log"
 
 
 msgctxt "#5110"

@@ -13,7 +13,7 @@ if globals.DEBUG:
         import sys;sys.path.append("e:\dev\pysrc")
         import pydevd
         pydevd.settrace('localhost', stdoutToServer=False, stderrToServer=False, suspend=globals.REMOTE_DBG_SUSPEND,
-                        trace_only_current_thread=False, overwrite_prev_trace=True, patch_multiprocessing=True)
+                        trace_only_current_thread=True, overwrite_prev_trace=True, patch_multiprocessing=True)
 
     except ImportError:
         logger.critical("Kodi Hue Remote Debug Error: You must add org.python.pydev.debug.pysrc to your PYTHONPATH, or disable DEBUG")
