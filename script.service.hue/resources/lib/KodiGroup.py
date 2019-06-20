@@ -113,7 +113,7 @@ class KodiGroup(xbmc.Player):
                     try:
                         self.groupResource.action(scene=self.startScene)
                     except QhueException as e:
-                        logger.error("onPlaybackStopped: Hue call fail: {}".format(e))  
+                        logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
                         
                 elif self.startBehavior == BEHAVIOR_OFF:
                     self.groupResource.action(on=False)

@@ -170,12 +170,12 @@ def connectionTest(bridgeIP):
 
 #TODO: compare API version properly, ensure api version >= 1.28
     if apiversion:
-        logger.debug("in ConnectionTest():  Connected! Hue API version: {}".format(apiversion))
+        logger.info("Connected! Hue API version: {}".format(apiversion))
         return True
     else:
         logger.debug("in ConnectionTest():  Connected! Bridge too old: {}".format(apiversion))
         kodiutils.notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)), icon=NOTIFICATION_ERROR)
-        
+
         return False
 
 
@@ -188,18 +188,17 @@ def userTest(bridgeIP,bridgeUser):
         return False
     
     if zigbeechan:
-        logger.debug("in userTest():  Authorized! Bridge Zigbee Channel: {}".format(zigbeechan))
+        logger.info("Hue User Authorized! Bridge Zigbee Channel: {}".format(zigbeechan))
         return True
     else:
-        return False                                       
+        return False
 
-    
-        
+
 def discoverBridgeIP(monitor):
     #discover hue bridge
     logger.debug("In discoverBridgeIP")
     #TODO: implement upnp discovery
-    #bridge_ip = _discover_upnp()
+
     bridgeIP = None
     if bridgeIP is None:
         bridgeIP = _discoverNupnp()
@@ -209,7 +208,7 @@ def discoverBridgeIP(monitor):
     else:
         return False
 
-       
+
 
 def createUser(monitor, bridgeIP, progressBar=False):
     #device = 'kodi#'+getfqdn()
@@ -225,11 +224,11 @@ def createUser(monitor, bridgeIP, progressBar=False):
     
     while 'link button not pressed' in res and timeout <= 90  and not monitor.abortRequested() and not progressBar.iscanceled():
         logger.debug("In create_user: abortRquested: {}, timer: {}".format(str(monitor.abortRequested()),timeout) )
-        
+
         if progressBar:
             progressBar.update(progress,_("Press link button on bridge")) #press link button on bridge
              #notification(get_string(9000), get_string(9001), time=1000, icon=xbmcgui.NOTIFICATION_WARNING) #9002: Press link button on bridge
-            
+
         req = requests.post('http://{}/api'.format(bridgeIP), data=data)
         res = req.text
         monitor.waitForAbort(1)
@@ -237,7 +236,7 @@ def createUser(monitor, bridgeIP, progressBar=False):
         progress = progress + 1
 
     res = req.json()
-    
+
     try:
         username = res[0]['success']['username']
         return username
@@ -370,22 +369,21 @@ def selectHueScene(bridge):
         return selectedId, hSceneName;
     else:
         return None
-    
+
 
 def getDaylight(bridge):
     logger.debug("in getDaylight()")
-#    sensors = bridge.sensors()
     return bridge.sensors['1']()['state']['daylight']
-            
+
 
 def sunset(bridge,kgroups):
-    logger.debug("in sunset()")
-    
+    logger.info("Applying sunset scenes")
+
     for g in kgroups:
         logger.debug("in sunset() g: {}, kgroupID: {}".format(g,g.kgroupID))
         if kodiutils.get_setting_as_bool("group{}_enabled".format(g.kgroupID)):
             g.sunset()
-            
+
     return
     
 
@@ -401,7 +399,7 @@ def setupGroups(bridge,flash=False):
         
     return kgroups
 
-                   
+
 
 
 def connectBridge(monitor,silent=False):
