@@ -58,7 +58,7 @@ def config():
                 xbmc.log("Hue Service: Log: can't create directory: " + globals.ADDONDIR, level=xbmc.LOGERROR)
                 xbmc.log("Exception: " + str(e.message), xbmc.LOGERROR)
 
-        
+
         fileHandler = TimedRotatingFileHandler(os.path.join(globals.ADDONDIR, 'kodiHue.log'), when="midnight",  backupCount=2)
         fileHandler.setLevel(logging.DEBUG)
         fileHandler.setFormatter(fileFormatter)
