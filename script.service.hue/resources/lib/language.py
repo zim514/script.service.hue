@@ -6,7 +6,8 @@ import os
 import sys
 from builtins import range
 
-from .globals import STRDEBUG
+from .globals import STRDEBUG,ADDON
+
 
 ######### Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
 ######### https://forum.kodi.tv/showthread.php?tid=268081&highlight=generate+.po+python+gettext
@@ -66,10 +67,9 @@ if __name__ == "__main__":
                                                     m.msgctxt.replace("#", "").strip())
             f.write(line)
 else:
+    import xbmc
     def get_string(t):
-        import xbmc, xbmcaddon
-        ADDON = xbmcaddon.Addon()
-#        ADDON_ID = ADDON.getAddonInfo("id")
+
         id = _strings.get(t.lower())
         if not id:
             xbmc.log("LANGUAGE: missing translation for '%s'" % t.lower())
@@ -104,17 +104,7 @@ _strings['bridge user'] = 1230
 _strings['global settings'] = 2100
 _strings['advanced'] = 32101
 _strings['debug logs'] = 32102
-_strings['log destination'] = 32105
-_strings['default (kodi.log)'] = 32106
-_strings['separate (kodihue.log)'] = 32107
-_strings['logging level'] = 32108
-_strings['debug'] = 32301
-_strings['info'] = 32302
-_strings['notice'] = 32303
-_strings['warning'] = 32304
-_strings['error'] = 32305
-_strings['severe'] = 32306
-_strings['fatal'] = 32307
+_strings['separate debug log'] = 32105
 _strings['initial flash'] = 5110
 _strings['flash on settings reload'] = 5111
 _strings['group'] = 6000
