@@ -24,7 +24,7 @@
 
 
 
-<!--  GROUP SECTION  0-->    
+<!--  GROUP SECTION  0 VIDEO-->    
     <category label="32100">
 
         <setting id="group0_enabled" type="bool" label="6201" default="false" />
@@ -59,6 +59,50 @@
     </category>
     
 <!--  /GROUP SECTION  0-->
+
+
+
+
+
+<!--  GROUP SECTION  1 Audio-->    
+    <category label="32102">
+
+        <setting id="group1_enabled" type="bool" label="6201" default="false" />
+        
+        <!--  Group playback start setting -->
+        <!--   Visible when group behaviour is enabled-->
+        <setting type="lsep" label="32201" visible="eq(-1,1)" /> 
+        <setting id="group1_startBehavior" type="select" label="6201" lvalues="6202|6210|6204" visible="eq(-2,true)" />
+        <!--HERE-->
+        <setting id="group1_startSelectScene" type="action" label="32512" subsetting="true" action="RunScript(script.service.hue,sceneSelect,1,start)" visible="eq(-1,1) + eq(-3,true)" option="close" />
+        <setting id="group1_startSceneName" type="text" label="32510" default="Not selected" subsetting="true" enable="false" visible="eq(-2,1) + eq(-4,true)" />
+        <setting id="group1_startSceneID" type="text" label="32511"  default="-1" subsetting="true" enable="false" visible="eq(-3,1) + eq(-5,true)" />
+ 	        
+        <!--  Group playback pause setting -->
+        <!--   Visible when group behaviour is enabled-->
+        <setting type="lsep" label="32202" visible="eq(-6,1)"/>   
+        <setting id="group1_pauseBehavior" type="select" label="6201" lvalues="6202|6210|6204|6205" visible="eq(-7,true)" />
+	    <!-- Visible when group_event_start is Adjust (1) + group_behavior is Adjust (1)  -->           
+        <setting id="group1_pauseSelectScene" type="action" label="32512" subsetting="true" action="RunScript(script.service.hue,sceneSelect,1,pause)" visible="eq(-1,1) + eq(-8,true)" option="close"/>
+        <setting id="group1_pauseSceneName" type="text" label="32510" default="Not selected" subsetting="true" enable="false" visible="eq(-2,1) + eq(-9,true)" />
+        <setting id="group1_pauseSceneID" type="text" label="32511"  default="-1" subsetting="true" enable="false" visible="eq(-3,1) + eq(-10,true)" />
+
+		<!--  Group playback stop setting --> 
+		<!--   Visible when group behaviour is enabled-->
+        <setting type="lsep" label="32203" visible="eq(-11,1)"/>
+        <setting id="group1_stopBehavior" type="select" label="6201" lvalues="6202|6210|6204|6205" visible="eq(-12,true)"/>
+        	<!-- Visible when group_event_start is Adjust (1) + group_behavior is Adjust (1)  -->
+        <setting id="group1_stopSelectScene" type="action" label="32512" subsetting="true" action="RunScript(script.service.hue,sceneSelect,1,stop)" visible="eq(-1,1) + eq(-13,true)" option="close"/>
+        <setting id="group1_stopSceneName" type="text" label="32510" default="Not selected" subsetting="true" enable="false" visible="eq(-2,1) + eq(-14,true)" />
+        <setting id="group1_stopSceneID" type="text" label="32511"  default="-1" subsetting="true" enable="false" visible="eq(-3,1) + eq(-15,true)" />
+      
+    </category>
+    
+<!--  /GROUP SECTION  1-->
+
+
+
+
 
 	<category label = "32101">
 	    <setting id="initialFlash" type="bool" label="5110" default="False" />

@@ -24,7 +24,7 @@ deploy:
     file_glob: true
     file: $RELEASE_ZIP
     skip_cleanup: true
-    prerelease: false
+    prerelease: true
     draft: false
     on:
       all_branches: true

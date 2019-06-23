@@ -4,25 +4,23 @@ Created on Apr. 12, 2019
 
 '''
 
-import logging
-import requests
+from logging import getLogger
+from builtins import str
 from socket import getfqdn
 
-
+import requests
 import xbmc
-
 import xbmcgui
-from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
+from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_INFO
 
+from . import KodiGroup
 from . import globals
 from . import kodiutils
-from . import KodiGroup
 from . import qhue
 from .language import get_string as _
 
 
-
-logger = logging.getLogger(globals.ADDONID)
+logger = getLogger(globals.ADDONID)
 
 def createHueGroup(bridge):
     logger.debug("In kodiHue createHueGroup")
@@ -42,7 +40,7 @@ def deleteHueGroup(bridge):
     logger.debug("In kodiHue deleteHueGroup")
     group = selectHueGroup(bridge)
     if group:
-        confirm = xbmcgui.Dialog().yesno(_("Delete Hue Group"), _("Are you sure you want to delete this group: "), unicode(group[1]))
+        confirm = xbmcgui.Dialog().yesno(_("Delete Hue Group"), _("Are you sure you want to delete this group: "), str(group[1]))
     if group and confirm:              
         groups=bridge.groups
         res=groups[group[0]](http_method='delete')
@@ -79,8 +77,8 @@ def createHueScene(bridge):
 def deleteHueScene(bridge):
     logger.debug("In kodiHue deleteHueScene")
     scene = selectHueScene(bridge)
-    if scene:
-        confirm = xbmcgui.Dialog().yesno(_("Delete Hue Scene"), _("Are you sure you want to delete this scene: "), unicode(scene[1]))
+    if scene is not None:
+        confirm = xbmcgui.Dialog().yesno(_("Delete Hue Scene"), _("Are you sure you want to delete this scene: "), str(scene[1]))
     if scene and confirm:              
         scenes=bridge.scenes
         res=scenes[scene[0]](http_method='delete')
@@ -123,15 +121,15 @@ def bridgeDiscover(monitor):
         #bridgeIP = discoverBridgeIP..
         progressBar.update(10, _("nupnp discovery... "))
         bridgeIP =_discoverNupnp()
-        
+
         if connectionTest(bridgeIP):
             progressBar.update(100, _("Found bridge: ") + bridgeIP)
             monitor.waitForAbort(1)
-                     
+
             bridgeUser = createUser(monitor, bridgeIP, progressBar)
             if bridgeUser:
                 progressBar.update(90,_("User Found!"),_("Saving settings"))
-                
+
                 kodiutils.set_setting("bridgeIP",bridgeIP)
                 kodiutils.set_setting("bridgeUser",bridgeUser)
                 complete = True
@@ -140,14 +138,14 @@ def bridgeDiscover(monitor):
                 monitor.waitForAbort(5)
                 progressBar.close()
                 return True
-                
+
             else:
                 progressBar.update(100, _("User not found"),_("Check your bridge and network"))
                 monitor.waitForAbort(5)
                 complete = True
-           
+
                 progressBar.close()
-            
+
         else:
             progressBar.update(100, _("Bridge not found"),_("Check your bridge and network"))
             monitor.waitForAbort(5)
@@ -158,8 +156,8 @@ def bridgeDiscover(monitor):
         progressBar.update(100,_("Cancelled"))
         complete = True
         progressBar.close()
-        
-       
+
+
 def connectionTest(bridgeIP):
     logger.debug("in ConnectionTest() Attempt initial connection")
     b = qhue.qhue.Resource("http://{}/api".format(bridgeIP))
@@ -186,7 +184,7 @@ def userTest(bridgeIP,bridgeUser):
         zigbeechan = b.config()['zigbeechannel']
     except:
         return False
-    
+
     if zigbeechan:
         logger.info("Hue User Authorized. Bridge Zigbee Channel: {}".format(zigbeechan))
         return True
@@ -202,7 +200,7 @@ def discoverBridgeIP(monitor):
     bridgeIP = None
     if bridgeIP is None:
         bridgeIP = _discoverNupnp()
-    
+
     if connectionTest(bridgeIP):
         return bridgeIP
     else:
@@ -220,14 +218,14 @@ def createUser(monitor, bridgeIP, progressBar=False):
     progress=0
     if progressBar:        
         progressBar.update(progress,_("Press link button on bridge"),_("Waiting for 90 seconds...")) #press link button on bridge
-    
-    
+
+
     while 'link button not pressed' in res and timeout <= 90  and not monitor.abortRequested() and not progressBar.iscanceled():
         logger.debug("In create_user: abortRquested: {}, timer: {}".format(str(monitor.abortRequested()),timeout) )
 
         if progressBar:
             progressBar.update(progress,_("Press link button on bridge")) #press link button on bridge
-             #notification(get_string(9000), get_string(9001), time=1000, icon=xbmcgui.NOTIFICATION_WARNING) #9002: Press link button on bridge
+
 
         req = requests.post('http://{}/api'.format(bridgeIP), data=data)
         res = req.text
@@ -259,7 +257,7 @@ def configureScene(bridge,kGroupID,action):
         #group0_startSceneID
         kodiutils.set_setting("group{}_{}SceneID".format(kGroupID, action),scene[0])
         kodiutils.set_setting("group{}_{}SceneName".format(kGroupID,action), scene[1])
-        
+
         globals.ADDON.openSettings()
 
 
@@ -268,7 +266,7 @@ def configureScene(bridge,kGroupID,action):
 def selectHueLights(bridge):
     logger.debug("In selectHueLights{}")
     hueLights=bridge.lights()
-    
+
     xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
     items=[]
     index=[]
@@ -290,22 +288,17 @@ def selectHueLights(bridge):
         for s in selected:
             lightIDs.append(index[s])
             
-    
-    logger.debug("In selectHueGroup: selected: {}".format(selected))
+
+    logger.debug("selected: {}".format(selected))
     
     if lightIDs:
         return lightIDs;
     else:
         return None    
-    
-    
-    
     if selected:
         return selected
     else:
         return None
-
-
 
 def selectHueGroup(bridge):
     logger.debug("In selectHueGroup{}")
@@ -352,20 +345,20 @@ def selectHueScene(bridge):
 
         hScene=hueScenes[scene]
         hSceneName=hScene['name']
-        
+
         #logger.debug("In selectHueGroup: {}, {}".format(hgroup,name))
         if hScene['version'] == 2 and hScene["recycle"] is False and hScene["type"] == "LightScene":
             index.append(scene)
             items.append(xbmcgui.ListItem(label=hSceneName))
-        
+
     xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
     selected = xbmcgui.Dialog().select("Select Hue scene...",items)
     if selected > -1 :
         selectedId = index[selected]
         hSceneName=hueScenes[selectedId]['name']
         logger.debug("In selectHueScene: selected: {}".format(selected))
-    
-    if selectedId:
+
+    if selected > -1:
         return selectedId, hSceneName;
     else:
         return None
@@ -384,18 +377,31 @@ def sunset(bridge,kgroups):
             g.sunset()
 
     return
-    
+
 
 def setupGroups(bridge,flash=False):
     logger.debug("in setupGroups()")
     kgroups= []
-    g=0
-    while g < globals.NUM_GROUPS:
-        if kodiutils.get_setting_as_bool("group{}_enabled".format(g)):
-            kgroups.append(KodiGroup.KodiGroup())
-            kgroups[g].setup(bridge, g, flash)  
-        g = g + 1
-        
+    
+    
+    
+    if kodiutils.get_setting_as_bool("group0_enabled"): #VIDEO Group
+        kgroups.append(KodiGroup.KodiGroup())
+        kgroups[0].setup(bridge, 0, flash,KodiGroup.VIDEO)
+
+    if kodiutils.get_setting_as_bool("group1_enabled"): #Audio Group
+        kgroups.append(KodiGroup.KodiGroup())
+        kgroups[1].setup(bridge, 1, flash,KodiGroup.AUDIO)
+
+    #===========================================================================
+    # g=0
+    # while g < globals.NUM_GROUPS:
+    #     if kodiutils.get_setting_as_bool("group{}_enabled".format(g)):
+    #         kgroups.append(KodiGroup.KodiGroup())
+    #         kgroups[g].setup(bridge, g, flash)
+    #     g = g + 1
+    #===========================================================================
+
     return kgroups
 
 
@@ -406,7 +412,7 @@ def connectBridge(monitor,silent=False):
     bridgeUser = kodiutils.get_setting("bridgeUser")
     logger.debug("in Connect() with settings: bridgeIP: {}, bridgeUser: {}".format(bridgeIP,bridgeUser))
 
-    
+
     if bridgeIP and bridgeUser:
         if connectionTest(bridgeIP):
             logger.debug("in Connect(): Bridge responding to connection test.")
@@ -417,8 +423,8 @@ def connectBridge(monitor,silent=False):
             if bridgeIP:
                 logger.debug("in Connect(): New IP found: {}. Saving".format(bridgeIP))
                 kodiutils.set_setting("bridgeIP",bridgeIP)
-                        
-        
+
+
         if bridgeIP:
             logger.debug("in Connect(): Checking User")
             if userTest(bridgeIP, bridgeUser):
@@ -432,15 +438,15 @@ def connectBridge(monitor,silent=False):
             logger.debug("Bridge not responding")
             kodiutils.notification(_("Hue Service"), _("Bridge connection failed"), icon=NOTIFICATION_ERROR)
             globals.connected = False
-            return False
-            
+            return None
+
     else:
         logger.debug("Bridge not configured")
         kodiutils.notification(_("Hue Service"), _("Bridge not configured"), icon=NOTIFICATION_ERROR)
         globals.connected = False
-        return False
-    
-    
+        return None
+
+
 class HueMonitor(xbmc.Monitor):
     def __init__(self):
         super(xbmc.Monitor,self).__init__()

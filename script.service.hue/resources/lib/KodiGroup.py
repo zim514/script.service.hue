@@ -3,15 +3,13 @@ Created on Apr. 17, 2019
 
 
 '''
-import logging
+from logging import getLogger
 
 import xbmc
-
 from . import globals
-#from . import kodilogging
+
 from .kodiutils import get_setting, get_setting_as_bool, get_setting_as_int
 from .qhue import QhueException
-
 
 BEHAVIOR_NOTHING = 0
 BEHAVIOR_ADJUST = 1
@@ -22,10 +20,11 @@ STATE_IDLE = 0
 STATE_PLAYING = 1
 STATE_PAUSED = 2
 
-state = 0
+VIDEO=1
+AUDIO=2
 
 
-logger = logging.getLogger(globals.ADDONID)
+logger = getLogger(globals.ADDONID)
 
 
 class KodiGroup(xbmc.Player):
@@ -38,7 +37,6 @@ class KodiGroup(xbmc.Player):
             self.fadeTime=get_setting_as_int("group{}_fadeTime".format(self.kgroupID)) * 10 #Stored as seconds, but Hue API expects multiples of 100ms.
             self.forceOn=get_setting_as_bool("group{}_forceOn".format(self.kgroupID))
 
-
             self.startBehavior=get_setting_as_int("group{}_startBehavior".format(self.kgroupID))
             self.startScene=get_setting("group{}_startSceneID".format(self.kgroupID))
 
@@ -49,9 +47,9 @@ class KodiGroup(xbmc.Player):
             self.stopScene=get_setting("group{}_stopSceneID".format(self.kgroupID))
 
 
-        def setup(self,bridge,kgroupID,flash = False):
+        def setup(self,bridge,kgroupID,flash = False, mediaType=VIDEO):
             self.bridge = bridge
-
+            self.mediaType = mediaType
 
             self.lights = bridge.lights
             self.kgroupID=kgroupID
@@ -65,7 +63,6 @@ class KodiGroup(xbmc.Player):
 
             if flash:
                 self.flash()
-
 
 
         def saveInitialState(self):
@@ -102,29 +99,31 @@ class KodiGroup(xbmc.Player):
             self.groupResource.action(alert="select")
 
         def onPlayBackStarted(self, saveInitial=False):
-            logger.info("In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, forceOn: {}".format(self.kgroupID, self.enabled, self.forceOn))
+            logger.info("In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, forceOn: {}, isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID, self.enabled, self.forceOn,self.isPlayingVideo(),self.isPlayingAudio()))
+
             self.state = STATE_PLAYING
+            globals.lastMediaType = self.playbackType()
             if saveInitial:
                 self.saveInitialState()
 
-            if self.enabled and not (globals.daylightDisable == globals.daylight) :
-                
+            if self.enabled and self.mediaType == self.playbackType() and not (globals.daylightDisable == globals.daylight) :
+
                 if self.startBehavior == BEHAVIOR_ADJUST:
                     try:
                         self.groupResource.action(scene=self.startScene)
                     except QhueException as e:
                         logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
-                        
+
                 elif self.startBehavior == BEHAVIOR_OFF:
                     self.groupResource.action(on=False)
-                
-            
+
+
         def onPlayBackStopped(self):
             self.state = STATE_IDLE
-            logger.info("In KodiGroup[{}], onPlaybackStopped() ".format(self.kgroupID))
-            
-            if self.enabled and not (globals.daylightDisable == globals.daylight):
-                
+            logger.info("In KodiGroup[{}], onPlaybackStopped() , isPlayingVideo: {}, isPlayingAudio: {} ".format(self.kgroupID,self.isPlayingVideo(),self.isPlayingAudio()))
+
+            if self.enabled and self.mediaType == globals.lastMediaType and not (globals.daylightDisable == globals.daylight):
+
                 if self.stopBehavior == BEHAVIOR_ADJUST:
                     try:
                         self.groupResource.action(scene=self.stopScene)
@@ -141,10 +140,10 @@ class KodiGroup(xbmc.Player):
 
         def onPlayBackPaused(self):
             self.state = STATE_PAUSED
-            logger.info("In KodiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
+            logger.info("In KodiGroup[{}], onPlaybackPaused() , isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID,self.isPlayingVideo(),self.isPlayingAudio()))
 
-            if self.enabled and not (globals.daylightDisable == globals.daylight):
-
+            if self.enabled and self.mediaType == self.playbackType() and not (globals.daylightDisable == globals.daylight):
+                self.lastMediaType = self.playbackType()
                 if self.pauseBehavior == BEHAVIOR_ADJUST:
                     try:
                         self.groupResource.action(scene=self.pauseScene)
@@ -169,12 +168,12 @@ class KodiGroup(xbmc.Player):
         def onPlayBackEnded(self):
             logger.info("In KodiGroup[{}], onPlaybackEnded()".format(self.kgroupID))
             self.onPlayBackStopped()
-            
+
         def sunset(self):
             logger.info("In KodiGroup[{}], in sunset()".format(self.kgroupID))
             previousForce = self.forceOn
             self.forceOn = True
-            
+
             if self.state == STATE_PLAYING:
                 self.onPlayBackStarted()
             elif self.state == STATE_PAUSED:
@@ -186,3 +185,19 @@ class KodiGroup(xbmc.Player):
 
 
             self.forceOn = previousForce
+
+
+        def playbackType(self):
+            if self.isPlayingVideo():
+                mediaType=VIDEO
+            elif self.isPlayingAudio():
+                mediaType=AUDIO
+            return mediaType
+
+
+class KodiVideoGroup(KodiGroup):
+    def __init__(self):
+        super(KodiVideoGroup,self).__init__()
+
+    def onPlayBackStarted(self, saveInitial=False):
+        pass

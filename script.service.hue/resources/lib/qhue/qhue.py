@@ -3,11 +3,13 @@
 
 import json
 import re
-from socket import getfqdn
 import sys
+from builtins import input
+from builtins import object
+from builtins import str
+from socket import getfqdn
 
 import requests
-
 
 # for hostname retrieval for registering with the bridge
 __all__ = ('Bridge', 'QhueException', 'create_new_username')
@@ -41,7 +43,7 @@ class Resource(object):
         # then send them as parameters to the bridge. This allows for
         # "escaping" of keywords that might conflict with Python syntax
         # or with the specially-handled keyword "http_method".
-        kwargs = {(k[:-1] if k.endswith('_') else k): v for k, v in kwargs.items()}
+        kwargs = {(k[:-1] if k.endswith('_') else k): v for k, v in list(kwargs.items())}
         if http_method == 'put':
             r = requests.put(url, data=json.dumps(kwargs, default=list), timeout=self.timeout)
         elif http_method == 'post':
@@ -89,9 +91,9 @@ def create_new_username(ip, devicetype=None, timeout=_DEFAULT_TIMEOUT):
     prompt = "Press the Bridge button, then press Return: "
     # Deal with one of the sillier python3 changes
     if sys.version_info.major == 2:
-        _ = raw_input(prompt)
+        _ = eval(input(prompt))
     else:
-        _ = input(prompt)
+        _ = eval(input(prompt))
 
     if devicetype is None:
         devicetype = "qhue#{}".format(getfqdn())

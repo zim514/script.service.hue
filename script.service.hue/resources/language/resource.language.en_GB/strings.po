@@ -14,20 +14,24 @@ msgid "Light Groups"
 msgstr "Light Groups"
 
 msgctxt "#32100"
-msgid "Player Actions"
-msgstr "Player Actions"
+msgid "Video Actions"
+msgstr "Video Actions"
+
+msgctxt "#32102"
+msgid "Audio Actions"
+msgstr "Audio Actions"
 
 msgctxt "#32201"
-msgid "Start/Resume Video"
-msgstr "Start/Resume Video"
+msgid "Start/Resume"
+msgstr "Start/Resume"
 
 msgctxt "#32202"
-msgid "Pause Video"
-msgstr "Pause Video"
+msgid "Pause"
+msgstr "Pause"
 
 msgctxt "#32203"
-msgid "Stop Video"
-msgstr "Stop Video"
+msgid "Stop"
+msgstr "Stop"
 
 msgctxt "#32510"
 msgid "Scene Name"
