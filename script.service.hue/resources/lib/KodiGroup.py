@@ -21,6 +21,7 @@ STATE_PLAYING = 1
 STATE_PAUSED = 2
 
 state = 0
+mediaType = 0 #0=video, 1=audio
 
 
 logger = getLogger(globals.ADDONID)
@@ -98,7 +99,8 @@ class KodiGroup(xbmc.Player):
             self.groupResource.action(alert="select")
 
         def onPlayBackStarted(self, saveInitial=False):
-            logger.info("In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, forceOn: {}".format(self.kgroupID, self.enabled, self.forceOn))
+            logger.info("In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, forceOn: {}, isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID, self.enabled, self.forceOn,self.isPlayingVideo(),self.isPlayingAudio()))
+            
             self.state = STATE_PLAYING
             if saveInitial:
                 self.saveInitialState()
@@ -117,7 +119,7 @@ class KodiGroup(xbmc.Player):
 
         def onPlayBackStopped(self):
             self.state = STATE_IDLE
-            logger.info("In KodiGroup[{}], onPlaybackStopped() ".format(self.kgroupID))
+            logger.info("In KodiGroup[{}], onPlaybackStopped() , isPlayingVideo: {}, isPlayingAudio: {} ".format(self.kgroupID,self.isPlayingVideo(),self.isPlayingAudio()))
 
             if self.enabled and not (globals.daylightDisable == globals.daylight):
 
@@ -137,7 +139,7 @@ class KodiGroup(xbmc.Player):
 
         def onPlayBackPaused(self):
             self.state = STATE_PAUSED
-            logger.info("In KodiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
+            logger.info("In KodiGroup[{}], onPlaybackPaused() , isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID,self.isPlayingVideo(),self.isPlayingAudio()))
 
             if self.enabled and not (globals.daylightDisable == globals.daylight):
 
@@ -182,3 +184,11 @@ class KodiGroup(xbmc.Player):
 
 
             self.forceOn = previousForce
+
+
+class KodiVideoGroup(KodiGroup):
+    def __init__(self):
+        super(KodiGroup,self).__init__()
+
+    def onPlayBackStarted(self, saveInitial=False):
+        pass
