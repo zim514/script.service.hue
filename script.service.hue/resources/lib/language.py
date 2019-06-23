@@ -1,8 +1,12 @@
 #! /usr/bin/python
+from __future__ import absolute_import
+from __future__ import print_function
+
 import os
 import sys
+from builtins import range
 
-from globals import STRDEBUG
+from .globals import STRDEBUG
 
 ######### Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
 ######### https://forum.kodi.tv/showthread.php?tid=268081&highlight=generate+.po+python+gettext

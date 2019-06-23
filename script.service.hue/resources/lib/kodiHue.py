@@ -5,22 +5,19 @@ Created on Apr. 12, 2019
 '''
 
 import logging
-import requests
+from builtins import str
 from socket import getfqdn
 
-
+import requests
 import xbmc
-
 import xbmcgui
-from xbmcgui import NOTIFICATION_ERROR,NOTIFICATION_WARNING, NOTIFICATION_INFO
+from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_INFO
 
+from . import KodiGroup
 from . import globals
 from . import kodiutils
-from . import KodiGroup
 from . import qhue
 from .language import get_string as _
-
-
 
 logger = logging.getLogger(globals.ADDONID)
 
@@ -42,7 +39,7 @@ def deleteHueGroup(bridge):
     logger.debug("In kodiHue deleteHueGroup")
     group = selectHueGroup(bridge)
     if group:
-        confirm = xbmcgui.Dialog().yesno(_("Delete Hue Group"), _("Are you sure you want to delete this group: "), unicode(group[1]))
+        confirm = xbmcgui.Dialog().yesno(_("Delete Hue Group"), _("Are you sure you want to delete this group: "), str(group[1]))
     if group and confirm:              
         groups=bridge.groups
         res=groups[group[0]](http_method='delete')
@@ -80,7 +77,7 @@ def deleteHueScene(bridge):
     logger.debug("In kodiHue deleteHueScene")
     scene = selectHueScene(bridge)
     if scene:
-        confirm = xbmcgui.Dialog().yesno(_("Delete Hue Scene"), _("Are you sure you want to delete this scene: "), unicode(scene[1]))
+        confirm = xbmcgui.Dialog().yesno(_("Delete Hue Scene"), _("Are you sure you want to delete this scene: "), str(scene[1]))
     if scene and confirm:              
         scenes=bridge.scenes
         res=scenes[scene[0]](http_method='delete')

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
 
+from resources.lib import core
 from resources.lib import globals
 from resources.lib import kodilogging
-from resources.lib import core
 
 kodilogging.config()
 logger = logging.getLogger(globals.ADDONID)

@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from builtins import str
 
-import xbmcgui
 import xbmc
-import os
-from datetime import datetime
-from logging.handlers import RotatingFileHandler
-
+import xbmcgui
 
 from . import globals
 

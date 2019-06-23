@@ -3,14 +3,12 @@
 import logging
 import sys
 
-import xbmc
-
 import xbmcgui
 
-from .language import get_string as _
 from . import globals
 from . import kodiHue
 from . import kodiutils
+from .language import get_string as _
 
 logger = logging.getLogger(globals.ADDONID)
 

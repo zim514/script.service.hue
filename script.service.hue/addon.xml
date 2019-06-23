@@ -1,8 +1,10 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.2.7">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.2.8">
 	
   <requires>
     <import addon="xbmc.python" version="2.26.0" />
     <import addon="script.module.requests" version="2.22.0"/>
+  	<import addon="script.module.kodi-six" />
+  	<import addon="script.module.future" />
   </requires>
   
   <extension  point="xbmc.service" name="service.hue" library="service.py">
@@ -14,18 +16,20 @@
   
   <extension point="xbmc.addon.metadata">
   
-    <summary lang="en_GB">Philips Hue Service</summary>
+    <summary lang="en_GB">Automate Hue lights with Kodi playback</summary>
     <description lang="en_GB">Automate your Philips Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback.</description>
-    <disclaimer lang="en_GB">Automate Hue with Kodi</disclaimer>
+    <disclaimer lang="en_GB">Automate Hue lights with Kodi playback</disclaimer>
     <platform>all</platform>
     <license>MIT License</license>
     <news>
-    v0.2.7:
-    - Support optional logging to external file
-    - Removed half translated French 
-    v0.2.6: 
-    - Improve logging system
-	</news>
+v0.2.8:
+  - Python 2/3 support
+v0.2.7:
+  - Support optional logging to external file
+  - Removed half translated French 
+v0.2.6: 
+  - Improve logging system
+</news>
     <assets>
   		<icon>resources/icons/icon.png</icon>
   		<fanart>resources/icons/fanart.jpg</fanart>

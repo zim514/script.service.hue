@@ -2,16 +2,14 @@
 
 from __future__ import unicode_literals
 
-import os
-
 import logging
+import os
+from builtins import str
+
 import xbmc
 
 from resources.lib import globals
 from resources.lib.kodiutils import get_setting_as_bool
-
-
-
 
 prefix = b"[{}]".format(globals.ADDONID)
 formatter = logging.Formatter(prefix + b'[%(module)s][%(funcName)s](%(lineno)d): %(message)s')

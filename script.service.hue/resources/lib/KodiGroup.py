@@ -8,10 +8,9 @@ import logging
 import xbmc
 
 from . import globals
-#from . import kodilogging
+# from . import kodilogging
 from .kodiutils import get_setting, get_setting_as_bool, get_setting_as_int
 from .qhue import QhueException
-
 
 BEHAVIOR_NOTHING = 0
 BEHAVIOR_ADJUST = 1
