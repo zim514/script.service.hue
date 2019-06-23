@@ -76,7 +76,7 @@ def createHueScene(bridge):
 def deleteHueScene(bridge):
     logger.debug("In kodiHue deleteHueScene")
     scene = selectHueScene(bridge)
-    if scene:
+    if scene is not None:
         confirm = xbmcgui.Dialog().yesno(_("Delete Hue Scene"), _("Are you sure you want to delete this scene: "), str(scene[1]))
     if scene and confirm:              
         scenes=bridge.scenes
@@ -361,8 +361,8 @@ def selectHueScene(bridge):
         selectedId = index[selected]
         hSceneName=hueScenes[selectedId]['name']
         logger.debug("In selectHueScene: selected: {}".format(selected))
-    
-    if selectedId:
+
+    if selected > -1:
         return selectedId, hSceneName;
     else:
         return None

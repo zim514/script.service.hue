@@ -50,7 +50,6 @@ class KodiGroup(xbmc.Player):
         def setup(self,bridge,kgroupID,flash = False):
             self.bridge = bridge
 
-
             self.lights = bridge.lights
             self.kgroupID=kgroupID
 
@@ -63,7 +62,6 @@ class KodiGroup(xbmc.Player):
 
             if flash:
                 self.flash()
-
 
 
         def saveInitialState(self):
@@ -106,23 +104,23 @@ class KodiGroup(xbmc.Player):
                 self.saveInitialState()
 
             if self.enabled and not (globals.daylightDisable == globals.daylight) :
-                
+
                 if self.startBehavior == BEHAVIOR_ADJUST:
                     try:
                         self.groupResource.action(scene=self.startScene)
                     except QhueException as e:
                         logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
-                        
+
                 elif self.startBehavior == BEHAVIOR_OFF:
                     self.groupResource.action(on=False)
-                
-            
+
+
         def onPlayBackStopped(self):
             self.state = STATE_IDLE
             logger.info("In KodiGroup[{}], onPlaybackStopped() ".format(self.kgroupID))
-            
+
             if self.enabled and not (globals.daylightDisable == globals.daylight):
-                
+
                 if self.stopBehavior == BEHAVIOR_ADJUST:
                     try:
                         self.groupResource.action(scene=self.stopScene)
@@ -167,12 +165,12 @@ class KodiGroup(xbmc.Player):
         def onPlayBackEnded(self):
             logger.info("In KodiGroup[{}], onPlaybackEnded()".format(self.kgroupID))
             self.onPlayBackStopped()
-            
+
         def sunset(self):
             logger.info("In KodiGroup[{}], in sunset()".format(self.kgroupID))
             previousForce = self.forceOn
             self.forceOn = True
-            
+
             if self.state == STATE_PLAYING:
                 self.onPlayBackStarted()
             elif self.state == STATE_PAUSED:
