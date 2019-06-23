@@ -24,5 +24,6 @@ daylight = False
 forceOnSunset = True
 daylightDisable = True
 separateLogFile = False
+lastMediaType=0
 
 

@@ -19,6 +19,7 @@ from . import kodiutils
 from . import qhue
 from .language import get_string as _
 
+
 logger = getLogger(globals.ADDONID)
 
 def createHueGroup(bridge):
@@ -381,12 +382,26 @@ def sunset(bridge,kgroups):
 def setupGroups(bridge,flash=False):
     logger.debug("in setupGroups()")
     kgroups= []
-    g=0
-    while g < globals.NUM_GROUPS:
-        if kodiutils.get_setting_as_bool("group{}_enabled".format(g)):
-            kgroups.append(KodiGroup.KodiGroup())
-            kgroups[g].setup(bridge, g, flash)  
-        g = g + 1
+    
+    
+    
+    if kodiutils.get_setting_as_bool("group0_enabled".format(0)): #VIDEO Group
+        kgroups.append(KodiGroup.KodiGroup())
+        kgroups[0].setup(bridge, 0, flash,KodiGroup.VIDEO)
+
+    if kodiutils.get_setting_as_bool("group1_enabled".format(1)): #Audio Group
+        kgroups.append(KodiGroup.KodiGroup())
+        kgroups[1].setup(bridge, 1, flash,KodiGroup.AUDIO)
+
+    #===========================================================================
+    # g=0
+    # while g < globals.NUM_GROUPS:
+    #     if kodiutils.get_setting_as_bool("group{}_enabled".format(g)):
+    #         kgroups.append(KodiGroup.KodiGroup())
+    #         kgroups[g].setup(bridge, g, flash)  
+    #     g = g + 1
+    #===========================================================================
+
     return kgroups
 
 
