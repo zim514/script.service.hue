@@ -12,9 +12,9 @@ import xbmc
 from resources.lib import globals
 from resources.lib.kodiutils import get_setting_as_bool
 
-prefix = b"[{}]".format(globals.ADDONID)
-formatter = logging.Formatter(prefix + b'[%(module)s][%(funcName)s](%(lineno)d): %(message)s')
-fileFormatter = logging.Formatter(b'%(asctime)s %(levelname)s [%(module)s][%(funcName)s](%(lineno)d): %(message)s')
+prefix = "[{}]".format(globals.ADDONID)
+formatter = logging.Formatter(prefix + '[%(module)s][%(funcName)s](%(lineno)d): %(message)s')
+fileFormatter = logging.Formatter('%(asctime)s %(levelname)s [%(module)s][%(funcName)s](%(lineno)d): %(message)s')
 
 
 class KodiLogHandler(logging.StreamHandler):
@@ -50,13 +50,13 @@ def config():
 
     if separateLogFile:
         if not os.path.isdir(globals.ADDONDIR):
-            xbmc.log("Hue Service: profile directory doesn't exist: " + globals.ADDONDIR.encode('utf-8') + "   Trying to create.", level=xbmc.LOGNOTICE)
+            xbmc.log("Hue Service: profile directory doesn't exist: " + globals.ADDONDIR + "   Trying to create.", level=xbmc.LOGNOTICE)
             try:
                 os.mkdir(globals.ADDONDIR)
-                xbmc.log("Hue Service: profile directory created: " + globals.ADDONDIR.encode('utf-8'), level=xbmc.LOGNOTICE)
+                xbmc.log("Hue Service: profile directory created: " + globals.ADDONDIR, level=xbmc.LOGNOTICE)
             except OSError as e:
-                xbmc.log("Hue Service: Log: can't create directory: " + globals.ADDONDIR.encode('utf-8'), level=xbmc.LOGERROR)
-                xbmc.log("Exception: " + str(e.message).encode('utf-8'), xbmc.LOGERROR)
+                xbmc.log("Hue Service: Log: can't create directory: " + globals.ADDONDIR, level=xbmc.LOGERROR)
+                xbmc.log("Exception: " + str(e.message), xbmc.LOGERROR)
 
         
         fileHandler = TimedRotatingFileHandler(os.path.join(globals.ADDONDIR, 'kodiHue.log'), when="midnight",  backupCount=2)
