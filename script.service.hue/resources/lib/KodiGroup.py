@@ -189,15 +189,15 @@ class KodiGroup(xbmc.Player):
 
         def playbackType(self):
             if self.isPlayingVideo():
-                mediaType=VIDEO 
+                mediaType=VIDEO
             elif self.isPlayingAudio():
                 mediaType=AUDIO
             return mediaType
-            
+
 
 class KodiVideoGroup(KodiGroup):
     def __init__(self):
-        super(KodiGroup,self).__init__()
+        super(KodiVideoGroup,self).__init__()
 
     def onPlayBackStarted(self, saveInitial=False):
         pass

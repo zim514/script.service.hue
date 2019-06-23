@@ -385,11 +385,11 @@ def setupGroups(bridge,flash=False):
     
     
     
-    if kodiutils.get_setting_as_bool("group0_enabled".format(0)): #VIDEO Group
+    if kodiutils.get_setting_as_bool("group0_enabled"): #VIDEO Group
         kgroups.append(KodiGroup.KodiGroup())
         kgroups[0].setup(bridge, 0, flash,KodiGroup.VIDEO)
 
-    if kodiutils.get_setting_as_bool("group1_enabled".format(1)): #Audio Group
+    if kodiutils.get_setting_as_bool("group1_enabled"): #Audio Group
         kgroups.append(KodiGroup.KodiGroup())
         kgroups[1].setup(bridge, 1, flash,KodiGroup.AUDIO)
 
@@ -398,7 +398,7 @@ def setupGroups(bridge,flash=False):
     # while g < globals.NUM_GROUPS:
     #     if kodiutils.get_setting_as_bool("group{}_enabled".format(g)):
     #         kgroups.append(KodiGroup.KodiGroup())
-    #         kgroups[g].setup(bridge, g, flash)  
+    #         kgroups[g].setup(bridge, g, flash)
     #     g = g + 1
     #===========================================================================
 

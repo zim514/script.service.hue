@@ -2,7 +2,7 @@
 
 from logging import getLogger
 from xbmcaddon import Addon
-#getInfoLabel, translatePath 
+
 
 from kodi_six import xbmcaddon, xbmc
 
