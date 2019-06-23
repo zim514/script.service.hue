@@ -3,12 +3,11 @@ Created on Apr. 17, 2019
 
 
 '''
-import logging
+from logging import getLogger
 
 import xbmc
-
 from . import globals
-# from . import kodilogging
+
 from .kodiutils import get_setting, get_setting_as_bool, get_setting_as_int
 from .qhue import QhueException
 
@@ -24,7 +23,7 @@ STATE_PAUSED = 2
 state = 0
 
 
-logger = logging.getLogger(globals.ADDONID)
+logger = getLogger(globals.ADDONID)
 
 
 class KodiGroup(xbmc.Player):

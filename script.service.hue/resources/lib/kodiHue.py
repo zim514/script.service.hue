@@ -4,7 +4,7 @@ Created on Apr. 12, 2019
 
 '''
 
-import logging
+from logging import getLogger
 from builtins import str
 from socket import getfqdn
 
@@ -19,7 +19,7 @@ from . import kodiutils
 from . import qhue
 from .language import get_string as _
 
-logger = logging.getLogger(globals.ADDONID)
+logger = getLogger(globals.ADDONID)
 
 def createHueGroup(bridge):
     logger.debug("In kodiHue createHueGroup")
@@ -429,13 +429,13 @@ def connectBridge(monitor,silent=False):
             logger.debug("Bridge not responding")
             kodiutils.notification(_("Hue Service"), _("Bridge connection failed"), icon=NOTIFICATION_ERROR)
             globals.connected = False
-            return False
+            return None
             
     else:
         logger.debug("Bridge not configured")
         kodiutils.notification(_("Hue Service"), _("Bridge not configured"), icon=NOTIFICATION_ERROR)
         globals.connected = False
-        return False
+        return None
     
     
 class HueMonitor(xbmc.Monitor):

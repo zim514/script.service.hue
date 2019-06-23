@@ -1,13 +1,20 @@
 
-import xbmcaddon
-from xbmc import getInfoLabel
-from xbmc import translatePath
-global settingsChanged
-global connected 
-global forceOnSunset
-global daylightDisable
-global separateLogFile
 
+from logging import getLogger
+from xbmcaddon import Addon
+from xbmc import getInfoLabel, translatePath
+
+NUM_GROUPS = 1
+STRDEBUG = False #Show string ID in UI
+DEBUG = False # Enable python remote debug
+REMOTE_DBG_SUSPEND = False #Auto suspend thread when debugger attached
+
+ADDON = Addon()
+ADDONID = ADDON.getAddonInfo('id')
+ADDONDIR = translatePath(ADDON.getAddonInfo('profile').decode('utf-8'))
+ADDONVERSION = ADDON.getAddonInfo('version')
+KODIVERSION = getInfoLabel('System.BuildVersion')
+logger = getLogger(ADDONID)
 
 settingsChanged = False
 connected = False
@@ -17,13 +24,3 @@ daylightDisable = True
 separateLogFile = False
 
 
-NUM_GROUPS = 1
-STRDEBUG = False #Show string ID in UI
-DEBUG = False # Enable python remote debug
-REMOTE_DBG_SUSPEND = False #Auto suspend thread when debugger attached
-
-ADDON = xbmcaddon.Addon()
-ADDONID = ADDON.getAddonInfo('id')
-ADDONDIR = translatePath(ADDON.getAddonInfo('profile').decode('utf-8'))
-ADDONVERSION = ADDON.getAddonInfo('version')
-KODIVERSION = getInfoLabel('System.BuildVersion')

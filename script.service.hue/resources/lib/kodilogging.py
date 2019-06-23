@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 import logging
+from logging.handlers import TimedRotatingFileHandler
 import os
 from builtins import str
 
@@ -57,7 +58,8 @@ def config():
                 xbmc.log("Hue Service: Log: can't create directory: " + globals.ADDONDIR.encode('utf-8'), level=xbmc.LOGERROR)
                 xbmc.log("Exception: " + str(e.message).encode('utf-8'), xbmc.LOGERROR)
 
-        fileHandler = logging.handlers.TimedRotatingFileHandler(os.path.join(globals.ADDONDIR, 'kodiHue.log'), when="midnight",  backupCount=2)
+        
+        fileHandler = TimedRotatingFileHandler(os.path.join(globals.ADDONDIR, 'kodiHue.log'), when="midnight",  backupCount=2)
         fileHandler.setLevel(logging.DEBUG)
         fileHandler.setFormatter(fileFormatter)
         logger.addHandler(fileHandler)
