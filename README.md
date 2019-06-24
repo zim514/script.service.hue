@@ -2,6 +2,9 @@
 # script.service.hue
 **Kodi Service for Philips Hue**
 
+## Installation
+[Download latest version](https://github.com/zim514/script.service.hue/releases)
+
 ## Features:
 - Create and delete multi-room LightScenes
 	- Adjust your lights as desired, and use the add-on to select the lights and transition time.
@@ -35,5 +38,5 @@
 - Based on original plugin by cees-elzinga, michaelrcarroll, mpolednik
 - Uses Qhue (C) Quentin Stafford-Fraser - https://github.com/quentinsf/qhue
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIxMzQ0OTMyNDZdfQ==
+eyJoaXN0b3J5IjpbMTAzODI1NzU3OCwtMjEzNDQ5MzI0Nl19
 -->
