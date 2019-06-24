@@ -24,6 +24,8 @@
     <news>
 v0.3.1:
  - Crash fix
+ - Basic connection error handling
+ 
 v0.3.0:
  - Support different behaviours for different media types
 v0.2.8:

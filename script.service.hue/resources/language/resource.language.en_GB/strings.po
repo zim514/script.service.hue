@@ -2,7 +2,7 @@
 # Addon Name: Hue Service
 # Addon id: script.service.hue
 # Addon Provider: zim514
-msgid ""        
+msgid ""
 msgstr ""
 
 msgctxt "#1000"
@@ -73,11 +73,9 @@ msgctxt "#32102"
 msgid "Debug Logs"
 msgstr "Debug Logs"
 
-
 msgctxt "#32105"
 msgid "Separate debug log"
 msgstr "Separate debug log"
-
 
 msgctxt "#5110"
 msgid "Initial flash"
@@ -414,4 +412,12 @@ msgstr ""
 
 msgctxt "#30046"
 msgid "Adjust lights to desired state in the Hue App to save as new scene."
+msgstr ""
+
+msgctxt "#30047"
+msgid "Connection lost. Check settings. Shutting down"
+msgstr ""
+
+msgctxt "#30048"
+msgid "Connection lost. Trying again in 5 minutes"
 msgstr ""

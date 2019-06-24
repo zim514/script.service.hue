@@ -72,7 +72,7 @@ else:
 
         id = _strings.get(t.lower())
         if not id:
-            xbmc.log("LANGUAGE: missing translation for '%s'" % t.lower())
+            xbmc.log("ERROR LANGUAGE: missing translation for '%s'" % t.lower())
             return t
         else:
             if STRDEBUG is True:
@@ -90,10 +90,11 @@ else:
 #GENERATED
 _strings['general'] = 1000
 _strings['light groups'] = 1100
-_strings['player actions'] = 32100
-_strings['start/resume video'] = 32201
-_strings['pause video'] = 32202
-_strings['stop video'] = 32203
+_strings['video actions'] = 32100
+_strings['audio actions'] = 32102
+_strings['start/resume'] = 32201
+_strings['pause'] = 32202
+_strings['stop'] = 32203
 _strings['scene name'] = 32510
 _strings['scene id'] = 32511
 _strings['select scene'] = 32512
@@ -189,3 +190,5 @@ _strings['error'] = 30043
 _strings['create new scene'] = 30044
 _strings['scene successfully created!'] = 30045
 _strings['adjust lights to desired state in the hue app to save as new scene.'] = 30046
+_strings['connection lost. check settings. shutting down'] = 30047
+_strings['connection lost. trying again in 5 minutes'] = 30048
