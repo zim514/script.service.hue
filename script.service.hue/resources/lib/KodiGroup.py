@@ -97,7 +97,7 @@ class KodiGroup(xbmc.Player):
             self.groupResource.action(alert="select")
 
         def onPlayBackStarted(self, saveInitial=False):
-            logger.info("In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, forceOn: {}, isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID, self.enabled, self.forceOn,self.isPlayingVideo(),self.isPlayingAudio()))
+            logger.info("In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, , isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID, self.enabled, self.isPlayingVideo(),self.isPlayingAudio()))
 
             self.state = STATE_PLAYING
             globals.lastMediaType = self.playbackType()
@@ -169,8 +169,6 @@ class KodiGroup(xbmc.Player):
 
         def sunset(self):
             logger.info("In KodiGroup[{}], in sunset()".format(self.kgroupID))
-            previousForce = self.forceOn
-            self.forceOn = True
 
             if self.state == STATE_PLAYING:
                 self.onPlayBackStarted()
@@ -180,10 +178,6 @@ class KodiGroup(xbmc.Player):
                 #self.onPlayBackStopped()
                 #if not playing and sunset happens, probably should do nothing.
                 logger.debug("In KodiGroup[{}], in sunset(). playback stopped, doing nothing. ".format(self.kgroupID))
-
-
-            self.forceOn = previousForce
-
 
         def playbackType(self):
             if self.isPlayingVideo():
