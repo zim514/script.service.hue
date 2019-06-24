@@ -2,7 +2,7 @@
 
 import sys
 from logging import getLogger
-from requests.exceptions import ConnectionError,Timeout
+from requests.exceptions import ConnectionError
 
 import xbmcgui
 
