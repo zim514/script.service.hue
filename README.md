@@ -2,6 +2,7 @@
 # script.service.hue
 Kodi add-on for Philips Hue. Use at your own risk
 
+
 #Features:
 Create and delete multi-room LightScenes
 Adjust your lights as desired, and use the add-on to select the lights and transition time.
@@ -16,6 +17,7 @@ Disable during daylight hours
 If sunset falls while watching media, optionally turn on lights
 Add-on does nothing at sunset if there's no playback
 
+
 #Notes:
 Hue Bridge with nPNP only
 Requires bridge & Kodi connectivity to Philipps servers ( https://discovery.meethue.com/ ) 
@@ -24,14 +26,20 @@ Only tested on LibreElec 9.0.2 & Windows 10, but no reason it shouldn't work any
 No ambilight / dynamic lighting support.
 If anyone knows a good algorithm to generate colours from a screenshot, I'll be looking into this in the future.
 
+
 #Problems?
 Make sure you update your Hue bridge to the latest version. This add-on assumes you have the latest features
 Turn on debug logging or the addon's logging (in addon_data)
 Latest version:
 https://github.com/zim514/script.service.hue/releases
 
+
 # Credits:
 - Based on original plugin by cees-elzinga, michaelrcarroll, mpolednik
 - Uses Qhue (C) Quentin Stafford-Fraser - https://github.com/quentinsf/qhue
 
+
  
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbLTE0NzIxNjY1NjVdfQ==
+-->
