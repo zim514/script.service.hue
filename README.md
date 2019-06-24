@@ -3,7 +3,7 @@
 Kodi add-on for Philips Hue. Use at your own risk
 
 
-#Features:
+Features:
 Create and delete multi-room LightScenes
 Adjust your lights as desired, and use the add-on to select the lights and transition time.
 Supports lights in multiple rooms or groups.
@@ -41,5 +41,5 @@ https://github.com/zim514/script.service.hue/releases
 
  
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE0NzIxNjY1NjVdfQ==
+eyJoaXN0b3J5IjpbMTAxNjEwNzkxMF19
 -->
