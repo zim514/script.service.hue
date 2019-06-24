@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.com/zim514/script.service.hue.svg?branch=master)](https://travis-ci.com/zim514/script.service.hue) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a4a910144f044208821341f1a07c38e)](https://www.codacy.com/app/zim514/script.service.hue?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zim514/script.service.hue&amp;utm_campaign=Badge_Grade)
 # script.service.hue
-Kodi Service for Philips Hue
-
+**Kodi Service for Philips Hue**
 
 ## Features:
 - Create and delete multi-room LightScenes
@@ -35,9 +34,6 @@ Kodi Service for Philips Hue
 ## Credits:
 - Based on original plugin by cees-elzinga, michaelrcarroll, mpolednik
 - Uses Qhue (C) Quentin Stafford-Fraser - https://github.com/quentinsf/qhue
-
-
- 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3Njg2MzY1NTBdfQ==
+eyJoaXN0b3J5IjpbLTIxMzQ0OTMyNDZdfQ==
 -->
