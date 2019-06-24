@@ -2,6 +2,7 @@
 
 import sys
 from logging import getLogger
+from requests.exceptions import ConnectionError
 
 import xbmcgui
 
@@ -118,8 +119,9 @@ def service():
         globals.settingsChanged = False
         globals.daylight = kodiHue.getDaylight(bridge)
         kgroups = kodiHue.setupGroups(bridge,initialFlash)
-
-        timer = 60
+        
+        connectionRetries = 0
+        timer = 60 #Run loop once on first run
         # #Ready to go! Start running until Kodi exit.
         logger.debug('Main service loop starting')
         while globals.connected and not monitor.abortRequested():
@@ -132,26 +134,35 @@ def service():
                 kgroups = kodiHue.setupGroups(bridge, reloadFlash)
                 globals.settingsChanged = False
 
-            timer = timer + 1
+
             if timer > 59:
+                timer = 1
                 try:
                     previousDaylight = kodiHue.getDaylight(bridge)
-                    #logger.debug('Daylight check: current: {}, previous: {}'.format(globals.daylight, previousDaylight))
+                except ConnectionError as error:
+
+                    if connectionRetries <= 5:
+                        #TODO: handle bridge IP change
+                        logger.error('Bridge Connection Error. Retry: {}/5 : {}'.format(connectionRetries, error))
+                        xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Trying again in 5 minutes"))
+                        timer = -240 #set timer to negative 4 minutes
+                        connectionRetries = connectionRetries + 1
+                    else:
+                        logger.error('Bridge Connection Error. Retry: {}/5. Shutting down : {}'.format(connectionRetries, error))
+                        xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
+                        globals.connected = False
                 except Exception as error:
                     logger.error('Get daylight exception: {}'.format(error))
 
 
-
                 if globals.daylight != previousDaylight :
                     logger.debug('Daylight change! current: {}, previous: {}'.format(globals.daylight, previousDaylight))
+                    
                     globals.daylight = kodiHue.getDaylight(bridge)
                     if not globals.daylight:
                         kodiHue.sunset(bridge,kgroups)
-
-
-                timer = 1
-
-
+                        
+            timer = timer + 1
             monitor.waitForAbort(1)
         logger.debug('Process exiting...')
         return

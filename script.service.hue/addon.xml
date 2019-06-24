@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.3.0">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.3.1">
 	
   <requires>
     <import addon="xbmc.python" version="2.26.0" />
@@ -22,15 +22,19 @@
     <platform>all</platform>
     <license>MIT License</license>
     <news>
+v0.3.1:
+ - Crash fix
+ - Basic connection error handling
+ 
 v0.3.0:
-  - Support different behaviours for different media types
+ - Support different behaviours for different media types
 v0.2.8:
-  - Python 2/3 support
+ - Python 2/3 support
 v0.2.7:
-  - Support optional logging to external file
-  - Removed half translated French 
+ - Support optional logging to external file
+ - Removed half translated French 
 v0.2.6: 
-  - Improve logging system
+ - Improve logging system
 </news>
     <assets>
   		<icon>resources/icons/icon.png</icon>

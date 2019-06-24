@@ -42,4 +42,7 @@
 - Uses Qhue (C) Quentin Stafford-Fraser - https://github.com/quentinsf/qhue
 <!--stackedit_data:
 eyJoaXN0b3J5IjpbMTI2MDI1ODI4NywtMjEzNDQ5MzI0Nl19
+=======
+eyJoaXN0b3J5IjpbMTAzODI1NzU3OCwtMjEzNDQ5MzI0Nl19
+>>>>>>> README.md updated from https://stackedit.io/
 -->
