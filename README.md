@@ -3,7 +3,10 @@
 **Kodi Service for Philips Hue**
 
 ## Installation
-[Download latest version](https://github.com/zim514/script.service.hue/releases)
+
+ 1. [Download latest .zip version](https://github.com/zim514/script.service.hue/releases)
+ 2. [Install to Kodi from Zip](https://kodi.wiki/view/HOW-TO:Install_add-ons_from_zip_files)
+
 
 ## Features:
 - Create and delete multi-room LightScenes
@@ -38,5 +41,5 @@
 - Based on original plugin by cees-elzinga, michaelrcarroll, mpolednik
 - Uses Qhue (C) Quentin Stafford-Fraser - https://github.com/quentinsf/qhue
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTAzODI1NzU3OCwtMjEzNDQ5MzI0Nl19
+eyJoaXN0b3J5IjpbMTI2MDI1ODI4NywtMjEzNDQ5MzI0Nl19
 -->
