@@ -192,6 +192,8 @@ class KodiGroup(xbmc.Player):
                 mediaType=VIDEO
             elif self.isPlayingAudio():
                 mediaType=AUDIO
+            else:
+                mediaType=None
             return mediaType
 
 
