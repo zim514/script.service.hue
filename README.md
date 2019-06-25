@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.com/zim514/script.service.hue.svg?branch=master)](https://travis-ci.com/zim514/script.service.hue) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a4a910144f044208821341f1a07c38e)](https://www.codacy.com/app/zim514/script.service.hue?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zim514/script.service.hue&amp;utm_campaign=Badge_Grade)
 # script.service.hue
 **Kodi Service for Philips Hue**
+Automate your Hue lights on audio or video playback with [Kodi Media Player](https://kodi.tv/)
 
 ## Installation
 
@@ -46,5 +47,5 @@ eyJoaXN0b3J5IjpbMTAzODI1NzU3OCwtMjEzNDQ5MzI0Nl19
 >>>>>>> README.md updated from https://stackedit.io/
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTgwODAxNzIzMCwtNTMyNzY2OTczXX0=
+eyJoaXN0b3J5IjpbNzQwMDk4NzQ0LC01MzI3NjY5NzNdfQ==
 -->
