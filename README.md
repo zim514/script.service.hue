@@ -4,9 +4,8 @@
 
 ## Installation
 
- 1. [Download latest .zip version](https://github.com/zim514/script.service.hue/releases)
+ 1. [Download latest .zip version](https://github.com/zim514/script.service.hue/releases) or [Repo for auto-updates](https://github.com/zim514/zim514.github.io/raw/master/repo/repository.snapcase/repository.snapcase-1.0.0.zip)
  2. [Install to Kodi from Zip](https://kodi.wiki/view/HOW-TO:Install_add-ons_from_zip_files)
-
 
 ## Features:
 - Create and delete multi-room LightScenes
@@ -47,5 +46,5 @@ eyJoaXN0b3J5IjpbMTAzODI1NzU3OCwtMjEzNDQ5MzI0Nl19
 >>>>>>> README.md updated from https://stackedit.io/
 -->
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTUzMjc2Njk3M119
+eyJoaXN0b3J5IjpbLTgwODAxNzIzMCwtNTMyNzY2OTczXX0=
 -->
