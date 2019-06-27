@@ -105,11 +105,10 @@ def _discoverNupnp():
 def bridgeDiscover(monitor):
     logger.debug("In bridgeDiscover:")
     #Create new config if none exists. Returns success or fail as bool
-    kodiutils.set_setting("bridgeIP","")
-    kodiutils.set_setting("bridgeUser","")
+    #kodiutils.set_setting("bridgeIP","")
+    #kodiutils.set_setting("bridgeUser","")
     globals.connected = False
-    
-    
+
     progressBar = xbmcgui.DialogProgress()
     progressBar.create(_('Discover bridge...'))
     progressBar.update(5, _("Discovery started"))
@@ -130,13 +129,14 @@ def bridgeDiscover(monitor):
             if bridgeUser:
                 progressBar.update(90,_("User Found!"),_("Saving settings"))
 
-                kodiutils.set_setting("bridgeIP",bridgeIP)
-                kodiutils.set_setting("bridgeUser",bridgeUser)
+                globals.ADDON.setSettingString("bridgeIP",bridgeIP)
+                globals.ADDON.setSettingString("bridgeUser",bridgeUser)
                 complete = True
                 globals.connected = True
                 progressBar.update(100, _("Complete!"))
                 monitor.waitForAbort(5)
                 progressBar.close()
+                globals.ADDON.openSettings()
                 return True
 
             else:
