@@ -34,16 +34,16 @@ msgid "Stop"
 msgstr "Stop"
 
 msgctxt "#32510"
-msgid "Scene Name"
-msgstr "Scene Name"
+msgid "Scene Name:"
+msgstr "Scene Name:"
 
 msgctxt "#32511"
 msgid "Scene ID"
 msgstr "Scene ID"
 
 msgctxt "#32512"
-msgid "Select Scene"
-msgstr "Select Scene"
+msgid "Select Scene..."
+msgstr "Select Scene..."
 
 msgctxt "#1200"
 msgid "Bridge"
