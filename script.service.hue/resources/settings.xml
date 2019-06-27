@@ -108,7 +108,7 @@
 	    <setting id="initialFlash" type="bool" label="5110" default="False" />
         <setting id="reloadFlash" type="bool" label="5111" default="False" />
         <setting type="lsep" label="32102" />
-<setting id="separateLogFile" type="bool" label="32105" lvalues="32106|32107" default="0"/>
+		<setting id="separateLogFile" type="bool" label="32105" default="False"/>
 <!-- <setting id="logLevel" type="select" label="32108" lvalues="32301|32302|32303|32304|32305|32306|32307" default="0"/>  -->        
 	</category>
    
