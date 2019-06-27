@@ -1,12 +1,12 @@
 [![Build Status](https://travis-ci.com/zim514/script.service.hue.svg?branch=master)](https://travis-ci.com/zim514/script.service.hue) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a4a910144f044208821341f1a07c38e)](https://www.codacy.com/app/zim514/script.service.hue?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zim514/script.service.hue&amp;utm_campaign=Badge_Grade)
 # script.service.hue
 **Kodi Service for Philips Hue**
+Automate your [Hue lights](https://www.meethue.com/) on audio or video playback with [Kodi Media Player](https://kodi.tv/)
 
 ## Installation
 
- 1. [Download latest .zip version](https://github.com/zim514/script.service.hue/releases)
+ 1. [Download latest .zip version](https://github.com/zim514/script.service.hue/releases) or [Repo for auto-updates](https://github.com/zim514/zim514.github.io/raw/master/repo/repository.snapcase/repository.snapcase-1.0.0.zip)
  2. [Install to Kodi from Zip](https://kodi.wiki/view/HOW-TO:Install_add-ons_from_zip_files)
-
 
 ## Features:
 - Create and delete multi-room LightScenes
@@ -45,4 +45,7 @@ eyJoaXN0b3J5IjpbMTI2MDI1ODI4NywtMjEzNDQ5MzI0Nl19
 =======
 eyJoaXN0b3J5IjpbMTAzODI1NzU3OCwtMjEzNDQ5MzI0Nl19
 >>>>>>> README.md updated from https://stackedit.io/
+-->
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbNzE5NjE3MTM2XX0=
 -->

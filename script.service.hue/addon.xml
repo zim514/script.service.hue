@@ -24,6 +24,7 @@
     <news>
 v0.3.4:
  - Make media type detection more reliable
+ - Remove unused settings
 v0.3.2:
  - Crash fix    
 v0.3.1:
