@@ -50,7 +50,7 @@ def config():
 
     if separateLogFile:
         if not os.path.isdir(globals.ADDONDIR):
-            xbmc.log("Hue Service: profile directory doesn't exist: " + globals.ADDONDIR + "   Trying to create.", level=xbmc.LOGNOTICE)
+            #xbmc.log("Hue Service: profile directory doesn't exist: " + globals.ADDONDIR + "   Trying to create.", level=xbmc.LOGNOTICE)
             try:
                 os.mkdir(globals.ADDONDIR)
                 xbmc.log("Hue Service: profile directory created: " + globals.ADDONDIR, level=xbmc.LOGNOTICE)
