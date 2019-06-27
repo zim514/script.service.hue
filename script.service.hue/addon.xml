@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.3.3">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.3.4">
 	
   <requires>
     <import addon="xbmc.python" version="2.26.0" />
@@ -22,6 +22,8 @@
     <platform>all</platform>
     <license>MIT License</license>
     <news>
+v0.3.4:
+ - Make media type detection more reliable
 v0.3.2:
  - Crash fix    
 v0.3.1:

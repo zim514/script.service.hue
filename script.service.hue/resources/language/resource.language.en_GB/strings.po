@@ -133,57 +133,10 @@ msgctxt "#6210"
 msgid "Apply Scene"
 msgstr "Apply Scene"
 
-msgctxt "#6204"
-msgid "Turn off lights"
-msgstr "Turn off lights"
-
-msgctxt "#6205"
-msgid "Initial state"
-msgstr "Initial state"
-
-msgctxt "#6206"
-msgid "Fade Time"
-msgstr "Fade Time"
-
-msgctxt "#6207"
-msgid "Always force on"
-msgstr "Always force on"
-
-msgctxt "#6208"
-msgid "Hue group"
-msgstr "Hue group"
-
-msgctxt "#6301"
-msgid "Playback start / resume"
-msgstr "Playback start / resume"
-
-msgctxt "#6302"
-msgid "Playback pause"
-msgstr "Playback pause"
-
-msgctxt "#6303"
-msgid "Playback stop"
-msgstr "Playback stop"
-
-msgctxt "#6400"
-msgid "Light settings"
-msgstr "Light settings"
-
 msgctxt "#6401"
 msgid "Initial State"
 msgstr "Initial State"
 
-msgctxt "#6402"
-msgid "Hue"
-msgstr "Hue"
-
-msgctxt "#6403"
-msgid "Saturation"
-msgstr "Saturation"
-
-msgctxt "#6404"
-msgid "Brightness"
-msgstr "Brightness"
 
 msgctxt "#9000"
 msgid "Kodi Hue"

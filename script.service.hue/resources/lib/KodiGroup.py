@@ -96,7 +96,7 @@ class KodiGroup(xbmc.Player):
             logger.debug("in KodiGroup Flash")
             self.groupResource.action(alert="select")
 
-        def onPlayBackStarted(self, saveInitial=False):
+        def onAVStarted(self, saveInitial=False):
             logger.info("In KodiGroup[{}], onPlaybackStarted. Group enabled: {}, , isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID, self.enabled, self.isPlayingVideo(),self.isPlayingAudio()))
 
             self.state = STATE_PLAYING
