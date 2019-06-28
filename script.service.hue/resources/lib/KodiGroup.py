@@ -47,6 +47,7 @@ class KodiGroup(xbmc.Player):
 
 
         def setup(self,bridge,kgroupID,flash = False, mediaType=VIDEO):
+            self.state = STATE_IDLE
             self.bridge = bridge
             self.mediaType = mediaType
 
