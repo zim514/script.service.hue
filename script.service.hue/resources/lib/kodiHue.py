@@ -5,9 +5,7 @@ Created on Apr. 12, 2019
 '''
 
 from logging import getLogger
-from builtins import str
 from socket import getfqdn
-import datetime
 
 import requests
 
@@ -98,7 +96,7 @@ def deleteHueScene(bridge):
 def _discoverNupnp():
 
     logger.debug("In kodiHue discover_nupnp()")
-    try: 
+    try:
         req = requests.get('https://discovery.meethue.com/')
     except requests.exceptions.ConnectionError as e:
         logger.info("Nupnp failed: {}".format(e))
@@ -410,7 +408,7 @@ def connectBridge(monitor,silent=False):
 def validateSchedule():
     logger.debug("Checking if schedule is valid. Enabled: {}".format(globals.enableSchedule))
     if globals.enableSchedule:
-        try: 
+        try:
             kodiutils.convertTime(globals.startTime)
             kodiutils.convertTime(globals.endTime)
             logger.debug("Time looks valid")

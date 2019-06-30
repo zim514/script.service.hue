@@ -12,7 +12,7 @@ from . import globals
 
 from .kodiutils import get_setting, get_setting_as_bool,convertTime
 from .qhue import QhueException
-from __builtin__ import True
+
 
 
 
@@ -144,6 +144,7 @@ class KodiGroup(xbmc.Player):
                 mediaType=None
             return mediaType
         
+        @classmethod
         def activeTime(self):
 
             if globals.daylightDisable and globals.daylight:
@@ -160,7 +161,7 @@ class KodiGroup(xbmc.Player):
             logger.debug("Schedule check: start: {}, now: {}, end: {}".format(start,now,end))
 
             if (now > start) and (now <end):
-                logger.debug("Schedule active") 
+                logger.debug("Schedule active")
                 return True
             else:
                 logger.debug("Disabled by schedule")

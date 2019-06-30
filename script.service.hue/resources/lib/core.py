@@ -8,7 +8,6 @@ import xbmcgui
 
 from . import globals
 from . import kodiHue
-from . import kodiutils
 from .language import get_string as _
 
 logger = getLogger(globals.ADDONID)
