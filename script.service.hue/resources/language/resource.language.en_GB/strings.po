@@ -371,7 +371,7 @@ msgid "Connection lost. Check settings. Shutting down"
 msgstr ""
 
 msgctxt "#30048"
-msgid "Connection lost. Trying again in 5 minutes"
+msgid "Connection lost. Trying again in 2 minutes"
 msgstr ""
 
 msgctxt "#30049"

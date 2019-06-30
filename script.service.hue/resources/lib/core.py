@@ -91,7 +91,8 @@ def service():
         # #Ready to go! Start running until Kodi exit.
         logger.debug('Main service loop starting')
         while globals.connected and not monitor.abortRequested():
-
+            
+               
             if globals.settingsChanged:
                 reloadFlash = kodiutils.get_setting_as_bool("reloadFlash")
                 globals.forceOnSunset = kodiutils.get_setting_as_bool("forceOnSunset")
@@ -101,20 +102,26 @@ def service():
                 globals.settingsChanged = False
 
 
-            if timer > 59:
-                timer = 1
+            if timer > 59: #run this loop once per minute.
+                timer = 0
                 try:
-                    previousDaylight = kodiHue.getDaylight(bridge)
-                except ConnectionError as error:
-
-                    if connectionRetries <= 5:
-                        #TODO: handle bridge IP change
-                        logger.error('Bridge Connection Error. Retry: {}/5 : {}'.format(connectionRetries, error))
-                        xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Trying again in 5 minutes"))
-                        timer = -240 #set timer to negative 4 minutes
-                        connectionRetries = connectionRetries + 1
+                    if connectionRetries > 0:
+                        bridge = kodiHue.connectBridge(monitor,silent=True)
+                        if bridge is not None:
+                            previousDaylight = kodiHue.getDaylight(bridge)
+                            connectionRetries = 0
                     else:
-                        logger.error('Bridge Connection Error. Retry: {}/5. Shutting down : {}'.format(connectionRetries, error))
+                        previousDaylight = kodiHue.getDaylight(bridge)
+                        
+                except ConnectionError as error:
+                    connectionRetries = connectionRetries + 1
+                    if connectionRetries <= 5:
+                        logger.error('Bridge Connection Error. Attempt: {}/5 : {}'.format(connectionRetries, error))
+                        xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
+                        timer = -60 #set timer to negative 1 minute
+                        
+                    else:
+                        logger.error('Bridge Connection Error. Attempt: {}/5. Shutting down : {}'.format(connectionRetries, error))
                         xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
                         globals.connected = False
                 except Exception as error:

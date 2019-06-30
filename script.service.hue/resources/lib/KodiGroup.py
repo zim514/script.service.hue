@@ -58,47 +58,21 @@ class KodiGroup(xbmc.Player):
 
             self.groupResource=bridge.groups[0]
             #TODO: Get scene lights to save initial state
-            self.lightIDs=self.groupResource()["lights"]
+            #self.lightIDs=self.groupResource()["lights"]
 
 
             if flash:
                 self.flash()
 
 
-        def _saveInitialState(self):
-            #TODO: Get scene lights to save initial state
-            #This method no longer works
-            logger.debug("In KodiGroup[{}], save initial state".format(self.kgroupID))
-            initialState = {}
-            lights = self.lights
-
-            for x in self.lightIDs:
-                light=lights[x]()
-                initialState[x] = light['state'] 
-                #self.initialState.append(lights.l()['state'])
-
-            self.initialState=initialState
-
-        def _applyInitialState(self):
-            #Deprecated with new scene support
-            logger.debug("In KodiGroup[{}], apply initial state".format(self.kgroupID))
-            initialState = self.initialState
-            lights = self.lights 
-
-            for x in initialState:
-                i = initialState[x]
-                logger.debug("In KodiGroup[{}], apply initial state: {}, {}".format(self.kgroupID,x,i))
-                lights[x].state(on=i['on'],
-                                ct=i['ct'],
-                                xy=i['xy'],
-                                bri=i['bri'],
-                                hue=i['hue'],
-                                sat=i['sat'],
-                                transitiontime=self.fadeTime)
 
         def flash(self):
             logger.debug("in KodiGroup Flash")
-            self.groupResource.action(alert="select")
+            try:
+                self.groupResource.action(alert="select")
+            except QhueException() as e:
+                logger.error("Hue Error: {}".format(e))
+
 
         def onAVStarted(self):
             logger.info("In KodiGroup[{}], onPlaybackStarted. Group enabled: {},startBehavior: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.startBehavior, self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
@@ -173,4 +147,38 @@ class KodiGroup(xbmc.Player):
             else:
                 mediaType=None
             return mediaType
-
+        
+        
+        
+#===============================================================================
+#         def _saveInitialState(self):
+#             #TODO: Get scene lights to save initial state
+#             #This method no longer works
+#             logger.debug("In KodiGroup[{}], save initial state".format(self.kgroupID))
+#             initialState = {}
+#             lights = self.lights
+#
+#             for x in self.lightIDs:
+#                 light=lights[x]()
+#                 initialState[x] = light['state']
+#                 #self.initialState.append(lights.l()['state'])
+#
+#             self.initialState=initialState
+#
+#         def _applyInitialState(self):
+#             #Deprecated with new scene support
+#             logger.debug("In KodiGroup[{}], apply initial state".format(self.kgroupID))
+#             initialState = self.initialState
+#             lights = self.lights
+#
+#             for x in initialState:
+#                 i = initialState[x]
+#                 logger.debug("In KodiGroup[{}], apply initial state: {}, {}".format(self.kgroupID,x,i))
+#                 lights[x].state(on=i['on'],
+#                                 ct=i['ct'],
+#                                 xy=i['xy'],
+#                                 bri=i['bri'],
+#                                 hue=i['hue'],
+#                                 sat=i['sat'],
+#                                 transitiontime=self.fadeTime)
+#===============================================================================

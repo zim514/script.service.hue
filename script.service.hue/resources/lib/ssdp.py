@@ -51,7 +51,7 @@ def discover(service, timeout=5, retries=1, mx=3):
                 responses[response.location] = response
             except socket.timeout:
                 break
-    return responses.values()
+    return list(responses.values())
 
 # Example:
 # import ssdp

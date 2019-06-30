@@ -84,18 +84,20 @@ def _discoverNupnp():
         
         
 def _discoverSsdp():
-    #lazy import
-    import ssdp
+    
+    from . import ssdp
     from urlparse import urlsplit
 
     ssdp_list = ssdp.discover("ssdp:all",timeout=5,mx=3)
     logger.debug("ssdp_list: {}".format(ssdp_list))
     
     bridges = [u for u in ssdp_list if 'IpBridge' in u.server]
-    ip = urlsplit(bridges[0].location).hostname
-    logger.debug("ip: {}".format(ip))
-    
-    return ip
+    if bridges:
+        ip = urlsplit(bridges[0].location).hostname
+        logger.debug("ip: {}".format(ip))
+        return ip
+    else:
+        return None
 
 
 def bridgeDiscover(monitor):
@@ -112,8 +114,7 @@ def bridgeDiscover(monitor):
     complete = False
     while not progressBar.iscanceled() and not complete:
 
-#TODO: ADD DISCOVERY METHODS in their own method with progress bar support (or not) and support for initial connect        
-        #bridgeIP = discoverBridgeIP..
+
         progressBar.update(10, _("N-UPnP discovery..."))
         bridgeIP =_discoverNupnp()
         if not bridgeIP:
@@ -158,11 +159,12 @@ def bridgeDiscover(monitor):
 
 
 def connectionTest(bridgeIP):
-    logger.debug("in ConnectionTest() Attempt initial connection")
+    logger.debug("Connection Test IP: {}".format(bridgeIP))
     b = qhue.qhue.Resource("http://{}/api".format(bridgeIP))
     try:
         apiversion = b.config()['apiversion']
     except:
+        logger.debug("Connection test failed.")
         return False
 
 #TODO: compare API version properly, ensure api version >= 1.28
@@ -194,17 +196,15 @@ def userTest(bridgeIP,bridgeUser):
 def discoverBridgeIP(monitor):
     #discover hue bridge IP silently for non-interactive discovery / bridge IP change.
     logger.debug("In discoverBridgeIP")
-
-
-    bridgeIP = None
-    if bridgeIP is None:
-        bridgeIP = _discoverNupnp()
-    if bridgeIP is None:
-        bridgeIP = _discoverSsdp()
+    bridgeIP = _discoverNupnp()
     if connectionTest(bridgeIP):
         return bridgeIP
-    else:
-        return False
+
+    bridgeIP = _discoverSsdp()
+    if connectionTest(bridgeIP):
+        return bridgeIP
+    
+    return False
 
 
 
