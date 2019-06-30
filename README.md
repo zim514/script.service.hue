@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/zim514/script.service.hue.svg?branch=master)](https://travis-ci.com/zim514/script.service.hue) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a4a910144f044208821341f1a07c38e)](https://www.codacy.com/app/zim514/script.service.hue?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zim514/script.service.hue&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://travis-ci.com/zim514/script.service.hue.svg?branch=master)](https://travis-ci.com/zim514/script.service.hue) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a4a910144f044208821341f1a07c38e)](https://www.codacy.com/app/zim514/script.service.hue?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zim514/script.service.hue&amp;utm_campaign=Badge_Grade)[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # script.service.hue
 **Kodi Service for Philips Hue**
 Automate your [Hue lights](https://www.meethue.com/) on audio or video playback with [Kodi Media Player](https://kodi.tv/)
@@ -25,7 +25,7 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 
 ## Notes:
 - Hue Bridge with nPNP only
-	- Requires bridge & Kodi connectivity to Philipps servers ( https://discovery.meethue.com/ ) 
+	- Requires bridge & Kodi connectivity to Philips servers ( https://discovery.meethue.com/ ) 
 - Does not support multiple bridges on your network
 - Only tested on LibreElec 9.0.2 & Windows 10, but no reason it shouldn't work anywhere.
 - No ambilight / dynamic lighting support.
@@ -39,13 +39,5 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 
 ## Credits:
 - Based on original plugin by cees-elzinga, michaelrcarroll, mpolednik
-- Uses Qhue (C) Quentin Stafford-Fraser - https://github.com/quentinsf/qhue
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI2MDI1ODI4NywtMjEzNDQ5MzI0Nl19
-=======
-eyJoaXN0b3J5IjpbMTAzODI1NzU3OCwtMjEzNDQ5MzI0Nl19
->>>>>>> README.md updated from https://stackedit.io/
--->
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbNzE5NjE3MTM2XX0=
--->
+- Uses Qhue by Quentin Stafford-Fraser - https://github.com/quentinsf/qhue
+- Uses ssdp.py by dankrause https://gist.github.com/dankrause/6000248
