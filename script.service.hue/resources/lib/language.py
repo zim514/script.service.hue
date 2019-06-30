@@ -6,7 +6,7 @@ import os
 import sys
 from builtins import range
 
-from .globals import STRDEBUG,ADDON
+
 
 
 ######### Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
@@ -67,12 +67,14 @@ if __name__ == "__main__":
                                                     m.msgctxt.replace("#", "").strip())
             f.write(line)
 else:
-    import xbmc
+    from .globals import STRDEBUG,ADDON,ADDONID
+    from logging import getLogger
+    logger = getLogger(ADDONID)
     def get_string(t):
 
         id = _strings.get(t.lower())
         if not id:
-            xbmc.log("ERROR LANGUAGE: missing translation for '%s'" % t.lower())
+            logger.error("ERROR LANGUAGE: missing translation for '%s'" % t.lower())
             return t
         else:
             if STRDEBUG is True:
@@ -95,13 +97,14 @@ _strings['audio actions'] = 32102
 _strings['start/resume'] = 32201
 _strings['pause'] = 32202
 _strings['stop'] = 32203
-_strings['scene name'] = 32510
+_strings['scene name:'] = 32510
 _strings['scene id'] = 32511
-_strings['select scene'] = 32512
-_strings['bridge'] = 1200
-_strings['discover hue bridge'] = 1210
-_strings['bridge ip'] = 1220
-_strings['bridge user'] = 1230
+_strings['select scene...'] = 32512
+_strings['bridge'] = 30500
+_strings['discover hue bridge'] = 30501
+_strings['bridge ip'] = 30502
+_strings['bridge user'] = 30503
+_strings['bridge serial'] = 30504
 _strings['global settings'] = 2100
 _strings['advanced'] = 32101
 _strings['debug logs'] = 32102
@@ -120,19 +123,7 @@ _strings['enabled'] = 6201
 _strings['do nothing'] = 6202
 _strings['adjust lights'] = 6203
 _strings['apply scene'] = 6210
-_strings['turn off lights'] = 6204
-_strings['initial state'] = 6205
-_strings['fade time'] = 6206
-_strings['always force on'] = 6207
-_strings['hue group'] = 6208
-_strings['playback start / resume'] = 6301
-_strings['playback pause'] = 6302
-_strings['playback stop'] = 6303
-_strings['light settings'] = 6400
 _strings['initial state'] = 6401
-_strings['hue'] = 6402
-_strings['saturation'] = 6403
-_strings['brightness'] = 6404
 _strings['kodi hue'] = 9000
 _strings['press connect button on hue bridge'] = 9001
 _strings['select hue group...'] = 9002
@@ -147,7 +138,6 @@ _strings['hue service'] = 30000
 _strings['error: group not created'] = 30001
 _strings['group deleted'] = 30003
 _strings['check your bridge and network'] = 30004
-_strings['nupnp discovery... '] = 30005
 _strings['hue connected'] = 30006
 _strings['press link button on bridge'] = 30007
 _strings['bridge not found'] = 30008
@@ -192,3 +182,6 @@ _strings['scene successfully created!'] = 30045
 _strings['adjust lights to desired state in the hue app to save as new scene.'] = 30046
 _strings['connection lost. check settings. shutting down'] = 30047
 _strings['connection lost. trying again in 5 minutes'] = 30048
+_strings['scene name'] = 30049
+_strings['n-upnp discovery...'] = 30050
+_strings['upnp discovery...'] = 30051

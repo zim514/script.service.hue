@@ -30,35 +30,7 @@ def menu():
         if bridge is not None:
             logger.debug("Found bridge, starting service.")
             service() #restart service
-    
-    elif args == "createHueGroup":
-        logger.debug("Started with createGroup")
-        bridge = kodiHue.connectBridge(monitor, silent=True)
-        if bridge is not None:
-            kodiHue.createHueGroup(bridge)
-        else: 
-            logger.debug("Menu() createGroup: No bridge")
-            xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
-    elif args == "deleteHueGroup":
-        logger.debug("Started with deleteGroup.")
-        bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
-        if bridge is not None:
-            kodiHue.deleteHueGroup(bridge)
-        else:
-            logger.debug("No bridge found. deleteGroup cancelled.")
-            xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
-
-    elif args.startswith("groupSelect"):
-        kgroup = args.split("=", 1)[1]
-        logger.debug("Started with groupSelect. args: {}, kgroup: {}".format(args, kgroup))
-
-        bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
-        if bridge is not None:
-            kodiHue.configureGroup(bridge, kgroup)
-        else:
-            logger.debug("No bridge found. Select group cancelled.")
-            xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif args == "createHueScene":
         logger.debug("Started with {}".format(args))
@@ -94,18 +66,12 @@ def menu():
                 xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))    
 
     else:
-        #bridge = kodiHue.connectBridge(monitor, silent=True)
-        #sceneUI=CreateSceneUI(bridge)
-        #del sceneUI
-        #No command
         globals.ADDON.openSettings()
-
         return
 
 
 def service():
     logger.info("service started, version: {}".format(globals.ADDON.getAddonInfo('version')))
-
 
     monitor = kodiHue.HueMonitor()
 

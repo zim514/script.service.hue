@@ -9,6 +9,7 @@ from builtins import str
 from socket import getfqdn
 
 import requests
+
 import xbmc
 import xbmcgui
 from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_INFO
@@ -16,39 +17,14 @@ from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_INFO
 from . import KodiGroup
 from . import globals
 from . import kodiutils
+
 from . import qhue
+
 from .language import get_string as _
 
 
 logger = getLogger(globals.ADDONID)
 
-def createHueGroup(bridge):
-    logger.debug("In kodiHue createHueGroup")
-    groupName = xbmcgui.Dialog().input("Group Name")
-    if groupName:              
-        selected = selectHueLights(bridge)
-        if selected:
-            groups=bridge.groups
-            res=groups(lights=selected,name=groupName,http_method='post')
-            logger.debug("In kodiHue createHueGroup. Res: {}".format(res))
-            if res[0]["success"]:
-                xbmcgui.Dialog().notification(_("Hue Service"), _("Group Created"))
-            else:
-                xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Group not created"))
-                 
-def deleteHueGroup(bridge):
-    logger.debug("In kodiHue deleteHueGroup")
-    group = selectHueGroup(bridge)
-    if group:
-        confirm = xbmcgui.Dialog().yesno(_("Delete Hue Group"), _("Are you sure you want to delete this group: "), str(group[1]))
-    if group and confirm:              
-        groups=bridge.groups
-        res=groups[group[0]](http_method='delete')
-        logger.debug("In kodiHue createHueGroup. Res: {}".format(res))
-        if res[0]["success"]:
-            xbmcgui.Dialog().notification(_("Hue Service"), _("Group deleted"))
-        else:
-            xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Group not created"))
 
             
 def createHueScene(bridge):
@@ -91,9 +67,14 @@ def deleteHueScene(bridge):
 
 
 def _discoverNupnp():
+
     logger.debug("In kodiHue discover_nupnp()")
-  
-    req = requests.get('https://discovery.meethue.com/')
+    try: 
+        req = requests.get('https://discovery.meethue.com/')
+    except requests.exceptions.ConnectionError as e:
+        logger.info("Nupnp failed: {}".format(e))
+        return None
+    
     res = req.json()
     bridge_ip = None
     if res:
@@ -102,15 +83,30 @@ def _discoverNupnp():
     return bridge_ip
         
         
+def _discoverSsdp():
+    #lazy import
+    import ssdp
+    from urlparse import urlsplit
+
+    ssdp_list = ssdp.discover("ssdp:all",timeout=5,mx=3)
+    logger.debug("ssdp_list: {}".format(ssdp_list))
+    
+    bridges = [u for u in ssdp_list if 'IpBridge' in u.server]
+    ip = urlsplit(bridges[0].location).hostname
+    logger.debug("ip: {}".format(ip))
+    
+    return ip
+
+
 def bridgeDiscover(monitor):
     logger.debug("In bridgeDiscover:")
     #Create new config if none exists. Returns success or fail as bool
-    #kodiutils.set_setting("bridgeIP","")
-    #kodiutils.set_setting("bridgeUser","")
+    kodiutils.set_setting("bridgeIP","")
+    kodiutils.set_setting("bridgeUser","")
     globals.connected = False
 
     progressBar = xbmcgui.DialogProgress()
-    progressBar.create(_('Discover bridge...'))
+    progressBar.create(_('Searching for bridge...'))
     progressBar.update(5, _("Discovery started"))
     
     complete = False
@@ -118,8 +114,11 @@ def bridgeDiscover(monitor):
 
 #TODO: ADD DISCOVERY METHODS in their own method with progress bar support (or not) and support for initial connect        
         #bridgeIP = discoverBridgeIP..
-        progressBar.update(10, _("nupnp discovery... "))
+        progressBar.update(10, _("N-UPnP discovery..."))
         bridgeIP =_discoverNupnp()
+        if not bridgeIP:
+            progressBar.update(20, _("UPnP discovery..."))
+            bridgeIP = _discoverSsdp()
 
         if connectionTest(bridgeIP):
             progressBar.update(100, _("Found bridge: ") + bridgeIP)
@@ -193,14 +192,15 @@ def userTest(bridgeIP,bridgeUser):
 
 
 def discoverBridgeIP(monitor):
-    #discover hue bridge
+    #discover hue bridge IP silently for non-interactive discovery / bridge IP change.
     logger.debug("In discoverBridgeIP")
-    #TODO: implement upnp discovery
+
 
     bridgeIP = None
     if bridgeIP is None:
         bridgeIP = _discoverNupnp()
-
+    if bridgeIP is None:
+        bridgeIP = _discoverSsdp()
     if connectionTest(bridgeIP):
         return bridgeIP
     else:
@@ -242,12 +242,6 @@ def createUser(monitor, bridgeIP, progressBar=False):
         return False
 
 
-def configureGroup(bridge,kGroupID):
-    hGroup=selectHueGroup(bridge)
-    if hGroup > 0:
-        kodiutils.set_setting("group{}_hGroupID".format(kGroupID), hGroup[0])
-        kodiutils.set_setting("group{}_hGroupName".format(kGroupID), hGroup[1])
-        globals.ADDON.openSettings()
 
 
 def configureScene(bridge,kGroupID,action):
@@ -300,37 +294,6 @@ def selectHueLights(bridge):
     else:
         return None
 
-def selectHueGroup(bridge):
-    logger.debug("In selectHueGroup{}")
-    hueGroups=bridge.groups()
-    
-    xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
-    items=[]
-    index=[]
-    id = 0
-    
-#    index.append(0)
-#    items.append(xbmcgui.ListItem(label="All lights"))
-    for group in hueGroups:
-
-        hGroup=hueGroups[group]
-        hGroupName=hGroup['name']
-        
-        #logger.debug("In selectHueGroup: {}, {}".format(hgroup,name))
-        index.append(group)
-        items.append(xbmcgui.ListItem(label=hGroupName))
-        
-    xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
-    selected = xbmcgui.Dialog().select("Select Hue group...",items)
-    if selected > 0 :
-        id = index[selected]
-        hGroupName=hueGroups[id]['name']
-        logger.debug("In selectHueGroup: selected: {}".format(selected))
-    
-    if id:
-        return id, hGroupName;
-    else:
-        return None
 
 def selectHueScene(bridge):
     logger.debug("In selectHueScene{}")
@@ -346,7 +309,6 @@ def selectHueScene(bridge):
         hScene=hueScenes[scene]
         hSceneName=hScene['name']
 
-        #logger.debug("In selectHueGroup: {}, {}".format(hgroup,name))
         if hScene['version'] == 2 and hScene["recycle"] is False and hScene["type"] == "LightScene":
             index.append(scene)
             items.append(xbmcgui.ListItem(label=hSceneName))
@@ -392,15 +354,6 @@ def setupGroups(bridge,flash=False):
     if kodiutils.get_setting_as_bool("group1_enabled"): #Audio Group
         kgroups.append(KodiGroup.KodiGroup())
         kgroups[1].setup(bridge, 1, flash,KodiGroup.AUDIO)
-
-    #===========================================================================
-    # g=0
-    # while g < globals.NUM_GROUPS:
-    #     if kodiutils.get_setting_as_bool("group{}_enabled".format(g)):
-    #         kgroups.append(KodiGroup.KodiGroup())
-    #         kgroups[g].setup(bridge, g, flash)
-    #     g = g + 1
-    #===========================================================================
 
     return kgroups
 
@@ -454,3 +407,4 @@ class HueMonitor(xbmc.Monitor):
     def onSettingsChanged(self):
         logger.debug("Settings changed")
         globals.settingsChanged = True
+

@@ -45,21 +45,25 @@ msgctxt "#32512"
 msgid "Select Scene..."
 msgstr "Select Scene..."
 
-msgctxt "#1200"
+msgctxt "#30500"
 msgid "Bridge"
 msgstr "Bridge"
 
-msgctxt "#1210"
+msgctxt "#30501"
 msgid "Discover Hue Bridge"
 msgstr "Discover Hue Bridge"
 
-msgctxt "#1220"
+msgctxt "#30502"
 msgid "Bridge IP"
 msgstr "Bridge IP"
 
-msgctxt "#1230"
+msgctxt "#30503"
 msgid "Bridge User"
 msgstr "Bridge User"
+
+msgctxt "#30504"
+msgid "Bridge Serial"
+msgstr "Bridge Serial"
 
 msgctxt "#2100"
 msgid "Global Settings"
@@ -137,7 +141,6 @@ msgctxt "#6401"
 msgid "Initial State"
 msgstr "Initial State"
 
-
 msgctxt "#9000"
 msgid "Kodi Hue"
 msgstr "Kodi Hue"
@@ -193,10 +196,6 @@ msgstr "Group deleted"
 msgctxt "#30004"
 msgid "Check your bridge and network"
 msgstr "Check your bridge and network"
-
-msgctxt "#30005"
-msgid "nupnp discovery... "
-msgstr "nupnp discovery... "
 
 msgctxt "#30006"
 msgid "Hue connected"
@@ -373,4 +372,16 @@ msgstr ""
 
 msgctxt "#30048"
 msgid "Connection lost. Trying again in 5 minutes"
+msgstr ""
+
+msgctxt "#30049"
+msgid "Scene Name"
+msgstr ""
+
+msgctxt "#30050"
+msgid "N-UPnP discovery..."
+msgstr ""
+
+msgctxt "#30051"
+msgid "UPnP discovery..."
 msgstr ""

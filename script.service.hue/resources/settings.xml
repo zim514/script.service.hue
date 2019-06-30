@@ -15,14 +15,11 @@
         <setting id="deleteScene" type="action" label="9008" action="RunScript(script.service.hue,deleteHueScene)" />
 
 <!-- Bridge -->
-        <setting type="lsep" label="1200" />
-        <setting id="discoverBridge" type="action" label="1210" action="RunScript(script.service.hue,discover)" option="close"/>
-        <setting id="bridgeIP" type="text" label="1220" enable="false" default="" />
-        <setting id="bridgeUser" type="text" label="1230" enable="false" default="" />
-
+        <setting type="lsep" label="30500" />
+        <setting id="discoverBridge" type="action" label="30501" action="RunScript(script.service.hue,discover)" option="close"/>
+        <setting id="bridgeIP" type="text" label="30502" enable="false" default="" />
+        <setting id="bridgeUser" type="text" label="30503" enable="false" default="" visible="false" />
     </category>
-
-
 
 <!--  GROUP SECTION  0 VIDEO-->    
     <category label="32100">

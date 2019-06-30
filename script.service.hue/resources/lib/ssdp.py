@@ -26,6 +26,7 @@ class SSDPResponse(object):
         self.location = r.getheader("location")
         self.usn = r.getheader("usn")
         self.st = r.getheader("st")
+        self.server = r.getheader("server")
         self.cache = r.getheader("cache-control").split("=")[1]
     def __repr__(self):
         return "<SSDPResponse({location}, {st}, {usn})>".format(**self.__dict__)
