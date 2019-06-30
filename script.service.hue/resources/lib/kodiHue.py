@@ -7,8 +7,10 @@ Created on Apr. 12, 2019
 from logging import getLogger
 from builtins import str
 from socket import getfqdn
+import datetime
 
 import requests
+
 
 import xbmc
 import xbmcgui
@@ -26,7 +28,34 @@ from .language import get_string as _
 logger = getLogger(globals.ADDONID)
 
 
-            
+def loadSettings():
+    logger.debug("Loading settings")
+    globals.reloadFlash = kodiutils.get_setting_as_bool("reloadFlash")
+    globals.initialFlash = kodiutils.get_setting_as_bool("initialFlash")
+    
+    globals.forceOnSunset = kodiutils.get_setting_as_bool("forceOnSunset")
+    globals.daylightDisable = kodiutils.get_setting_as_bool("daylightDisable")
+    
+    globals.enableSchedule = kodiutils.get_setting_as_bool("enableSchedule")
+    globals.startTime = kodiutils.get_setting("startTime")
+    globals.endTime = kodiutils.get_setting("endTime")
+    validateSchedule()
+    
+def setupGroups(bridge,flash=False):
+    logger.debug("in setupGroups()")
+    kgroups= []
+    
+    if kodiutils.get_setting_as_bool("group0_enabled"): #VIDEO Group
+        kgroups.append(KodiGroup.KodiGroup())
+        kgroups[0].setup(bridge, 0, flash,KodiGroup.VIDEO)
+
+    if kodiutils.get_setting_as_bool("group1_enabled"): #Audio Group
+        kgroups.append(KodiGroup.KodiGroup())
+        kgroups[1].setup(bridge, 1, flash,KodiGroup.AUDIO)
+
+    return kgroups
+    
+
 def createHueScene(bridge):
     logger.debug("In kodiHue createHueScene")
     scenes=bridge.scenes
@@ -245,9 +274,8 @@ def createUser(monitor, bridgeIP, progressBar=False):
 
 
 def configureScene(bridge,kGroupID,action):
-    scene = "none"
     scene=selectHueScene(bridge)
-    if scene is not "none":
+    if scene is not None:
         #group0_startSceneID
         kodiutils.set_setting("group{}_{}SceneID".format(kGroupID, action),scene[0])
         kodiutils.set_setting("group{}_{}SceneName".format(kGroupID,action), scene[1])
@@ -340,26 +368,6 @@ def sunset(bridge,kgroups):
 
     return
 
-
-def setupGroups(bridge,flash=False):
-    logger.debug("in setupGroups()")
-    kgroups= []
-    
-    
-    
-    if kodiutils.get_setting_as_bool("group0_enabled"): #VIDEO Group
-        kgroups.append(KodiGroup.KodiGroup())
-        kgroups[0].setup(bridge, 0, flash,KodiGroup.VIDEO)
-
-    if kodiutils.get_setting_as_bool("group1_enabled"): #Audio Group
-        kgroups.append(KodiGroup.KodiGroup())
-        kgroups[1].setup(bridge, 1, flash,KodiGroup.AUDIO)
-
-    return kgroups
-
-
-
-
 def connectBridge(monitor,silent=False):
     bridgeIP = kodiutils.get_setting("bridgeIP")
     bridgeUser = kodiutils.get_setting("bridgeUser")
@@ -399,6 +407,22 @@ def connectBridge(monitor,silent=False):
         globals.connected = False
         return None
 
+def validateSchedule():
+    logger.debug("Checking if schedule is valid. Enabled: {}".format(globals.enableSchedule))
+    if globals.enableSchedule:
+        try: 
+            kodiutils.convertTime(globals.startTime)
+            kodiutils.convertTime(globals.endTime)
+            logger.debug("Time looks valid")
+        except ValueError as e:
+            logger.error("Invalid time settings: {}".format(e))
+            kodiutils.notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"), icon=NOTIFICATION_ERROR)
+            kodiutils.set_setting("EnableSchedule", False)
+            globals.enableSchedule = False
+            
+            
+
+
 
 class HueMonitor(xbmc.Monitor):
     def __init__(self):
@@ -406,5 +430,6 @@ class HueMonitor(xbmc.Monitor):
 
     def onSettingsChanged(self):
         logger.debug("Settings changed")
+        loadSettings()
         globals.settingsChanged = True
 

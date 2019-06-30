@@ -14,7 +14,7 @@ import requests
 # for hostname retrieval for registering with the bridge
 __all__ = ('Bridge', 'QhueException', 'create_new_username')
 
-# default timeout in seconds
+# menu timeout in seconds
 _DEFAULT_TIMEOUT = 5
 
 
@@ -82,7 +82,7 @@ def create_new_username(ip, devicetype=None, timeout=_DEFAULT_TIMEOUT):
         ip: ip address of the bridge
         devicetype (optional): devicetype to register with the bridge. If
             unprovided, generates a device type based on the local hostname.
-        timeout (optional, default=5): request timeout in seconds
+        timeout (optional, menu=5): request timeout in seconds
     Raises:
         QhueException if something went wrong with username generation (for
             example, if the bridge button wasn't pressed).
@@ -116,7 +116,7 @@ class Bridge(Resource):
         Args:
             ip: ip address of the bridge
             username: valid username for the bridge
-            timeout (optional, default=5): request timeout in seconds
+            timeout (optional, menu=5): request timeout in seconds
             object_pairs_hook (optional): function called by JSON decoder with
                 the result of any object literal as an ordered list of pairs.
         """

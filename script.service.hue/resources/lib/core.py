@@ -72,19 +72,16 @@ def menu():
 
 def service():
     logger.info("service started, version: {}".format(globals.ADDON.getAddonInfo('version')))
-
+    kodiHue.loadSettings()
     monitor = kodiHue.HueMonitor()
 
-    initialFlash = kodiutils.get_setting_as_bool("initialFlash")
-    globals.forceOnSunset = kodiutils.get_setting_as_bool("forceOnSunset")
-    globals.daylightDisable = kodiutils.get_setting_as_bool("daylightDisable")
 
     bridge = kodiHue.connectBridge(monitor,silent=False)
 
     if bridge is not None:
         globals.settingsChanged = False
         globals.daylight = kodiHue.getDaylight(bridge)
-        kgroups = kodiHue.setupGroups(bridge,initialFlash)
+        kgroups = kodiHue.setupGroups(bridge,globals.initialFlash)
         
         connectionRetries = 0
         timer = 60 #Run loop once on first run
@@ -94,11 +91,8 @@ def service():
             
                
             if globals.settingsChanged:
-                reloadFlash = kodiutils.get_setting_as_bool("reloadFlash")
-                globals.forceOnSunset = kodiutils.get_setting_as_bool("forceOnSunset")
-                globals.daylightDisable = kodiutils.get_setting_as_bool("daylightDisable")
 
-                kgroups = kodiHue.setupGroups(bridge, reloadFlash)
+                kgroups = kodiHue.setupGroups(bridge, globals.reloadFlash)
                 globals.settingsChanged = False
 
 

@@ -18,12 +18,22 @@ ADDONVERSION = ADDON.getAddonInfo('version')
 KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
 logger = getLogger(ADDONID)
 
+
+#Init values for code completion, all get overwritten by kodiHue.loadSettings()
 settingsChanged = False
 connected = False
 daylight = False
-forceOnSunset = True
-daylightDisable = True
+forceOnSunset = False
+daylightDisable = False
 separateLogFile = False
+initialFlash = False
+reloadFlash = False
+enableSchedule = False
+
+
+startTime = ""
+endTime = ""
+
 lastMediaType=0
 
 

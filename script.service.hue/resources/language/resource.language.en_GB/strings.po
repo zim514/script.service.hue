@@ -5,14 +5,6 @@
 msgid ""
 msgstr ""
 
-msgctxt "#1000"
-msgid "General"
-msgstr "General"
-
-msgctxt "#1100"
-msgid "Light Groups"
-msgstr "Light Groups"
-
 msgctxt "#32100"
 msgid "Video Actions"
 msgstr "Video Actions"
@@ -65,9 +57,37 @@ msgctxt "#30504"
 msgid "Bridge Serial"
 msgstr "Bridge Serial"
 
-msgctxt "#2100"
-msgid "Global Settings"
-msgstr "Global Settings"
+msgctxt "#30505"
+msgid "Enable Schedule (24-h format)"
+msgstr "Enable Schedule"
+
+msgctxt "#30506"
+msgid "Start time:"
+msgstr "Start time:"
+
+msgctxt "#30507"
+msgid "End time:"
+msgstr "End time:"
+
+msgctxt "#30508"
+msgid "Disable during daylight"
+msgstr "Disable during daylight"
+
+msgctxt "#30509"
+msgid "Activate during playback at sunset"
+msgstr "Activate during playback at sunset"
+
+msgctxt "#30510"
+msgid "General"
+msgstr "General"
+
+msgctxt "#30511"
+msgid "Activation schedule"
+msgstr "Activation schedule"
+
+msgctxt "#30512"
+msgid "Scenes"
+msgstr "Scenes"
 
 msgctxt "#32101"
 msgid "Advanced"
@@ -88,22 +108,6 @@ msgstr "Initial flash"
 msgctxt "#5111"
 msgid "Flash on settings reload"
 msgstr "Flash on settings reload"
-
-msgctxt "#6000"
-msgid "Group"
-msgstr "Group"
-
-msgctxt "#6001"
-msgid "Kodi Group ID"
-msgstr "Kodi Group ID"
-
-msgctxt "#6002"
-msgid "Hue Group Name"
-msgstr "Hue Group Name"
-
-msgctxt "#6003"
-msgid "Hue Group ID"
-msgstr "Hue Group ID"
 
 msgctxt "#6100"
 msgid "Light Selection"
@@ -160,14 +164,6 @@ msgstr "Create Hue Group..."
 msgctxt "#9004"
 msgid "Delete Hue Group..."
 msgstr "Delete Hue Group..."
-
-msgctxt "#9005"
-msgid "Activate during playback at sunset"
-msgstr "Activate during playback at sunset"
-
-msgctxt "#9006"
-msgid "Disable during daytime"
-msgstr "Disable during daytime"
 
 msgctxt "#9007"
 msgid "Create Scene"
@@ -384,4 +380,12 @@ msgstr ""
 
 msgctxt "#30051"
 msgid "UPnP discovery..."
+msgstr ""
+
+msgctxt "#30005"
+msgid "Searching for bridge..."
+msgstr ""
+
+msgctxt "#30052"
+msgid "Invalid start or end time, schedule disabled"
 msgstr ""

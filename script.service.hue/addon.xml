@@ -9,7 +9,7 @@
 
   <extension  point="xbmc.service" name="service.hue" library="service.py">
   </extension> 
-  <extension  point="xbmc.python.script" library="default.py">
+  <extension  point="xbmc.python.script" library="menu.py">
   	<provides>executable</provides>
   </extension>
   
@@ -24,7 +24,7 @@
     <news>
 v0.4.0:
 - Rewrite bridge discovery with discoverhue library (https://github.com/Overboard/discoverhue)
-- Add activation schedule
+- Add activation schedule support
 - 
 v0.3.7
 - Fix crash at sunset

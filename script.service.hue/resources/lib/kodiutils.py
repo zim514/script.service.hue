@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from builtins import str
+import datetime
 
-from kodi_six import xbmc, xbmcgui
+from kodi_six import xbmcgui
 #import xbmcgui
 
 from . import globals
@@ -25,6 +25,10 @@ def get_setting(setting):
 def set_setting(setting, value):
     globals.ADDON.setSetting(setting, str(value))
 
+def convertTime(time):
+    hour=int(time.split(":")[0])
+    minute=int(time.split(":")[1])
+    return datetime.time(hour,minute)
 
 def get_setting_as_bool(setting):
     return get_setting(setting).lower() == "true"

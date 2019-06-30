@@ -4,12 +4,16 @@ Created on Apr. 17, 2019
 
 '''
 from logging import getLogger
+import datetime
+
 
 import xbmc
 from . import globals
 
-from .kodiutils import get_setting, get_setting_as_bool
+from .kodiutils import get_setting, get_setting_as_bool,convertTime
 from .qhue import QhueException
+from __builtin__ import True
+
 
 
 BEHAVIOR_NOTHING = 0
@@ -76,43 +80,35 @@ class KodiGroup(xbmc.Player):
 
         def onAVStarted(self):
             logger.info("In KodiGroup[{}], onPlaybackStarted. Group enabled: {},startBehavior: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.startBehavior, self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
-            if globals.daylightDisable and globals.daylight:
-                    return
-            else:
-                self.state = STATE_PLAYING
-                globals.lastMediaType = self.playbackType()
-                
-                if self.enabled and self.startBehavior and self.mediaType == self.playbackType():
-                    try:
-                        self.groupResource.action(scene=self.startScene)
-                    except QhueException as e:
-                        logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
+            self.state = STATE_PLAYING
+            globals.lastMediaType = self.playbackType()
+            
+            if self.enabled and self.activeTime() and self.startBehavior and self.mediaType == self.playbackType():
+
+                try:
+                    self.groupResource.action(scene=self.startScene)
+                except QhueException as e:
+                    logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
 
 
         def onPlayBackStopped(self):
             logger.info("In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroupID,self.mediaType,globals.lastMediaType))
-            if globals.daylightDisable and globals.daylight:
-                return
-            else:
-                self.state = STATE_IDLE
-                if self.enabled and self.stopBehavior and self.mediaType == globals.lastMediaType:
-                    try:
-                        self.groupResource.action(scene=self.stopScene)
-                    except QhueException as e:
-                        logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
+            self.state = STATE_IDLE
+            if self.enabled and self.activeTime() and self.stopBehavior and self.mediaType == globals.lastMediaType:
+                try:
+                    self.groupResource.action(scene=self.stopScene)
+                except QhueException as e:
+                    logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
 
         def onPlayBackPaused(self):
             logger.info("In KodiGroup[{}], onPlaybackPaused() , isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID,self.isPlayingVideo(),self.isPlayingAudio()))
-            if globals.daylightDisable and globals.daylight:
-                return
-            else:
-                self.state = STATE_PAUSED
-                if self.enabled and self.pauseBehavior and self.mediaType == self.playbackType():
-                    self.lastMediaType = self.playbackType()
-                    try:
-                        self.groupResource.action(scene=self.pauseScene)
-                    except QhueException as e:
-                        logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
+            self.state = STATE_PAUSED
+            if self.enabled and self.activeTime() and self.pauseBehavior and self.mediaType == self.playbackType():
+                self.lastMediaType = self.playbackType()
+                try:
+                    self.groupResource.action(scene=self.pauseScene)
+                except QhueException as e:
+                    logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
 
 
         def onPlayBackResumed(self):
@@ -148,8 +144,30 @@ class KodiGroup(xbmc.Player):
                 mediaType=None
             return mediaType
         
-        
-        
+        def activeTime(self):
+
+            if globals.daylightDisable and globals.daylight:
+                logger.debug("Disabled by daylight")
+                return False
+
+            if globals.enableSchedule == False:
+                return True
+
+            start=convertTime(globals.startTime)
+            end=convertTime(globals.endTime)
+            now = datetime.datetime.now().time()
+            
+            logger.debug("Schedule check: start: {}, now: {}, end: {}".format(start,now,end))
+
+            if (now > start) and (now <end):
+                logger.debug("Schedule active") 
+                return True
+            else:
+                logger.debug("Disabled by schedule")
+                return False
+                
+
+
 #===============================================================================
 #         def _saveInitialState(self):
 #             #TODO: Get scene lights to save initial state
