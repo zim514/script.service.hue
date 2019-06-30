@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
 
-    <category label="1000">
+    <category label="30510">
     
 <!-- MAIN SECTION -->
-        <setting type="lsep" label="1000" />
+        <setting type="lsep" label="30511" />
 
-        <setting id="forceOnSunset" type="bool" label="9005" default="True" />
-        <setting id="daylightDisable" type="bool" label="9006" default="True" />
-     
+        <setting id="forceOnSunset" type="bool" label="30509" default="False" />
+        <setting id="daylightDisable" type="bool" label="30508" default="False" />
         <setting type="sep" />
+        <setting id="enableSchedule" type="bool" label="30505" default="False" />
+		<setting id="startTime" type="time" label="30506" enable="eq(-1,true)" default="18:00"/>
+        <setting id="endTime" type="time" label="30507" enable="eq(-2,true)" default="22:00"/>
+        
+     
+        <setting type="lsep" label="30512" />
      
         <setting id="createScene" type="action" label="9007" action="RunScript(script.service.hue,createHueScene)" />
         <setting id="deleteScene" type="action" label="9008" action="RunScript(script.service.hue,deleteHueScene)" />
 
 <!-- Bridge -->
-        <setting type="lsep" label="1200" />
-        <setting id="discoverBridge" type="action" label="1210" action="RunScript(script.service.hue,discover)" option="close"/>
-        <setting id="bridgeIP" type="text" label="1220" enable="false" default="" />
-        <setting id="bridgeUser" type="text" label="1230" enable="false" default="" />
-
+        <setting type="lsep" label="30500" />
+        <setting id="discoverBridge" type="action" label="30501" action="RunScript(script.service.hue,discover)" option="close"/>
+        <setting id="bridgeIP" type="text" label="30502" enable="false" default="" />
+        <setting id="bridgeUser" type="text" label="30503" enable="false" default="" visible="false" />
     </category>
-
-
 
 <!--  GROUP SECTION  0 VIDEO-->    
     <category label="32100">

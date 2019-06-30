@@ -4,12 +4,16 @@ Created on Apr. 17, 2019
 
 '''
 from logging import getLogger
+import datetime
+
 
 import xbmc
 from . import globals
 
-from .kodiutils import get_setting, get_setting_as_bool
+from .kodiutils import get_setting, get_setting_as_bool,convertTime
 from .qhue import QhueException
+
+
 
 
 BEHAVIOR_NOTHING = 0
@@ -58,87 +62,53 @@ class KodiGroup(xbmc.Player):
 
             self.groupResource=bridge.groups[0]
             #TODO: Get scene lights to save initial state
-            self.lightIDs=self.groupResource()["lights"]
+            #self.lightIDs=self.groupResource()["lights"]
 
 
             if flash:
                 self.flash()
 
 
-        def _saveInitialState(self):
-            #TODO: Get scene lights to save initial state
-            #This method no longer works
-            logger.debug("In KodiGroup[{}], save initial state".format(self.kgroupID))
-            initialState = {}
-            lights = self.lights
-
-            for x in self.lightIDs:
-                light=lights[x]()
-                initialState[x] = light['state'] 
-                #self.initialState.append(lights.l()['state'])
-
-            self.initialState=initialState
-
-        def _applyInitialState(self):
-            #Deprecated with new scene support
-            logger.debug("In KodiGroup[{}], apply initial state".format(self.kgroupID))
-            initialState = self.initialState
-            lights = self.lights 
-
-            for x in initialState:
-                i = initialState[x]
-                logger.debug("In KodiGroup[{}], apply initial state: {}, {}".format(self.kgroupID,x,i))
-                lights[x].state(on=i['on'],
-                                ct=i['ct'],
-                                xy=i['xy'],
-                                bri=i['bri'],
-                                hue=i['hue'],
-                                sat=i['sat'],
-                                transitiontime=self.fadeTime)
 
         def flash(self):
             logger.debug("in KodiGroup Flash")
-            self.groupResource.action(alert="select")
+            try:
+                self.groupResource.action(alert="select")
+            except QhueException() as e:
+                logger.error("Hue Error: {}".format(e))
+
 
         def onAVStarted(self):
             logger.info("In KodiGroup[{}], onPlaybackStarted. Group enabled: {},startBehavior: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.startBehavior, self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
-            if globals.daylightDisable and globals.daylight:
-                    return
-            else:
-                self.state = STATE_PLAYING
-                globals.lastMediaType = self.playbackType()
-                
-                if self.enabled and self.startBehavior and self.mediaType == self.playbackType():
-                    try:
-                        self.groupResource.action(scene=self.startScene)
-                    except QhueException as e:
-                        logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
+            self.state = STATE_PLAYING
+            globals.lastMediaType = self.playbackType()
+            
+            if self.enabled and self.activeTime() and self.startBehavior and self.mediaType == self.playbackType():
+
+                try:
+                    self.groupResource.action(scene=self.startScene)
+                except QhueException as e:
+                    logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
 
 
         def onPlayBackStopped(self):
             logger.info("In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroupID,self.mediaType,globals.lastMediaType))
-            if globals.daylightDisable and globals.daylight:
-                return
-            else:
-                self.state = STATE_IDLE
-                if self.enabled and self.stopBehavior and self.mediaType == globals.lastMediaType:
-                    try:
-                        self.groupResource.action(scene=self.stopScene)
-                    except QhueException as e:
-                        logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
+            self.state = STATE_IDLE
+            if self.enabled and self.activeTime() and self.stopBehavior and self.mediaType == globals.lastMediaType:
+                try:
+                    self.groupResource.action(scene=self.stopScene)
+                except QhueException as e:
+                    logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
 
         def onPlayBackPaused(self):
             logger.info("In KodiGroup[{}], onPlaybackPaused() , isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID,self.isPlayingVideo(),self.isPlayingAudio()))
-            if globals.daylightDisable and globals.daylight:
-                return
-            else:
-                self.state = STATE_PAUSED
-                if self.enabled and self.pauseBehavior and self.mediaType == self.playbackType():
-                    self.lastMediaType = self.playbackType()
-                    try:
-                        self.groupResource.action(scene=self.pauseScene)
-                    except QhueException as e:
-                        logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
+            self.state = STATE_PAUSED
+            if self.enabled and self.activeTime() and self.pauseBehavior and self.mediaType == self.playbackType():
+                self.lastMediaType = self.playbackType()
+                try:
+                    self.groupResource.action(scene=self.pauseScene)
+                except QhueException as e:
+                    logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
 
 
         def onPlayBackResumed(self):
@@ -173,4 +143,61 @@ class KodiGroup(xbmc.Player):
             else:
                 mediaType=None
             return mediaType
+        
+        @classmethod
+        def activeTime(self):
 
+            if globals.daylightDisable and globals.daylight:
+                logger.debug("Disabled by daylight")
+                return False
+
+            if globals.enableSchedule == False:
+                return True
+
+            start=convertTime(globals.startTime)
+            end=convertTime(globals.endTime)
+            now = datetime.datetime.now().time()
+            
+            logger.debug("Schedule check: start: {}, now: {}, end: {}".format(start,now,end))
+
+            if (now > start) and (now <end):
+                logger.debug("Schedule active")
+                return True
+            else:
+                logger.debug("Disabled by schedule")
+                return False
+                
+
+
+#===============================================================================
+#         def _saveInitialState(self):
+#             #TODO: Get scene lights to save initial state
+#             #This method no longer works
+#             logger.debug("In KodiGroup[{}], save initial state".format(self.kgroupID))
+#             initialState = {}
+#             lights = self.lights
+#
+#             for x in self.lightIDs:
+#                 light=lights[x]()
+#                 initialState[x] = light['state']
+#                 #self.initialState.append(lights.l()['state'])
+#
+#             self.initialState=initialState
+#
+#         def _applyInitialState(self):
+#             #Deprecated with new scene support
+#             logger.debug("In KodiGroup[{}], apply initial state".format(self.kgroupID))
+#             initialState = self.initialState
+#             lights = self.lights
+#
+#             for x in initialState:
+#                 i = initialState[x]
+#                 logger.debug("In KodiGroup[{}], apply initial state: {}, {}".format(self.kgroupID,x,i))
+#                 lights[x].state(on=i['on'],
+#                                 ct=i['ct'],
+#                                 xy=i['xy'],
+#                                 bri=i['bri'],
+#                                 hue=i['hue'],
+#                                 sat=i['sat'],
+#                                 transitiontime=self.fadeTime)
+#===============================================================================
