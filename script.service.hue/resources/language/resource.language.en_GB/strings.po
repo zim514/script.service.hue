@@ -34,8 +34,8 @@ msgid "Scene ID"
 msgstr "Scene ID"
 
 msgctxt "#32512"
-msgid "Select Scene..."
-msgstr "Select Scene..."
+msgid "Select..."
+msgstr "Select..."
 
 msgctxt "#30500"
 msgid "Bridge"
@@ -89,6 +89,19 @@ msgctxt "#30512"
 msgid "Scenes"
 msgstr "Scenes"
 
+msgctxt "#30513"
+msgid "Start Scene Enabled"
+msgstr "Start Scene Enabled"
+
+msgctxt "#30514"
+msgid "Pause Scene Enabled"
+msgstr "Pause Scene Enabled"
+
+msgctxt "#30515"
+msgid "Stop Scene Enabled"
+msgstr "Stop Scene Enabled"
+
+
 msgctxt "#32101"
 msgid "Advanced"
 msgstr "Advanced"
@@ -125,45 +138,13 @@ msgctxt "#6200"
 msgid "Group Behavior"
 msgstr "Group Behavior"
 
-msgctxt "#6201"
+msgctxt "#30520"
 msgid "Enabled"
 msgstr "Enabled"
-
-msgctxt "#6202"
-msgid "Do nothing"
-msgstr "Do nothing"
-
-msgctxt "#6203"
-msgid "Adjust lights"
-msgstr "Adjust lights"
-
-msgctxt "#6210"
-msgid "Apply Scene"
-msgstr "Apply Scene"
-
-msgctxt "#6401"
-msgid "Initial State"
-msgstr "Initial State"
-
-msgctxt "#9000"
-msgid "Kodi Hue"
-msgstr "Kodi Hue"
 
 msgctxt "#9001"
 msgid "Press connect button on Hue bridge"
 msgstr "Press connect button on Hue bridge"
-
-msgctxt "#9002"
-msgid "Select Hue Group..."
-msgstr "Select Hue Group..."
-
-msgctxt "#9003"
-msgid "Create Hue Group..."
-msgstr "Create Hue Group..."
-
-msgctxt "#9004"
-msgid "Delete Hue Group..."
-msgstr "Delete Hue Group..."
 
 msgctxt "#9007"
 msgid "Create Scene"
@@ -172,10 +153,6 @@ msgstr "Create Scene"
 msgctxt "#9008"
 msgid "Delete Scene"
 msgstr "Delete Scene"
-
-msgctxt "#9009"
-msgid "Select Scene"
-msgstr "Select Scene"
 
 msgctxt "#30000"
 msgid "Hue Service"

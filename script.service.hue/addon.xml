@@ -6,24 +6,30 @@
   	<import addon="script.module.kodi-six" version="0.1.0" />
   </requires>
 
-  <extension  point="xbmc.service" name="service.hue" library="service.py">
-  </extension> 
+  <extension  point="xbmc.service" name="service.hue" library="service.py" />
   <extension  point="xbmc.python.script" library="menu.py">
   	<provides>executable</provides>
   </extension>
   
   
   <extension point="xbmc.addon.metadata">
-  
+
+    <platform>all</platform>
+    <license>MIT License</license>
+    <assets>
+		<icon>resources/icons/icon.png</icon>
+		<fanart>resources/icons/fanart.jpg</fanart>
+		<screenshot>resources/icons/fanart.jpg</screenshot>
+  	</assets>
+    <source>https://github.com/zim514/script.service.hue</source>
+    <forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
     <summary lang="en_GB">Automate Hue lights with Kodi playback</summary>
     <description lang="en_GB">Automate your Philips Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback.</description>
     <disclaimer lang="en_GB">Automate Hue lights with Kodi playback</disclaimer>
-    <platform>all</platform>
-    <license>MIT License</license>
-    <news>
-    
+<news>
 v0.4.1:
-- style fixes
+- Clean-up & improve settings dialogue
+- Code style fixes
 v0.4.1:
 - Switch to kodi-six from future
 v0.4.0:
@@ -54,12 +60,7 @@ v0.2.7:
 v0.2.6: 
  - Improve logging system
 </news>
-    <assets>
-  		<icon>resources/icons/icon.png</icon>
-  		<fanart>resources/icons/fanart.jpg</fanart>
-  		<screenshot>resources/icons/fanart.jpg</screenshot>
-  	</assets>
-    <source>https://github.com/zim514/script.service.hue</source>
+ 
   </extension>
   
 </addon>
