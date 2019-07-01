@@ -82,8 +82,8 @@ msgid "General"
 msgstr "General"
 
 msgctxt "#30511"
-msgid "Activation schedule"
-msgstr "Activation schedule"
+msgid "Schedule"
+msgstr "Schedule"
 
 msgctxt "#30512"
 msgid "Scenes"
