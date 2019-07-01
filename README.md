@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/zim514/script.service.hue.svg?branch=master)](https://travis-ci.com/zim514/script.service.hue) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a4a910144f044208821341f1a07c38e)](https://www.codacy.com/app/zim514/script.service.hue?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zim514/script.service.hue&amp;utm_campaign=Badge_Grade)[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.com/zim514/script.service.hue.svg?branch=master)](https://travis-ci.com/zim514/script.service.hue) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1a4a910144f044208821341f1a07c38e)](https://www.codacy.com/app/zim514/script.service.hue?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zim514/script.service.hue&amp;utm_campaign=Badge_Grade)[![CodeFactor](https://www.codefactor.io/repository/github/zim514/script.service.hue/badge)](https://www.codefactor.io/repository/github/zim514/script.service.hue)[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # script.service.hue
 **Kodi Service for Philips Hue**
 Automate your [Hue lights](https://www.meethue.com/) on audio or video playback with [Kodi Media Player](https://kodi.tv/)
@@ -9,7 +9,7 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
  2. [Install to Kodi from Zip](https://kodi.wiki/view/HOW-TO:Install_add-ons_from_zip_files)
 
 ## Features:
-- Create and delete multi-room LightScenes
+- Create and delete multi-room Light Scenes
 	- Adjust your lights as desired, and use the add-on to select the lights and transition time.
 	- Supports lights in multiple rooms or groups.
 	- The official Hue app won't show scenes made outside of the official app, but most 3rd party apps will let you see and edit your scene
@@ -21,11 +21,13 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 	- Disable during daylight hours
 	- If sunset falls while watching media, optionally turn on lights
 	- Add-on does nothing at sunset if there's no playback
-
+- Enable schedule
+	- Set a start and end time at which the add-on should be enabled
+    - Time in 24h format (Eg: 22:00, not 10:00 PM)
+    - Disable during daylight setting takes precedence over active hours
+    - Not tested if end time is after midnight (Eg. activate from 6PM to 1AM)
 
 ## Notes:
-- Hue Bridge with nPNP only
-	- Requires bridge & Kodi connectivity to Philips servers ( https://discovery.meethue.com/ ) 
 - Does not support multiple bridges on your network
 - Only tested on LibreElec 9.0.2 & Windows 10, but no reason it shouldn't work anywhere.
 - No ambilight / dynamic lighting support.
@@ -41,3 +43,6 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 - Based on original plugin by cees-elzinga, michaelrcarroll, mpolednik
 - Uses Qhue by Quentin Stafford-Fraser - https://github.com/quentinsf/qhue
 - Uses ssdp.py by dankrause https://gist.github.com/dankrause/6000248
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbMTk0NjczODcxMSwtMTMwMTc0NzIyNV19
+-->
