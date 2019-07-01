@@ -12,7 +12,7 @@ from socket import getfqdn
 import requests
 
 # for hostname retrieval for registering with the bridge
-__all__ = ('Bridge', 'QhueException', 'create_new_username')
+__all__ = ('Bridge', 'QhueException')
 
 # menu timeout in seconds
 _DEFAULT_TIMEOUT = 5

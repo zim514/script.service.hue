@@ -151,7 +151,7 @@ class KodiGroup(xbmc.Player):
                 logger.debug("Disabled by daylight")
                 return False
 
-            if globals.enableSchedule == False:
+            if globals.enableSchedule is False:
                 return True
 
             start=convertTime(globals.startTime)
@@ -163,10 +163,9 @@ class KodiGroup(xbmc.Player):
             if (now > start) and (now <end):
                 logger.debug("Schedule active")
                 return True
-            else:
-                logger.debug("Disabled by schedule")
-                return False
-                
+            logger.debug("Disabled by schedule")
+            return False
+
 
 
 #===============================================================================

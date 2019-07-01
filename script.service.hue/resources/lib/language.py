@@ -23,11 +23,10 @@ if __name__ == "__main__":
     foldername = os.path.basename(dirpath)
     print("Directory name is : " + foldername)
 
-    file = "..\\language\\resource.language.en_GB\\strings.po"
+    string_file = "..\\language\\resource.language.en_GB\\strings.po"
+    print("input file: " + string_file)
 
-    print("input file: " + file)
-
-    po = polib.pofile(file)
+    po = polib.pofile(string_file)
 
     try:
         import re, subprocess
@@ -51,7 +50,7 @@ if __name__ == "__main__":
                 id = ids_available.pop(0)
                 entry = polib.POEntry(msgid=text, msgstr=u'', msgctxt="#{0}".format(id))
                 po.append(entry)
-            po.save(file)
+            po.save(string_file)
     except Exception as e:
         content = []
     with open(__file__, "r") as me:
@@ -68,16 +67,14 @@ else:
     from logging import getLogger
     logger = getLogger(ADDONID)
     def get_string(t):
-
-        id = _strings.get(t.lower())
-        if not id:
+        string_id = _strings.get(t.lower())
+        if not string_id:
             logger.error("ERROR LANGUAGE: missing translation for '%s'" % t.lower())
             return t
-        else:
-            if STRDEBUG is True:
-                return  "STR:{} {}".format(id,ADDON.getLocalizedString(id))
-            else:
-                return ADDON.getLocalizedString(id)
+
+        if STRDEBUG is True:
+            return  "STR:{} {}".format(string_id,ADDON.getLocalizedString(string_id))
+        return ADDON.getLocalizedString(string_id)
         # =======================================================================
         # elif id in range(30000, 31000) and ADDON_ID.startswith("plugin"): return ADDON.getLocalizedString(id)
         # elif id in range(31000, 32000) and ADDON_ID.startswith("skin"): return ADDON.getLocalizedString(id)

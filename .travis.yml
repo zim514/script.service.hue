@@ -4,14 +4,14 @@ python: "3.7"
 env:
    - ADDON_ID=script.service.hue
      BRANCH=leia
-     
+
 # command to install dependencies
-install: 
+install:
   - pip install kodi-addon-checker
 
 script:
   - kodi-addon-checker --branch $BRANCH $ADDON_ID
- 
+
 before_deploy:
   - pip install  git+https://github.com/romanvm/kodi-addon-submitter.git
   - submit-addon -s -z $ADDON_ID
@@ -29,11 +29,11 @@ deploy:
     on:
       all_branches: true
       tags: true
-    
+
 #  - provider: script
 #    script: submit-addon -r repo-scripts -b $BRANCH -s --pull-request $ADDON_ID
 #    on:
-#      tags: true 
- 
+#      tags: true
+
 notifications:
     webhooks: https://www.travisbuddy.com/
