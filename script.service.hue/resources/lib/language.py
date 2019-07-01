@@ -1,12 +1,6 @@
 #! /usr/bin/python
-from __future__ import absolute_import
-from __future__ import print_function
 
-import os
-import sys
-from builtins import range
-
-
+#from __future__ import print_function
 
 
 ######### Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
@@ -15,6 +9,9 @@ from builtins import range
 _strings = {}
 
 if __name__ == "__main__":
+
+    import os
+    import sys
 
     import polib
 

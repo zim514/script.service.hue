@@ -4,9 +4,9 @@
 import json
 import re
 import sys
-from builtins import input
-from builtins import object
-from builtins import str
+#from builtins import input
+#from builtins import object
+#from builtins import str
 from socket import getfqdn
 
 import requests
@@ -74,35 +74,36 @@ def _api_url(ip, username=None):
     else:
         return "http://{}/api/{}".format(ip, username)
 
-
-def create_new_username(ip, devicetype=None, timeout=_DEFAULT_TIMEOUT):
-    """Interactive helper function to generate a new anonymous username.
-
-    Args:
-        ip: ip address of the bridge
-        devicetype (optional): devicetype to register with the bridge. If
-            unprovided, generates a device type based on the local hostname.
-        timeout (optional, menu=5): request timeout in seconds
-    Raises:
-        QhueException if something went wrong with username generation (for
-            example, if the bridge button wasn't pressed).
-    """
-    res = Resource(_api_url(ip), timeout)
-    prompt = "Press the Bridge button, then press Return: "
-    # Deal with one of the sillier python3 changes
-    if sys.version_info.major == 2:
-        _ = eval(input(prompt))
-    else:
-        _ = eval(input(prompt))
-
-    if devicetype is None:
-        devicetype = "qhue#{}".format(getfqdn())
-
-    # raises QhueException if something went wrong
-    response = res(devicetype=devicetype, http_method="post")
-
-    return response[0]["success"]["username"]
-
+#===============================================================================
+# 
+# def create_new_username(ip, devicetype=None, timeout=_DEFAULT_TIMEOUT):
+#     """Interactive helper function to generate a new anonymous username.
+# 
+#     Args:
+#         ip: ip address of the bridge
+#         devicetype (optional): devicetype to register with the bridge. If
+#             unprovided, generates a device type based on the local hostname.
+#         timeout (optional, menu=5): request timeout in seconds
+#     Raises:
+#         QhueException if something went wrong with username generation (for
+#             example, if the bridge button wasn't pressed).
+#     """
+#     res = Resource(_api_url(ip), timeout)
+#     prompt = "Press the Bridge button, then press Return: "
+#     # Deal with one of the sillier python3 changes
+#     if sys.version_info.major == 2:
+#         _ = eval(input(prompt))
+#     else:
+#         _ = eval(input(prompt))
+# 
+#     if devicetype is None:
+#         devicetype = "qhue#{}".format(getfqdn())
+# 
+#     # raises QhueException if something went wrong
+#     response = res(devicetype=devicetype, http_method="post")
+# 
+#     return response[0]["success"]["username"]
+#===============================================================================
 
 class Bridge(Resource):
 

@@ -144,7 +144,7 @@ class KodiGroup(xbmc.Player):
                 mediaType=None
             return mediaType
         
-        @classmethod
+        
         def activeTime(self):
 
             if globals.daylightDisable and globals.daylight:

@@ -1,9 +1,8 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.4.0">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.4.1">
 	
   <requires>
     <import addon="xbmc.python" version="2.26.0" />
     <import addon="script.module.requests" version="2.22.0" />
-  	<import addon="script.module.future" version="0.16.0.4" />
   	<import addon="script.module.kodi-six" version="0.1.0" />
   </requires>
 
@@ -22,6 +21,8 @@
     <platform>all</platform>
     <license>MIT License</license>
     <news>
+v0.4.1:
+- Switch to kodi-six from future
 v0.4.0:
 - Rewrite bridge discovery with discoverhue library (https://github.com/Overboard/discoverhue)
 - Add activation schedule support
@@ -59,3 +60,4 @@ v0.2.6:
   </extension>
   
 </addon>
+

@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
 
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
-from builtins import str
+#from builtins import str
 
-import xbmc
+from kodi_six import xbmc
 
 from resources.lib import globals
 from resources.lib.kodiutils import get_setting_as_bool
@@ -28,17 +27,20 @@ class KodiLogHandler(logging.StreamHandler):
             logging.CRITICAL: xbmc.LOGFATAL,
             logging.ERROR: xbmc.LOGERROR,
             logging.WARNING: xbmc.LOGWARNING,
-#            logging.NOTICE == 25: xbmc.LOGNOTICE,  
             logging.INFO: xbmc.LOGINFO,
             logging.DEBUG: xbmc.LOGDEBUG,
             logging.NOTSET: xbmc.LOGNONE,
         }
 
-        try:
-            xbmc.log(self.format(record), levels[record.levelno])
-        except UnicodeEncodeError:
-            xbmc.log(self.format(record).encode(
-                'utf-8', 'ignore'), levels[record.levelno])
+        xbmc.log(self.format(record), levels[record.levelno])
+
+        #=======================================================================
+        # try:
+        #     xbmc.log(self.format(record), levels[record.levelno])
+        # except UnicodeEncodeError:
+        #     xbmc.log(self.format(record).encode(
+        #         'utf-8', 'ignore'), levels[record.levelno])
+        #=======================================================================
 
     def flush(self):
         pass
@@ -56,8 +58,7 @@ def config():
                 xbmc.log("Hue Service: profile directory created: " + globals.ADDONDIR, level=xbmc.LOGNOTICE)
             except OSError as e:
                 xbmc.log("Hue Service: Log: can't create directory: " + globals.ADDONDIR, level=xbmc.LOGERROR)
-                xbmc.log("Exception: " + str(e.message), xbmc.LOGERROR)
-
+                xbmc.log("Exception: {}".format(e.message), xbmc.LOGERROR)
 
         fileHandler = TimedRotatingFileHandler(os.path.join(globals.ADDONDIR, 'kodiHue.log'), when="midnight",  backupCount=2)
         fileHandler.setLevel(logging.DEBUG)
