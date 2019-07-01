@@ -63,7 +63,7 @@ def createHueScene(bridge):
     
     sceneName = xbmcgui.Dialog().input(_("Scene Name"))
     
-    if len(sceneName) > 0:
+    if sceneName:
         transitionTime= xbmcgui.Dialog().numeric(0,_("Fade Time (Seconds)"),defaultt="10")
         selected = selectHueLights(bridge)
         
@@ -123,8 +123,7 @@ def _discoverSsdp():
         ip = urlsplit(bridges[0].location).hostname
         logger.debug("ip: {}".format(ip))
         return ip
-    else:
-        return None
+    return None
 
 
 def bridgeDiscover(monitor):
@@ -190,19 +189,17 @@ def connectionTest(bridgeIP):
     b = qhue.qhue.Resource("http://{}/api".format(bridgeIP))
     try:
         apiversion = b.config()['apiversion']
-    except:
-        logger.debug("Connection test failed.")
+    except (requests.exceptions.ConnectionError, qhue.QhueException) as error:
+        logger.debug("Connection test failed.  {}".format(error))
         return False
 
 #TODO: compare API version properly, ensure api version >= 1.28
     if apiversion:
         logger.info("Bridge Found! Hue API version: {}".format(apiversion))
         return True
-    else:
-        logger.debug("in ConnectionTest():  Connected! Bridge too old: {}".format(apiversion))
-        kodiutils.notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)), icon=NOTIFICATION_ERROR)
-
-        return False
+    logger.debug("in ConnectionTest():  Connected! Bridge too old: {}".format(apiversion))
+    kodiutils.notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)), icon=NOTIFICATION_ERROR)
+    return False
 
 
 def userTest(bridgeIP,bridgeUser):
@@ -210,14 +207,13 @@ def userTest(bridgeIP,bridgeUser):
     b = qhue.Bridge(bridgeIP,bridgeUser)
     try:
         zigbeechan = b.config()['zigbeechannel']
-    except:
+    except (requests.exceptions.ConnectionError, qhue.QhueException):
         return False
 
     if zigbeechan:
         logger.info("Hue User Authorized. Bridge Zigbee Channel: {}".format(zigbeechan))
         return True
-    else:
-        return False
+    return False
 
 
 def discoverBridgeIP(monitor):
@@ -265,7 +261,7 @@ def createUser(monitor, bridgeIP, progressBar=False):
     try:
         username = res[0]['success']['username']
         return username
-    except:
+    except (requests.exceptions.ConnectionError, qhue.QhueException):
         return False
 
 
@@ -307,18 +303,12 @@ def selectHueLights(bridge):
         #id = index[selected]
         for s in selected:
             lightIDs.append(index[s])
-            
 
-    logger.debug("selected: {}".format(selected))
+    logger.debug("lightIDs: {}".format(lightIDs))
     
     if lightIDs:
-        return lightIDs;
-    else:
-        return None    
-    if selected:
-        return selected
-    else:
-        return None
+        return lightIDs
+    return None
 
 
 def selectHueScene(bridge):
@@ -347,9 +337,8 @@ def selectHueScene(bridge):
         logger.debug("In selectHueScene: selected: {}".format(selected))
 
     if selected > -1:
-        return selectedId, hSceneName;
-    else:
-        return None
+        return selectedId, hSceneName
+    return None
 
 
 def getDaylight(bridge):
@@ -363,7 +352,6 @@ def sunset(bridge,kgroups):
         logger.debug("in sunset() g: {}, kgroupID: {}".format(g,g.kgroupID))
         if kodiutils.get_setting_as_bool("group{}_enabled".format(g.kgroupID)):
             g.sunset()
-
     return
 
 def connectBridge(monitor,silent=False):
@@ -430,4 +418,3 @@ class HueMonitor(xbmc.Monitor):
         logger.debug("Settings changed")
         loadSettings()
         globals.settingsChanged = True
-

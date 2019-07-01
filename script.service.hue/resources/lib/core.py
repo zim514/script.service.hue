@@ -132,7 +132,5 @@ def service():
             monitor.waitForAbort(1)
         logger.debug('Process exiting...')
         return
-
-    else:
-        logger.debug('No connected bridge, exiting...')
-        return
+    logger.debug('No connected bridge, exiting...')
+    return
