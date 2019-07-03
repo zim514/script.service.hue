@@ -9,11 +9,11 @@ import xbmcgui
 from . import globals
 from . import kodiHue
 from .language import get_string as _
+from . import AmbiGroup
 
 logger = getLogger(globals.ADDONID)
 
 def menu():
-
     monitor = kodiHue.HueMonitor()
 
     if len(sys.argv) >1:
@@ -81,6 +81,10 @@ def service():
         globals.settingsChanged = False
         globals.daylight = kodiHue.getDaylight(bridge)
         kgroups = kodiHue.setupGroups(bridge,globals.initialFlash)
+        
+        ambiGroup = AmbiGroup.AmbiGroup()
+        ambiGroup.setup(monitor,bridge, kgroupID=3, flash=True, mediaType=3)
+        
         
         connectionRetries = 0
         timer = 60 #Run loop once on first run

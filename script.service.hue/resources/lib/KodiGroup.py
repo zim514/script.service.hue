@@ -3,23 +3,21 @@ Created on Apr. 17, 2019
 
 
 '''
-from logging import getLogger
+#from logging import getLogger
 import datetime
 
 
 import xbmc
 from . import globals
+from globals import logger
 
 from .kodiutils import get_setting, get_setting_as_bool,convertTime
 from .qhue import QhueException
 
-
-
-
-BEHAVIOR_NOTHING = 0
-BEHAVIOR_ADJUST = 1
-BEHAVIOR_OFF = 2
-BEHAVIOR_INITIAL = 3
+#BEHAVIOR_NOTHING = 0
+#BEHAVIOR_ADJUST = 1
+#BEHAVIOR_OFF = 2
+#BEHAVIOR_INITIAL = 3
 
 STATE_IDLE = 0
 STATE_PLAYING = 1
@@ -27,9 +25,10 @@ STATE_PAUSED = 2
 
 VIDEO=1
 AUDIO=2
+ALLMEDIA=3
 
 
-logger = getLogger(globals.ADDONID)
+#logger = getLogger(globals.ADDONID)
 
 
 class KodiGroup(xbmc.Player):
@@ -64,10 +63,8 @@ class KodiGroup(xbmc.Player):
             #TODO: Get scene lights to save initial state
             #self.lightIDs=self.groupResource()["lights"]
 
-
             if flash:
                 self.flash()
-
 
 
         def flash(self):
@@ -165,7 +162,6 @@ class KodiGroup(xbmc.Player):
                 return True
             logger.debug("Disabled by schedule")
             return False
-
 
 
 #===============================================================================
