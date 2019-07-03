@@ -5,10 +5,12 @@ Created on Jul. 2, 2019
 '''
 import io
 import time
-import colorsys
- 
+
+
 from PIL import Image
-import colorgram
+import colorgram #https://github.com/obskyr/colorgram.py
+from rgbxy import Converter# https://github.com/benknight/hue-python-rgb-converter
+from rgbxy import GamutA,GamutB,GamutC
 
 import xbmc
 
@@ -39,9 +41,9 @@ class AmbiGroup(KodiGroup):
     def onAVStarted(self):
         logger.debug("AmbiGroup Start!")
         
-        
-        
+        converter=Converter(GamutC)
         cap = xbmc.RenderCapture()
+        
         while not self.monitor.abortRequested():
         #monitor.waitForAbort(1)
         
@@ -50,17 +52,20 @@ class AmbiGroup(KodiGroup):
             capImage = cap.getImage() #timeout in ms, default 1000 
             
             image = Image.frombuffer("RGBA", (150, 150), buffer(capImage), "raw", "BGRA")
-            
+            xy=(0,0)
             
             colors = colorgram.extract(image,1)
-            hsv=rgbToHSV(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b)
-            #colorsys.rgb_to_hsv(colorsp[])
-            self.bridge.lights[5].state(hue=hsv[0], sat=hsv[1], bri=hsv[2])
-            #HSV values are 0-1
+            
+            if not colors[0].rgb.r and not colors[0].rgb.g and not colors[0].rgb.b:
+                xy=converter.rgb_to_xy(1,1,1)
+            else:
+                xy=converter.rgb_to_xy(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b)
+            self.bridge.lights[5].state(xy=xy,transitiontime=2)
+                
             endTime= time.time()
-            logger.debug("hsv: {}".format(hsv))
+            #logger.debug("xy: {}".format(xy))
             logger.debug("Colors: {}, time: {}".format(colors,endTime-startTime))
-            self.monitor.waitForAbort(2) #seconds
+            self.monitor.waitForAbort(0.2) #seconds
         
     
     def readSettings(self):
@@ -76,34 +81,3 @@ class AmbiGroup(KodiGroup):
         self.monitor=monitor
         
         
-
-def rgbToHSV(r, g, b):
-    #
-    """Convert RGB color space to HSV color space
-    
-    @param r: Red
-    @param g: Green
-    @param b: Blue
-    return (h, s, v)  
-    """
-    maxc = max(r, g, b)
-    minc = min(r, g, b)
-    colorMap = {
-        id(r): 'r',
-        id(g): 'g',
-        id(b): 'b'
-    }
-    if colorMap[id(maxc)] == colorMap[id(minc)]:
-        h = 0
-    elif colorMap[id(maxc)] == 'r':
-        h = 60.0 * ((g - b) / (maxc - minc)) % 360.0
-    elif colorMap[id(maxc)] == 'g':
-        h = 60.0 * ((b - r) / (maxc - minc)) + 120.0
-    elif colorMap[id(maxc)] == 'b':
-        h = 60.0 * ((r - g) / (maxc - minc)) + 240.0
-    v = maxc
-    if maxc == 0.0:
-        s = 0.0
-    else:
-        s = 1.0 - (minc / maxc)
-    return (h, s, v)
