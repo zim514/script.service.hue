@@ -31,6 +31,7 @@ from globals import logger
 class AmbiGroup(KodiGroup):
     def onAVStarted(self):
         logger.info("Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
+        logger.info("Ambilight Settings. Colours: {}, Interval: {}, transitionTime: {}".format(self.numColors,self.updateInterval,self.transitionTime))
         converter=Converter(GamutC)
         cap = xbmc.RenderCapture()
         self.state = STATE_PLAYING
@@ -62,7 +63,7 @@ class AmbiGroup(KodiGroup):
                 endTime= time.time()
                 #logger.debug("xy: {}".format(xy))
                 logger.debug("Colors: {}, time: {}".format(colors,endTime-startTime))
-                self.monitor.waitForAbort(0.2) #seconds
+                self.monitor.waitForAbort(self.updateInterval) #seconds
             
             logger.debug("AmbiGroup stopped!")
 

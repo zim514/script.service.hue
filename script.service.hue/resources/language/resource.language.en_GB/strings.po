@@ -102,8 +102,8 @@ msgid "Stop Scene Enabled"
 msgstr "Stop Scene Enabled"
 
 msgctxt "#30521"
-msgid "[I][B]Warning: Experimental[/I][/B]"
-msgstr "[I][B]Warning: Experimental[/I][/B]"
+msgid "[B][I]Warning: Experimental[/B][/I]"
+msgstr "[B][I]Warning: Experimental[/B][/I]"
 
 msgctxt "#30522"
 msgid "These settings impact performance"

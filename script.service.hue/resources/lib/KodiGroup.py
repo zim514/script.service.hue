@@ -80,6 +80,7 @@ class KodiGroup(xbmc.Player):
 
         def onAVStarted(self):
             logger.info("In KodiGroup[{}], onPlaybackStarted. Group enabled: {},startBehavior: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.startBehavior, self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
+            
             self.state = STATE_PLAYING
             globals.lastMediaType = self.playbackType()
             
