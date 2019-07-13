@@ -50,7 +50,6 @@ class KodiGroup(xbmc.Player):
 
 
         def setup(self,bridge,kgroupID,flash = False, mediaType=VIDEO):
-            
             self.state = STATE_IDLE
             self.bridge = bridge
             self.mediaType = mediaType
@@ -61,13 +60,9 @@ class KodiGroup(xbmc.Player):
             self.readSettings()
 
             self.groupResource=bridge.groups[0]
-            #TODO: Get scene lights to save initial state
-            #self.lightIDs=self.groupResource()["lights"]
 
             if flash:
                 self.flash()
-            
-            logger.debug("KodiGroup SetupEnd: {},{}".format(self.kgroupID,self))
 
 
         def flash(self):

@@ -42,7 +42,7 @@ class AmbiGroup(KodiGroup):
         if self.enabled and self.activeTime() and self.playbackType() == 1:
         
             while not self.monitor.abortRequested() and self.state == STATE_PLAYING:
-                startTime = time.time()
+                #startTime = time.time()
                 cap.capture(150, 150) #async capture request to underlying OS
                 capImage = cap.getImage() #timeout in ms, default 1000 
                 
@@ -62,9 +62,9 @@ class AmbiGroup(KodiGroup):
                     x.daemon = True
                     x.start()
         
-                endTime= time.time()
+                #endTime= time.time()
                 #logger.debug("xy: {}".format(xy))
-                logger.debug("Colors: {}, time: {}".format(colors,endTime-startTime))
+                #logger.debug("Colors: {}, time: {}".format(colors,endTime-startTime))
                 self.monitor.waitForAbort(self.updateInterval) #seconds
             
             logger.debug("AmbiGroup stopped!")
@@ -96,7 +96,7 @@ class AmbiGroup(KodiGroup):
         
         self.monitor=monitor
 
-        calls=1000/(len(self.ambiLights)*self.updateInterval*1000)
+        calls=1/(self.updateInterval)*len(self.ambiLights)  #updateInterval is in seconds, eg. 0.2 for 200ms.  
         logger.debug("callsPerSec: lights: {},interval: {}, calls: {}".format(len(self.ambiLights),self.updateInterval,calls))
         kodiutils.notification(_("Hue Service"), _("Est. Hue Calls/sec (max 10): {}").format(calls),time=10000)
 
