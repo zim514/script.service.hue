@@ -3,7 +3,7 @@ Created on Jul. 2, 2019
 
 @author: Zim514
 '''
-import io
+
 import time
 import threading #https://realpython.com/intro-to-python-threading/#daemon-threads 
 #from threading import Timer
@@ -26,6 +26,8 @@ from .qhue import QhueException
 
 import globals
 from globals import logger
+from .language import get_string as _
+
 
 
 class AmbiGroup(KodiGroup):
@@ -85,21 +87,20 @@ class AmbiGroup(KodiGroup):
         self.transitionTime =  kodiutils.get_setting_as_int("group{}_TransitionTime".format(self.kgroupID)) /100 #This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
         
         #self.lights=kodiutils.get_setting("group{}_Interval".format(self.kgroupID))
-        self.ambiLights=map(int,kodiutils.get_setting("group{}_Lights".format(self.kgroupID)).split(","))
-
+        self.ambiLights=list(map(int,kodiutils.get_setting("group{}_Lights".format(self.kgroupID)).split(",")))
     
     
     def setup(self, monitor,bridge, kgroupID, flash=False, mediaType=VIDEO):
         
         super(AmbiGroup,self).setup(bridge, kgroupID, flash=flash, mediaType=1)
         
-        #KodiGroup.setup(self, bridge, kgroupID, flash=flash, mediaType=mediaType)
-        
-        #self.enabled=True
         self.monitor=monitor
-        logger.debug("AmbiGroup SetupEnd: {},{},{}".format(self.kgroupID,self.state,self))
-        
-        
+
+        calls=1000/(len(self.ambiLights)*self.updateInterval*1000)
+        logger.debug("callsPerSec: lights: {},interval: {}, calls: {}".format(len(self.ambiLights),self.updateInterval,calls))
+        kodiutils.notification(_("Hue Service"), _("Est. Hue Calls/sec (max 10): {}").format(calls),time=10000)
+
+    
     def _getColor(self):
         pass
 
@@ -113,6 +114,5 @@ class AmbiGroup(KodiGroup):
         
         #endTime=time.time()
         #logger.debug("_updateHue time: {}".format(endTime-startTime))
-        
-        
+
 

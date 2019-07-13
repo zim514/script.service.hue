@@ -96,8 +96,8 @@ def service():
     if bridge is not None:
         globals.settingsChanged = False
         globals.daylight = kodiHue.getDaylight(bridge)
+       
         kgroups = kodiHue.setupGroups(bridge,globals.initialFlash)
-        
         ambiGroup = AmbiGroup.AmbiGroup()
         ambiGroup.setup(monitor,bridge, kgroupID=3, flash=True, mediaType=3)
         
@@ -110,9 +110,8 @@ def service():
             
                
             if globals.settingsChanged:
-
                 kgroups = kodiHue.setupGroups(bridge, globals.reloadFlash)
-                ambiGroup.setup(monitor,bridge, kgroupID=3, flash=True, mediaType=1)
+                ambiGroup.setup(monitor,bridge, kgroupID=3, flash=globals.reloadFlash, mediaType=1)
                 globals.settingsChanged = False
 
 

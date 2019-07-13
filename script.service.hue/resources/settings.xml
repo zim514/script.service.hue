@@ -81,10 +81,8 @@
         <setting type="sep"/>
         <setting type="lsep" label="30522" />
         <setting id="group3_NumColors" type="slider" label="Number of Colours" default="2" range="1,1,5" option="int" />
-        <setting id="group3_Interval" type="slider" label="Minimmum frame grab interval (ms)" default="200" range="0,100,1000" option="int" />
-        <setting id="group3_TransitionTime" type="slider" label="Hue Transition time (ms)" default="100" range="0,100,500" option="int" />
-       
-        
+        <setting id="group3_Interval" type="slider" label="Minimum frame grab interval (ms)" default="200" range="0,100,1000" option="int" />
+        <setting id="group3_TransitionTime" type="slider" label="Hue Transition time (ms)" default="0" range="0,100,500" option="int" />
 
     </category>
 <!--  /GROUP SECTION  0-->
@@ -109,3 +107,4 @@
 		<setting id="separateLogFile" type="bool" label="32105" default="False"/>
 	</category>
 </settings>
+

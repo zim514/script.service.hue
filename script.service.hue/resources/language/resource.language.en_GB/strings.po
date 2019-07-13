@@ -377,3 +377,11 @@ msgstr ""
 msgctxt "#30052"
 msgid "Invalid start or end time, schedule disabled"
 msgstr ""
+
+msgctxt "#30053"
+msgid "Hue Calls/sec (max 10): {}"
+msgstr ""
+
+msgctxt "#30054"
+msgid "Est. Hue Calls/sec (max 10): {}"
+msgstr ""
