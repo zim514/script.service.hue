@@ -54,11 +54,11 @@ class AmbiGroup(KodiGroup):
                     xy=converter.rgb_to_xy(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b)
                 
                 #self._updateHue(xy,2)
-                
-                x = threading.Thread(target=self._updateHue,name="updateHue", args=(xy,self.transitionTime))
-                x.daemon = True
-                x.start()
-    
+                for L in self.ambiLights: 
+                    x = threading.Thread(target=self._updateHue,name="updateHue", args=(xy,L,self.transitionTime))
+                    x.daemon = True
+                    x.start()
+        
                 endTime= time.time()
                 #logger.debug("xy: {}".format(xy))
                 logger.debug("Colors: {}, time: {}".format(colors,endTime-startTime))
@@ -79,17 +79,13 @@ class AmbiGroup(KodiGroup):
     def readSettings(self):
         self.enabled=kodiutils.get_setting_as_bool("group{}_enabled".format(self.kgroupID))
         
-        self.updateInterval=kodiutils.get_setting_as_float("group{}_interval".format(self.kgroupID)) /1000#
+        self.updateInterval=kodiutils.get_setting_as_float("group{}_Interval".format(self.kgroupID)) /1000#
         self.numColors=kodiutils.get_setting_as_int("group{}_NumColors".format(self.kgroupID))
         self.transitionTime =  kodiutils.get_setting_as_int("group{}_TransitionTime".format(self.kgroupID)) /100 #This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
         
         #self.lights=kodiutils.get_setting("group{}_Interval".format(self.kgroupID))
-        self.lights=map(int,kodiutils.get_setting("group{}_Lights".format(self.kgroupID)).split(","))
-        logger.debug("AmbiLights: {}".format(self.lights))
+        self.ambiLights=map(int,kodiutils.get_setting("group{}_Lights".format(self.kgroupID)).split(","))
 
-        
-        
-        
     
     
     def setup(self, monitor,bridge, kgroupID, flash=False, mediaType=VIDEO):
@@ -107,15 +103,15 @@ class AmbiGroup(KodiGroup):
         pass
 
 
-    def _updateHue(self,xy,transitionTime):
-        startTime = time.time()
+    def _updateHue(self,xy,light,transitionTime):
+        #startTime = time.time()
         try:
-            self.bridge.lights[5].state(xy=xy,transitiontime=transitionTime)
+            self.bridge.lights[light].state(xy=xy,transitiontime=transitionTime)
         except QhueException as e:
             logger.error("Ambi: Hue call fail: {}".format(e))
         
-        endTime=time.time()
-        logger.debug("_updateHue time: {}".format(endTime-startTime))
+        #endTime=time.time()
+        #logger.debug("_updateHue time: {}".format(endTime-startTime))
         
         
 
