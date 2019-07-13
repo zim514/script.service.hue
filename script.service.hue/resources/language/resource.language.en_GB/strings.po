@@ -101,6 +101,17 @@ msgctxt "#30515"
 msgid "Stop Scene Enabled"
 msgstr "Stop Scene Enabled"
 
+msgctxt "#30521"
+msgid "[I][B]Warning: Experimental[/I][/B]"
+msgstr "[I][B]Warning: Experimental[/I][/B]"
+
+msgctxt "#30522"
+msgid "These settings impact performance"
+msgstr "These settings impact performance"
+
+msgctxt "#30523"
+msgid "Ambilight"
+msgstr "Ambilight"
 
 msgctxt "#32101"
 msgid "Advanced"

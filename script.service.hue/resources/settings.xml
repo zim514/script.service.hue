@@ -67,6 +67,34 @@
     </category>
 <!--  /GROUP SECTION  0-->
 
+
+<!--  GROUP SECTION  3 AMBILIGHT -->    
+    <category label="30523">
+        <setting id="group3_enabled" type="bool" label="30520" default="false" />
+
+        <setting type="lsep" label="30521" />
+        <setting type="lsep" label="30522" />
+        
+
+        <!--  Group playback start setting -->
+        <setting type="sep" visible="eq(-1,true)" />
+        <setting id="group3_SelectLights" type="action" label="30015" action="RunScript(script.service.hue,ambiLightSelect,3)" option="close" />
+        <setting id="group3_Lights" type="text" label="30035"  default="Not selected" enable="false" visible="true" />
+        
+        
+        <setting type="lsep" label="30521" />
+        <setting type="lsep" label="30522" />
+        <setting id="group3_NumColors" type="slider" label="Number of Colours" default="2" range="1,1,5" option="int" />
+        <setting id="group3_Interval" type="slider" label="Frame grab interval (ms)" default="2" range="1,100,1000" option="int" />
+        <setting id="group3_TransitionTime" type="slider" label="Hue Transition time (ms)" default="100" range="0,100,500" option="int" />
+       
+        
+
+    </category>
+<!--  /GROUP SECTION  0-->
+
+
+
 <!-- SCHEDULE SECTION -->
     <category label="30511">
         <setting id="forceOnSunset" type="bool" label="30509" default="False" />

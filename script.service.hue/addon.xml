@@ -1,5 +1,5 @@
 <addon id="script.service.hue" name="Hue Service"
-	provider-name="zim514" version="0.5.0">
+	provider-name="zim514" version="0.5.0~alpha1">
 
 	<requires>
 		<import addon="xbmc.python" version="2.26.0" />
@@ -34,7 +34,7 @@
 		</disclaimer>
 		<news>
 			v0.5.0:
-			- Ambilight support
+			- Experimental Ambilight support
 			v0.4.2:
 			- Clean-up and improve settings dialogue
 			- Code style fixes

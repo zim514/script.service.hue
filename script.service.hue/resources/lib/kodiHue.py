@@ -277,6 +277,14 @@ def configureScene(bridge,kGroupID,action):
         globals.ADDON.openSettings()
 
 
+def configureAmbiLights(bridge,kGroupID):
+    lights=selectHueLights(bridge)
+    if lights is not None:
+        kodiutils.set_setting("group{}_Lights".format(kGroupID),','.join(lights))
+
+        globals.ADDON.openSettings()
+
+
 
 
 def selectHueLights(bridge):
@@ -309,6 +317,8 @@ def selectHueLights(bridge):
     if lightIDs:
         return lightIDs
     return None
+
+
 
 
 def selectHueScene(bridge):

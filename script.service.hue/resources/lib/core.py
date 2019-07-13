@@ -64,6 +64,22 @@ def menu():
                 logger.debug("No bridge found. sceneSelect cancelled.")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))    
 
+    elif args == "ambiLightSelect": # ambiLightSelect=kgroup 
+            kgroup = sys.argv[2]
+            
+            logger.debug("Started with {}, kgroup: {}".format(args, kgroup))
+
+            bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
+            if bridge is not None:
+                kodiHue.configureAmbiLights(bridge, kgroup)
+
+                #TODO: save selection
+            else:
+                logger.debug("No bridge found. scene ambi lights cancelled.")
+                xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))    
+
+
+
     else:
         globals.ADDON.openSettings()
         return
@@ -96,6 +112,7 @@ def service():
             if globals.settingsChanged:
 
                 kgroups = kodiHue.setupGroups(bridge, globals.reloadFlash)
+                ambiGroup.setup(monitor,bridge, kgroupID=3, flash=True, mediaType=1)
                 globals.settingsChanged = False
 
 

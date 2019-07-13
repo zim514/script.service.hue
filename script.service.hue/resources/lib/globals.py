@@ -8,7 +8,7 @@ from kodi_six import xbmcaddon, xbmc
 
 NUM_GROUPS = 2  #group0= video, group1=audio
 STRDEBUG = False #Show string ID in UI
-DEBUG = False # Enable python remote debug
+DEBUG = True # Enable python remote debug
 REMOTE_DBG_SUSPEND = False #Auto suspend thread when debugger attached
 
 ADDON = Addon()
