@@ -41,8 +41,6 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 
 ## Credits:
 - Based on original plugin by cees-elzinga, michaelrcarroll, mpolednik
-- Uses Qhue by Quentin Stafford-Fraser - https://github.com/quentinsf/qhue
-- Uses ssdp.py by dankrause https://gist.github.com/dankrause/6000248
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbMTk0NjczODcxMSwtMTMwMTc0NzIyNV19
--->
+- Qhue by Quentin Stafford-Fraser - https://github.com/quentinsf/qhue
+- ssdp.py by dankrause https://gist.github.com/dankrause/6000248
+- Colorgram.py by obskyr https://github.com/obskyr/colorgram.py

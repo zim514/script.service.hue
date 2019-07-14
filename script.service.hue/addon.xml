@@ -1,60 +1,66 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.4.2">
-	
-  <requires>
-    <import addon="xbmc.python" version="2.26.0" />
-    <import addon="script.module.requests" version="2.22.0" />
-  	<import addon="script.module.kodi-six" version="0.1.0" />
-  </requires>
-  <extension  point="xbmc.service" name="service.hue" library="service.py" />
-  <extension  point="xbmc.python.script" library="menu.py">
-  	<provides>executable</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <platform>all</platform>
-    <license>MIT License</license>
-    <assets>
-		<icon>resources/icons/icon.png</icon>
-		<fanart>resources/icons/fanart.jpg</fanart>
-		<screenshot>resources/icons/fanart.jpg</screenshot>
-  	</assets>
-    <source>https://github.com/zim514/script.service.hue</source>
-    <forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-    <summary lang="en_GB">Automate Hue lights with Kodi playback</summary>
-    <description lang="en_GB">Automate your Philips Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback.</description>
-    <disclaimer lang="en_GB">Automate Hue lights with Kodi playback</disclaimer>
-	<news>
-v0.4.1:
-- Clean-up and improve settings dialogue
-- Code style fixes
-v0.4.1:
-- Switch to kodi-six from future
-v0.4.0:
-- Add UPNP support
-- Add activation schedule support
-v0.3.7
-- Fix crash at sunset
-v0.3.6:
-- Fix logging system crash
-v0.3.5:
- - Make media type detection more reliable
- - Remove deprecated settings
- - Change some settings to booleans
- - Fix broken daytime settings
-v0.3.2:
- - Crash fix
-v0.3.1:
- - Crash fix
- - Basic connection error handling
-v0.3.0:
- - Support different behaviours for different media types
-v0.2.8:
- - Python 2/3 support
-v0.2.7:
- - Support optional logging to external file
- - Removed half translated French 
-v0.2.6: 
- - Improve logging system
-	</news>
-  </extension>
+<addon id="script.service.hue" name="Hue Service"
+	provider-name="zim514" version="0.5.0">
+
+	<requires>
+		<import addon="xbmc.python" version="2.26.0" />
+		<import addon="script.module.requests" version="2.22.0" />
+		<import addon="script.module.kodi-six" version="0.1.0" />
+		<import addon="script.module.pil" />
+	</requires>
+	<extension point="xbmc.service" name="service.hue"
+		library="service.py" />
+	<extension point="xbmc.python.script" library="menu.py">
+		<provides>executable</provides>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<platform>all</platform>
+		<license>MIT License</license>
+		<assets>
+			<icon>resources/icons/icon.png</icon>
+			<fanart>resources/icons/fanart.jpg</fanart>
+			<screenshot>resources/icons/fanart.jpg</screenshot>
+		</assets>
+		<source>https://github.com/zim514/script.service.hue</source>
+		<forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
+		<summary lang="en_GB">Automate Hue lights with Kodi playback</summary>
+		<description lang="en_GB">Automate your Philips Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes experimental Ambilight support. Check forum for more information.</description>
+		<disclaimer lang="en_GB">Automate Hue lights with Kodi playback
+		</disclaimer>
+		<news>
+			v0.5.0:
+			- Experimental Ambilight support. See Forum for more information
+			v0.4.2:
+			- Clean-up and improve settings dialogue
+			- Code style fixes
+			v0.4.1:
+			- Switch to kodi-six from future
+			v0.4.0:
+			- Add UPNP support
+			- Add activation schedule support
+			v0.3.7
+			- Fix crash at sunset
+			v0.3.6:
+			- Fix logging system crash
+			v0.3.5:
+			- Make media type detection more reliable
+			- Remove deprecated settings
+			- Change some settings to booleans
+			- Fix broken daytime settings
+			v0.3.2:
+			- Crash fix
+			v0.3.1:
+			- Crash fix
+			- Basic connection error handling
+			v0.3.0:
+			- Support different behaviours for different media types
+			v0.2.8:
+			- Python 2/3 support
+			v0.2.7:
+			- Support optional logging to external file
+			- Removed half translated French
+			v0.2.6:
+			- Improve logging system
+		</news>
+	</extension>
 </addon>
 

@@ -101,6 +101,17 @@ msgctxt "#30515"
 msgid "Stop Scene Enabled"
 msgstr "Stop Scene Enabled"
 
+msgctxt "#30521"
+msgid "[B][I]Warning: Experimental[/B][/I]"
+msgstr "[B][I]Warning: Experimental[/B][/I]"
+
+msgctxt "#30522"
+msgid "These settings impact system & Hue performance"
+msgstr "These settings impact system & Hue performance"
+
+msgctxt "#30523"
+msgid "Ambilight"
+msgstr "Ambilight"
 
 msgctxt "#32101"
 msgid "Advanced"
@@ -366,3 +377,45 @@ msgstr ""
 msgctxt "#30052"
 msgid "Invalid start or end time, schedule disabled"
 msgstr ""
+
+msgctxt "#30053"
+msgid "Hue Calls/sec (max 10): {}"
+msgstr ""
+
+msgctxt "#30054"
+msgid "Est. Hue Calls/sec (max 10): {}"
+msgstr ""
+
+msgctxt "#30055"
+msgid "Brightness"
+msgstr "Brightness"
+
+msgctxt "#30056"
+msgid "Adjust brightness on start"
+msgstr "Adjust brightness on start"
+
+msgctxt "#30057"
+msgid "Force on"
+msgstr "Force on"
+
+msgctxt "#30058"
+msgid "Light Names:"
+msgstr "Light Names:"
+
+msgctxt "#30059"
+msgid "Light Gamut:"
+msgstr "Light Gamut:"
+
+msgctxt "#30060"
+msgid "RGB Blacks filter"
+msgstr "RGB Blacks filter"
+
+msgctxt "#30061"
+msgid "RGB Whites filter"
+msgstr "RGB Whites filter"
+
+msgctxt "#30062"
+msgid "Colour Filters"
+msgstr "Colour filters"
+
+

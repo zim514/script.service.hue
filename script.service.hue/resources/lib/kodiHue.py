@@ -23,6 +23,7 @@ from . import qhue
 from .language import get_string as _
 
 
+
 logger = getLogger(globals.ADDONID)
 
 
@@ -204,7 +205,7 @@ def connectionTest(bridgeIP):
 
 def userTest(bridgeIP,bridgeUser):
     logger.debug("in ConnectionTest() Attempt initial connection")
-    b = qhue.Bridge(bridgeIP,bridgeUser)
+    b = qhue.Bridge(bridgeIP,bridgeUser,timeout=globals.QHUE_TIMEOUT)
     try:
         zigbeechan = b.config()['zigbeechannel']
     except (requests.exceptions.ConnectionError, qhue.QhueException):
@@ -228,6 +229,7 @@ def discoverBridgeIP(monitor):
         return bridgeIP
     
     return False
+
 
 
 
@@ -277,6 +279,30 @@ def configureScene(bridge,kGroupID,action):
         globals.ADDON.openSettings()
 
 
+def configureAmbiLights(bridge,kGroupID):
+    lights=selectHueLights(bridge)
+    lightNames = []
+    lightGamuts = []
+    if lights is not None:
+
+        for L in lights:
+            lightNames.append(_getLightName(bridge,L))
+
+        kodiutils.set_setting("group{}_Lights".format(kGroupID),','.join(lights))
+        kodiutils.set_setting("group{}_LightNames".format(kGroupID),','.join(lightNames))
+        globals.ADDON.openSettings()
+
+
+def _getLightName(bridge,L):
+    try:
+        name = bridge.lights()[L]['name']
+    except Exception:
+        return None
+    
+    if name is None:
+        return None
+    return name
+
 
 
 def selectHueLights(bridge):
@@ -309,6 +335,8 @@ def selectHueLights(bridge):
     if lightIDs:
         return lightIDs
     return None
+
+
 
 
 def selectHueScene(bridge):
@@ -375,7 +403,7 @@ def connectBridge(monitor,silent=False):
         if bridgeIP:
             logger.debug("in Connect(): Checking User")
             if userTest(bridgeIP, bridgeUser):
-                bridge = qhue.Bridge(bridgeIP,bridgeUser)
+                bridge = qhue.Bridge(bridgeIP,bridgeUser,timeout=globals.QHUE_TIMEOUT)
                 globals.connected = True
                 logger.info("Successfully connected to Hue Bridge: {}".format(bridgeIP))
                 if not silent:
