@@ -42,7 +42,7 @@ class AmbiGroup(KodiGroup):
         if self.enabled and self.activeTime() and self.playbackType() == 1:
         
             while not self.monitor.abortRequested() and self.state == STATE_PLAYING:
-                #startTime = time.time()
+                startTime = time.time()
                 cap.capture(150, 150) #async capture request to underlying OS
                 capImage = cap.getImage() #timeout in ms, default 1000 
                 
@@ -52,7 +52,8 @@ class AmbiGroup(KodiGroup):
                 colors = colorgram.extract(image,self.numColors)
                 
                 if not colors[0].rgb.r and not colors[0].rgb.g and not colors[0].rgb.b:
-                    xy=converter.rgb_to_xy(1,1,1)
+                    xy=(0.51,0.41) #neutral semi bright colour to replace full blacks. (eg. credits screens)
+                    #xy=converter.rgb_to_xy(1,1,1)
                 else:
                     xy=converter.rgb_to_xy(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b)
                 
@@ -62,9 +63,8 @@ class AmbiGroup(KodiGroup):
                     x.daemon = True
                     x.start()
         
-                #endTime= time.time()
-                #logger.debug("xy: {}".format(xy))
-                #logger.debug("Colors: {}, time: {}".format(colors,endTime-startTime))
+                endTime= time.time()
+                logger.debug("time: {},Colors: {}, xy: {}".format(endTime-startTime,colors,xy))
                 self.monitor.waitForAbort(self.updateInterval) #seconds
             
             logger.debug("AmbiGroup stopped!")
