@@ -9,7 +9,7 @@ import datetime
 
 import xbmc
 from . import globals
-from globals import logger
+from .globals import logger
 
 from .kodiutils import get_setting, get_setting_as_bool,convertTime
 from .qhue import QhueException
