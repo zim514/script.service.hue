@@ -385,3 +385,17 @@ msgstr ""
 msgctxt "#30054"
 msgid "Est. Hue Calls/sec (max 10): {}"
 msgstr ""
+
+msgctxt "#30055"
+msgid "Brightness"
+msgstr "Brightness"
+
+msgctxt "#30056"
+msgid "Adjust brightness on start"
+msgstr "Adjust brightness on start"
+
+msgctxt "#30057"
+msgid "Force on"
+msgstr "Force on"
+
+

@@ -78,10 +78,15 @@
         <setting id="group3_SelectLights" type="action" label="30015" action="RunScript(script.service.hue,ambiLightSelect,3)" option="close" />
         <setting id="group3_Lights" type="text" label="30035"  default="-1" enable="false" visible="true" />
         
+        <setting id="group3_forceOn" type="bool" label="30057"  default="false"/>
+        <setting id="group3_setBrightness" type="bool" label="30056"  default="false"/>
+        <setting id="group3_Brightness" type="slider" label="30055"  range="1,1,100" default="80" option="percent" enable="eq(-1,true)"/>
+        
+        
         <setting type="sep"/>
         <setting type="lsep" label="30522" />
-        <setting id="group3_NumColors" type="slider" label="Number of Colours" default="2" range="1,1,5" option="int" />
-        <setting id="group3_Interval" type="slider" label="Minimum frame grab interval (ms)" default="200" range="0,100,1000" option="int" />
+        <setting id="group3_NumColors" type="slider" label="Number of Colours" default="1" range="1,1,5" option="int" />
+        <setting id="group3_Interval" type="slider" label="Minimum frame grab interval (ms)" default="100" range="0,100,1000" option="int" />
         <setting id="group3_TransitionTime" type="slider" label="Hue Transition time (ms)" default="0" range="0,100,500" option="int" />
 
     </category>
