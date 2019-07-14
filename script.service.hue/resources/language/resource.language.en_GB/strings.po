@@ -106,8 +106,8 @@ msgid "[B][I]Warning: Experimental[/B][/I]"
 msgstr "[B][I]Warning: Experimental[/B][/I]"
 
 msgctxt "#30522"
-msgid "These settings impact performance"
-msgstr "These settings impact performance"
+msgid "These settings impact system & Hue performance"
+msgstr "These settings impact system & Hue performance"
 
 msgctxt "#30523"
 msgid "Ambilight"
@@ -397,5 +397,25 @@ msgstr "Adjust brightness on start"
 msgctxt "#30057"
 msgid "Force on"
 msgstr "Force on"
+
+msgctxt "#30058"
+msgid "Light Names:"
+msgstr "Light Names:"
+
+msgctxt "#30059"
+msgid "Light Gamut:"
+msgstr "Light Gamut:"
+
+msgctxt "#30060"
+msgid "RGB Blacks filter"
+msgstr "RGB Blacks filter"
+
+msgctxt "#30061"
+msgid "RGB Whites filter"
+msgstr "RGB Whites filter"
+
+msgctxt "#30062"
+msgid "Colour Filters"
+msgstr "Colour filters"
 
 
