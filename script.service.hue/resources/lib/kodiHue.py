@@ -232,6 +232,7 @@ def discoverBridgeIP(monitor):
 
 
 
+
 def createUser(monitor, bridgeIP, progressBar=False):
     #device = 'kodi#'+getfqdn()
     data = '{{"devicetype": "kodi#{}"}}'.format(getfqdn()) #Create a devicetype named kodi#localhostname. Eg: kodi#LibreELEC
@@ -280,11 +281,27 @@ def configureScene(bridge,kGroupID,action):
 
 def configureAmbiLights(bridge,kGroupID):
     lights=selectHueLights(bridge)
+    lightNames = []
+    lightGamuts = []
     if lights is not None:
-        kodiutils.set_setting("group{}_Lights".format(kGroupID),','.join(lights))
 
+        for L in lights:
+            lightNames.append(_getLightName(bridge,L))
+
+        kodiutils.set_setting("group{}_Lights".format(kGroupID),','.join(lights))
+        kodiutils.set_setting("group{}_LightNames".format(kGroupID),','.join(lightNames))
         globals.ADDON.openSettings()
 
+
+def _getLightName(bridge,L):
+    try:
+        name = bridge.lights()[L]['name']
+    except Exception:
+        return None
+    
+    if name is None:
+        return None
+    return name
 
 
 
