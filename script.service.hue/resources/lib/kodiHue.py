@@ -23,6 +23,7 @@ from . import qhue
 from .language import get_string as _
 
 
+
 logger = getLogger(globals.ADDONID)
 
 
@@ -204,7 +205,7 @@ def connectionTest(bridgeIP):
 
 def userTest(bridgeIP,bridgeUser):
     logger.debug("in ConnectionTest() Attempt initial connection")
-    b = qhue.Bridge(bridgeIP,bridgeUser)
+    b = qhue.Bridge(bridgeIP,bridgeUser,timeout=globals.QHUE_TIMEOUT)
     try:
         zigbeechan = b.config()['zigbeechannel']
     except (requests.exceptions.ConnectionError, qhue.QhueException):
@@ -385,7 +386,7 @@ def connectBridge(monitor,silent=False):
         if bridgeIP:
             logger.debug("in Connect(): Checking User")
             if userTest(bridgeIP, bridgeUser):
-                bridge = qhue.Bridge(bridgeIP,bridgeUser)
+                bridge = qhue.Bridge(bridgeIP,bridgeUser,timeout=globals.QHUE_TIMEOUT)
                 globals.connected = True
                 logger.info("Successfully connected to Hue Bridge: {}".format(bridgeIP))
                 if not silent:
