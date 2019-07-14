@@ -43,7 +43,7 @@ class AmbiGroup(KodiGroup):
         
             while not self.monitor.abortRequested() and self.state == STATE_PLAYING:
                 startTime = time.time()
-                cap.capture(150, 150) #async capture request to underlying OS
+                cap.capture(250, 250) #async capture request to underlying OS
                 capImage = cap.getImage() #timeout in ms, default 1000 
                 
                 image = Image.frombuffer("RGBA", (150, 150), buffer(capImage), "raw", "BGRA")
