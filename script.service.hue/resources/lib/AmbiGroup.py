@@ -11,8 +11,10 @@ import threading #https://realpython.com/intro-to-python-threading/#daemon-threa
 
 from PIL import Image
 import colorgram #https://github.com/obskyr/colorgram.py
-from rgbxy import Converter# https://github.com/benknight/hue-python-rgb-converter
-from rgbxy import GamutA,GamutB,GamutC
+from .rgbxy import Converter# https://github.com/benknight/hue-python-rgb-converter
+from .rgbxy import ColorHelper
+from .rgbxy import XYPoint
+from .rgbxy import GamutA,GamutB,GamutC
 
 import xbmc
 
@@ -35,36 +37,54 @@ class AmbiGroup(KodiGroup):
         logger.info("Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
         logger.info("Ambilight Settings. Colours: {}, Interval: {}, transitionTime: {}".format(self.numColors,self.updateInterval,self.transitionTime))
         converter=Converter(GamutC)
+        helper=ColorHelper(GamutC)
         cap = xbmc.RenderCapture()
         self.state = STATE_PLAYING
         
+        distance=0.0
+        xy=0.51,0.41
+        prevxy=0.51,0.41
         
         if self.enabled and self.activeTime() and self.playbackType() == 1:
         
             while not self.monitor.abortRequested() and self.state == STATE_PLAYING:
                 startTime = time.time()
                 cap.capture(250, 250) #async capture request to underlying OS
-                capImage = cap.getImage() #timeout in ms, default 1000 
+                capImage = cap.getImage() #timeout to wait for OS in ms, default 1000 
                 
-                image = Image.frombuffer("RGBA", (150, 150), buffer(capImage), "raw", "BGRA")
-                xy=(0,0)
+                image = Image.frombuffer("RGBA", (250, 250), buffer(capImage), "raw", "BGRA")
+                
                 
                 colors = colorgram.extract(image,self.numColors)
-                
-                if not colors[0].rgb.r and not colors[0].rgb.g and not colors[0].rgb.b:
-                    xy=(0.51,0.41) #neutral semi bright colour to replace full blacks. (eg. credits screens)
+                #TODO: RGB min and max configurable.
+                if colors[0].rgb.r < 10 and colors[0].rgb.g < 10 and colors[0].rgb.b <10:
+                    xy=0.51,0.41 #neutral semi bright colour to replace full blacks. (eg. credits screens)
                     #xy=converter.rgb_to_xy(1,1,1)
                 else:
                     xy=converter.rgb_to_xy(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b)
-                
+                    xy=(round(xy[0],4),round(xy[1],4)) #Hue has a max precision of 4 decimal points.
                 #self._updateHue(xy,2)
-                for L in self.ambiLights: 
-                    x = threading.Thread(target=self._updateHue,name="updateHue", args=(xy,L,self.transitionTime))
-                    x.daemon = True
-                    x.start()
-        
+                distance=helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1])) #only update hue if XY actually changed
+                if distance > 0: 
+                    for L in self.ambiLights: 
+                        x = threading.Thread(target=self._updateHue,name="updateHue", args=(xy,L,self.transitionTime))
+                        x.daemon = True
+                        x.start()
+            
                 endTime= time.time()
-                logger.debug("time: {},Colors: {}, xy: {}".format(endTime-startTime,colors,xy))
+                
+                
+                if distance > 0:
+                    #logger.debug("time: {},Colors: {}, xy: {},prevxy:{}, distance: {}".format(endTime-startTime,colors,xy,prevxy,distance))
+                    logger.debug("***** xy: {},prevxy:{}, distance: {}".format(xy,prevxy,distance))
+                    
+                else:
+                    logger.debug("xy: {},prevxy:{}, distance: {}".format(xy,prevxy,distance))
+                        
+                
+                
+                
+                prevxy=xy
                 self.monitor.waitForAbort(self.updateInterval) #seconds
             
             logger.debug("AmbiGroup stopped!")
