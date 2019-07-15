@@ -39,7 +39,7 @@ These settings can impact performance, and may need to be tuned for your set up.
 - **Force on & Set Brightness**: Force the selected lights on or to a particular brightness when playback starts. Otherwise, lights will stay at the previous brightness and turned off. This can also be accomplished via Start Scene in Video Actions. Using both can cause conflicts
 
 ### Colour Filters:
-As the system is based on colour of the current frame, predominantly white and black frames can produce harsh white light. This is mostly noticeable during credit sequences and transitions betw
+As the system is based on colour of the current frame, predominantly white and black frames can produce harsh white light. This is mostly noticeable during credit sequences and transitions between scenes or commercials. Colour filters allow you to replace full whites or blacks to 
 
 
 
@@ -60,6 +60,6 @@ As the system is based on colour of the current frame, predominantly white and b
 - [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTQ0ODY1MzM4LDUzNzA4OTQyMCw3MTEyOT
-E5MjZdfQ==
+eyJoaXN0b3J5IjpbLTEyMTQ3MzU2MTAsNTM3MDg5NDIwLDcxMT
+I5MTkyNl19
 -->
