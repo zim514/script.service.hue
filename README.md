@@ -34,6 +34,7 @@ You can now configure multiple lights to match playing video as closely as possi
 - **Select Lights**: Only Hue bulbs and lamps that support colours (Gamuts A, B and C) can be used with this system. Lights that can only reproduce whites or color temperatures are ignored.
 - **Force on & Set Brightness**: Force the selected lights on or to a particular brightness when playback starts. Otherwise, lights will stay at the previous brightness and turned off. This can also be accomplished via Start Scene in Video Actions. Using both can cause conflicts
 
+### Colour Filters:
 
 
 
@@ -54,5 +55,5 @@ You can now configure multiple lights to match playing video as closely as possi
 - [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3NzUyMjkyOTYsNzExMjkxOTI2XX0=
+eyJoaXN0b3J5IjpbNTM3MDg5NDIwLDcxMTI5MTkyNl19
 -->
