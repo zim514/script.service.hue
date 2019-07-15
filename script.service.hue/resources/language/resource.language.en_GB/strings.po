@@ -418,4 +418,62 @@ msgctxt "#30062"
 msgid "Colour Filters"
 msgstr "Colour filters"
 
+msgctxt "#30063"
+msgid "Default Colour"
+msgstr "Default Colour"
+
+msgctxt "#30064"
+msgid "Number of colours"
+msgstr "Number of colours"
+
+msgctxt "#30065"
+msgid "Update interval (ms)"
+msgstr "Update interval (ms)"
+
+msgctxt "#30066"
+msgid "Hue transition time (ms)"
+msgstr "Hue transition time (ms)"
+
+msgctxt "#30067"
+msgid "Frame capture size"
+msgstr "Frame capture size"
+
+
+msgctxt "#30801"
+msgid "Relax"
+msgstr "Relax"
+
+msgctxt "#30802"
+msgid "Read"
+msgstr "Read"
+
+msgctxt "#30803"
+msgid "Concentrate"
+msgstr "Concentrate"
+
+msgctxt "#30804"
+msgid "Relax"
+msgstr "Relax"
+
+msgctxt "#30805"
+msgid "Bright"
+msgstr "Bright"
+
+msgctxt "#30806"
+msgid "Energize"
+msgstr "Energize"
+
+msgctxt "#30807"
+msgid "Candelight"
+msgstr "Candelight"
+
+msgctxt "#30808"
+msgid "Incandescent"
+msgstr "Incandescent"
+
+msgctxt "#30809"
+msgid "Pumpkin"
+msgstr "Pumpkin"
+
+
 

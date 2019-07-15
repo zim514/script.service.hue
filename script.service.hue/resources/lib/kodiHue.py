@@ -282,13 +282,18 @@ def configureScene(bridge,kGroupID,action):
 def configureAmbiLights(bridge,kGroupID):
     lights=selectHueLights(bridge)
     lightNames = []
-    lightGamuts = []
+    colorLights=[]
     if lights is not None:
-
         for L in lights:
-            lightNames.append(_getLightName(bridge,L))
+            gamut = getLightGamut(bridge, L)
+            if gamut == "A" or gamut== "B" or gamut == "C":
+                lightNames.append(_getLightName(bridge,L))
+                colorLights.append(L)
+            else:
+                kodiutils.notification(_("Hue Service"), _("Only colour lights are supported"), icon=NOTIFICATION_ERROR)
+                
 
-        kodiutils.set_setting("group{}_Lights".format(kGroupID),','.join(lights))
+        kodiutils.set_setting("group{}_Lights".format(kGroupID),','.join(colorLights))
         kodiutils.set_setting("group{}_LightNames".format(kGroupID),','.join(lightNames))
         globals.ADDON.openSettings()
 
@@ -433,6 +438,16 @@ def validateSchedule():
             kodiutils.notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"), icon=NOTIFICATION_ERROR)
             kodiutils.set_setting("EnableSchedule", False)
             globals.enableSchedule = False
+
+def getLightGamut(bridge,L):
+    try:
+        gamut = bridge.lights()[L]['capabilities']['control']['colorgamuttype']
+        logger.debug("Light: {}, gamut: {}".format(L,gamut))
+    except Exception:
+        return None
+    if gamut == "A"  or gamut == "B" or gamut == "C":
+        return gamut
+    return None
             
             
 

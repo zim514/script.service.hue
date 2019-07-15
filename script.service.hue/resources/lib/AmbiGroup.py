@@ -20,12 +20,15 @@ import xbmc
 
 from resources.lib.KodiGroup import KodiGroup
 from resources.lib.KodiGroup import VIDEO,AUDIO,ALLMEDIA,STATE_IDLE,STATE_PAUSED,STATE_PLAYING
+from .kodiHue import getLightGamut
+
 
 from . import kodiutils
 from .qhue import QhueException
 
 from . import globals
 from .globals import logger
+from .recipes import HUE_RECIPES
 from .language import get_string as _
 
 
@@ -79,16 +82,21 @@ class AmbiGroup(KodiGroup):
         self.brightness=kodiutils.get_setting_as_int("group{}_Brightness".format(self.kgroupID))*255/100#convert percentage to value 1-254
         self.blackFilter=kodiutils.get_setting_as_int("group{}_BlackFilter".format(self.kgroupID))
         self.whiteFilter=kodiutils.get_setting_as_int("group{}_WhiteFilter".format(self.kgroupID))
+        self.defaultRecipe=kodiutils.get_setting_as_int("group{}_DefaultRecipe".format(self.kgroupID))
+        self.captureSize=kodiutils.get_setting_as_int("group{}_CaptureSize".format(self.kgroupID))
+        
         
         self.ambiLights={}
         lightIDs=kodiutils.get_setting("group{}_Lights".format(self.kgroupID)).split(",")
-
+        
+        index=0
         for L in lightIDs:
-            gamut=self._getLightGamut(self.bridge,L)
-            light={L:{'gamut': gamut,'prevxy': (0,0)}}
+            gamut=getLightGamut(self.bridge,L)
+            light={L:{'gamut': gamut,'prevxy': (0,0),"index":index}}
             self.ambiLights.update(light)
-            
-        logger.debug("ambilights obj: {}".format(self.ambiLights))
+            index=index+1
+
+
     
     
     def setup(self, monitor,bridge, kgroupID, flash=False, mediaType=VIDEO):
@@ -112,12 +120,12 @@ class AmbiGroup(KodiGroup):
         logger.debug("AmbiGroup started!")
         
         while not self.monitor.abortRequested() and self.state == STATE_PLAYING:
-            startTime = time.time()
+            #startTime = time.time()
              
             try:
-                cap.capture(250, 250) #async capture request to underlying OS
+                cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
                 capImage = cap.getImage(100) #timeout to wait for OS in ms, default 1000
-                image = Image.frombuffer("RGBA", (250, 250), buffer(capImage), "raw", "BGRA")
+                image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
             except Exception:
                 return #avoid fails in system shutdown
                 
@@ -129,7 +137,8 @@ class AmbiGroup(KodiGroup):
             (colors[0].rgb.r > self.whiteFilter and colors[0].rgb.g > self.whiteFilter and colors[0].rgb.b > self.whiteFilter):
                 logger.debug("rgb filter: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
                 
-                xy=0.3008,0.2936 #default
+                xy=HUE_RECIPES[self.defaultRecipe]["xy"]
+                logger.debug("DefaultRecipe: {}, Name: {}, XY: {}".format(self.defaultRecipe,HUE_RECIPES[self.defaultRecipe]["name"], xy))
                 
                 for L in self.ambiLights: 
                     x = Thread(target=self._updateHueXY,name="updateHue", args=(xy,L,self.transitionTime))
@@ -137,12 +146,19 @@ class AmbiGroup(KodiGroup):
                     x.start()
                 
             else:
-                for L in self.ambiLights: 
-                    x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b,L,self.transitionTime))
+                for L in self.ambiLights:
+                    if self.numColors == 1:
+                        x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b,L,self.transitionTime))
+                    else:
+                        
+                        colorIndex=self.ambiLights[L]["index"] % len(colors)
+                        print("color index:{}, lightIndex: {},L: {}".format(colorIndex,self.ambiLights[L]["index"],L))
+                        
+                        x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[colorIndex].rgb.r,colors[colorIndex].rgb.g,colors[colorIndex].rgb.b,L,self.transitionTime))
                     x.daemon = True
                     x.start()
             
-            endTime= time.time()
+            #endTime= time.time()
             self.monitor.waitForAbort(self.updateInterval) #seconds
 
         logger.debug("AmbiGroup stopped!")
@@ -151,7 +167,7 @@ class AmbiGroup(KodiGroup):
         
     
     def _updateHueRGB(self,r,g,b,light,transitionTime):
-        startTime = time.time()
+        #startTime = time.time()
         
         gamut=self.ambiLights[light].get('gamut')
         prevxy=self.ambiLights[light].get('prevxy')
@@ -177,13 +193,13 @@ class AmbiGroup(KodiGroup):
                 logger.error("Ambi: Hue call fail: {}".format(e))
         
         
-        endTime=time.time()
+        #endTime=time.time()
         #logger.debug("time: {},distance: {}".format(int((endTime-startTime)*1000),distance))
         self.ambiLights[light].update(prevxy=xy)
         
 
     def _updateHueXY(self,xy,light,transitionTime):
-        startTime = time.time()
+        #startTime = time.time()
         
         gamut=self.ambiLights[light].get('gamut')
         prevxy=self.ambiLights[light].get('prevxy')
@@ -206,19 +222,6 @@ class AmbiGroup(KodiGroup):
                 logger.error("Ambi: Hue call fail: {}".format(e))
         
 
-        endTime=time.time()
+        #endTime=time.time()
         #logger.debug("time: {},distance: {}".format(int((endTime-startTime)*1000),distance))
         self.ambiLights[light].update(prevxy=xy)
-
-
-
-
-    def _getLightGamut(self,bridge,L):
-        try:
-            gamut = bridge.lights()[L]['capabilities']['control']['colorgamuttype']
-            logger.debug("Light: {}, gamut: {}".format(L,gamut))
-        except Exception:
-            return None
-        if gamut == "A"  or gamut == "B" or gamut == "C":
-            return gamut
-        return None
