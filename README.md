@@ -47,7 +47,9 @@ Video rarely has perfect blacks (RGB 0,0,0) or whites (RGB 255,255,255). Colour 
  - **RGB White  Filter:** Maximum RGB value to apply colour. Color values above this number are replaced by the Default Colour. 
  - **Default Colour:** The colour used to replace black or white.
  
+
 ### Performance:
+
 Hue has a total limit of 20 commands per second which can be used by all applications and switches. Issuing too many Hue commands can cause your lights to lag or ignore input.
 Every selected light increases the number of necessary commands therefore influences how often lights can be updated. For more information on Hue system performance, refer to the [Hue documentation](https://developers.meethue.com/develop/application-design-guidance/hue-system-performance/).
 - **Number of colours:** CPU impact. The number of colours generated from one frame. With several lights, this will produce a variety of colours. Setting this higher than your number of lights will waste CPU time generating colours that can't be displayed.
@@ -56,6 +58,7 @@ Every selected light increases the number of necessary commands therefore influe
 - **Capture size:** CPU impact. Size at which frames are captured, in pixels of X by X. Colour calculation time is too slow with full sized frames, so they are resized first. May affect colour precision as some pixels are lost in the resize process.
 
 ### Notes:
+
 - Does not support multiple bridges on your network
 - Only tested on LibreElec 9.0.2 & Windows 10, but no reason it shouldn't work anywhere.
 
@@ -64,8 +67,8 @@ Every selected light increases the number of necessary commands therefore influe
 - Make sure you update your Hue bridge to the latest version. This add-on assumes you have the latest features
 - Turn on debug logging or the addon's logging (in addon_data)
 
-
 ### Credits:
+
 - Based on original work by @cees-elzinga, @michaelrcarroll, @mpolednik on github
 - [Qhue by Quentin Stafford-Fraser](https://github.com/quentinsf/qhue)
 - [ssdp.py by dankrause](https://gist.github.com/dankrause/6000248)
