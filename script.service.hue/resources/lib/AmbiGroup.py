@@ -129,7 +129,7 @@ class AmbiGroup(KodiGroup):
             (colors[0].rgb.r > self.whiteFilter and colors[0].rgb.g > self.whiteFilter and colors[0].rgb.b > self.whiteFilter):
                 logger.debug("rgb filter: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
                 
-                xy=0.5266,0.4133 #default
+                xy=0.3008,0.2936 #default
                 
                 for L in self.ambiLights: 
                     x = Thread(target=self._updateHueXY,name="updateHue", args=(xy,L,self.transitionTime))
