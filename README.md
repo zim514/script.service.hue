@@ -30,7 +30,7 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 ## Experimental Ambilight Support
 You can now configure multiple lights to match playing video as closely as possible.  [Coloured bias lighting](https://en.wikipedia.org/wiki/Bias_lighting)  can reduce eye strain and add colour effects to your media center. 
 
-This system uses colorgram.py to find the most *predominant* colour in a frame. Colour saturated scenes (Sci-Fi, Cartoons) look best, while live action, talk shows or less colourfull SD shows 
+This system uses colorgram.py to find the most *predominant* colour in a frame. Colourful/saturated scenes look best, while live action, talk shows or less colorful SD shows tend to generate skin-tones and whites, which still looks good when translated to lighting.
 
 These settings can impact performance, and may need to be tuned for your set up. 
 
@@ -60,6 +60,6 @@ As the system is based on RGB colour of the current frame, frames full whites an
 - [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTAyMjQyNTQwMiw1MzcwODk0MjAsNzExMj
+eyJoaXN0b3J5IjpbMTU1NDUwNjMyMiw1MzcwODk0MjAsNzExMj
 kxOTI2XX0=
 -->
