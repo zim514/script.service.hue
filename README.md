@@ -35,13 +35,13 @@ This system uses colorgram.py to find the most *predominant* colour in a frame. 
 These settings can impact performance, and may need to be tuned for your set up. 
 
 ### Basic Settings:
-- **Select Lights**: Only Hue bulbs and lamps that support colours (Gamuts A, B and C) can be used with this system. Lights that can only reproduce whites or color temperatures are ignored.
-- **Force on & Set Brightness**: Force the selected lights on or to a particular brightness when playback starts. Otherwise, lights will stay at the previous brightness and turned off. This can also be accomplished via Start Scene in Video Actions. Using both can cause conflicts
+- **Select Lights:** Only Hue bulbs and lamps that support colours (Gamuts A, B and C) can be used with this system. Lights that can only reproduce whites or color temperatures are ignored.
+- **Force on & Set Brightness:** Force the selected lights on or to a particular brightness when playback starts. Otherwise, lights will stay at the previous brightness and turned off. This can also be accomplished via Start Scene in Video Actions. Using both can cause conflicts
 
 ### Colour Filters:
-As the system is based on colour of the current frame, predominantly white and black frames can produce harsh white light. This is mostly noticeable during credit sequences and transitions between scenes or commercials. Colour filters allow you to replace full whites or blacks to 
+As the system is based on colour of the current frame, predominantly white and black frames can produce harsh white light. This is mostly noticeable during credit sequences and transitions between scenes or commercials. Colour filters allow you to replace full whites or blacks to a selection of neutral white recipes for a more pleasant experience.
 
-
+ - **RGB Black/White Filter:** 
 
 ## Notes:
 - Does not support multiple bridges on your network
@@ -60,6 +60,6 @@ As the system is based on colour of the current frame, predominantly white and b
 - [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyMTQ3MzU2MTAsNTM3MDg5NDIwLDcxMT
-I5MTkyNl19
+eyJoaXN0b3J5IjpbMTE2MTU0MTY4MSw1MzcwODk0MjAsNzExMj
+kxOTI2XX0=
 -->
