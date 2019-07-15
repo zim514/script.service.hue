@@ -41,7 +41,7 @@ These settings can impact performance, and may need to be tuned for your set up.
 ### Colour Filters:
 As the system is based on colour of the current frame, predominantly white and black frames can produce harsh white light. This is mostly noticeable during credit sequences and transitions between scenes or commercials. Colour filters allow you to replace full whites or blacks to a selection of neutral white recipes for a more pleasant experience.
 
- - **RGB Black Filter:** Minimum RGB value to apply colour. 
+ - **RGB Black Filter:** Minimum RGB value to apply colour. Color values below this number are replaced by the Default Colour. 
 
 ## Notes:
 - Does not support multiple bridges on your network
@@ -60,6 +60,6 @@ As the system is based on colour of the current frame, predominantly white and b
 - [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTMyMjg1MDk0LDUzNzA4OTQyMCw3MTEyOT
-E5MjZdfQ==
+eyJoaXN0b3J5IjpbLTE4ODE3MjgyODgsNTM3MDg5NDIwLDcxMT
+I5MTkyNl19
 -->
