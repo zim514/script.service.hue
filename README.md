@@ -27,11 +27,12 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
     - Disable during daylight setting takes precedence over active hours
     - Not tested if end time is after midnight (Eg. activate from 6PM to 1AM)
 
+## Ambilight
+This plugin now includes experimental ambilight support. This will attempt to colour match your Hue lights to playing video as closely as possible. 
+
 ## Notes:
 - Does not support multiple bridges on your network
 - Only tested on LibreElec 9.0.2 & Windows 10, but no reason it shouldn't work anywhere.
-- No ambilight / dynamic lighting support.
-	- If anyone knows a good algorithm to generate colours from a screenshot, I'll be looking into this in the future.
 
 
 ## Problems?
@@ -45,5 +46,5 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 - ssdp.py by dankrause https://gist.github.com/dankrause/6000248
 - Colorgram.py by obskyr https://github.com/obskyr/colorgram.py
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzExMjkxOTI2XX0=
+eyJoaXN0b3J5IjpbLTE2ODI0MDE2MDgsNzExMjkxOTI2XX0=
 -->
