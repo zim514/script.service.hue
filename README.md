@@ -28,7 +28,7 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
     - Not tested if end time is after midnight (Eg. activate from 6PM to 1AM)
 
 ## Experimental Ambilight Support
-You can now configure multiple lights to match playing video as closely as possible.  [Coloured bias lighting](https://en.wikipedia.org/wiki/Bias_lighting)  can reduce eye strain and add colour effects to your media center.
+You can now configure multiple lights to match playing video as closely as possible.  [Coloured bias lighting](https://en.wikipedia.org/wiki/Bias_lighting)  can reduce eye strain and add colour effects to your media center. These settings can have vast impacts on performance 
 
 
 ## Notes:
@@ -42,11 +42,11 @@ You can now configure multiple lights to match playing video as closely as possi
 
 
 ## Credits:
-- Based on original plugin by @cees-elzinga, michaelrcarroll, mpolednik
+- Based on original work by @cees-elzinga, @michaelrcarroll, @mpolednik on github
 - [Qhue by Quentin Stafford-Fraser](https://github.com/quentinsf/qhue)
 - [ssdp.py by dankrause](https://gist.github.com/dankrause/6000248)
 - [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTgyNTAyNzI4NCw3MTEyOTE5MjZdfQ==
+eyJoaXN0b3J5IjpbNzQ2MzMzNzYwLDcxMTI5MTkyNl19
 -->
