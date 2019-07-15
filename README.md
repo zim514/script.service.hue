@@ -30,11 +30,8 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 ## Experimental Ambilight Support
 You can now configure multiple lights to match playing video as closely as possible.  [Coloured bias lighting](https://en.wikipedia.org/wiki/Bias_lighting)  can reduce eye strain and add colour effects to your media center. These settings impact performance, and may need to be tuned for your system.
 
-
-
-
-
-- Force On: By default, 
+### Basic Settings:
+- **Set Brightness**: Force the selected lights to a particular brightness when playback starts. Otherwise, lights will stay at the previous brightness or of
 
 
 ## Notes:
@@ -54,5 +51,5 @@ You can now configure multiple lights to match playing video as closely as possi
 - [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM5Nzk1OTU4OCw3MTEyOTE5MjZdfQ==
+eyJoaXN0b3J5IjpbLTEzMTM1ODE4NzMsNzExMjkxOTI2XX0=
 -->
