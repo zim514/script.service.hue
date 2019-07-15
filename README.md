@@ -50,7 +50,10 @@ Video rarely has perfect blacks (RGB 0,0,0) or whites (RGB 255,255,255). Colour 
  ### Performance:
 Hue has a total limit of 20 commands per second which can be used by all applications and switches. Issuing too many Hue commands can cause your lights to lag or ignore input.
 Every selected light increases the number of necessary commands therefore influences how often lights can be updated. For more information on Hue system performance, refer to the [Hue documentation](https://developers.meethue.com/develop/application-design-guidance/hue-system-performance/).
-
+- **as:**
+- **as:**
+- **as:**
+- **as:**
 
 ## Notes:
 - Does not support multiple bridges on your network
@@ -69,6 +72,6 @@ Every selected light increases the number of necessary commands therefore influe
 - [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzNjI4OTcsNTM3MDg5NDIwLDcxMTI5MT
-kyNl19
+eyJoaXN0b3J5IjpbNzkyMTE5NTgxLDUzNzA4OTQyMCw3MTEyOT
+E5MjZdfQ==
 -->
