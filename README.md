@@ -53,7 +53,7 @@ Every selected light increases the number of necessary commands therefore influe
 - **Number of colours:** CPU impact. The number of colours generated from one frame. With several lights, this will produce a variety of colours. Setting this higher than your number of lights will waste CPU time generating colours that can't be displayed.
 - **Update interval:** CPU and Hue impact. The minimum amount of time to wait before updating the lights, in milliseconds. 100ms will update the lights 10 times per second, 500ms, twice per second.
 - **Hue transition time:** Hue impact. The amount of time the lights will take to fade from one colour to the next, in milliseconds. Set to 0 for instant transition. 100ms is recommended for a quick and smooth. Hue will wait for this transition to complete before applying the next command. Normally should be the same as the update interval. 
-- **Capture size:** CPU impact. Size at which frames are captured, in pixels of X by X. Colour calculation time is too slow with full sized frame, so they are resized first. 33
+- **Capture size:** CPU impact. Size at which frames are captured, in pixels of X by X. Colour calculation time is too slow with full sized frames, so they are resized first. May affect colour precision as some pixels are lost in the resize process.
 
 ## Notes:
 - Does not support multiple bridges on your network
@@ -72,6 +72,6 @@ Every selected light increases the number of necessary commands therefore influe
 - [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzNTEyMDkzNjAsNTM3MDg5NDIwLDcxMT
-I5MTkyNl19
+eyJoaXN0b3J5IjpbNjEyMDEyNzc5LDUzNzA4OTQyMCw3MTEyOT
+E5MjZdfQ==
 -->
