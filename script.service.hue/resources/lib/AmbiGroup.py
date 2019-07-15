@@ -20,12 +20,15 @@ import xbmc
 
 from resources.lib.KodiGroup import KodiGroup
 from resources.lib.KodiGroup import VIDEO,AUDIO,ALLMEDIA,STATE_IDLE,STATE_PAUSED,STATE_PLAYING
+from .kodiHue import getLightGamut
+
 
 from . import kodiutils
 from .qhue import QhueException
 
 from . import globals
 from .globals import logger
+from .recipes import HUE_RECIPES
 from .language import get_string as _
 
 
@@ -79,12 +82,13 @@ class AmbiGroup(KodiGroup):
         self.brightness=kodiutils.get_setting_as_int("group{}_Brightness".format(self.kgroupID))*255/100#convert percentage to value 1-254
         self.blackFilter=kodiutils.get_setting_as_int("group{}_BlackFilter".format(self.kgroupID))
         self.whiteFilter=kodiutils.get_setting_as_int("group{}_WhiteFilter".format(self.kgroupID))
+        self.defaultRecipe=kodiutils.get_setting_as_int("group{}_DefaultRecipe".format(self.kgroupID))
         
         self.ambiLights={}
         lightIDs=kodiutils.get_setting("group{}_Lights".format(self.kgroupID)).split(",")
 
         for L in lightIDs:
-            gamut=self._getLightGamut(self.bridge,L)
+            gamut=getLightGamut(self.bridge,L)
             light={L:{'gamut': gamut,'prevxy': (0,0)}}
             self.ambiLights.update(light)
             
@@ -129,7 +133,8 @@ class AmbiGroup(KodiGroup):
             (colors[0].rgb.r > self.whiteFilter and colors[0].rgb.g > self.whiteFilter and colors[0].rgb.b > self.whiteFilter):
                 logger.debug("rgb filter: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
                 
-                xy=0.3008,0.2936 #default
+                xy=HUE_RECIPES[self.defaultRecipe]["xy"]
+                logger.debug("DefaultRecipe: {}, Name: {}, XY: {}".format(self.defaultRecipe,HUE_RECIPES[self.defaultRecipe]["name"], xy))
                 
                 for L in self.ambiLights: 
                     x = Thread(target=self._updateHueXY,name="updateHue", args=(xy,L,self.transitionTime))
@@ -213,12 +218,3 @@ class AmbiGroup(KodiGroup):
 
 
 
-    def _getLightGamut(self,bridge,L):
-        try:
-            gamut = bridge.lights()[L]['capabilities']['control']['colorgamuttype']
-            logger.debug("Light: {}, gamut: {}".format(L,gamut))
-        except Exception:
-            return None
-        if gamut == "A"  or gamut == "B" or gamut == "C":
-            return gamut
-        return None

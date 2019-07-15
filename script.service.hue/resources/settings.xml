@@ -93,7 +93,8 @@
         <setting id="group3_TransitionTime" type="slider" label="Hue Transition time (ms)" default="100" range="0,100,500" option="int" />
         <setting type="lsep" label="30062" />
         <setting id="group3_BlackFilter" type="slider" label="30060" default="10" range="1,1,50" option="int" />
-        <setting id="group3_Whitefilter" type="slider" label="30061" default="255" range="205,1,255" option="int" />
+        <setting id="group3_WhiteFilter" type="slider" label="30061" default="255" range="205,1,255" option="int" />
+        <setting id="group3_DefaultRecipe" type="enum" label="30063"  lvalues="30801|30802|30803|30804|30805|30806|30807|30808"/>
 
     </category>
 <!--  /GROUP SECTION  0-->
