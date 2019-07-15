@@ -48,7 +48,7 @@ Video rarely has perfect blacks (RGB 0,0,0) or whites (RGB 255,255,255). Colour 
  - **Default Colour:** The colour used to replace black or white.
  
  ### Performance:
- 
+Performance settings 
 
 ## Notes:
 - Does not support multiple bridges on your network
@@ -67,6 +67,6 @@ Video rarely has perfect blacks (RGB 0,0,0) or whites (RGB 255,255,255). Colour 
 - [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTExMzE5MjUxNjcsNTM3MDg5NDIwLDcxMT
-I5MTkyNl19
+eyJoaXN0b3J5IjpbLTk4ODk5NDM3MCw1MzcwODk0MjAsNzExMj
+kxOTI2XX0=
 -->
