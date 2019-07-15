@@ -83,6 +83,8 @@ class AmbiGroup(KodiGroup):
         self.blackFilter=kodiutils.get_setting_as_int("group{}_BlackFilter".format(self.kgroupID))
         self.whiteFilter=kodiutils.get_setting_as_int("group{}_WhiteFilter".format(self.kgroupID))
         self.defaultRecipe=kodiutils.get_setting_as_int("group{}_DefaultRecipe".format(self.kgroupID))
+        self.captureSize=kodiutils.get_setting_as_int("group{}_CaptureSize".format(self.kgroupID))
+        
         
         self.ambiLights={}
         lightIDs=kodiutils.get_setting("group{}_Lights".format(self.kgroupID)).split(",")
@@ -119,9 +121,9 @@ class AmbiGroup(KodiGroup):
             startTime = time.time()
              
             try:
-                cap.capture(250, 250) #async capture request to underlying OS
+                cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
                 capImage = cap.getImage(100) #timeout to wait for OS in ms, default 1000
-                image = Image.frombuffer("RGBA", (250, 250), buffer(capImage), "raw", "BGRA")
+                image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
             except Exception:
                 return #avoid fails in system shutdown
                 
