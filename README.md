@@ -42,11 +42,11 @@ You can now configure multiple lights to match playing video as closely as possi
 
 
 ## Credits:
-- Based on original plugin by cees-elzinga, michaelrcarroll, mpolednik
-- Qhue by Quentin Stafford-Fraser - https://github.com/quentinsf/qhue
-- ssdp.py by dankrause - https://gist.github.com/dankrause/6000248
-- Colorgram.py by obskyr - https://github.com/obskyr/colorgram.py
-- rgbxy by  Benjamin Knight -  
+- Based on original plugin by @cees-elzinga, michaelrcarroll, mpolednik
+- [Qhue by Quentin Stafford-Fraser](https://github.com/quentinsf/qhue)
+- [ssdp.py by dankrause](https://gist.github.com/dankrause/6000248)
+- [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
+- [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI0ODQ5ODIwOCw3MTEyOTE5MjZdfQ==
+eyJoaXN0b3J5IjpbLTgyNTAyNzI4NCw3MTEyOTE5MjZdfQ==
 -->
