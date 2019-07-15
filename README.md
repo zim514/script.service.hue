@@ -39,10 +39,12 @@ These settings can impact performance, and may need to be tuned for your set up.
 - **Force on & Set Brightness:** Force the selected lights on or to a particular brightness when playback starts. Otherwise, lights will stay at the previous brightness and turned off. This can also be accomplished via Start Scene in Video Actions. Using both can cause conflicts
 
 ### Colour Filters:
-As the system is based on colour of the current frame, predominantly white and black frames can produce harsh white light. This is mostly noticeable during credit sequences and transitions between scenes or commercials. Colour filters allow you to replace full whites or blacks to a selection of neutral white recipes for a more pleasant experience.  Video rarely has perfect blacks (RGB 0,0,0) or whites (RGB 255,255,255). Colour filters allow you to 
-
+As the system is based on colour of the current frame, predominantly white and black frames can produce harsh white light. This is mostly noticeable during credit sequences and transitions between scenes or commercials. 
+Colour filters allow you to replace full whites or blacks to a selection of neutral white recipes for a more pleasant experience.  
+Video rarely has perfect blacks (RGB 0,0,0) or whites (RGB 255,255,255). Colour filters allow you to specify the minimum black or white to apply 
 
  - **RGB Black Filter:** Minimum RGB value to apply colour. Color values below this number are replaced by the Default Colour. 
+ - **RGB White  Filter:** Maximum RGB value to apply colour. Color values above this number are replaced by the Default Colour. 
 
 ## Notes:
 - Does not support multiple bridges on your network
@@ -61,6 +63,6 @@ As the system is based on colour of the current frame, predominantly white and b
 - [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTM2NjkyODgyLDUzNzA4OTQyMCw3MTEyOT
+eyJoaXN0b3J5IjpbMTIwMTI2NTcwLDUzNzA4OTQyMCw3MTEyOT
 E5MjZdfQ==
 -->
