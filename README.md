@@ -48,7 +48,8 @@ Video rarely has perfect blacks (RGB 0,0,0) or whites (RGB 255,255,255). Colour 
  - **Default Colour:** The colour used to replace black or white.
  
  ### Performance:
-These settings allow you to fine-tune the algorithm to account for your CPU and Hue performance. Hue has a limit of 20 commands per second. Issuing too many Hue commands can cause you
+These settings allow you to fine-tune the algorithm to account for your CPU and Hue performance. 
+Hue has a total limit of 20 commands per second which can be used by all applications and switches. Issuing too many Hue commands can cause your lights to lag or ignore input.
 
 ## Notes:
 - Does not support multiple bridges on your network
@@ -67,6 +68,6 @@ These settings allow you to fine-tune the algorithm to account for your CPU and 
 - [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQzMTYyMDQxLDUzNzA4OTQyMCw3MTEyOT
-E5MjZdfQ==
+eyJoaXN0b3J5IjpbLTEzMDA1OTMyNTcsNTM3MDg5NDIwLDcxMT
+I5MTkyNl19
 -->
