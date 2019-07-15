@@ -52,8 +52,8 @@ Hue has a total limit of 20 commands per second which can be used by all applica
 Every selected light increases the number of necessary commands therefore influences how often lights can be updated. For more information on Hue system performance, refer to the [Hue documentation](https://developers.meethue.com/develop/application-design-guidance/hue-system-performance/).
 - **Number of colours:** CPU impact. The number of colours generated from one frame. With several lights, this will produce a variety of colours. Setting this higher than your number of lights will waste CPU time generating colours that can't be displayed.
 - **Update interval:** CPU and Hue impact. The minimum amount of time to wait before updating the lights, in milliseconds. 100ms will update the lights 10 times per second, 500ms, twice per second.
-- **Hue transition time:** Hue impact. The amount of time the lights will take to fade from one colour to the next, in milliseconds. Set to 0 for instant transition. 100ms is recommended for a quick and smooth. Hue will wait fIdeally, should be the same as the update interval. 
-- **as:**
+- **Hue transition time:** Hue impact. The amount of time the lights will take to fade from one colour to the next, in milliseconds. Set to 0 for instant transition. 100ms is recommended for a quick and smooth. Hue will wait for this transition to complete before applying the next command. Normally should be the same as the update interval. 
+- **Capture size:** CPU impact. Each frame is resized to calculate colours quickly. A lower value may lower 
 
 ## Notes:
 - Does not support multiple bridges on your network
@@ -72,6 +72,6 @@ Every selected light increases the number of necessary commands therefore influe
 - [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTg2NjQyMzI0MCw1MzcwODk0MjAsNzExMj
+eyJoaXN0b3J5IjpbMTU0MDgxODIxMCw1MzcwODk0MjAsNzExMj
 kxOTI2XX0=
 -->
