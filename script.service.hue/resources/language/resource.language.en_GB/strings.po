@@ -422,6 +422,22 @@ msgctxt "#30063"
 msgid "Default Colour"
 msgstr "Default Colour"
 
+msgctxt "#30064"
+msgid "Number of colours"
+msgstr "Number of colours"
+
+msgctxt "#30065"
+msgid "Update interval (ms)"
+msgstr "Update interval (ms)"
+
+msgctxt "#30066"
+msgid "Hue transition time (ms)"
+msgstr "Hue transition time (ms)"
+
+msgctxt "#30067"
+msgid "Frame capture size"
+msgstr "Frame capture size"
+
 
 msgctxt "#30801"
 msgid "Relax"

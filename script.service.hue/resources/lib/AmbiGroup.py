@@ -225,7 +225,3 @@ class AmbiGroup(KodiGroup):
         #endTime=time.time()
         #logger.debug("time: {},distance: {}".format(int((endTime-startTime)*1000),distance))
         self.ambiLights[light].update(prevxy=xy)
-
-
-
-
