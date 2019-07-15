@@ -45,6 +45,7 @@ Video rarely has perfect blacks (RGB 0,0,0) or whites (RGB 255,255,255). Colour 
 
  - **RGB Black Filter:** Minimum RGB value to apply colour. Color values below this number are replaced by the Default Colour. 
  - **RGB White  Filter:** Maximum RGB value to apply colour. Color values above this number are replaced by the Default Colour. 
+ - **Default Colour:** The colour used to replace black or white.
 
 ## Notes:
 - Does not support multiple bridges on your network
@@ -63,6 +64,6 @@ Video rarely has perfect blacks (RGB 0,0,0) or whites (RGB 255,255,255). Colour 
 - [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTIwMTI2NTcwLDUzNzA4OTQyMCw3MTEyOT
+eyJoaXN0b3J5IjpbODE5MTk3OTI2LDUzNzA4OTQyMCw3MTEyOT
 E5MjZdfQ==
 -->
