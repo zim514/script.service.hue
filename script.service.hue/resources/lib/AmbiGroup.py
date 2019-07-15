@@ -88,13 +88,15 @@ class AmbiGroup(KodiGroup):
         
         self.ambiLights={}
         lightIDs=kodiutils.get_setting("group{}_Lights".format(self.kgroupID)).split(",")
-
+        
+        index=0
         for L in lightIDs:
             gamut=getLightGamut(self.bridge,L)
-            light={L:{'gamut': gamut,'prevxy': (0,0)}}
+            light={L:{'gamut': gamut,'prevxy': (0,0),"index":index}}
             self.ambiLights.update(light)
-            
-        logger.debug("ambilights obj: {}".format(self.ambiLights))
+            index=index+1
+
+
     
     
     def setup(self, monitor,bridge, kgroupID, flash=False, mediaType=VIDEO):
@@ -118,7 +120,7 @@ class AmbiGroup(KodiGroup):
         logger.debug("AmbiGroup started!")
         
         while not self.monitor.abortRequested() and self.state == STATE_PLAYING:
-            startTime = time.time()
+            #startTime = time.time()
              
             try:
                 cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
@@ -144,12 +146,19 @@ class AmbiGroup(KodiGroup):
                     x.start()
                 
             else:
-                for L in self.ambiLights: 
-                    x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b,L,self.transitionTime))
+                for L in self.ambiLights:
+                    if self.numColors == 1:
+                        x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b,L,self.transitionTime))
+                    else:
+                        
+                        colorIndex=self.ambiLights[L]["index"] % len(colors)
+                        print("color index:{}, lightIndex: {},L: {}".format(colorIndex,self.ambiLights[L]["index"],L))
+                        
+                        x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[colorIndex].rgb.r,colors[colorIndex].rgb.g,colors[colorIndex].rgb.b,L,self.transitionTime))
                     x.daemon = True
                     x.start()
             
-            endTime= time.time()
+            #endTime= time.time()
             self.monitor.waitForAbort(self.updateInterval) #seconds
 
         logger.debug("AmbiGroup stopped!")
@@ -158,7 +167,7 @@ class AmbiGroup(KodiGroup):
         
     
     def _updateHueRGB(self,r,g,b,light,transitionTime):
-        startTime = time.time()
+        #startTime = time.time()
         
         gamut=self.ambiLights[light].get('gamut')
         prevxy=self.ambiLights[light].get('prevxy')
@@ -184,13 +193,13 @@ class AmbiGroup(KodiGroup):
                 logger.error("Ambi: Hue call fail: {}".format(e))
         
         
-        endTime=time.time()
+        #endTime=time.time()
         #logger.debug("time: {},distance: {}".format(int((endTime-startTime)*1000),distance))
         self.ambiLights[light].update(prevxy=xy)
         
 
     def _updateHueXY(self,xy,light,transitionTime):
-        startTime = time.time()
+        #startTime = time.time()
         
         gamut=self.ambiLights[light].get('gamut')
         prevxy=self.ambiLights[light].get('prevxy')
@@ -213,7 +222,7 @@ class AmbiGroup(KodiGroup):
                 logger.error("Ambi: Hue call fail: {}".format(e))
         
 
-        endTime=time.time()
+        #endTime=time.time()
         #logger.debug("time: {},distance: {}".format(int((endTime-startTime)*1000),distance))
         self.ambiLights[light].update(prevxy=xy)
 

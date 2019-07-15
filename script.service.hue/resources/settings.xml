@@ -77,7 +77,7 @@
         
         <setting id="group3_SelectLights" type="action" label="30015" action="RunScript(script.service.hue,ambiLightSelect,3)" option="close" />
         <setting id="group3_LightNames" type="text" label="30058"  default="-1" enable="false" visible="true" />
-        <setting id="group3_Lights" type="text" label="30035"  default="-1" enable="false" visible="true" />
+        <setting id="group3_Lights" type="text" label="30035"  default="-1" enable="false" visible="false" />
         
         <setting id="group3_forceOn" type="bool" label="30057"  default="false"/>
         <setting id="group3_setBrightness" type="bool" label="30056"  default="false"/>
