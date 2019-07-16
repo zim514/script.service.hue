@@ -106,12 +106,13 @@ class AmbiGroup(KodiGroup):
         super(AmbiGroup,self).setup(bridge, kgroupID, flash=flash, mediaType=1)
         
         self.monitor=monitor
-        calls=0
+        
         try:
+            calls=0
             calls=1/(self.updateInterval)*len(self.ambiLights)  #updateInterval is in seconds, eg. 0.2 for 200ms.
             if calls > 25:
                 kodiutils.notification(_("Hue Service"), _("Est. Hue Commands/sec (max 20): {}").format(calls),time=000,icon=NOTIFICATION_WARNING)
-        except ZeroDivisionError:
+        except Exception:
             kodiutils.notification(_("Hue Service"), _("Recommended minimum update interval: 100ms").format(calls),time=5000,icon=NOTIFICATION_WARNING)
         logger.debug("callsPerSec: lights: {},interval: {}, calls: {}".format(len(self.ambiLights),self.updateInterval,calls))
 
