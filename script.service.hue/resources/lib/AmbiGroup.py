@@ -159,7 +159,7 @@ class AmbiGroup(KodiGroup):
                         x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[colorIndex].rgb.r,colors[colorIndex].rgb.g,colors[colorIndex].rgb.b,L,self.transitionTime))
                     x.daemon = True
                     x.start()
-    @timer
+
     def _updateHueRGB(self,r,g,b,light,transitionTime):
         #startTime = time.time()
         
@@ -191,7 +191,7 @@ class AmbiGroup(KodiGroup):
         #logger.debug("time: {},distance: {}".format(int((endTime-startTime)*1000),distance))
         self.ambiLights[light].update(prevxy=xy)
         
-    @timer
+
     def _updateHueXY(self,xy,light,transitionTime):
         #startTime = time.time()
         

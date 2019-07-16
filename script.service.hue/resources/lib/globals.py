@@ -43,14 +43,14 @@ lastMediaType=0
 
 
 def timer(func):
-    """Print the runtime of the decorated function"""
+    """Logs the runtime of the decorated function"""
     @functools.wraps(func)
     def wrapper_timer(*args, **kwargs):
+        startTime = time.time()    # 1
+        value = func(*args, **kwargs)
+        endTime = time.time()      # 2
+        runTime = endTime - startTime    # 3
         if performanceLogging == True:
-            startTime = time.time()    # 1
-            value = func(*args, **kwargs)
-            endTime = time.time()      # 2
-            runTime = endTime - startTime    # 3
             logger.debug("[script.service.hue][{}] Completed in {:02f}ms".format(func.__name__,runTime*1000))
-            return value
+        return value
     return wrapper_timer
