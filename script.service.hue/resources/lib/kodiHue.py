@@ -100,7 +100,9 @@ def _discoverNupnp():
 
     logger.debug("In kodiHue discover_nupnp()")
     try:
-        req = requests.get('https://discovery.meethue.com/')
+        #ssl chain on new URL seems to be broken
+        req = requests.get('https://www.meethue.com/api/nupnp')
+        #req = requests.get('https://discovery.meethue.com/')
     except requests.exceptions.ConnectionError as e:
         logger.info("Nupnp failed: {}".format(e))
         return None
@@ -130,7 +132,7 @@ def _discoverSsdp():
 
 
 def bridgeDiscover(monitor):
-    logger.debug("In bridgeDiscover:")
+    logger.debug("Start bridgeDiscover")
     #Create new config if none exists. Returns success or fail as bool
     kodiutils.set_setting("bridgeIP","")
     kodiutils.set_setting("bridgeUser","")
