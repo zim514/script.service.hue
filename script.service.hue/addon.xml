@@ -26,10 +26,13 @@
 		<disclaimer lang="en_GB">Automate Hue lights with Kodi playback</disclaimer>
 		<news>v0.6.5:
 - Change some ambilight default settings to better values
-- Change Hue NuPNP Discovery URL until SSL chain is fixed by Pphillips
+- Change Hue NuPNP Discovery URL until SSL chain is fixed by Philips
+- Fix Hue username not saving properly
+
 v0.6.0: 
 - Choice of fallback colour to replace blacks and whites
 - Support multiple colours
+
 v0.5.0:
 - Experimental Ambilight support. See Forum for more information
 v0.4.2:

@@ -157,11 +157,13 @@ def bridgeDiscover(monitor):
             monitor.waitForAbort(1)
 
             bridgeUser = createUser(monitor, bridgeIP, progressBar)
+            
             if bridgeUser:
+                logger.debug("User created: {}".format(bridgeUser))
                 progressBar.update(90,_("User Found!"),_("Saving settings"))
 
                 kodiutils.set_setting("bridgeIP",bridgeIP)
-                kodiutils.set_setting("bridgeIP",bridgeIP)
+                kodiutils.set_setting("bridgeUser",bridgeUser)
                 complete = True
                 globals.connected = True
                 progressBar.update(100, _("Complete!"))
@@ -169,8 +171,8 @@ def bridgeDiscover(monitor):
                 progressBar.close()
                 globals.ADDON.openSettings()
                 return True
-
             else:
+                logger.debug("User not created, received: {}".format(bridgeUser))
                 progressBar.update(100, _("User not found"),_("Check your bridge and network"))
                 monitor.waitForAbort(5)
                 complete = True
@@ -238,6 +240,7 @@ def discoverBridgeIP(monitor):
 
 
 def createUser(monitor, bridgeIP, progressBar=False):
+    logger.debug("In createUser")
     #device = 'kodi#'+getfqdn()
     data = '{{"devicetype": "kodi#{}"}}'.format(getfqdn()) #Create a devicetype named kodi#localhostname. Eg: kodi#LibreELEC
 
@@ -263,11 +266,12 @@ def createUser(monitor, bridgeIP, progressBar=False):
         progress = progress + 1
 
     res = req.json()
+    logger.debug("json response: {}, content: {}".format(res,req.content))
 
     try:
         username = res[0]['success']['username']
         return username
-    except (requests.exceptions.ConnectionError, qhue.QhueException):
+    except Exception:
         return False
 
 
