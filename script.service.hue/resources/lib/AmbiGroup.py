@@ -16,7 +16,8 @@ from .rgbxy import ColorHelper
 from .rgbxy import XYPoint
 from .rgbxy import GamutA,GamutB,GamutC
 
-import xbmc
+from xbmc import RenderCapture
+from xbmcgui import NOTIFICATION_WARNING
 
 from resources.lib.KodiGroup import KodiGroup
 from resources.lib.KodiGroup import VIDEO,AUDIO,ALLMEDIA,STATE_IDLE,STATE_PAUSED,STATE_PLAYING
@@ -105,10 +106,14 @@ class AmbiGroup(KodiGroup):
         super(AmbiGroup,self).setup(bridge, kgroupID, flash=flash, mediaType=1)
         
         self.monitor=monitor
-
-        calls=1/(self.updateInterval)*len(self.ambiLights)  #updateInterval is in seconds, eg. 0.2 for 200ms.  
+        calls=0
+        try:
+            calls=1/(self.updateInterval)*len(self.ambiLights)  #updateInterval is in seconds, eg. 0.2 for 200ms.
+            if calls > 25:
+                kodiutils.notification(_("Hue Service"), _("Est. Hue Commands/sec (max 20): {}").format(calls),time=000,icon=NOTIFICATION_WARNING)
+        except ZeroDivisionError:
+            kodiutils.notification(_("Hue Service"), _("Recommended minimum update interval: 100ms").format(calls),time=5000,icon=NOTIFICATION_WARNING)
         logger.debug("callsPerSec: lights: {},interval: {}, calls: {}".format(len(self.ambiLights),self.updateInterval,calls))
-        kodiutils.notification(_("Hue Service"), _("Est. Hue Calls/sec (max 10): {}").format(calls),time=10000)
 
     
     def _getColor(self):
@@ -117,7 +122,7 @@ class AmbiGroup(KodiGroup):
     
     def _ambiLoop(self):
         
-        cap = xbmc.RenderCapture()
+        cap = RenderCapture()
         
         logger.debug("AmbiGroup started")
         
