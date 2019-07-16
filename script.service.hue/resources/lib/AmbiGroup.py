@@ -30,6 +30,7 @@ from . import globals
 from .globals import logger
 from .recipes import HUE_RECIPES
 from .language import get_string as _
+from resources.lib.globals import timer
 
 
 class AmbiGroup(KodiGroup):
@@ -112,33 +113,36 @@ class AmbiGroup(KodiGroup):
     
     def _getColor(self):
         pass
-
+    
+    
     def _ambiLoop(self):
         
         cap = xbmc.RenderCapture()
-
-        logger.debug("AmbiGroup started!")
+        
+        logger.debug("AmbiGroup started")
         
         while not self.monitor.abortRequested() and self.state == STATE_PLAYING:
-            #startTime = time.time()
-             
+            self._ambiUpdate(cap)
+            self.monitor.waitForAbort(self.updateInterval) #seconds
+
+        logger.debug("AmbiGroup stopped")
+        
+    @timer
+    def _ambiUpdate(self,cap):
             try:
                 cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
                 capImage = cap.getImage(100) #timeout to wait for OS in ms, default 1000
                 image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
             except Exception:
                 return #avoid fails in system shutdown
-                
-            
             
             colors = colorgram.extract(image,self.numColors)
-            #TODO: RGB min and max configurable.
+
             if (colors[0].rgb.r < self.blackFilter and colors[0].rgb.g < self.blackFilter and colors[0].rgb.b <self.blackFilter) or \
             (colors[0].rgb.r > self.whiteFilter and colors[0].rgb.g > self.whiteFilter and colors[0].rgb.b > self.whiteFilter):
-                logger.debug("rgb filter: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
+                #logger.debug("rgb filter: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
                 
                 xy=HUE_RECIPES[self.defaultRecipe]["xy"]
-                logger.debug("DefaultRecipe: {}, Name: {}, XY: {}".format(self.defaultRecipe,HUE_RECIPES[self.defaultRecipe]["name"], xy))
                 
                 for L in self.ambiLights: 
                     x = Thread(target=self._updateHueXY,name="updateHue", args=(xy,L,self.transitionTime))
@@ -152,20 +156,10 @@ class AmbiGroup(KodiGroup):
                     else:
                         
                         colorIndex=self.ambiLights[L]["index"] % len(colors)
-                        print("color index:{}, lightIndex: {},L: {}".format(colorIndex,self.ambiLights[L]["index"],L))
-                        
                         x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[colorIndex].rgb.r,colors[colorIndex].rgb.g,colors[colorIndex].rgb.b,L,self.transitionTime))
                     x.daemon = True
                     x.start()
-            
-            #endTime= time.time()
-            self.monitor.waitForAbort(self.updateInterval) #seconds
-
-        logger.debug("AmbiGroup stopped!")
-        
-        
-        
-    
+    @timer
     def _updateHueRGB(self,r,g,b,light,transitionTime):
         #startTime = time.time()
         
@@ -197,7 +191,7 @@ class AmbiGroup(KodiGroup):
         #logger.debug("time: {},distance: {}".format(int((endTime-startTime)*1000),distance))
         self.ambiLights[light].update(prevxy=xy)
         
-
+    @timer
     def _updateHueXY(self,xy,light,transitionTime):
         #startTime = time.time()
         

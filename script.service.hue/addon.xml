@@ -1,5 +1,5 @@
 <addon id="script.service.hue" name="Hue Service"
-	provider-name="zim514" version="0.6.1">
+	provider-name="zim514" version="0.6.2">
 
 	<requires>
 		<import addon="xbmc.python" version="2.26.0" />
@@ -7,8 +7,7 @@
 		<import addon="script.module.kodi-six" version="0.1.0" />
 		<import addon="script.module.pil" />
 	</requires>
-	<extension point="xbmc.service" name="service.hue"
-		library="service.py" />
+	<extension point="xbmc.service" name="service.hue" library="service.py" />
 	<extension point="xbmc.python.script" library="menu.py">
 		<provides>executable</provides>
 	</extension>

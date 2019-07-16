@@ -1,7 +1,9 @@
-
+import functools
+import time
 
 from logging import getLogger
-from xbmcaddon import Addon
+#from xbmcaddon import Addon
+#from xbmc import log
 
 
 from kodi_six import xbmcaddon, xbmc
@@ -13,7 +15,7 @@ REMOTE_DBG_SUSPEND = False #Auto suspend thread when debugger attached
 QHUE_TIMEOUT = 0.5 #passed to requests, in seconds.
 
 
-ADDON = Addon()
+ADDON = xbmcaddon.Addon()
 ADDONID = ADDON.getAddonInfo('id')
 ADDONDIR = xbmc.translatePath(ADDON.getAddonInfo('profile')) #.decode('utf-8'))
 ADDONVERSION = ADDON.getAddonInfo('version')
@@ -31,6 +33,7 @@ separateLogFile = False
 initialFlash = False
 reloadFlash = False
 enableSchedule = False
+performanceLogging = False
 
 
 startTime = ""
@@ -39,3 +42,17 @@ endTime = ""
 lastMediaType=0
 
 
+
+
+def timer(func):
+    """Print the runtime of the decorated function"""
+    @functools.wraps(func)
+    def wrapper_timer(*args, **kwargs):
+        if performanceLogging == True:
+            startTime = time.time()    # 1
+            value = func(*args, **kwargs)
+            endTime = time.time()      # 2
+            runTime = endTime - startTime    # 3
+            xbmc.log("[script.service.hue][{!r}] Completed in {:01.2f}ms".format(func.__name__,runTime*1000),xbmc.LOGDEBUG)
+            return value
+    return wrapper_timer

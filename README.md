@@ -43,7 +43,8 @@ As the system is based on colour of the current frame, predominantly white and b
 Colour filters allow you to replace full whites or blacks to a selection of neutral white recipes for a more pleasant experience.  
 Video rarely has perfect blacks (RGB 0,0,0) or whites (RGB 255,255,255). Colour filters allow you to specify the minimum black or white values to apply to your lights. Outside of that range, the default colour is applied.
 
- - **RGB Black Filter:** Minimum RGB value to apply colour. Color values below this number are replaced by the Default Colour. 
+ - **RGB Black Filter:** Minimum RGB value to apply colour. Color values below this number are replaced by the Default Colour. Useful 
+   to avoid full white on black screens & credits. Setting this too high will replace colours in dark scenes. 
  - **RGB White  Filter:** Maximum RGB value to apply colour. Color values above this number are replaced by the Default Colour. 
  - **Default Colour:** The colour used to replace black or white.
  
@@ -56,6 +57,8 @@ Every selected light increases the number of necessary commands therefore influe
 - **Update interval:** CPU and Hue impact. The minimum amount of time to wait before updating the lights, in milliseconds. 100ms will update the lights 10 times per second, 500ms, twice per second.
 - **Hue transition time:** Hue impact. The amount of time the lights will take to fade from one colour to the next, in milliseconds. Set to 0 for instant transition. 100ms is recommended for a quick and smooth. Hue will wait for this transition to complete before applying the next command. Normally should be the same as the update interval. 
 - **Capture size:** CPU impact. Size at which frames are captured, in pixels of X by X. Colour calculation time is too slow with full sized frames, so they are resized first. May affect colour precision as some pixels are lost in the resize process.
+
+Performance logging can be enabled in the advanced setting to check the speed of the colour algorithm and Hue updates. However, these logs are very verbose and should be normally be disabled.
 
 ### Notes:
 

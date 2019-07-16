@@ -438,6 +438,9 @@ msgctxt "#30067"
 msgid "Frame capture size"
 msgstr "Frame capture size"
 
+msgctxt "#30068"
+msgid "Performance debug logging"
+msgstr "Performance debug logging"
 
 msgctxt "#30801"
 msgid "Relax"

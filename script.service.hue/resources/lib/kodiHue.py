@@ -9,9 +9,9 @@ from socket import getfqdn
 
 import requests
 
-
-import xbmc
-import xbmcgui
+from kodi_six import xbmc,xbmcgui
+#import xbmc
+#import xbmcgui
 from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_INFO
 
 from . import KodiGroup
@@ -38,6 +38,8 @@ def loadSettings():
     globals.enableSchedule = kodiutils.get_setting_as_bool("enableSchedule")
     globals.startTime = kodiutils.get_setting("startTime")
     globals.endTime = kodiutils.get_setting("endTime")
+    globals.performanceLogging = kodiutils.get_setting_as_bool("performanceLogging")
+    
     validateSchedule()
     
 def setupGroups(bridge,flash=False):
@@ -156,8 +158,8 @@ def bridgeDiscover(monitor):
             if bridgeUser:
                 progressBar.update(90,_("User Found!"),_("Saving settings"))
 
-                globals.ADDON.setSettingString("bridgeIP",bridgeIP)
-                globals.ADDON.setSettingString("bridgeUser",bridgeUser)
+                kodiutils.set_setting("bridgeIP",bridgeIP)
+                kodiutils.set_setting("bridgeIP",bridgeIP)
                 complete = True
                 globals.connected = True
                 progressBar.update(100, _("Complete!"))
@@ -448,9 +450,6 @@ def getLightGamut(bridge,L):
     if gamut == "A"  or gamut == "B" or gamut == "C":
         return gamut
     return None
-            
-            
-
 
 
 class HueMonitor(xbmc.Monitor):
