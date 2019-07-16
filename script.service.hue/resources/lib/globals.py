@@ -42,8 +42,6 @@ endTime = ""
 lastMediaType=0
 
 
-
-
 def timer(func):
     """Print the runtime of the decorated function"""
     @functools.wraps(func)
@@ -53,6 +51,6 @@ def timer(func):
             value = func(*args, **kwargs)
             endTime = time.time()      # 2
             runTime = endTime - startTime    # 3
-            xbmc.log("[script.service.hue][{!r}] Completed in {:01.2f}ms".format(func.__name__,runTime*1000),xbmc.LOGDEBUG)
+            logger.debug("[script.service.hue][{}] Completed in {:02f}ms".format(func.__name__,runTime*1000))
             return value
     return wrapper_timer
