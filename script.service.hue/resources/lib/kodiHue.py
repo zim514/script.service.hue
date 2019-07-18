@@ -21,6 +21,7 @@ from . import kodiutils
 from . import qhue
 
 from .language import get_string as _
+from resources.lib.qhue.qhue import QhueException
 
 
 
@@ -95,14 +96,12 @@ def deleteHueScene(bridge):
             xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not created"))
 
 
-
 def _discoverNupnp():
-
     logger.debug("In kodiHue discover_nupnp()")
     try:
-        #ssl chain on new URL seems to be broken
-        req = requests.get('https://www.meethue.com/api/nupnp')
-        #req = requests.get('https://discovery.meethue.com/')
+        #ssl chain on new URL seems to be fixed
+        #req = requests.get('https://www.meethue.com/api/nupnp')
+        req = requests.get('https://discovery.meethue.com/')
     except requests.exceptions.ConnectionError as e:
         logger.info("Nupnp failed: {}".format(e))
         return None
@@ -111,12 +110,10 @@ def _discoverNupnp():
     bridge_ip = None
     if res:
         bridge_ip = res[0]["internalipaddress"]
-
     return bridge_ip
         
-        
+
 def _discoverSsdp():
-    
     from . import ssdp
     from urlparse import urlsplit
 
@@ -145,7 +142,6 @@ def bridgeDiscover(monitor):
     complete = False
     while not progressBar.iscanceled() and not complete:
 
-
         progressBar.update(10, _("N-UPnP discovery..."))
         bridgeIP =_discoverNupnp()
         if not bridgeIP:
@@ -169,7 +165,7 @@ def bridgeDiscover(monitor):
                 progressBar.update(100, _("Complete!"))
                 monitor.waitForAbort(5)
                 progressBar.close()
-                globals.ADDON.openSettings()
+                logger.debug("Bridge discovery complete")
                 return True
             else:
                 logger.debug("User not created, received: {}".format(bridgeUser))
@@ -181,11 +177,13 @@ def bridgeDiscover(monitor):
 
         else:
             progressBar.update(100, _("Bridge not found"),_("Check your bridge and network"))
+            logger.debug("Bridge not found, check your bridge and network")
             monitor.waitForAbort(5)
             complete = True
             progressBar.close()
 
     if progressBar.iscanceled():
+        logger.debug("Bridge discovery cancelled by user")
         progressBar.update(100,_("Cancelled"))
         complete = True
         progressBar.close()
@@ -397,23 +395,21 @@ def sunset(bridge,kgroups):
             g.sunset()
     return
 
+
 def connectBridge(monitor,silent=False):
     bridgeIP = kodiutils.get_setting("bridgeIP")
     bridgeUser = kodiutils.get_setting("bridgeUser")
     logger.debug("in Connect() with settings: bridgeIP: {}, bridgeUser: {}".format(bridgeIP,bridgeUser))
 
-
     if bridgeIP and bridgeUser:
         if connectionTest(bridgeIP):
             logger.debug("in Connect(): Bridge responding to connection test.")
-
         else:
             logger.debug("in Connect(): Bridge not responding to connection test, attempt finding a new bridge IP.")
             bridgeIP = discoverBridgeIP(monitor)
             if bridgeIP:
                 logger.debug("in Connect(): New IP found: {}. Saving".format(bridgeIP))
                 kodiutils.set_setting("bridgeIP",bridgeIP)
-
 
         if bridgeIP:
             logger.debug("in Connect(): Checking User")
@@ -436,8 +432,9 @@ def connectBridge(monitor,silent=False):
         globals.connected = False
         return None
 
+
 def validateSchedule():
-    logger.debug("Checking if schedule is valid. Enabled: {}".format(globals.enableSchedule))
+    logger.debug("Validate schedule. Schedule Enabled: {}".format(globals.enableSchedule))
     if globals.enableSchedule:
         try:
             kodiutils.convertTime(globals.startTime)
@@ -448,6 +445,7 @@ def validateSchedule():
             kodiutils.notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"), icon=NOTIFICATION_ERROR)
             kodiutils.set_setting("EnableSchedule", False)
             globals.enableSchedule = False
+
 
 def getLightGamut(bridge,L):
     try:
@@ -461,11 +459,27 @@ def getLightGamut(bridge,L):
     return None
 
 
+def checkBridgeModel(bridge):
+    try:
+        bridgeConfig = bridge.config()
+        model=bridgeConfig["modelid"]
+    except QhueException:
+        logger.exception("Exception: checkBridgeModel")
+        return None
+    if model == "BSB002":
+        logger.debug("Bridge model OK: {}".format(model))
+        return True
+    logger.error("Unsupported bridge model: {}".format(model))
+    xbmcgui.Dialog().ok(_("Unsupported Hue Bridge"),_("Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for certain features."))
+    return None
+
+
 class HueMonitor(xbmc.Monitor):
     def __init__(self):
         super(xbmc.Monitor,self).__init__()
 
     def onSettingsChanged(self):
         logger.debug("Settings changed")
+        self.waitForAbort(1)
         loadSettings()
         globals.settingsChanged = True

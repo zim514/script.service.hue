@@ -23,7 +23,6 @@ KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
 logger = getLogger(ADDONID)
 
 
-#Init values for code completion, all get overwritten by kodiHue.loadSettings()
 settingsChanged = False
 connected = False
 daylight = False
@@ -50,7 +49,7 @@ def timer(func):
         value = func(*args, **kwargs)
         endTime = time.time()      # 2
         runTime = endTime - startTime    # 3
-        if performanceLogging == True:
-            logger.debug("[script.service.hue][{}] Completed in {:02f}ms".format(func.__name__,runTime*1000))
+        if performanceLogging:
+            logger.debug("[{}] Completed in {:02.0f}ms".format(func.__name__,runTime*1000))
         return value
     return wrapper_timer

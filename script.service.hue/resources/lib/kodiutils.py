@@ -9,7 +9,6 @@ from kodi_six import xbmcgui
 from . import globals
 
 
-
 def notification(header, message, time=5000, icon=globals.ADDON.getAddonInfo('icon'), sound=True):
     xbmcgui.Dialog().notification(header, message, icon, time, sound)
 
@@ -25,10 +24,12 @@ def get_setting(setting):
 def set_setting(setting, value):
     globals.ADDON.setSetting(setting, str(value))
 
+
 def convertTime(time):
     hour=int(time.split(":")[0])
     minute=int(time.split(":")[1])
     return datetime.time(hour,minute)
+
 
 def get_setting_as_bool(setting):
     return get_setting(setting).lower() == "true"
@@ -50,4 +51,3 @@ def get_setting_as_int(setting):
 
 def get_string(string_id):
     return globals.ADDON.getLocalizedString(string_id)
-
