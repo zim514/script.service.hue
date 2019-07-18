@@ -75,6 +75,9 @@ class AmbiGroup(KodiGroup):
         self.enabled=kodiutils.get_setting_as_bool("group{}_enabled".format(self.kgroupID))
         
         self.updateInterval=kodiutils.get_setting_as_float("group{}_Interval".format(self.kgroupID)) /1000#
+        if self.updateInterval == 0: 
+            self.updateInterval = 0.001
+        
         self.numColors=kodiutils.get_setting_as_int("group{}_NumColors".format(self.kgroupID))
         self.transitionTime =  kodiutils.get_setting_as_int("group{}_TransitionTime".format(self.kgroupID)) /100 #This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
         
@@ -85,7 +88,6 @@ class AmbiGroup(KodiGroup):
         self.whiteFilter=kodiutils.get_setting_as_int("group{}_WhiteFilter".format(self.kgroupID))
         self.defaultRecipe=kodiutils.get_setting_as_int("group{}_DefaultRecipe".format(self.kgroupID))
         self.captureSize=kodiutils.get_setting_as_int("group{}_CaptureSize".format(self.kgroupID))
-        
         
         self.ambiLights={}
         lightIDs=kodiutils.get_setting("group{}_Lights".format(self.kgroupID)).split(",")
@@ -130,7 +132,6 @@ class AmbiGroup(KodiGroup):
                 self.monitor.waitForAbort(self.updateInterval) #seconds
         except Exception as ex:
             logger.exception("Exception in _ambiLoop")
-            
 
         logger.debug("AmbiGroup stopped")
         
@@ -150,19 +151,16 @@ class AmbiGroup(KodiGroup):
             (colors[0].rgb.r > self.whiteFilter and colors[0].rgb.g > self.whiteFilter and colors[0].rgb.b > self.whiteFilter):
                 #logger.debug("rgb filter: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
                 xy=HUE_RECIPES[self.defaultRecipe]["xy"]
-                
                 for L in self.ambiLights: 
                     x = Thread(target=self._updateHueXY,name="updateHue", args=(xy,L,self.transitionTime))
                     x.daemon = True
                     x.start()
-                
             else:
                 for L in self.ambiLights:
                     if self.numColors == 1:
                         #logger.debug("AmbiUpdate 1 Color: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
                         x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b,L,self.transitionTime))
                     else:
-                        
                         colorIndex=self.ambiLights[L]["index"] % len(colors)
                         #logger.debug("AmbiUpdate Colors: {}".format(colors))
                         x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[colorIndex].rgb.r,colors[colorIndex].rgb.g,colors[colorIndex].rgb.b,L,self.transitionTime))
