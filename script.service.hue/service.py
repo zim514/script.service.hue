@@ -20,9 +20,8 @@ if globals.DEBUG:
 
 
 logger.info("Starting service.py, version {}, Kodi: {}".format(globals.ADDONVERSION, globals.KODIVERSION))
-core.service() #Run Hue service
+try:
+    core.service() #Run Hue service
+except Exception:
+    logger.exception("Core service exception")
 logger.info("Shutting down service.py, version {}, Kodi: {}".format(globals.ADDONVERSION, globals.KODIVERSION ))
-
-
-if globals.DEBUG is True:
-    pydevd.stoptrace()

@@ -6,7 +6,7 @@ Created on Jul. 2, 2019
 
 import time
 from threading import Thread
- #https://realpython.com/intro-to-python-threading/#daemon-threads 
+
 
 
 from PIL import Image
@@ -40,7 +40,6 @@ class AmbiGroup(KodiGroup):
         logger.info("Ambilight Settings. Colours: {}, Interval: {}, transitionTime: {}".format(self.numColors,self.updateInterval,self.transitionTime))
         logger.info("Ambilight Settings. enabled: {}, forceOn: {}, setBrightness: {}, Brightness: {}".format(self.enabled,self.forceOn,self.setBrightness,self.brightness))
         
-
         if self.enabled and self.activeTime() and self.playbackType() == 1:
             self.state = STATE_PLAYING
             if self.forceOn:
@@ -97,8 +96,6 @@ class AmbiGroup(KodiGroup):
             light={L:{'gamut': gamut,'prevxy': (0,0),"index":index}}
             self.ambiLights.update(light)
             index=index+1
-
-
     
     
     def setup(self, monitor,bridge, kgroupID, flash=False, mediaType=VIDEO):
@@ -112,7 +109,8 @@ class AmbiGroup(KodiGroup):
             calls=1/(self.updateInterval)*len(self.ambiLights)  #updateInterval is in seconds, eg. 0.2 for 200ms.
             if calls > 25:
                 kodiutils.notification(_("Hue Service"), _("Est. Hue Commands/sec (max 20): {}").format(calls),time=000,icon=NOTIFICATION_WARNING)
-        except Exception:
+        except ZeroDivisionError:
+            logger.error("Exception: 0 update interval warning")
             kodiutils.notification(_("Hue Service"), _("Recommended minimum update interval: 100ms").format(calls),time=5000,icon=NOTIFICATION_WARNING)
         logger.debug("callsPerSec: lights: {},interval: {}, calls: {}".format(len(self.ambiLights),self.updateInterval,calls))
 
@@ -126,10 +124,13 @@ class AmbiGroup(KodiGroup):
         cap = RenderCapture()
         
         logger.debug("AmbiGroup started")
-        
-        while not self.monitor.abortRequested() and self.state == STATE_PLAYING:
-            self._ambiUpdate(cap)
-            self.monitor.waitForAbort(self.updateInterval) #seconds
+        try:
+            while not self.monitor.abortRequested() and self.state == STATE_PLAYING:
+                self._ambiUpdate(cap)
+                self.monitor.waitForAbort(self.updateInterval) #seconds
+        except Exception as ex:
+            logger.exception("Exception in _ambiLoop")
+            
 
         logger.debug("AmbiGroup stopped")
         
@@ -139,15 +140,15 @@ class AmbiGroup(KodiGroup):
                 cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
                 capImage = cap.getImage(100) #timeout to wait for OS in ms, default 1000
                 image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
-            except Exception:
-                return #avoid fails in system shutdown
+            except Exception as ex:
+                logger.exception("Capture exception")
+                return 
             
             colors = colorgram.extract(image,self.numColors)
 
             if (colors[0].rgb.r < self.blackFilter and colors[0].rgb.g < self.blackFilter and colors[0].rgb.b <self.blackFilter) or \
             (colors[0].rgb.r > self.whiteFilter and colors[0].rgb.g > self.whiteFilter and colors[0].rgb.b > self.whiteFilter):
                 #logger.debug("rgb filter: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
-                
                 xy=HUE_RECIPES[self.defaultRecipe]["xy"]
                 
                 for L in self.ambiLights: 
@@ -158,14 +159,16 @@ class AmbiGroup(KodiGroup):
             else:
                 for L in self.ambiLights:
                     if self.numColors == 1:
+                        #logger.debug("AmbiUpdate 1 Color: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
                         x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b,L,self.transitionTime))
                     else:
                         
                         colorIndex=self.ambiLights[L]["index"] % len(colors)
+                        #logger.debug("AmbiUpdate Colors: {}".format(colors))
                         x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[colorIndex].rgb.r,colors[colorIndex].rgb.g,colors[colorIndex].rgb.b,L,self.transitionTime))
                     x.daemon = True
                     x.start()
-
+    @timer
     def _updateHueRGB(self,r,g,b,light,transitionTime):
         #startTime = time.time()
         
@@ -183,21 +186,21 @@ class AmbiGroup(KodiGroup):
             helper=ColorHelper(GamutC)
         
         xy=converter.rgb_to_xy(r,g,b)
-        xy=(round(xy[0],4),round(xy[1],4)) #Hue has a max precision of 4 decimal points.
+        xy=round(xy[0],4),round(xy[1],4) #Hue has a max precision of 4 decimal points.
 
         distance=round(helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1])) ,4)#only update hue if XY actually changed
         if distance > 0:
             try:
                 self.bridge.lights[light].state(xy=xy,transitiontime=transitionTime)
-            except QhueException as e:
-                logger.error("Ambi: Hue call fail: {}".format(e))
+            except QhueException as ex:
+                logger.exception("Ambi: Hue call fail:")
         
         
         #endTime=time.time()
         #logger.debug("time: {},distance: {}".format(int((endTime-startTime)*1000),distance))
         self.ambiLights[light].update(prevxy=xy)
         
-
+    @timer
     def _updateHueXY(self,xy,light,transitionTime):
         #startTime = time.time()
         
@@ -218,8 +221,8 @@ class AmbiGroup(KodiGroup):
         if distance > 0:
             try:
                 self.bridge.lights[light].state(xy=xy,transitiontime=transitionTime)
-            except QhueException as e:
-                logger.error("Ambi: Hue call fail: {}".format(e))
+            except QhueException as ex:
+                logger.exception("Ambi: Hue call fail:")
         
 
         #endTime=time.time()

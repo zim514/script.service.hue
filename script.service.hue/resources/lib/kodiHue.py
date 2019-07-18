@@ -272,6 +272,7 @@ def createUser(monitor, bridgeIP, progressBar=False):
         username = res[0]['success']['username']
         return username
     except Exception:
+        logger.exception("Username exception")
         return False
 
 
@@ -310,6 +311,7 @@ def _getLightName(bridge,L):
     try:
         name = bridge.lights()[L]['name']
     except Exception:
+        logger.exception("getLightName Exception")
         return None
     
     if name is None:
@@ -452,6 +454,7 @@ def getLightGamut(bridge,L):
         gamut = bridge.lights()[L]['capabilities']['control']['colorgamuttype']
         logger.debug("Light: {}, gamut: {}".format(L,gamut))
     except Exception:
+        logger.exception("getLightGamut Exception")
         return None
     if gamut == "A"  or gamut == "B" or gamut == "C":
         return gamut

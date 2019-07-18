@@ -21,7 +21,7 @@ def menu():
     else: 
         args = ""
 
-    logger.info("menu started, version: {}, Arguments: {}".format(globals.ADDON.getAddonInfo('version'), args))
+    logger.info("menu started, version: {}, Arguments: {}".format(globals.ADDON.getAddonInfo("version"), args))
 
     if args == "discover":
         logger.debug("Started with Discovery")
@@ -86,7 +86,7 @@ def menu():
 
 
 def service():
-    logger.info("service started, version: {}".format(globals.ADDON.getAddonInfo('version')))
+    logger.info("service started, version: {}".format(globals.ADDON.getAddonInfo("version")))
     kodiHue.loadSettings()
     monitor = kodiHue.HueMonitor()
 
@@ -105,7 +105,7 @@ def service():
         connectionRetries = 0
         timer = 60 #Run loop once on first run
         # #Ready to go! Start running until Kodi exit.
-        logger.debug('Main service loop starting')
+        logger.debug("Main service loop starting")
         while globals.connected and not monitor.abortRequested():
             
                
@@ -129,20 +129,20 @@ def service():
                 except ConnectionError as error:
                     connectionRetries = connectionRetries + 1
                     if connectionRetries <= 5:
-                        logger.error('Bridge Connection Error. Attempt: {}/5 : {}'.format(connectionRetries, error))
+                        logger.error("Bridge Connection Error. Attempt: {}/5 : {}".format(connectionRetries, error))
                         xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
                         timer = -60 #set timer to negative 1 minute
                         
                     else:
-                        logger.error('Bridge Connection Error. Attempt: {}/5. Shutting down : {}'.format(connectionRetries, error))
+                        logger.error("Bridge Connection Error. Attempt: {}/5. Shutting down : {}".format(connectionRetries, error))
                         xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
                         globals.connected = False
-                except Exception as error:
-                    logger.error('Get daylight exception: {}'.format(error))
+                except Exception as ex:
+                    logger.exception("Get daylight exception")
 
 
                 if globals.daylight != previousDaylight :
-                    logger.debug('Daylight change! current: {}, previous: {}'.format(globals.daylight, previousDaylight))
+                    logger.debug("Daylight change! current: {}, previous: {}".format(globals.daylight, previousDaylight))
                     
                     globals.daylight = kodiHue.getDaylight(bridge)
                     if not globals.daylight:
@@ -150,7 +150,7 @@ def service():
                         
             timer = timer + 1
             monitor.waitForAbort(1)
-        logger.debug('Process exiting...')
+        logger.debug("Process exiting...")
         return
-    logger.debug('No connected bridge, exiting...')
+    logger.debug("No connected bridge, exiting...")
     return
