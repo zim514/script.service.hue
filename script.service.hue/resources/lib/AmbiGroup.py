@@ -126,7 +126,9 @@ class AmbiGroup(KodiGroup):
     def _ambiUpdate(self,cap):
         try:
             cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
-            capImage = cap.getImage(100) #timeout to wait for OS in ms, default 1000
+            capImage = cap.getImage(500) #timeout to wait for OS in ms, default 1000
+            if capImage is None:
+                return #no image captured, no update possible yet, exit method. 
             image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
         except Exception as ex:
             logger.warning("Capture exception",exc_info=1)
@@ -178,7 +180,8 @@ class AmbiGroup(KodiGroup):
             except QhueException as ex:
                 logger.exception("Ambi: Hue call fail:")
         else:
-            logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
+            #logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
+            pass
         self.ambiLights[light].update(prevxy=xy)
 
 
@@ -203,5 +206,6 @@ class AmbiGroup(KodiGroup):
             except QhueException as ex:
                 logger.exception("Ambi: Hue call fail:")
         else: 
-            logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
+            #logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
+            pass
         self.ambiLights[light].update(prevxy=xy)
