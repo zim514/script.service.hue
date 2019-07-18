@@ -35,8 +35,8 @@ class KodiGroup(xbmc.Player):
         def __init__(self):
             super(xbmc.Player,self).__init__()
 
-        def readSettings(self):
-
+        def loadSettings(self):
+            logger.debug("KodiGroup Load settings")
             self.enabled=get_setting_as_bool("group{}_enabled".format(self.kgroupID))
 
             self.startBehavior=get_setting_as_bool("group{}_startBehavior".format(self.kgroupID))
@@ -58,7 +58,7 @@ class KodiGroup(xbmc.Player):
             self.lights = bridge.lights
             self.kgroupID=kgroupID
 
-            self.readSettings()
+            self.loadSettings()
 
             self.groupResource=bridge.groups[0]
 

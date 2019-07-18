@@ -17,7 +17,6 @@ if globals.DEBUG:
     except ImportError:
         logger.exception("Kodi Hue Remote Debug Error: You must add org.python.pydev.debug.pysrc to your PYTHONPATH, or disable DEBUG")
 
-
 logger.info("Starting default.py, version {}, Kodi: {}".format(globals.ADDONVERSION, globals.KODIVERSION ))
 try:
     core.menu() #Run menu

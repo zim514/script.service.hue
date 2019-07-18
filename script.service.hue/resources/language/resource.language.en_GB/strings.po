@@ -489,3 +489,13 @@ msgstr ""
 msgctxt "#30071"
 msgid "Only colour lights are supported"
 msgstr ""
+
+msgctxt "#30072"
+msgid "Unsupported Hue Bridge"
+msgstr ""
+
+msgctxt "#30073"
+msgid ""
+"Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for"
+" certain features."
+msgstr ""
