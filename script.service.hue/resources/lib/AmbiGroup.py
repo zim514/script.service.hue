@@ -126,13 +126,16 @@ class AmbiGroup(KodiGroup):
     def _ambiUpdate(self,cap):
         try:
             cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
-            capImage = cap.getImage(500) #timeout to wait for OS in ms, default 1000
+            capImage = cap.getImage() #timeout to wait for OS in ms, default 1000
             if capImage is None:
                 return #no image captured, no update possible yet, exit method. 
             image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
+        except ValueError:
+            pass #returned capture is sometimes smaller than expected, especially when player stopping. give it a pass.
         except Exception as ex:
             logger.warning("Capture exception",exc_info=1)
             return 
+        
         
         colors = colorgram.extract(image,self.numColors)
 
