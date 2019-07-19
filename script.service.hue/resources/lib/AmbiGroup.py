@@ -66,7 +66,6 @@ class AmbiGroup(KodiGroup):
         
         self.enabled=kodiutils.get_setting_as_bool("group{}_enabled".format(self.kgroupID))
         
-        
         self.numColors=kodiutils.get_setting_as_int("group{}_NumColors".format(self.kgroupID))
         self.transitionTime =  kodiutils.get_setting_as_int("group{}_TransitionTime".format(self.kgroupID)) /100 #This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
         self.forceOn=kodiutils.get_setting_as_bool("group{}_forceOn".format(self.kgroupID))
@@ -80,7 +79,7 @@ class AmbiGroup(KodiGroup):
 
         self.updateInterval=kodiutils.get_setting_as_float("group{}_Interval".format(self.kgroupID)) /1000#
         if self.updateInterval == 0: 
-            self.updateInterval = 0.001
+            self.updateInterval = 0.002
         
         self.ambiLights={}
         lightIDs=kodiutils.get_setting("group{}_Lights".format(self.kgroupID)).split(",")
@@ -126,16 +125,17 @@ class AmbiGroup(KodiGroup):
     def _ambiUpdate(self,cap):
         try:
             cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
-            capImage = cap.getImage() #timeout to wait for OS in ms, default 1000
-            if capImage is None:
+            capImage = cap.getImage(200) #timeout to wait for OS in ms, default 1000
+            if capImage is None or len(capImage) < 50:
                 return #no image captured, no update possible yet, exit method. 
             image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
         except ValueError:
-            return #returned capture is sometimes smaller than expected, especially when player stopping. give up this loop.
+            logger.error("capImage: {},{}".format(len(capImage),capImage))
+            logger.error("Value Error",exc_info=1)
+            return #returned capture is  smaller than expected when player stopping. give up this loop.
         except Exception as ex:
             logger.warning("Capture exception",exc_info=1)
             return 
-        
         
         colors = colorgram.extract(image,self.numColors)
 
