@@ -131,7 +131,7 @@ class AmbiGroup(KodiGroup):
                 return #no image captured, no update possible yet, exit method. 
             image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
         except ValueError:
-            pass #returned capture is sometimes smaller than expected, especially when player stopping. give it a pass.
+            return #returned capture is sometimes smaller than expected, especially when player stopping. give up this loop.
         except Exception as ex:
             logger.warning("Capture exception",exc_info=1)
             return 
