@@ -75,9 +75,9 @@ class AmbiGroup(KodiGroup):
         self.whiteFilter=kodiutils.get_setting_as_int("group{}_WhiteFilter".format(self.kgroupID))
         self.defaultRecipe=kodiutils.get_setting_as_int("group{}_DefaultRecipe".format(self.kgroupID))
         self.captureSize=kodiutils.get_setting_as_int("group{}_CaptureSize".format(self.kgroupID))
-        self.minimumDistance=kodiutils.get_setting_as_float("group{}_ColorDifference".format(self.kgroupID)) / 10000 #
+        self.minimumDistance=kodiutils.get_setting_as_float("group{}_ColorDifference".format(self.kgroupID)) / 10000 #convert to float with 4 precision between 0-1
 
-        self.updateInterval=kodiutils.get_setting_as_float("group{}_Interval".format(self.kgroupID)) /1000#
+        self.updateInterval=kodiutils.get_setting_as_float("group{}_Interval".format(self.kgroupID)) /1000# convert MS to seconds
         if self.updateInterval == 0: 
             self.updateInterval = 0.002
         
@@ -96,14 +96,12 @@ class AmbiGroup(KodiGroup):
         super(AmbiGroup,self).setup(bridge, kgroupID, flash=flash, mediaType=1)
         self.monitor=monitor
         
-        try:
-            calls=0
-            calls=1/(self.updateInterval)*len(self.ambiLights)  #updateInterval is in seconds, eg. 0.2 for 200ms.
-            if calls > 25:
-                kodiutils.notification(_("Hue Service"), _("Est. Hue Commands/sec (max 20): {}").format(calls),time=000,icon=NOTIFICATION_WARNING)
-        except ZeroDivisionError:
-            logger.error("Exception: 0 update interval warning")
-            kodiutils.notification(_("Hue Service"), _("Recommended minimum update interval: 100ms").format(calls),time=5000,icon=NOTIFICATION_WARNING)
+        calls=1/(self.updateInterval)*len(self.ambiLights)  #updateInterval is in seconds, eg. 0.2 for 200ms.
+        if calls > 25 and calls < 2000:
+            kodiutils.notification(_("Hue Service"), _("Est. Hue Commands/sec (max 20): {}").format(calls),time=3000,icon=NOTIFICATION_WARNING)
+        else:
+            logger.warn("Warning: 0 update interval ")
+            kodiutils.notification(_("Hue Service"), _("Recommended minimum update interval: 100ms").format(calls),time=3000,icon=NOTIFICATION_WARNING)
         logger.debug("callsPerSec: lights: {},interval: {}, calls: {}".format(len(self.ambiLights),self.updateInterval,calls))
     
     
@@ -125,13 +123,15 @@ class AmbiGroup(KodiGroup):
     def _ambiUpdate(self,cap):
         try:
             cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
-            capImage = cap.getImage(200) #timeout to wait for OS in ms, default 1000
+            capImage = cap.getImage() #timeout to wait for OS in ms, default 1000
             if capImage is None or len(capImage) < 50:
+                logger.error("capImage is none or <50: {},{}".format(len(capImage),capImage))
+                #self.state=STATE_IDLE
                 return #no image captured, no update possible yet, exit method. 
             image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
         except ValueError:
             logger.error("capImage: {},{}".format(len(capImage),capImage))
-            logger.error("Value Error",exc_info=1)
+            logger.error("Value Error")
             return #returned capture is  smaller than expected when player stopping. give up this loop.
         except Exception as ex:
             logger.warning("Capture exception",exc_info=1)

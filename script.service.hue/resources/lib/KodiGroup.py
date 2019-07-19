@@ -145,7 +145,6 @@ class KodiGroup(xbmc.Player):
         
         
         def activeTime(self):
-
             if globals.daylightDisable and globals.daylight:
                 logger.debug("Disabled by daylight")
                 return False
@@ -155,7 +154,7 @@ class KodiGroup(xbmc.Player):
 
             start=convertTime(globals.startTime)
             end=convertTime(globals.endTime)
-            now = datetime.datetime.now().time()
+            now=datetime.datetime.now().time()
             
             logger.debug("Schedule check: start: {}, now: {}, end: {}".format(start,now,end))
 
@@ -166,35 +165,17 @@ class KodiGroup(xbmc.Player):
             return False
 
 
-#===============================================================================
-#         def _saveInitialState(self):
-#             #TODO: Get scene lights to save initial state
-#             #This method no longer works
-#             logger.debug("In KodiGroup[{}], save initial state".format(self.kgroupID))
-#             initialState = {}
-#             lights = self.lights
-#
-#             for x in self.lightIDs:
-#                 light=lights[x]()
-#                 initialState[x] = light['state']
-#                 #self.initialState.append(lights.l()['state'])
-#
-#             self.initialState=initialState
-#
-#         def _applyInitialState(self):
-#             #Deprecated with new scene support
-#             logger.debug("In KodiGroup[{}], apply initial state".format(self.kgroupID))
-#             initialState = self.initialState
-#             lights = self.lights
-#
-#             for x in initialState:
-#                 i = initialState[x]
-#                 logger.debug("In KodiGroup[{}], apply initial state: {}, {}".format(self.kgroupID,x,i))
-#                 lights[x].state(on=i['on'],
-#                                 ct=i['ct'],
-#                                 xy=i['xy'],
-#                                 bri=i['bri'],
-#                                 hue=i['hue'],
-#                                 sat=i['sat'],
-#                                 transitiontime=self.fadeTime)
-#===============================================================================
+        def checkVideoActivation(self):
+            #XBMCAddon::xbmc::InfoTagVideo::getMediaType    
+            
+        #=======================================================================
+        #             <setting id="video_MinimumDuration" type="time" label="Minimum duration (MM:SS)" default="00:00" />
+        # <setting id="video_Movie" type="bool" label="Enable for Movies" default="True" />
+        # <setting id="video_Episode" type="bool" label="Enable for TV episodes" default="True" />
+        # <setting id="video_MusicVideo" type="bool" label="Enable for music videos" default="True" />
+        # <setting id="video_Other" type="bool" label="Enable for other videos" default="True" />
+        #     
+        #=======================================================================
+            
+            pass
+

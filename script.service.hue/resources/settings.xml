@@ -41,6 +41,16 @@
     </category>
 <!--  /GROUP SECTION  0-->
 
+<!-- SCHEDULE SECTION -->
+    <category label="Video Activation">
+        <setting id="video_MinimumDuration" type="time" label="Minimum duration (MM:SS)" default="00:00" />
+        <setting id="video_Movie" type="bool" label="Enable for Movies" default="True" />
+        <setting id="video_Episode" type="bool" label="Enable for TV episodes" default="True" />
+        <setting id="video_MusicVideo" type="bool" label="Enable for music videos" default="True" />
+        <setting id="video_Other" type="bool" label="Enable for other videos" default="True" />
+	</category>
+
+
 <!--  GROUP SECTION  1 AUDIO -->    
     <category label="32102">
         <setting id="group1_enabled" type="bool" label="30520" default="false" />
@@ -85,7 +95,7 @@
         
         <setting type="lsep" label="30062" visible="eq(-7,true)"/>
         <setting id="group3_BlackFilter" type="slider" label="30060" default="1" range="1,1,50" option="int" visible="eq(-8,true)"/>
-        <setting id="group3_WhiteFilter" type="slider" label="30061" default="255" range="205,1,255" option="int" visible="eq(-9,true)"/>
+        <setting id="group3_WhiteFilter" type="slider" label="30061" default="255" range="205,1,255" option="int" visible="false"/>
         <setting id="group3_DefaultRecipe" type="enum" label="30063"  lvalues="30801|30802|30803|30804|30805|30806|30807|30808" visible="eq(-10,true)"/>
         
         <setting type="sep" visible="eq(-11,true)"/>
@@ -120,4 +130,5 @@
 		<setting id="performanceLogging" type="bool" label="30068" default="False"/>
 	</category>
 </settings>
+
 
