@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from threading import Thread
+from threading import Thread, Event
 
 from PIL import Image
 from . import colorgram #https://github.com/obskyr/colorgram.py
@@ -10,7 +10,7 @@ from xbmc import RenderCapture
 from xbmcgui import NOTIFICATION_WARNING
 
 from resources.lib.KodiGroup import KodiGroup
-from resources.lib.KodiGroup import VIDEO,AUDIO,ALLMEDIA,STATE_IDLE,STATE_PAUSED,STATE_PLAYING
+from resources.lib.KodiGroup import VIDEO,AUDIO,ALLMEDIA
 from .kodiHue import getLightGamut
 
 from . import kodiutils
@@ -31,7 +31,7 @@ class AmbiGroup(KodiGroup):
         logger.info("Ambilight Settings. enabled: {}, forceOn: {}, setBrightness: {}, Brightness: {}".format(self.enabled,self.forceOn,self.setBrightness,self.brightness))
         
         if self.enabled and self.activeTime() and self.playbackType() == 1:
-            self.state = STATE_PLAYING
+            self.ambiRunning.set()
             if self.forceOn:
                 for L in self.ambiLights:
                     try:
@@ -50,15 +50,15 @@ class AmbiGroup(KodiGroup):
             ambiLoopThread.daemon = True
             ambiLoopThread.start()
 
-
     def onPlayBackStopped(self):
         logger.info("In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
-        self.state = STATE_IDLE
+        self.ambiRunning.clear()
 
 
     def onPlayBackPaused(self):
         logger.info("In ambiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
-        self.state = STATE_PAUSED
+        self.ambiRunning.clear()
+        
 
     
     def loadSettings(self):
@@ -92,7 +92,7 @@ class AmbiGroup(KodiGroup):
     
     
     def setup(self, monitor,bridge, kgroupID, flash=False, mediaType=VIDEO):
-        
+        self.ambiRunning = Event()
         super(AmbiGroup,self).setup(bridge, kgroupID, flash=flash, mediaType=1)
         self.monitor=monitor
         
@@ -111,53 +111,51 @@ class AmbiGroup(KodiGroup):
         
         logger.debug("AmbiGroup started")
         try:
-            while not self.monitor.abortRequested() and self.state == STATE_PLAYING:
-                self._ambiUpdate(cap)
-                self.monitor.waitForAbort(self.updateInterval) #seconds
+            while not self.monitor.abortRequested() and self.ambiRunning.is_set():
+                try:
+                    cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
+                    capImage = cap.getImage() #timeout to wait for OS in ms, default 1000
+                    if capImage is None or len(capImage) < 50:
+                        logger.error("capImage is none or <50: {},{}".format(len(capImage),capImage))
+                        return #no image captured, no update possible yet, exit method. 
+                    image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
+                except ValueError:
+                    logger.error("capImage: {},{}".format(len(capImage),capImage))
+                    logger.error("Value Error")
+                    return #returned capture is  smaller than expected when player stopping. give up this loop.
+                except Exception as ex:
+                    logger.warning("Capture exception",exc_info=1)
+                    return 
+                
+                colors = colorgram.extract(image,self.numColors)
+        
+                if (colors[0].rgb.r < self.blackFilter and colors[0].rgb.g < self.blackFilter and colors[0].rgb.b <self.blackFilter) or \
+                (colors[0].rgb.r > self.whiteFilter and colors[0].rgb.g > self.whiteFilter and colors[0].rgb.b > self.whiteFilter):
+                    #logger.debug("rgb filter: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
+                    xy=HUE_RECIPES[self.defaultRecipe]["xy"]
+                    for L in self.ambiLights: 
+                        x = Thread(target=self._updateHueXY,name="updateHue", args=(xy,L,self.transitionTime))
+                        x.daemon = True
+                        x.start()
+                else:
+                    for L in self.ambiLights:
+                        if self.numColors == 1:
+                            #logger.debug("AmbiUpdate 1 Color: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
+                            x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b,L,self.transitionTime))
+                        else:
+                            colorIndex=self.ambiLights[L]["index"] % len(colors)
+                            #logger.debug("AmbiUpdate Colors: {}".format(colors))
+                            x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[colorIndex].rgb.r,colors[colorIndex].rgb.g,colors[colorIndex].rgb.b,L,self.transitionTime))
+                        x.daemon = True
+                        x.start()                
+                        
+                        
+                        self.monitor.waitForAbort(self.updateInterval) #seconds
         except Exception as ex:
             logger.exception("Exception in _ambiLoop")
 
         logger.debug("AmbiGroup stopped")
-        
-    @timer
-    def _ambiUpdate(self,cap):
-        try:
-            cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
-            capImage = cap.getImage() #timeout to wait for OS in ms, default 1000
-            if capImage is None or len(capImage) < 50:
-                logger.error("capImage is none or <50: {},{}".format(len(capImage),capImage))
-                #self.state=STATE_IDLE
-                return #no image captured, no update possible yet, exit method. 
-            image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
-        except ValueError:
-            logger.error("capImage: {},{}".format(len(capImage),capImage))
-            logger.error("Value Error")
-            return #returned capture is  smaller than expected when player stopping. give up this loop.
-        except Exception as ex:
-            logger.warning("Capture exception",exc_info=1)
-            return 
-        
-        colors = colorgram.extract(image,self.numColors)
 
-        if (colors[0].rgb.r < self.blackFilter and colors[0].rgb.g < self.blackFilter and colors[0].rgb.b <self.blackFilter) or \
-        (colors[0].rgb.r > self.whiteFilter and colors[0].rgb.g > self.whiteFilter and colors[0].rgb.b > self.whiteFilter):
-            #logger.debug("rgb filter: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
-            xy=HUE_RECIPES[self.defaultRecipe]["xy"]
-            for L in self.ambiLights: 
-                x = Thread(target=self._updateHueXY,name="updateHue", args=(xy,L,self.transitionTime))
-                x.daemon = True
-                x.start()
-        else:
-            for L in self.ambiLights:
-                if self.numColors == 1:
-                    #logger.debug("AmbiUpdate 1 Color: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
-                    x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b,L,self.transitionTime))
-                else:
-                    colorIndex=self.ambiLights[L]["index"] % len(colors)
-                    #logger.debug("AmbiUpdate Colors: {}".format(colors))
-                    x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[colorIndex].rgb.r,colors[colorIndex].rgb.g,colors[colorIndex].rgb.b,L,self.transitionTime))
-                x.daemon = True
-                x.start()
     @timer
     def _updateHueRGB(self,r,g,b,light,transitionTime):
         gamut=self.ambiLights[light].get('gamut')

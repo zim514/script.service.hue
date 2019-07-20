@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
-
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
-#from builtins import str
 
 from kodi_six import xbmc
 
