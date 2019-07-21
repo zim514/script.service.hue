@@ -21,7 +21,7 @@ from .globals import logger
 from .recipes import HUE_RECIPES
 from .language import get_string as _
 from resources.lib.globals import timer
-from sys import exc_info
+
 
 
 class AmbiGroup(KodiGroup):
@@ -72,7 +72,6 @@ class AmbiGroup(KodiGroup):
         self.setBrightness=kodiutils.get_setting_as_bool("group{}_setBrightness".format(self.kgroupID))
         self.brightness=kodiutils.get_setting_as_int("group{}_Brightness".format(self.kgroupID))*255/100#convert percentage to value 1-254
         self.blackFilter=kodiutils.get_setting_as_int("group{}_BlackFilter".format(self.kgroupID))
-        self.whiteFilter=kodiutils.get_setting_as_int("group{}_WhiteFilter".format(self.kgroupID))
         self.defaultRecipe=kodiutils.get_setting_as_int("group{}_DefaultRecipe".format(self.kgroupID))
         self.captureSize=kodiutils.get_setting_as_int("group{}_CaptureSize".format(self.kgroupID))
         self.minimumDistance=kodiutils.get_setting_as_float("group{}_ColorDifference".format(self.kgroupID)) / 10000 #convert to float with 4 precision between 0-1
@@ -108,8 +107,7 @@ class AmbiGroup(KodiGroup):
     def _ambiLoop(self):
         
         cap = RenderCapture()
-        
-        logger.debug("AmbiGroup started")
+        logger.debug("_ambiLoop started")
         try:
             while not self.monitor.abortRequested() and self.ambiRunning.is_set():
                 try:
@@ -129,8 +127,7 @@ class AmbiGroup(KodiGroup):
                 
                 colors = colorgram.extract(image,self.numColors)
         
-                if (colors[0].rgb.r < self.blackFilter and colors[0].rgb.g < self.blackFilter and colors[0].rgb.b <self.blackFilter) or \
-                (colors[0].rgb.r > self.whiteFilter and colors[0].rgb.g > self.whiteFilter and colors[0].rgb.b > self.whiteFilter):
+                if colors[0].rgb.r < self.blackFilter and colors[0].rgb.g < self.blackFilter and colors[0].rgb.b <self.blackFilter:
                     #logger.debug("rgb filter: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
                     xy=HUE_RECIPES[self.defaultRecipe]["xy"]
                     for L in self.ambiLights: 
@@ -147,14 +144,13 @@ class AmbiGroup(KodiGroup):
                             #logger.debug("AmbiUpdate Colors: {}".format(colors))
                             x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[colorIndex].rgb.r,colors[colorIndex].rgb.g,colors[colorIndex].rgb.b,L,self.transitionTime))
                         x.daemon = True
-                        x.start()                
+                        x.start()
                         
                         
                         self.monitor.waitForAbort(self.updateInterval) #seconds
         except Exception as ex:
             logger.exception("Exception in _ambiLoop")
-
-        logger.debug("AmbiGroup stopped")
+        logger.debug("_ambiLoop stopped")
 
     @timer
     def _updateHueRGB(self,r,g,b,light,transitionTime):

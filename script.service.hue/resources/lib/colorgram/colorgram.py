@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 from __future__ import division
+from ..globals import timer 
 
 import array
 from collections import namedtuple
@@ -44,6 +45,7 @@ def extract(f, number_of_colors):
     used.sort(key=lambda x: x[0], reverse=True)
     return get_colors(samples, used, number_of_colors)
 
+@timer
 def sample(image):
     top_two_bits = 0b11000000
 

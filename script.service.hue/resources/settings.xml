@@ -95,7 +95,6 @@
         
         <setting type="lsep" label="30062" visible="eq(-7,true)"/>
         <setting id="group3_BlackFilter" type="slider" label="30060" default="1" range="1,1,50" option="int" visible="eq(-8,true)"/>
-        <setting id="group3_WhiteFilter" type="slider" label="30061" default="255" range="205,1,255" option="int" visible="false"/>
         <setting id="group3_DefaultRecipe" type="enum" label="30063"  lvalues="30801|30802|30803|30804|30805|30806|30807|30808" visible="eq(-10,true)"/>
         
         <setting type="sep" visible="eq(-11,true)"/>
