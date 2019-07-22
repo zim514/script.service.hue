@@ -442,6 +442,10 @@ msgctxt "#30068"
 msgid "Performance debug logging"
 msgstr "Performance debug logging"
 
+msgctxt "#30800"
+msgid "Do nothing"
+msgstr "Do nothing"
+
 msgctxt "#30801"
 msgid "Relax"
 msgstr "Relax"
@@ -477,6 +481,9 @@ msgstr "Incandescent"
 msgctxt "#30809"
 msgid "Pumpkin"
 msgstr "Pumpkin"
+
+
+
 
 msgctxt "#30069"
 msgid "Recommended minimum update interval: 100ms"

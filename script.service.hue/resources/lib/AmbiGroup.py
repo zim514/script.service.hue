@@ -29,7 +29,7 @@ class AmbiGroup(KodiGroup):
         logger.info("Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
         logger.info("Ambilight Settings. Colours: {}, Interval: {}, transitionTime: {}".format(self.numColors,self.updateInterval,self.transitionTime))
         logger.info("Ambilight Settings. enabled: {}, forceOn: {}, setBrightness: {}, Brightness: {}".format(self.enabled,self.forceOn,self.setBrightness,self.brightness))
-        
+        self.state = self.STATE_PLAYING
         if self.enabled and self.activeTime() and self.playbackType() == 1:
             self.ambiRunning.set()
             if self.forceOn:
@@ -53,11 +53,13 @@ class AmbiGroup(KodiGroup):
     def onPlayBackStopped(self):
         logger.info("In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
         self.ambiRunning.clear()
+        self.state = self.STATE_IDLE
 
 
     def onPlayBackPaused(self):
         logger.info("In ambiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
         self.ambiRunning.clear()
+        self.state = self.STATE_PAUSED
         
 
     
@@ -129,11 +131,12 @@ class AmbiGroup(KodiGroup):
         
                 if colors[0].rgb.r < self.blackFilter and colors[0].rgb.g < self.blackFilter and colors[0].rgb.b <self.blackFilter:
                     #logger.debug("rgb filter: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
-                    xy=HUE_RECIPES[self.defaultRecipe]["xy"]
-                    for L in self.ambiLights: 
-                        x = Thread(target=self._updateHueXY,name="updateHue", args=(xy,L,self.transitionTime))
-                        x.daemon = True
-                        x.start()
+                    if self.defaultRecipe: #defaultRecipe=0: Do nothing
+                        xy=HUE_RECIPES[self.defaultRecipe]["xy"]#Apply XY value from default recipe setting
+                        for L in self.ambiLights: 
+                            x = Thread(target=self._updateHueXY,name="updateHue", args=(xy,L,self.transitionTime))
+                            x.daemon = True
+                            x.start()
                 else:
                     for L in self.ambiLights:
                         if self.numColors == 1:
