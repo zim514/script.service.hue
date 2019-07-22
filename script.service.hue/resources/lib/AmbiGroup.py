@@ -10,7 +10,7 @@ from xbmc import RenderCapture
 from xbmcgui import NOTIFICATION_WARNING
 
 from resources.lib.KodiGroup import KodiGroup
-from resources.lib.KodiGroup import VIDEO,AUDIO,ALLMEDIA
+from resources.lib.KodiGroup import VIDEO,AUDIO,ALLMEDIA,STATE_IDLE,STATE_PAUSED,STATE_PLAYING
 from .kodiHue import getLightGamut
 
 from . import kodiutils
@@ -29,7 +29,7 @@ class AmbiGroup(KodiGroup):
         logger.info("Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
         logger.info("Ambilight Settings. Colours: {}, Interval: {}, transitionTime: {}".format(self.numColors,self.updateInterval,self.transitionTime))
         logger.info("Ambilight Settings. enabled: {}, forceOn: {}, setBrightness: {}, Brightness: {}".format(self.enabled,self.forceOn,self.setBrightness,self.brightness))
-        self.state = self.STATE_PLAYING
+        self.state = STATE_PLAYING
         if self.enabled and self.activeTime() and self.playbackType() == 1:
             self.ambiRunning.set()
             if self.forceOn:
@@ -53,13 +53,13 @@ class AmbiGroup(KodiGroup):
     def onPlayBackStopped(self):
         logger.info("In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
         self.ambiRunning.clear()
-        self.state = self.STATE_IDLE
+        self.state = STATE_IDLE
 
 
     def onPlayBackPaused(self):
         logger.info("In ambiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
         self.ambiRunning.clear()
-        self.state = self.STATE_PAUSED
+        self.state = STATE_PAUSED
         
 
     
