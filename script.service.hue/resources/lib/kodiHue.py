@@ -1,6 +1,6 @@
 from logging import getLogger
 from socket import getfqdn
-from datetime import time
+import datetime
 
 import requests
 
@@ -474,7 +474,7 @@ def checkBridgeModel(bridge):
 def convertTime(time):
     hour=int(time.split(":")[0])
     minute=int(time.split(":")[1])
-    return time(hour,minute)
+    return datetime.time(hour,minute)
 
 def notification(header, message, time=5000, icon=globals.ADDON.getAddonInfo('icon'), sound=True):
     xbmcgui.Dialog().notification(header, message, icon, time, sound)

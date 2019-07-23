@@ -30,7 +30,7 @@ class AmbiGroup(KodiGroup):
         logger.info("Ambilight Settings. enabled: {}, forceOn: {}, setBrightness: {}, Brightness: {}".format(self.enabled,self.forceOn,self.setBrightness,self.brightness))
         self.checkVideoActivation()
         self.state = STATE_PLAYING
-        if self.enabled and self.activeTime() and self.checkVideoActivation():
+        if self.enabled and self.checkActiveTime() and self.checkVideoActivation():
             self.ambiRunning.set()
             if self.forceOn:
                 for L in self.ambiLights:
@@ -76,9 +76,9 @@ class AmbiGroup(KodiGroup):
         self.blackFilter=globals.ADDON.getSettingInt("group{}_BlackFilter".format(self.kgroupID))
         self.defaultRecipe=globals.ADDON.getSettingInt("group{}_DefaultRecipe".format(self.kgroupID))
         self.captureSize=globals.ADDON.getSettingInt("group{}_CaptureSize".format(self.kgroupID))
-        self.minimumDistance=globals.ADDON.getSettingNumber("group{}_ColorDifference".format(self.kgroupID)) / 10000 #convert to float with 4 precision between 0-1
+        self.minimumDistance=globals.ADDON.getSettingInt("group{}_ColorDifference".format(self.kgroupID)) / 10000 #convert to float with 4 precision between 0-1
 
-        self.updateInterval=globals.ADDON.getSettingNumber("group{}_Interval".format(self.kgroupID)) /1000# convert MS to seconds
+        self.updateInterval=globals.ADDON.getSettingInt("group{}_Interval".format(self.kgroupID)) /1000# convert MS to seconds
         if self.updateInterval == 0: 
             self.updateInterval = 0.002
         
