@@ -2,7 +2,6 @@
 	<requires>
 		<import addon="xbmc.python" version="2.26.0" />
 		<import addon="script.module.requests" version="2.22.0" />
-		<import addon="script.module.kodi-six" version="0.1.0" />
 		<import addon="script.module.pil" />
 <!-- <import addon="script.module.pydevd"/>  -->
 	</requires>

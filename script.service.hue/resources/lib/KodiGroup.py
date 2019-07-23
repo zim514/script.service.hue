@@ -10,9 +10,9 @@ import datetime
 import xbmc
 from . import globals
 from .globals import logger
-
+import kodiHue
 from .qhue import QhueException
-from xbmc import InfoTagVideo
+
 
 #BEHAVIOR_NOTHING = 0
 #BEHAVIOR_ADJUST = 1
@@ -98,6 +98,7 @@ class KodiGroup(xbmc.Player):
                 except QhueException as e:
                     logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
 
+
         def onPlayBackPaused(self):
             logger.info("In KodiGroup[{}], onPlaybackPaused() , isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID,self.isPlayingVideo(),self.isPlayingAudio()))
             self.state = STATE_PAUSED
@@ -134,6 +135,7 @@ class KodiGroup(xbmc.Player):
                 #if not playing and sunset happens, probably should do nothing.
                 logger.debug("In KodiGroup[{}], in sunset(). playback stopped, doing nothing. ".format(self.kgroupID))
 
+
         def playbackType(self):
             if self.isPlayingVideo():
                 mediaType=VIDEO
@@ -152,8 +154,8 @@ class KodiGroup(xbmc.Player):
             if globals.enableSchedule is False:
                 return True
 
-            start=convertTime(globals.startTime)
-            end=convertTime(globals.endTime)
+            start=kodiHue.convertTime(globals.startTime)
+            end=kodiHue.convertTime(globals.endTime)
             now=datetime.datetime.now().time()
             
             logger.debug("Schedule check: start: {}, now: {}, end: {}".format(start,now,end))

@@ -2,11 +2,8 @@ import functools
 import time
 
 from logging import getLogger
-#from xbmcaddon import Addon
-#from xbmc import log
 
-
-from kodi_six import xbmcaddon, xbmc
+import xbmc,xbmcaddon
 
 NUM_GROUPS = 2  #group0= video, group1=audio
 STRDEBUG = False #Show string ID in UI

@@ -6,21 +6,20 @@ from . import colorgram #https://github.com/obskyr/colorgram.py
 from .rgbxy import Converter,ColorHelper# https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA,GamutB,GamutC
 
-from xbmc import RenderCapture
-from xbmcgui import NOTIFICATION_WARNING
+import xbmc,xbmcgui
 
 from resources.lib.KodiGroup import KodiGroup
 from resources.lib.KodiGroup import VIDEO,AUDIO,ALLMEDIA,STATE_IDLE,STATE_PAUSED,STATE_PLAYING
-from .kodiHue import getLightGamut
+import kodiHue
 
-from . import kodiutils
+
 from .qhue import QhueException
 
 from . import globals
 from .globals import logger
 from .recipes import HUE_RECIPES
 from .language import get_string as _
-from resources.lib.globals import timer
+
 
 
 
@@ -87,7 +86,7 @@ class AmbiGroup(KodiGroup):
         lightIDs=globals.ADDON.getSetting("group{}_Lights".format(self.kgroupID)).split(",")
         index=0
         for L in lightIDs:
-            gamut=getLightGamut(self.bridge,L)
+            gamut=kodiHue.getLightGamut(self.bridge,L)
             light={L:{'gamut': gamut,'prevxy': (0,0),"index":index}}
             self.ambiLights.update(light)
             index=index+1
@@ -100,16 +99,16 @@ class AmbiGroup(KodiGroup):
         
         calls=1/(self.updateInterval)*len(self.ambiLights)  #updateInterval is in seconds, eg. 0.2 for 200ms.
         if calls > 25 and calls < 2000:
-            kodiutils.notification(_("Hue Service"), _("Est. Hue Commands/sec (max 20): {}").format(calls),time=3000,icon=NOTIFICATION_WARNING)
+            kodiHue.notification(_("Hue Service"), _("Est. Hue Commands/sec (max 20): {}").format(calls),time=3000,icon=xbmcgui.NOTIFICATION_WARNING)
         else:
             logger.warn("Warning: 0 update interval ")
-            kodiutils.notification(_("Hue Service"), _("Recommended minimum update interval: 100ms").format(calls),time=3000,icon=NOTIFICATION_WARNING)
+            kodiHue.notification(_("Hue Service"), _("Recommended minimum update interval: 100ms").format(calls),time=3000,icon=xbmcgui.NOTIFICATION_WARNING)
         logger.debug("callsPerSec: lights: {},interval: {}, calls: {}".format(len(self.ambiLights),self.updateInterval,calls))
     
     
     def _ambiLoop(self):
         
-        cap = RenderCapture()
+        cap = xbmc.RenderCapture()
         logger.debug("_ambiLoop started")
         try:
             while not self.monitor.abortRequested() and self.ambiRunning.is_set():

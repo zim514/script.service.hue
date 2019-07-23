@@ -3,20 +3,17 @@ Created on Apr. 12, 2019
 
 
 '''
-
 from logging import getLogger
 from socket import getfqdn
+from datetime import time
 
 import requests
 
-from kodi_six import xbmc,xbmcgui
-#import xbmc
-#import xbmcgui
-from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_INFO
+import xbmc
+import xbmcgui
 
 from . import KodiGroup
 from . import globals
-from . import kodiutils
 
 from . import qhue
 
@@ -217,7 +214,7 @@ def connectionTest(bridgeIP):
         logger.info("Bridge Found! Hue API version: {}".format(apiversion))
         return True
     logger.debug("in ConnectionTest():  Connected! Bridge too old: {}".format(apiversion))
-    kodiutils.notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)), icon=NOTIFICATION_ERROR)
+    notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)), icon=xbmcgui.NOTIFICATION_ERROR)
     return False
 
 
@@ -311,7 +308,7 @@ def configureAmbiLights(bridge,kGroupID):
                 lightNames.append(_getLightName(bridge,L))
                 colorLights.append(L)
             else:
-                kodiutils.notification(_("Hue Service"), _("Only colour lights are supported"), icon=NOTIFICATION_ERROR)
+                notification(_("Hue Service"), _("Only colour lights are supported"), icon=xbmcgui.NOTIFICATION_ERROR)
                 
 
         globals.ADDON.setSettingString("group{}_Lights".format(kGroupID),','.join(colorLights))
@@ -432,17 +429,17 @@ def connectBridge(monitor,silent=False):
                 globals.connected = True
                 logger.info("Successfully connected to Hue Bridge: {}".format(bridgeIP))
                 if not silent:
-                    kodiutils.notification(_("Hue Service"), _("Hue connected"), icon=NOTIFICATION_INFO)
+                    notification(_("Hue Service"), _("Hue connected"), icon=xbmcgui.NOTIFICATION_INFO)
                 return bridge
         else: 
             logger.debug("Bridge not responding")
-            kodiutils.notification(_("Hue Service"), _("Bridge connection failed"), icon=NOTIFICATION_ERROR)
+            notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
             globals.connected = False
             return None
 
     else:
         logger.debug("Bridge not configured")
-        kodiutils.notification(_("Hue Service"), _("Bridge not configured"), icon=NOTIFICATION_ERROR)
+        notification(_("Hue Service"), _("Bridge not configured"), icon=xbmcgui.NOTIFICATION_ERROR)
         globals.connected = False
         return None
 
@@ -451,13 +448,13 @@ def validateSchedule():
     logger.debug("Validate schedule. Schedule Enabled: {}".format(globals.enableSchedule))
     if globals.enableSchedule:
         try:
-            kodiutils.convertTime(globals.startTime)
-            kodiutils.convertTime(globals.endTime)
+            convertTime(globals.startTime)
+            convertTime(globals.endTime)
             logger.debug("Time looks valid")
         except ValueError as e:
             logger.error("Invalid time settings: {}".format(e))
-            kodiutils.notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"), icon=NOTIFICATION_ERROR)
-            kodiutils.set_setting("EnableSchedule", False)
+            notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"), icon=xbmcgui.NOTIFICATION_ERROR)
+            globals.ADDON.setSettingBool("EnableSchedule", False)
             globals.enableSchedule = False
 
 
@@ -488,6 +485,15 @@ def checkBridgeModel(bridge):
     return None
 
 
+def convertTime(time):
+    hour=int(time.split(":")[0])
+    minute=int(time.split(":")[1])
+    return time(hour,minute)
+
+def notification(header, message, time=5000, icon=globals.ADDON.getAddonInfo('icon'), sound=True):
+    xbmcgui.Dialog().notification(header, message, icon, time, sound)
+
+
 class HueMonitor(xbmc.Monitor):
     def __init__(self):
         super(xbmc.Monitor,self).__init__()
@@ -497,3 +503,7 @@ class HueMonitor(xbmc.Monitor):
         self.waitForAbort(1)
         loadSettings()
         globals.settingsChanged = True
+
+
+
+
