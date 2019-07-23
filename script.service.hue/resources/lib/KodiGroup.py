@@ -11,8 +11,8 @@ import xbmc
 from . import globals
 from .globals import logger
 
-from .kodiutils import get_setting, get_setting_as_bool,convertTime
 from .qhue import QhueException
+from xbmc import InfoTagVideo
 
 #BEHAVIOR_NOTHING = 0
 #BEHAVIOR_ADJUST = 1
@@ -37,16 +37,16 @@ class KodiGroup(xbmc.Player):
 
         def loadSettings(self):
             logger.debug("KodiGroup Load settings")
-            self.enabled=get_setting_as_bool("group{}_enabled".format(self.kgroupID))
+            self.enabled=globals.ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))
 
-            self.startBehavior=get_setting_as_bool("group{}_startBehavior".format(self.kgroupID))
-            self.startScene=get_setting("group{}_startSceneID".format(self.kgroupID))
+            self.startBehavior=globals.ADDON.getSettingBool("group{}_startBehavior".format(self.kgroupID))
+            self.startScene=globals.ADDON.getSetting("group{}_startSceneID".format(self.kgroupID))
 
-            self.pauseBehavior=get_setting_as_bool("group{}_pauseBehavior".format(self.kgroupID))
-            self.pauseScene=get_setting("group{}_pauseSceneID".format(self.kgroupID))
+            self.pauseBehavior=globals.ADDON.getSettingBool("group{}_pauseBehavior".format(self.kgroupID))
+            self.pauseScene=globals.ADDON.getSetting("group{}_pauseSceneID".format(self.kgroupID))
 
-            self.stopBehavior=get_setting_as_bool("group{}_stopBehavior".format(self.kgroupID))
-            self.stopScene=get_setting("group{}_stopSceneID".format(self.kgroupID))
+            self.stopBehavior=globals.ADDON.getSettingBool("group{}_stopBehavior".format(self.kgroupID))
+            self.stopScene=globals.ADDON.getSetting("group{}_stopSceneID".format(self.kgroupID))
 
 
         def setup(self,bridge,kgroupID,flash = False, mediaType=VIDEO):
@@ -76,7 +76,7 @@ class KodiGroup(xbmc.Player):
 
         def onAVStarted(self):
             logger.info("In KodiGroup[{}], onPlaybackStarted. Group enabled: {},startBehavior: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.startBehavior, self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
-            
+            self.checkVideoActivation()
             self.state = STATE_PLAYING
             globals.lastMediaType = self.playbackType()
             
@@ -166,8 +166,15 @@ class KodiGroup(xbmc.Player):
 
 
         def checkVideoActivation(self):
-            #XBMCAddon::xbmc::InfoTagVideo::getMediaType    
-            
+            if self.isPlayingVideo():
+                try:
+                    infoTag=self.getVideoInfoTag()
+                    duration=infoTag.getDuration()
+                    mediaType=infoTag.getMediaType()
+                    logger.debug("Video Info: InfoTag {},Duration: {}, mediaType: {}".format(infoTag,duration,mediaType))
+                except Exception:
+                    logger.exception("checkVideoActivation exception")
+                
         #=======================================================================
         #             <setting id="video_MinimumDuration" type="time" label="Minimum duration (MM:SS)" default="00:00" />
         # <setting id="video_Movie" type="bool" label="Enable for Movies" default="True" />
@@ -176,6 +183,3 @@ class KodiGroup(xbmc.Player):
         # <setting id="video_Other" type="bool" label="Enable for other videos" default="True" />
         #     
         #=======================================================================
-            
-            pass
-

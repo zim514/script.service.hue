@@ -29,6 +29,7 @@ class AmbiGroup(KodiGroup):
         logger.info("Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
         logger.info("Ambilight Settings. Colours: {}, Interval: {}, transitionTime: {}".format(self.numColors,self.updateInterval,self.transitionTime))
         logger.info("Ambilight Settings. enabled: {}, forceOn: {}, setBrightness: {}, Brightness: {}".format(self.enabled,self.forceOn,self.setBrightness,self.brightness))
+        self.checkVideoActivation()
         self.state = STATE_PLAYING
         if self.enabled and self.activeTime() and self.playbackType() == 1:
             self.ambiRunning.set()
@@ -66,24 +67,24 @@ class AmbiGroup(KodiGroup):
     def loadSettings(self):
         logger.debug("AmbiGroup Load settings")
         
-        self.enabled=kodiutils.get_setting_as_bool("group{}_enabled".format(self.kgroupID))
+        self.enabled=globals.ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))
         
-        self.numColors=kodiutils.get_setting_as_int("group{}_NumColors".format(self.kgroupID))
-        self.transitionTime =  kodiutils.get_setting_as_int("group{}_TransitionTime".format(self.kgroupID)) /100 #This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
-        self.forceOn=kodiutils.get_setting_as_bool("group{}_forceOn".format(self.kgroupID))
-        self.setBrightness=kodiutils.get_setting_as_bool("group{}_setBrightness".format(self.kgroupID))
-        self.brightness=kodiutils.get_setting_as_int("group{}_Brightness".format(self.kgroupID))*255/100#convert percentage to value 1-254
-        self.blackFilter=kodiutils.get_setting_as_int("group{}_BlackFilter".format(self.kgroupID))
-        self.defaultRecipe=kodiutils.get_setting_as_int("group{}_DefaultRecipe".format(self.kgroupID))
-        self.captureSize=kodiutils.get_setting_as_int("group{}_CaptureSize".format(self.kgroupID))
-        self.minimumDistance=kodiutils.get_setting_as_float("group{}_ColorDifference".format(self.kgroupID)) / 10000 #convert to float with 4 precision between 0-1
+        self.numColors=globals.ADDON.getSettingInt("group{}_NumColors".format(self.kgroupID))
+        self.transitionTime =  globals.ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroupID)) /100 #This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
+        self.forceOn=globals.ADDON.getSettingBool("group{}_forceOn".format(self.kgroupID))
+        self.setBrightness=globals.ADDON.getSettingBool("group{}_setBrightness".format(self.kgroupID))
+        self.brightness=globals.ADDON.getSettingInt("group{}_Brightness".format(self.kgroupID))*255/100#convert percentage to value 1-254
+        self.blackFilter=globals.ADDON.getSettingInt("group{}_BlackFilter".format(self.kgroupID))
+        self.defaultRecipe=globals.ADDON.getSettingInt("group{}_DefaultRecipe".format(self.kgroupID))
+        self.captureSize=globals.ADDON.getSettingInt("group{}_CaptureSize".format(self.kgroupID))
+        self.minimumDistance=globals.ADDON.getSettingNumber("group{}_ColorDifference".format(self.kgroupID)) / 10000 #convert to float with 4 precision between 0-1
 
-        self.updateInterval=kodiutils.get_setting_as_float("group{}_Interval".format(self.kgroupID)) /1000# convert MS to seconds
+        self.updateInterval=globals.ADDON.getSettingNumber("group{}_Interval".format(self.kgroupID)) /1000# convert MS to seconds
         if self.updateInterval == 0: 
             self.updateInterval = 0.002
         
         self.ambiLights={}
-        lightIDs=kodiutils.get_setting("group{}_Lights".format(self.kgroupID)).split(",")
+        lightIDs=globals.ADDON.getSetting("group{}_Lights".format(self.kgroupID)).split(",")
         index=0
         for L in lightIDs:
             gamut=getLightGamut(self.bridge,L)

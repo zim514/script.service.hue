@@ -30,21 +30,21 @@ logger = getLogger(globals.ADDONID)
 
 def loadSettings():
     logger.debug("Loading settings")
-    globals.reloadFlash = kodiutils.get_setting_as_bool("reloadFlash")
-    globals.initialFlash = kodiutils.get_setting_as_bool("initialFlash")
+    globals.reloadFlash = globals.ADDON.getSettingBool("reloadFlash")
+    globals.initialFlash = globals.ADDON.getSettingBool("initialFlash")
     
-    globals.forceOnSunset = kodiutils.get_setting_as_bool("forceOnSunset")
-    globals.daylightDisable = kodiutils.get_setting_as_bool("daylightDisable")
+    globals.forceOnSunset = globals.ADDON.getSettingBool("forceOnSunset")
+    globals.daylightDisable = globals.ADDON.getSettingBool("daylightDisable")
     
-    globals.enableSchedule = kodiutils.get_setting_as_bool("enableSchedule")
-    globals.startTime = kodiutils.get_setting("startTime")
-    globals.endTime = kodiutils.get_setting("endTime")
-    globals.performanceLogging = kodiutils.get_setting_as_bool("performanceLogging")
+    globals.enableSchedule = globals.ADDON.getSettingBool("enableSchedule")
+    globals.startTime = globals.ADDON.getSetting("startTime")
+    globals.endTime = globals.ADDON.getSetting("endTime")
+    globals.performanceLogging = globals.ADDON.getSettingBool("performanceLogging")
     
     
     
         #=======================================================================
-        #             <setting id="video_MinimumDuration" type="time" label="Minimum duration (MM:SS)" default="00:00" />
+        #             <setting id="video_MinimumDuration" type="time" label="Minimum duration (Minutes)" default="00:00" />
         # <setting id="video_Movie" type="bool" label="Enable for Movies" default="True" />
         # <setting id="video_Episode" type="bool" label="Enable for TV episodes" default="True" />
         # <setting id="video_MusicVideo" type="bool" label="Enable for music videos" default="True" />
@@ -61,11 +61,11 @@ def setupGroups(bridge,flash=False):
     logger.debug("in setupGroups()")
     kgroups= []
     
-    if kodiutils.get_setting_as_bool("group0_enabled"): #VIDEO Group
+    if globals.ADDON.getSettingBool("group0_enabled"): #VIDEO Group
         kgroups.append(KodiGroup.KodiGroup())
         kgroups[0].setup(bridge, 0, flash,KodiGroup.VIDEO)
 
-    if kodiutils.get_setting_as_bool("group1_enabled"): #Audio Group
+    if globals.ADDON.getSettingBool("group1_enabled"): #Audio Group
         kgroups.append(KodiGroup.KodiGroup())
         kgroups[1].setup(bridge, 1, flash,KodiGroup.AUDIO)
 
@@ -145,8 +145,8 @@ def _discoverSsdp():
 def bridgeDiscover(monitor):
     logger.debug("Start bridgeDiscover")
     #Create new config if none exists. Returns success or fail as bool
-    kodiutils.set_setting("bridgeIP","")
-    kodiutils.set_setting("bridgeUser","")
+    globals.ADDON.setSettingString("bridgeIP","")   
+    globals.ADDON.setSettingString("bridgeUser","")
     globals.connected = False
 
     progressBar = xbmcgui.DialogProgress()
@@ -172,8 +172,8 @@ def bridgeDiscover(monitor):
                 logger.debug("User created: {}".format(bridgeUser))
                 progressBar.update(90,_("User Found!"),_("Saving settings"))
 
-                kodiutils.set_setting("bridgeIP",bridgeIP)
-                kodiutils.set_setting("bridgeUser",bridgeUser)
+                globals.ADDON.setSettingString("bridgeIP",bridgeIP)
+                globals.ADDON.setSettingString("bridgeUser",bridgeUser)
                 complete = True
                 globals.connected = True
                 progressBar.update(100, _("Complete!"))
@@ -294,8 +294,8 @@ def configureScene(bridge,kGroupID,action):
     scene=selectHueScene(bridge)
     if scene is not None:
         #group0_startSceneID
-        kodiutils.set_setting("group{}_{}SceneID".format(kGroupID, action),scene[0])
-        kodiutils.set_setting("group{}_{}SceneName".format(kGroupID,action), scene[1])
+        globals.ADDON.setSettingInt("group{}_{}SceneID".format(kGroupID, action),scene[0])
+        globals.ADDON.setSettingString("group{}_{}SceneName".format(kGroupID,action), scene[1])
 
         globals.ADDON.openSettings()
 
@@ -314,8 +314,8 @@ def configureAmbiLights(bridge,kGroupID):
                 kodiutils.notification(_("Hue Service"), _("Only colour lights are supported"), icon=NOTIFICATION_ERROR)
                 
 
-        kodiutils.set_setting("group{}_Lights".format(kGroupID),','.join(colorLights))
-        kodiutils.set_setting("group{}_LightNames".format(kGroupID),','.join(lightNames))
+        globals.ADDON.setSettingString("group{}_Lights".format(kGroupID),','.join(colorLights))
+        globals.ADDON.setSettingString("group{}_LightNames".format(kGroupID),','.join(lightNames))
         globals.ADDON.openSettings()
 
 
@@ -405,14 +405,14 @@ def sunset(bridge,kgroups):
 
     for g in kgroups:
         logger.debug("in sunset() g: {}, kgroupID: {}".format(g,g.kgroupID))
-        if kodiutils.get_setting_as_bool("group{}_enabled".format(g.kgroupID)):
+        if globals.ADDON.getSettingBool("group{}_enabled".format(g.kgroupID)):
             g.sunset()
     return
 
 
 def connectBridge(monitor,silent=False):
-    bridgeIP = kodiutils.get_setting("bridgeIP")
-    bridgeUser = kodiutils.get_setting("bridgeUser")
+    bridgeIP = globals.ADDON.getSettingString("bridgeIP")
+    bridgeUser = globals.ADDON.getSettingString("bridgeUser")
     logger.debug("in Connect() with settings: bridgeIP: {}, bridgeUser: {}".format(bridgeIP,bridgeUser))
 
     if bridgeIP and bridgeUser:
@@ -423,7 +423,7 @@ def connectBridge(monitor,silent=False):
             bridgeIP = discoverBridgeIP(monitor)
             if bridgeIP:
                 logger.debug("in Connect(): New IP found: {}. Saving".format(bridgeIP))
-                kodiutils.set_setting("bridgeIP",bridgeIP)
+                globals.ADDON.setSettingString("bridgeIP",bridgeIP)
 
         if bridgeIP:
             logger.debug("in Connect(): Checking User")
