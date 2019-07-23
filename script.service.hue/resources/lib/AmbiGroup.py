@@ -97,13 +97,15 @@ class AmbiGroup(KodiGroup):
         super(AmbiGroup,self).setup(bridge, kgroupID, flash=flash, mediaType=1)
         self.monitor=monitor
         
-        calls=1/(self.updateInterval)*len(self.ambiLights)  #updateInterval is in seconds, eg. 0.2 for 200ms.
-        if calls > 25 and calls < 2000:
-            kodiHue.notification(_("Hue Service"), _("Est. Hue Commands/sec (max 20): {}").format(calls),time=3000,icon=xbmcgui.NOTIFICATION_WARNING)
-        else:
-            logger.warn("Warning: 0 update interval ")
-            kodiHue.notification(_("Hue Service"), _("Recommended minimum update interval: 100ms").format(calls),time=3000,icon=xbmcgui.NOTIFICATION_WARNING)
-        logger.debug("callsPerSec: lights: {},interval: {}, calls: {}".format(len(self.ambiLights),self.updateInterval,calls))
+        #=======================================================================
+        # calls=1/(self.updateInterval)*len(self.ambiLights)  #updateInterval is in seconds, eg. 0.2 for 200ms.
+        # if calls > 25 and calls < 2000:
+        #     kodiHue.notification(_("Hue Service"), _("Est. Hue Commands/sec (max 20): {}").format(calls),time=3000,icon=xbmcgui.NOTIFICATION_WARNING)
+        # else:
+        #     logger.warn("Warning: 0 update interval ")
+        #     kodiHue.notification(_("Hue Service"), _("Recommended minimum update interval: 100ms").format(calls),time=3000,icon=xbmcgui.NOTIFICATION_WARNING)
+        # logger.debug("callsPerSec: lights: {},interval: {}, calls: {}".format(len(self.ambiLights),self.updateInterval,calls))
+        #=======================================================================
     
     
     def _ambiLoop(self):
