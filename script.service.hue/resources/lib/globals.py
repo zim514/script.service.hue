@@ -31,12 +31,16 @@ reloadFlash = False
 enableSchedule = False
 performanceLogging = False
 
+videoMinimumDuration = 0
+video_enableMovie  = True
+video_enableEpisode = True
+video_enableMusicVideo = True
+video_enableOther = True
 
 startTime = ""
 endTime = ""
 
 lastMediaType=0
-
 
 def timer(func):
     """Logs the runtime of the decorated function"""

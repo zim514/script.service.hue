@@ -1,8 +1,3 @@
-'''
-Created on Apr. 12, 2019
-
-
-'''
 from logging import getLogger
 from socket import getfqdn
 from datetime import time
@@ -21,7 +16,6 @@ from .language import get_string as _
 from resources.lib.qhue.qhue import QhueException
 
 
-
 logger = getLogger(globals.ADDONID)
 
 
@@ -34,23 +28,15 @@ def loadSettings():
     globals.daylightDisable = globals.ADDON.getSettingBool("daylightDisable")
     
     globals.enableSchedule = globals.ADDON.getSettingBool("enableSchedule")
-    globals.startTime = globals.ADDON.getSetting("startTime")
-    globals.endTime = globals.ADDON.getSetting("endTime")
+    globals.startTime = globals.ADDON.getSetting("startTime") #string HH:MM
+    globals.endTime = globals.ADDON.getSetting("endTime") #string HH:MM
     globals.performanceLogging = globals.ADDON.getSettingBool("performanceLogging")
     
-    
-    
-        #=======================================================================
-        #             <setting id="video_MinimumDuration" type="time" label="Minimum duration (Minutes)" default="00:00" />
-        # <setting id="video_Movie" type="bool" label="Enable for Movies" default="True" />
-        # <setting id="video_Episode" type="bool" label="Enable for TV episodes" default="True" />
-        # <setting id="video_MusicVideo" type="bool" label="Enable for music videos" default="True" />
-        # <setting id="video_Other" type="bool" label="Enable for other videos" default="True" />
-        #     
-        #=======================================================================
-    
-    
-    
+    globals.videoMinimumDuration = globals.ADDON.getSettingInt("video_MinimumDuration") #Setting in Minutes. Kodi library uses seconds, needs to be converted.
+    globals.video_enableMovie = globals.ADDON.getSettingBool("video_Movie")
+    globals.video_enableMusicVideo  = globals.ADDON.getSettingBool("video_MusicVideo")
+    globals.video_enableEpisode = globals.ADDON.getSettingBool("video_Episode")
+    globals.video_enableOther = globals.ADDON.getSettingBool("video_Other")
     
     validateSchedule()
     

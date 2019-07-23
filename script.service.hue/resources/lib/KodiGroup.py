@@ -76,16 +76,15 @@ class KodiGroup(xbmc.Player):
 
         def onAVStarted(self):
             logger.info("In KodiGroup[{}], onPlaybackStarted. Group enabled: {},startBehavior: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.startBehavior, self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
-            self.checkVideoActivation()
             self.state = STATE_PLAYING
             globals.lastMediaType = self.playbackType()
-            
-            if self.enabled and self.activeTime() and self.startBehavior and self.mediaType == self.playbackType():
-
+            if self.enabled and self.activeTime() and self.startBehavior and self.mediaType == self.playbackType:
+                if self.mediaType == VIDEO and not self.checkVideoActivation():
+                    return
                 try:
                     self.groupResource.action(scene=self.startScene)
                 except QhueException as e:
-                    logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
+                    logger.error("onAVStarted: Hue call fail: {}".format(e))
 
 
         def onPlayBackStopped(self):
@@ -169,19 +168,19 @@ class KodiGroup(xbmc.Player):
 
         def checkVideoActivation(self):
             if self.isPlayingVideo():
-                try:
-                    infoTag=self.getVideoInfoTag()
-                    duration=infoTag.getDuration()
-                    mediaType=infoTag.getMediaType()
-                    logger.debug("Video Info: InfoTag {},Duration: {}, mediaType: {}".format(infoTag,duration,mediaType))
-                except Exception:
-                    logger.exception("checkVideoActivation exception")
-                
-        #=======================================================================
-        #             <setting id="video_MinimumDuration" type="time" label="Minimum duration (MM:SS)" default="00:00" />
-        # <setting id="video_Movie" type="bool" label="Enable for Movies" default="True" />
-        # <setting id="video_Episode" type="bool" label="Enable for TV episodes" default="True" />
-        # <setting id="video_MusicVideo" type="bool" label="Enable for music videos" default="True" />
-        # <setting id="video_Other" type="bool" label="Enable for other videos" default="True" />
-        #     
-        #=======================================================================
+                infoTag=self.getVideoInfoTag()
+                duration=infoTag.getDuration()
+                mediaType=infoTag.getMediaType()
+                logger.debug("Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, Other: {}".
+                             format(self.kgroupID,globals.videoMinimumDuration,globals.video_enableMovie,globals.video_enableEpisode,globals.video_enableMusicVideo,globals.video_enableOther))
+                logger.debug("Video Activation ({}): Duration({}) : {}, mediaType: {}".format(self.kgroupID,infoTag,duration,mediaType))
+                if duration > globals.videoMinimumDuration and \
+                    ((globals.video_enableMovie and mediaType == "movie") or
+                    (globals.video_enableEpisode and mediaType == "episode") or 
+                    (globals.video_enableMusicVideo and mediaType == "MusicVideo") or 
+                    globals.video_enableOther):
+                    logger.debug("Video activation: True")
+                    return True
+            logger.debug("Video activation: False")
+            return False
+

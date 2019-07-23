@@ -30,7 +30,7 @@ class AmbiGroup(KodiGroup):
         logger.info("Ambilight Settings. enabled: {}, forceOn: {}, setBrightness: {}, Brightness: {}".format(self.enabled,self.forceOn,self.setBrightness,self.brightness))
         self.checkVideoActivation()
         self.state = STATE_PLAYING
-        if self.enabled and self.activeTime() and self.playbackType() == 1:
+        if self.enabled and self.activeTime() and self.checkVideoActivation():
             self.ambiRunning.set()
             if self.forceOn:
                 for L in self.ambiLights:
