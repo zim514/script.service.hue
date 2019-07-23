@@ -41,7 +41,7 @@
 <!--  /GROUP SECTION  0-->
 
 
-<!-- VIDEO ACTIVATION -->
+<!-- VIDEO ACTIVATION  --> 
     <category label="Video Activation">
         <setting id="video_MinimumDuration" type="time" label="Minimum duration (MM:SS)" default="00:00" />
         <setting id="video_Movie" type="bool" label="Enable for Movies" default="True" />
@@ -103,7 +103,7 @@
         <setting id="group3_Interval" type="slider" label="30065" default="100" range="0,100,1000" option="int" visible="eq(-14,true)" />
         <setting id="group3_TransitionTime" type="slider" label="30066" default="100" range="0,100,500" option="int" visible="eq(-15,true)"/>
         <setting id="group3_CaptureSize" type="slider" label="30067" default="150" range="50,50,500" option="int" visible="eq(-16,true)"/>
-        <setting id="group3_ColorDifference" type="slider" label="Minimum colour difference" default="400" range="0,1,10000" option="int" visible="eq(-17,true)"/>
+        <setting id="group3_ColorDifference" type="slider" label="Minimum colour difference" default="100" range="0,1,10000" option="int" visible="eq(-17,true)"/>
 
     </category>
 <!--  /GROUP SECTION  0-->

@@ -1,7 +1,7 @@
 
 #Must be in the same order as labels in setings.xml
 HUE_RECIPES = {}
-HUE_RECIPES[0] = {"name":"Do nothing", "xy":(0.5016,0.4151)}
+HUE_RECIPES[0] = {"name":"Do nothing", "xy":(0,0)}
 HUE_RECIPES[1] = {"name":"Relax", "xy":(0.5016,0.4151)}
 HUE_RECIPES[2] = {"name":"Read", "xy":(0.4452,0.4068)}
 HUE_RECIPES[3] = {"name":"Concentrate", "xy":(0.3691,0.3719)}

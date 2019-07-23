@@ -155,7 +155,7 @@ class AmbiGroup(KodiGroup):
             logger.exception("Exception in _ambiLoop")
         logger.debug("_ambiLoop stopped")
 
-    @timer
+
     def _updateHueRGB(self,r,g,b,light,transitionTime):
         gamut=self.ambiLights[light].get('gamut')
         prevxy=self.ambiLights[light].get('prevxy')
@@ -185,7 +185,7 @@ class AmbiGroup(KodiGroup):
         self.ambiLights[light].update(prevxy=xy)
 
 
-    @timer
+
     def _updateHueXY(self,xy,light,transitionTime):
         gamut=self.ambiLights[light].get('gamut')
         prevxy=self.ambiLights[light].get('prevxy')

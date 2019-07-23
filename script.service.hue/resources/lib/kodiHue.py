@@ -41,6 +41,20 @@ def loadSettings():
     globals.endTime = kodiutils.get_setting("endTime")
     globals.performanceLogging = kodiutils.get_setting_as_bool("performanceLogging")
     
+    
+    
+        #=======================================================================
+        #             <setting id="video_MinimumDuration" type="time" label="Minimum duration (MM:SS)" default="00:00" />
+        # <setting id="video_Movie" type="bool" label="Enable for Movies" default="True" />
+        # <setting id="video_Episode" type="bool" label="Enable for TV episodes" default="True" />
+        # <setting id="video_MusicVideo" type="bool" label="Enable for music videos" default="True" />
+        # <setting id="video_Other" type="bool" label="Enable for other videos" default="True" />
+        #     
+        #=======================================================================
+    
+    
+    
+    
     validateSchedule()
     
 def setupGroups(bridge,flash=False):

@@ -143,7 +143,7 @@ def service():
                     if not globals.daylight:
                         kodiHue.sunset(bridge,kgroups)
                         
-            timer = timer + 1
+            timer += 1
             monitor.waitForAbort(1)
         logger.debug("Process exiting...")
         return
