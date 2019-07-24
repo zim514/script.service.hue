@@ -8,8 +8,8 @@ import datetime
 
 import xbmc
 from . import globals
+import kodiHue
 from .globals import logger
-from . import kodiHue
 from .qhue import QhueException
 
 STATE_IDLE = 0

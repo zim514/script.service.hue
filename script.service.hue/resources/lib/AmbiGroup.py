@@ -19,9 +19,7 @@ from .recipes import HUE_RECIPES
 from .language import get_string as _
 
 
-class AmbiGroup(KodiGroup):
-    
-    
+class AmbiGroup(KodiGroup.KodiGroup):
     def onAVStarted(self):
         logger.info("Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
         logger.info("Ambilight Settings. Colours: {}, Interval: {}, transitionTime: {}".format(self.numColors,self.updateInterval,self.transitionTime))
