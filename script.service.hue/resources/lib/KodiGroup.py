@@ -139,10 +139,12 @@ class KodiGroup(xbmc.Player):
         
         def checkActiveTime(self):
             logger.debug("in checkActiveTime. Schedule: {}".format(globals.enableSchedule))
+            
+            if globals.daylightDisable and globals.daylight:
+                logger.debug("Disabled by daylight")
+                return False
+
             if globals.enableSchedule: 
-                if globals.daylightDisable and globals.daylight:
-                    logger.debug("Disabled by daylight")
-                    return False
                 start=kodiHue.convertTime(globals.startTime)
                 end=kodiHue.convertTime(globals.endTime)
                 now=datetime.datetime.now().time()
