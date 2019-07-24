@@ -11,7 +11,7 @@ logger = logging.getLogger(globals.ADDONID)
 if globals.DEBUG:
     try:
         import pydevd
-        pydevd.settrace('192.168.1.15', stdoutToServer=True, stderrToServer=True, suspend=False,
+        pydevd.settrace('localhost', stdoutToServer=True, stderrToServer=True, suspend=False,
                         trace_only_current_thread=False, overwrite_prev_trace=False, patch_multiprocessing=False)
     except ImportError:
         logger.exception("Kodi Hue Remote Debug Error: You must add org.python.pydev.debug.pysrc to your PYTHONPATH, or disable DEBUG")
