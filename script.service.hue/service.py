@@ -10,14 +10,11 @@ logger = logging.getLogger(globals.ADDONID)
 
 if globals.DEBUG:
     try:
-        import sys;sys.path.append("e:\dev\pysrc")
         import pydevd
-        pydevd.settrace('localhost', stdoutToServer=False, stderrToServer=False, suspend=globals.REMOTE_DBG_SUSPEND,
-                        trace_only_current_thread=False, overwrite_prev_trace=True, patch_multiprocessing=True)
-
+        pydevd.settrace('192.168.1.15', stdoutToServer=True, stderrToServer=True, suspend=False,
+                        trace_only_current_thread=False, overwrite_prev_trace=False, patch_multiprocessing=False)
     except ImportError:
-        logger.critical("Kodi Hue Remote Debug Error: You must add org.python.pydev.debug.pysrc to your PYTHONPATH, or disable DEBUG")
-
+        logger.exception("Kodi Hue Remote Debug Error: You must add org.python.pydev.debug.pysrc to your PYTHONPATH, or disable DEBUG")
 
 logger.info("Starting service.py, version {}, Kodi: {}".format(globals.ADDONVERSION, globals.KODIVERSION))
 try:

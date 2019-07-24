@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 
-
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
-#from builtins import str
 
-from kodi_six import xbmc
+import xbmc
 
 from resources.lib import globals
-from resources.lib.kodiutils import get_setting_as_bool
-
 prefix = "[{}]".format(globals.ADDONID)
 formatter = logging.Formatter(prefix + '[%(module)s][%(funcName)s](%(lineno)d): %(message)s')
 fileFormatter = logging.Formatter('%(asctime)s %(levelname)s [%(module)s][%(funcName)s](%(lineno)d): %(message)s')
@@ -47,7 +43,7 @@ class KodiLogHandler(logging.StreamHandler):
 
 
 def config():
-    separateLogFile=get_setting_as_bool("separateLogFile")
+    separateLogFile=globals.ADDON.getSettingBool("separateLogFile")
     logger = logging.getLogger(globals.ADDONID)
 
     if separateLogFile:

@@ -205,3 +205,5 @@ _strings['pumpkin'] = 30809
 _strings['recommended minimum update interval: 100ms'] = 30069
 _strings['est. hue commands/sec (max 20): {}'] = 30070
 _strings['only colour lights are supported'] = 30071
+_strings['unsupported hue bridge'] = 30072
+_strings['hue bridge v1 (round) is unsupported. hue bridge v2 (square) is required for certain features.'] = 30073

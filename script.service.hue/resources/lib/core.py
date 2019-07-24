@@ -25,11 +25,14 @@ def menu():
 
     if args == "discover":
         logger.debug("Started with Discovery")
-        bridge = kodiHue.bridgeDiscover(monitor)
-        if bridge is not None:
-            logger.debug("Found bridge, starting service.")
-            service() #restart service
-
+        bridgeDiscovered = kodiHue.bridgeDiscover(monitor)
+        if bridgeDiscovered:
+            bridge = kodiHue.connectBridge(monitor, silent=True)
+            if bridge:
+                logger.debug("Found bridge. Running model check & starting service.")
+                kodiHue.checkBridgeModel(bridge)
+                globals.ADDON.openSettings()
+                service()
 
     elif args == "createHueScene":
         logger.debug("Started with {}".format(args))
@@ -58,28 +61,20 @@ def menu():
             bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
             if bridge is not None:
                 kodiHue.configureScene(bridge, kgroup, action)
-
-                #TODO: save selection
             else:
                 logger.debug("No bridge found. sceneSelect cancelled.")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))    
 
-    elif args == "ambiLightSelect": # ambiLightSelect=kgroup 
+    elif args == "ambiLightSelect": # ambiLightSelect=kgroupID 
             kgroup = sys.argv[2]
-            
-            logger.debug("Started with {}, kgroup: {}".format(args, kgroup))
+            logger.debug("Started with {}, kgroupID: {}".format(args, kgroup))
 
             bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
             if bridge is not None:
                 kodiHue.configureAmbiLights(bridge, kgroup)
-
-                #TODO: save selection
             else:
                 logger.debug("No bridge found. scene ambi lights cancelled.")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))    
-
-
-
     else:
         globals.ADDON.openSettings()
         return
@@ -99,7 +94,7 @@ def service():
        
         kgroups = kodiHue.setupGroups(bridge,globals.initialFlash)
         ambiGroup = AmbiGroup.AmbiGroup()
-        ambiGroup.setup(monitor,bridge, kgroupID=3, flash=True, mediaType=3)
+        ambiGroup.setup(monitor,bridge, kgroupID=3, flash=globals.initialFlash, mediaType=3)
         
         
         connectionRetries = 0
@@ -148,7 +143,7 @@ def service():
                     if not globals.daylight:
                         kodiHue.sunset(bridge,kgroups)
                         
-            timer = timer + 1
+            timer += 1
             monitor.waitForAbort(1)
         logger.debug("Process exiting...")
         return

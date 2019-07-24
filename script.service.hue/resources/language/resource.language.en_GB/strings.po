@@ -442,6 +442,10 @@ msgctxt "#30068"
 msgid "Performance debug logging"
 msgstr "Performance debug logging"
 
+msgctxt "#30800"
+msgid "Do nothing"
+msgstr "Do nothing"
+
 msgctxt "#30801"
 msgid "Relax"
 msgstr "Relax"
@@ -478,6 +482,9 @@ msgctxt "#30809"
 msgid "Pumpkin"
 msgstr "Pumpkin"
 
+
+
+
 msgctxt "#30069"
 msgid "Recommended minimum update interval: 100ms"
 msgstr ""
@@ -489,3 +496,13 @@ msgstr ""
 msgctxt "#30071"
 msgid "Only colour lights are supported"
 msgstr ""
+
+msgctxt "#30072"
+msgid "Unsupported Hue Bridge"
+msgstr ""
+
+msgctxt "#30073"
+msgid ""
+"Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for"
+" certain features."
+msgstr "

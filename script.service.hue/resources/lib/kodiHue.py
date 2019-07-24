@@ -1,27 +1,19 @@
-'''
-Created on Apr. 12, 2019
-
-
-'''
-
 from logging import getLogger
 from socket import getfqdn
+import datetime
 
 import requests
 
-from kodi_six import xbmc,xbmcgui
-#import xbmc
-#import xbmcgui
-from xbmcgui import NOTIFICATION_ERROR, NOTIFICATION_INFO
+import xbmc
+import xbmcgui
 
 from . import KodiGroup
 from . import globals
-from . import kodiutils
 
 from . import qhue
 
 from .language import get_string as _
-
+from resources.lib.qhue.qhue import QhueException
 
 
 logger = getLogger(globals.ADDONID)
@@ -29,16 +21,22 @@ logger = getLogger(globals.ADDONID)
 
 def loadSettings():
     logger.debug("Loading settings")
-    globals.reloadFlash = kodiutils.get_setting_as_bool("reloadFlash")
-    globals.initialFlash = kodiutils.get_setting_as_bool("initialFlash")
+    globals.reloadFlash = globals.ADDON.getSettingBool("reloadFlash")
+    globals.initialFlash = globals.ADDON.getSettingBool("initialFlash")
     
-    globals.forceOnSunset = kodiutils.get_setting_as_bool("forceOnSunset")
-    globals.daylightDisable = kodiutils.get_setting_as_bool("daylightDisable")
+    globals.forceOnSunset = globals.ADDON.getSettingBool("forceOnSunset")
+    globals.daylightDisable = globals.ADDON.getSettingBool("daylightDisable")
     
-    globals.enableSchedule = kodiutils.get_setting_as_bool("enableSchedule")
-    globals.startTime = kodiutils.get_setting("startTime")
-    globals.endTime = kodiutils.get_setting("endTime")
-    globals.performanceLogging = kodiutils.get_setting_as_bool("performanceLogging")
+    globals.enableSchedule = globals.ADDON.getSettingBool("enableSchedule")
+    globals.startTime = globals.ADDON.getSetting("startTime") #string HH:MM
+    globals.endTime = globals.ADDON.getSetting("endTime") #string HH:MM
+    globals.performanceLogging = globals.ADDON.getSettingBool("performanceLogging")
+    
+    globals.videoMinimumDuration = globals.ADDON.getSettingInt("video_MinimumDuration") #Setting in Minutes. Kodi library uses seconds, needs to be converted.
+    globals.video_enableMovie = globals.ADDON.getSettingBool("video_Movie")
+    globals.video_enableMusicVideo  = globals.ADDON.getSettingBool("video_MusicVideo")
+    globals.video_enableEpisode = globals.ADDON.getSettingBool("video_Episode")
+    globals.video_enableOther = globals.ADDON.getSettingBool("video_Other")
     
     validateSchedule()
     
@@ -46,11 +44,11 @@ def setupGroups(bridge,flash=False):
     logger.debug("in setupGroups()")
     kgroups= []
     
-    if kodiutils.get_setting_as_bool("group0_enabled"): #VIDEO Group
+    if globals.ADDON.getSettingBool("group0_enabled"): #VIDEO Group
         kgroups.append(KodiGroup.KodiGroup())
         kgroups[0].setup(bridge, 0, flash,KodiGroup.VIDEO)
 
-    if kodiutils.get_setting_as_bool("group1_enabled"): #Audio Group
+    if globals.ADDON.getSettingBool("group1_enabled"): #Audio Group
         kgroups.append(KodiGroup.KodiGroup())
         kgroups[1].setup(bridge, 1, flash,KodiGroup.AUDIO)
 
@@ -95,14 +93,12 @@ def deleteHueScene(bridge):
             xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not created"))
 
 
-
 def _discoverNupnp():
-
     logger.debug("In kodiHue discover_nupnp()")
     try:
-        #ssl chain on new URL seems to be broken
-        req = requests.get('https://www.meethue.com/api/nupnp')
-        #req = requests.get('https://discovery.meethue.com/')
+        #ssl chain on new URL seems to be fixed
+        #req = requests.get('https://www.meethue.com/api/nupnp')
+        req = requests.get('https://discovery.meethue.com/')
     except requests.exceptions.ConnectionError as e:
         logger.info("Nupnp failed: {}".format(e))
         return None
@@ -111,12 +107,10 @@ def _discoverNupnp():
     bridge_ip = None
     if res:
         bridge_ip = res[0]["internalipaddress"]
-
     return bridge_ip
         
-        
+
 def _discoverSsdp():
-    
     from . import ssdp
     from urlparse import urlsplit
 
@@ -134,8 +128,8 @@ def _discoverSsdp():
 def bridgeDiscover(monitor):
     logger.debug("Start bridgeDiscover")
     #Create new config if none exists. Returns success or fail as bool
-    kodiutils.set_setting("bridgeIP","")
-    kodiutils.set_setting("bridgeUser","")
+    globals.ADDON.setSettingString("bridgeIP","")   
+    globals.ADDON.setSettingString("bridgeUser","")
     globals.connected = False
 
     progressBar = xbmcgui.DialogProgress()
@@ -144,7 +138,6 @@ def bridgeDiscover(monitor):
     
     complete = False
     while not progressBar.iscanceled() and not complete:
-
 
         progressBar.update(10, _("N-UPnP discovery..."))
         bridgeIP =_discoverNupnp()
@@ -162,14 +155,14 @@ def bridgeDiscover(monitor):
                 logger.debug("User created: {}".format(bridgeUser))
                 progressBar.update(90,_("User Found!"),_("Saving settings"))
 
-                kodiutils.set_setting("bridgeIP",bridgeIP)
-                kodiutils.set_setting("bridgeUser",bridgeUser)
+                globals.ADDON.setSettingString("bridgeIP",bridgeIP)
+                globals.ADDON.setSettingString("bridgeUser",bridgeUser)
                 complete = True
                 globals.connected = True
                 progressBar.update(100, _("Complete!"))
                 monitor.waitForAbort(5)
                 progressBar.close()
-                globals.ADDON.openSettings()
+                logger.debug("Bridge discovery complete")
                 return True
             else:
                 logger.debug("User not created, received: {}".format(bridgeUser))
@@ -181,11 +174,13 @@ def bridgeDiscover(monitor):
 
         else:
             progressBar.update(100, _("Bridge not found"),_("Check your bridge and network"))
+            logger.debug("Bridge not found, check your bridge and network")
             monitor.waitForAbort(5)
             complete = True
             progressBar.close()
 
     if progressBar.iscanceled():
+        logger.debug("Bridge discovery cancelled by user")
         progressBar.update(100,_("Cancelled"))
         complete = True
         progressBar.close()
@@ -205,7 +200,7 @@ def connectionTest(bridgeIP):
         logger.info("Bridge Found! Hue API version: {}".format(apiversion))
         return True
     logger.debug("in ConnectionTest():  Connected! Bridge too old: {}".format(apiversion))
-    kodiutils.notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)), icon=NOTIFICATION_ERROR)
+    notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)), icon=xbmcgui.NOTIFICATION_ERROR)
     return False
 
 
@@ -282,8 +277,8 @@ def configureScene(bridge,kGroupID,action):
     scene=selectHueScene(bridge)
     if scene is not None:
         #group0_startSceneID
-        kodiutils.set_setting("group{}_{}SceneID".format(kGroupID, action),scene[0])
-        kodiutils.set_setting("group{}_{}SceneName".format(kGroupID,action), scene[1])
+        globals.ADDON.setSettingInt("group{}_{}SceneID".format(kGroupID, action),scene[0])
+        globals.ADDON.setSettingString("group{}_{}SceneName".format(kGroupID,action), scene[1])
 
         globals.ADDON.openSettings()
 
@@ -299,11 +294,11 @@ def configureAmbiLights(bridge,kGroupID):
                 lightNames.append(_getLightName(bridge,L))
                 colorLights.append(L)
             else:
-                kodiutils.notification(_("Hue Service"), _("Only colour lights are supported"), icon=NOTIFICATION_ERROR)
+                notification(_("Hue Service"), _("Only colour lights are supported"), icon=xbmcgui.NOTIFICATION_ERROR)
                 
 
-        kodiutils.set_setting("group{}_Lights".format(kGroupID),','.join(colorLights))
-        kodiutils.set_setting("group{}_LightNames".format(kGroupID),','.join(lightNames))
+        globals.ADDON.setSettingString("group{}_Lights".format(kGroupID),','.join(colorLights))
+        globals.ADDON.setSettingString("group{}_LightNames".format(kGroupID),','.join(lightNames))
         globals.ADDON.openSettings()
 
 
@@ -393,27 +388,25 @@ def sunset(bridge,kgroups):
 
     for g in kgroups:
         logger.debug("in sunset() g: {}, kgroupID: {}".format(g,g.kgroupID))
-        if kodiutils.get_setting_as_bool("group{}_enabled".format(g.kgroupID)):
+        if globals.ADDON.getSettingBool("group{}_enabled".format(g.kgroupID)):
             g.sunset()
     return
 
-def connectBridge(monitor,silent=False):
-    bridgeIP = kodiutils.get_setting("bridgeIP")
-    bridgeUser = kodiutils.get_setting("bridgeUser")
-    logger.debug("in Connect() with settings: bridgeIP: {}, bridgeUser: {}".format(bridgeIP,bridgeUser))
 
+def connectBridge(monitor,silent=False):
+    bridgeIP = globals.ADDON.getSettingString("bridgeIP")
+    bridgeUser = globals.ADDON.getSettingString("bridgeUser")
+    logger.debug("in Connect() with settings: bridgeIP: {}, bridgeUser: {}".format(bridgeIP,bridgeUser))
 
     if bridgeIP and bridgeUser:
         if connectionTest(bridgeIP):
             logger.debug("in Connect(): Bridge responding to connection test.")
-
         else:
             logger.debug("in Connect(): Bridge not responding to connection test, attempt finding a new bridge IP.")
             bridgeIP = discoverBridgeIP(monitor)
             if bridgeIP:
                 logger.debug("in Connect(): New IP found: {}. Saving".format(bridgeIP))
-                kodiutils.set_setting("bridgeIP",bridgeIP)
-
+                globals.ADDON.setSettingString("bridgeIP",bridgeIP)
 
         if bridgeIP:
             logger.debug("in Connect(): Checking User")
@@ -422,32 +415,34 @@ def connectBridge(monitor,silent=False):
                 globals.connected = True
                 logger.info("Successfully connected to Hue Bridge: {}".format(bridgeIP))
                 if not silent:
-                    kodiutils.notification(_("Hue Service"), _("Hue connected"), icon=NOTIFICATION_INFO)
+                    notification(_("Hue Service"), _("Hue connected"), icon=xbmcgui.NOTIFICATION_INFO)
                 return bridge
         else: 
             logger.debug("Bridge not responding")
-            kodiutils.notification(_("Hue Service"), _("Bridge connection failed"), icon=NOTIFICATION_ERROR)
+            notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
             globals.connected = False
             return None
 
     else:
         logger.debug("Bridge not configured")
-        kodiutils.notification(_("Hue Service"), _("Bridge not configured"), icon=NOTIFICATION_ERROR)
+        notification(_("Hue Service"), _("Bridge not configured"), icon=xbmcgui.NOTIFICATION_ERROR)
         globals.connected = False
         return None
 
+
 def validateSchedule():
-    logger.debug("Checking if schedule is valid. Enabled: {}".format(globals.enableSchedule))
+    logger.debug("Validate schedule. Schedule Enabled: {}".format(globals.enableSchedule))
     if globals.enableSchedule:
         try:
-            kodiutils.convertTime(globals.startTime)
-            kodiutils.convertTime(globals.endTime)
+            convertTime(globals.startTime)
+            convertTime(globals.endTime)
             logger.debug("Time looks valid")
         except ValueError as e:
             logger.error("Invalid time settings: {}".format(e))
-            kodiutils.notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"), icon=NOTIFICATION_ERROR)
-            kodiutils.set_setting("EnableSchedule", False)
+            notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"), icon=xbmcgui.NOTIFICATION_ERROR)
+            globals.ADDON.setSettingBool("EnableSchedule", False)
             globals.enableSchedule = False
+
 
 def getLightGamut(bridge,L):
     try:
@@ -461,11 +456,40 @@ def getLightGamut(bridge,L):
     return None
 
 
+def checkBridgeModel(bridge):
+    try:
+        bridgeConfig = bridge.config()
+        model=bridgeConfig["modelid"]
+    except QhueException:
+        logger.exception("Exception: checkBridgeModel")
+        return None
+    if model == "BSB002":
+        logger.debug("Bridge model OK: {}".format(model))
+        return True
+    logger.error("Unsupported bridge model: {}".format(model))
+    xbmcgui.Dialog().ok(_("Unsupported Hue Bridge"),_("Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for certain features."))
+    return None
+
+
+def convertTime(time):
+    hour=int(time.split(":")[0])
+    minute=int(time.split(":")[1])
+    return datetime.time(hour,minute)
+
+def notification(header, message, time=5000, icon=globals.ADDON.getAddonInfo('icon'), sound=True):
+    xbmcgui.Dialog().notification(header, message, icon, time, sound)
+
+
 class HueMonitor(xbmc.Monitor):
     def __init__(self):
         super(xbmc.Monitor,self).__init__()
 
     def onSettingsChanged(self):
         logger.debug("Settings changed")
+        self.waitForAbort(1)
         loadSettings()
         globals.settingsChanged = True
+
+
+
+

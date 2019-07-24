@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-
+#original version by https://github.com/obskyr/colorgram.py
+#modified by Snapcase for performance
 from __future__ import unicode_literals
 from __future__ import division
+from ..globals import timer
 
 import array
 from collections import namedtuple
@@ -34,6 +36,8 @@ class Color(object):
             self._hsl = Hsl(*hsl(*self.rgb))
             return self._hsl
 
+
+@timer
 def extract(f, number_of_colors):
     image = f if isinstance(f, Image.Image) else Image.open(f)
     if image.mode not in ('RGB', 'RGBA', 'RGBa'):
@@ -43,6 +47,7 @@ def extract(f, number_of_colors):
     used = pick_used(samples)
     used.sort(key=lambda x: x[0], reverse=True)
     return get_colors(samples, used, number_of_colors)
+
 
 def sample(image):
     top_two_bits = 0b11000000
@@ -54,44 +59,54 @@ def sample(image):
     width, height = image.size
     
     pixels = image.load()
-    for y in range(height):
-        for x in range(width):
-            # Pack the top two bits of all 6 values into 12 bits.
-            # 0bYYhhllrrggbb - luminance, hue, luminosity, red, green, blue.
+    [_process(samples,pixels,x,y,top_two_bits) for x in range(width) for y in range(height)] #python2.7&3 ~60-65ms on dev machine w/ BBBunny
+    #map(lambda x: map(lambda y: _process(samples,pixels,x,y,top_two_bits), range(height)), range(width)) #python2.7&3 ~70ms on dev machine w/ BBBunny
+    #imap(lambda x: imap(lambda y: (samples = _process(samples,pixels,x,y,top_two_bits))), range(height)), range(width))
+    
+    
+    # #python2.7 ~70ms on dev machine w/ BBBunny:
+    #for y in range(height): 
+    #    for x in range(width):
+    #        samples=_process(samples, pixels, x, y, top_two_bits)
+    return samples
 
-            r, g, b = pixels[x, y][:3]
-            h, s, l = hsl(r, g, b)
-            # Standard constants for converting RGB to relative luminance.
-            Y = int(r * 0.2126 + g * 0.7152 + b * 0.0722)
+def _process(samples,pixels,x,y,top_two_bits):
+    # Pack the top two bits of all 6 values into 12 bits.
+    # 0bYYhhllrrggbb - luminance, hue, luminosity, red, green, blue.
 
-            # Everything's shifted into place from the top two
-            # bits' original position - that is, bits 7-8.
-            packed  = (Y & top_two_bits) << 4
-            packed |= (h & top_two_bits) << 2
-            packed |= (l & top_two_bits) << 0
+    r, g, b = pixels[x, y][:3]
+    h, s, l = hsl(r, g, b)
+    # Standard constants for converting RGB to relative luminance.
+    Y = int(r * 0.2126 + g * 0.7152 + b * 0.0722)
 
-            # Due to a bug in the original colorgram.js, RGB isn't included.
-            # The original author tries using negative bit shifts, while in
-            # fact JavaScript has the stupidest possible behavior for those.
-            # By uncommenting these lines, "intended" behavior can be
-            # restored, but in order to keep result compatibility with the
-            # original the "error" exists here too. Add back in if it is
-            # ever fixed in colorgram.js.
+    # Everything's shifted into place from the top two
+    # bits' original position - that is, bits 7-8.
+    packed = (Y & top_two_bits) << 4
+    packed |= (h & top_two_bits) << 2
+    packed |= (l & top_two_bits) << 0
 
-            # packed |= (r & top_two_bits) >> 2
-            # packed |= (g & top_two_bits) >> 4
-            # packed |= (b & top_two_bits) >> 6
-            # print "Pixel #{}".format(str(y * width + x))
-            # print "h: {}, s: {}, l: {}".format(str(h), str(s), str(l))
-            # print "R: {}, G: {}, B: {}".format(str(r), str(g), str(b))
-            # print "Y: {}".format(str(Y))
-            # print "Packed: {}, binary: {}".format(str(packed), bin(packed)[2:])
-            # print
-            packed *= 4
-            samples[packed]     += r
-            samples[packed + 1] += g
-            samples[packed + 2] += b
-            samples[packed + 3] += 1
+    # Due to a bug in the original colorgram.js, RGB isn't included.
+    # The original author tries using negative bit shifts, while in
+    # fact JavaScript has the stupidest possible behavior for those.
+    # By uncommenting these lines, "intended" behavior can be
+    # restored, but in order to keep result compatibility with the
+    # original the "error" exists here too. Add back in if it is
+    # ever fixed in colorgram.js.
+
+    # packed |= (r & top_two_bits) >> 2
+    # packed |= (g & top_two_bits) >> 4
+    # packed |= (b & top_two_bits) >> 6
+    # print "Pixel #{}".format(str(y * width + x))
+    # print "h: {}, s: {}, l: {}".format(str(h), str(s), str(l))
+    # print "R: {}, G: {}, B: {}".format(str(r), str(g), str(b))
+    # print "Y: {}".format(str(Y))
+    # print "Packed: {}, binary: {}".format(str(packed), bin(packed)[2:])
+    # print
+    packed *= 4
+    samples[packed] += r
+    samples[packed + 1] += g
+    samples[packed + 2] += b
+    samples[packed + 3] += 1
     return samples
 
 def pick_used(samples):
@@ -123,21 +138,8 @@ def get_colors(samples, used, number_of_colors):
     return colors
 
 def hsl(r, g, b):
-    # This looks stupid, but it's way faster than min() and max().
-    if r > g:
-        if b > r:
-            most, least = b, g
-        elif b > g:
-            most, least = r, g
-        else:
-            most, least = r, b
-    else:
-        if b > g:
-            most, least = b, r
-        elif b > r:
-            most, least = g, r
-        else:
-            most, least = g, b
+    most=max(r,g,b)
+    least=min(r,g,b)
 
     l = (most + least) >> 1
 

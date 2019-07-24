@@ -2,11 +2,8 @@ import functools
 import time
 
 from logging import getLogger
-#from xbmcaddon import Addon
-#from xbmc import log
 
-
-from kodi_six import xbmcaddon, xbmc
+import xbmc,xbmcaddon
 
 NUM_GROUPS = 2  #group0= video, group1=audio
 STRDEBUG = False #Show string ID in UI
@@ -23,7 +20,6 @@ KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
 logger = getLogger(ADDONID)
 
 
-#Init values for code completion, all get overwritten by kodiHue.loadSettings()
 settingsChanged = False
 connected = False
 daylight = False
@@ -35,12 +31,16 @@ reloadFlash = False
 enableSchedule = False
 performanceLogging = False
 
+videoMinimumDuration = 0
+video_enableMovie  = True
+video_enableEpisode = True
+video_enableMusicVideo = True
+video_enableOther = True
 
 startTime = ""
 endTime = ""
 
 lastMediaType=0
-
 
 def timer(func):
     """Logs the runtime of the decorated function"""
@@ -50,7 +50,7 @@ def timer(func):
         value = func(*args, **kwargs)
         endTime = time.time()      # 2
         runTime = endTime - startTime    # 3
-        if performanceLogging == True:
-            logger.debug("[script.service.hue][{}] Completed in {:02f}ms".format(func.__name__,runTime*1000))
+        if performanceLogging:
+            logger.debug("[{}] Completed in {:02.0f}ms".format(func.__name__,runTime*1000))
         return value
     return wrapper_timer
