@@ -40,7 +40,6 @@
     </category>
 <!--  /GROUP SECTION  0-->
 
-
 <!-- VIDEO ACTIVATION  --> 
     <category label="Video Activation">
         <setting id="video_MinimumDuration" type="number" label="Minimum duration (Minutes)" default="0" />
@@ -49,7 +48,6 @@
         <setting id="video_MusicVideo" type="bool" label="Enable for music videos" default="True" />
         <setting id="video_Other" type="bool" label="Enable for other videos" default="True" />
 	</category>
-
 
 <!--  GROUP SECTION  1 AUDIO -->    
     <category label="32102">

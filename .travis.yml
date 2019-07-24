@@ -35,5 +35,5 @@ deploy:
 #    on:
 #      tags: true
 
-notifications:
-    webhooks: https://www.travisbuddy.com/
+#notifications:
+#    webhooks: https://www.travisbuddy.com/
