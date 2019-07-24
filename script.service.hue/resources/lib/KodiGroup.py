@@ -145,14 +145,13 @@ class KodiGroup(xbmc.Player):
                 start=kodiHue.convertTime(globals.startTime)
                 end=kodiHue.convertTime(globals.endTime)
                 now=datetime.datetime.now().time()
-                
-                
                 if (now > start) and (now <end):
                     logger.debug("Schedule active")
                     return True
                 logger.debug("Disabled by schedule time")
+                return False
             logger.debug("Schedule not enabled")
-            return False
+            return True
 
 
         def checkVideoActivation(self):
