@@ -277,7 +277,7 @@ def configureScene(bridge,kGroupID,action):
     scene=selectHueScene(bridge)
     if scene is not None:
         #group0_startSceneID
-        globals.ADDON.setSettingInt("group{}_{}SceneID".format(kGroupID, action),scene[0])
+        globals.ADDON.setSettingString("group{}_{}SceneID".format(kGroupID, action),scene[0])
         globals.ADDON.setSettingString("group{}_{}SceneName".format(kGroupID,action), scene[1])
 
         globals.ADDON.openSettings()

@@ -29,13 +29,13 @@ class KodiGroup(xbmc.Player):
             self.enabled=globals.ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))
 
             self.startBehavior=globals.ADDON.getSettingBool("group{}_startBehavior".format(self.kgroupID))
-            self.startScene=globals.ADDON.getSettingInt("group{}_startSceneID".format(self.kgroupID))
+            self.startScene=globals.ADDON.getSettingString("group{}_startSceneID".format(self.kgroupID))
 
             self.pauseBehavior=globals.ADDON.getSettingBool("group{}_pauseBehavior".format(self.kgroupID))
-            self.pauseScene=globals.ADDON.getSettingInt("group{}_pauseSceneID".format(self.kgroupID))
+            self.pauseScene=globals.ADDON.getSettingString("group{}_pauseSceneID".format(self.kgroupID))
 
             self.stopBehavior=globals.ADDON.getSettingBool("group{}_stopBehavior".format(self.kgroupID))
-            self.stopScene=globals.ADDON.getSettingInt("group{}_stopSceneID".format(self.kgroupID))
+            self.stopScene=globals.ADDON.getSettingString("group{}_stopSceneID".format(self.kgroupID))
 
 
         def setup(self,bridge,kgroupID,flash = False, mediaType=VIDEO):
