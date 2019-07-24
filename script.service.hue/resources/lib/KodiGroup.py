@@ -9,7 +9,7 @@ import datetime
 import xbmc
 from . import globals
 from .globals import logger
-import kodiHue
+from . import kodiHue
 from .qhue import QhueException
 
 STATE_IDLE = 0

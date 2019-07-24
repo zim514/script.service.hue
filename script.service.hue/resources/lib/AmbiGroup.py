@@ -5,25 +5,23 @@ from PIL import Image
 from . import colorgram #https://github.com/obskyr/colorgram.py
 from .rgbxy import Converter,ColorHelper# https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA,GamutB,GamutC
+from .qhue import QhueException
 
 import xbmc,xbmcgui
 
-from resources.lib.KodiGroup import KodiGroup
-from resources.lib.KodiGroup import VIDEO,AUDIO,ALLMEDIA,STATE_IDLE,STATE_PAUSED,STATE_PLAYING
-import kodiHue
-
-
-from .qhue import QhueException
-
 from . import globals
+from . import KodiGroup
+from .KodiGroup import VIDEO,AUDIO,ALLMEDIA,STATE_IDLE,STATE_PAUSED,STATE_PLAYING
+from . import kodiHue
+
 from .globals import logger
 from .recipes import HUE_RECIPES
 from .language import get_string as _
 
 
-
-
 class AmbiGroup(KodiGroup):
+    
+    
     def onAVStarted(self):
         logger.info("Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
         logger.info("Ambilight Settings. Colours: {}, Interval: {}, transitionTime: {}".format(self.numColors,self.updateInterval,self.transitionTime))
