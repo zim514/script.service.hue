@@ -115,15 +115,15 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     capImage = cap.getImage() #timeout to wait for OS in ms, default 1000
                     if capImage is None or len(capImage) < 50:
                         logger.error("capImage is none or <50: {},{}".format(len(capImage),capImage))
-                        return #no image captured, no update possible yet, exit method. 
+                        break #no image captured, try again next iteration
                     image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
                 except ValueError:
                     logger.error("capImage: {},{}".format(len(capImage),capImage))
                     logger.error("Value Error")
-                    return #returned capture is  smaller than expected when player stopping. give up this loop.
+                    break #returned capture is  smaller than expected when player stopping. give up this loop.
                 except Exception as ex:
                     logger.warning("Capture exception",exc_info=1)
-                    return 
+                    break 
                 
                 colors = colorgram.extract(image,self.numColors)
         
