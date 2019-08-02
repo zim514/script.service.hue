@@ -3,6 +3,10 @@
 **Kodi Service for Philips Hue**
 Automate your [Hue lights](https://www.meethue.com/) on audio or video playback with [Kodi Media Player](https://kodi.tv/)
 
+## Requirements
+- Kodi Leia 18.x or higher
+- Hue Bridge V2 (Square)
+
 ## Installation
 
  1. [Download latest .zip version](https://github.com/zim514/script.service.hue/releases) or [Repo for auto-updates](https://github.com/zim514/zim514.github.io/raw/master/repo/repository.snapcase/repository.snapcase-1.0.0.zip)
