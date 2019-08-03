@@ -109,7 +109,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         cap = xbmc.RenderCapture()
         logger.debug("_ambiLoop started")
         try:
-            while not self.monitor.abortRequested() and self.ambiRunning.is_set():
+            while not self.monitor.abortRequested() and self.ambiRunning.is_set(): #loop until kodi tells add-on to stop or video playing flag is unset.
                 try:
                     cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
                     capImage = cap.getImage() #timeout to wait for OS in ms, default 1000
