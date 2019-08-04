@@ -141,7 +141,7 @@ def service():
                     
                     globals.daylight = kodiHue.getDaylight(bridge)
                     if not globals.daylight:
-                        kodiHue.sunset(bridge,kgroups)
+                        kodiHue.sunset(bridge,kgroups,ambiGroup)
                         
             timer += 1
             monitor.waitForAbort(1)

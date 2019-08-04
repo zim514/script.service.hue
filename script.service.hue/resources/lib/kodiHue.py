@@ -383,13 +383,15 @@ def getDaylight(bridge):
     return bridge.sensors['1']()['state']['daylight']
 
 
-def sunset(bridge,kgroups):
+def sunset(bridge,kgroups,ambiGroup):
     logger.info("Applying sunset scenes")
 
     for g in kgroups:
         logger.debug("in sunset() g: {}, kgroupID: {}".format(g,g.kgroupID))
         if globals.ADDON.getSettingBool("group{}_enabled".format(g.kgroupID)):
             g.sunset()
+    if globals.ADDON.getSettingBool("group3_enabled"):
+        ambiGroup.sunset()
     return
 
 
