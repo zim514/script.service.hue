@@ -21,6 +21,7 @@ before_deploy:
 deploy:
   - provider: releases
     api_key: $GH_TOKEN
+    overwrite: true
     file_glob: true
     file: $RELEASE_ZIP
     skip_cleanup: true
