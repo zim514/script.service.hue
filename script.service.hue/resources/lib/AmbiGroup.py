@@ -24,27 +24,29 @@ class AmbiGroup(KodiGroup.KodiGroup):
         logger.info("Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
         logger.info("Ambilight Settings. Colours: {}, Interval: {}, transitionTime: {}".format(self.numColors,self.updateInterval,self.transitionTime))
         logger.info("Ambilight Settings. enabled: {}, forceOn: {}, setBrightness: {}, Brightness: {}".format(self.enabled,self.forceOn,self.setBrightness,self.brightness))
-        self.checkVideoActivation()
         self.state = STATE_PLAYING
-        if self.enabled and self.checkActiveTime() and self.checkVideoActivation():
-            self.ambiRunning.set()
-            if self.forceOn:
-                for L in self.ambiLights:
-                    try:
-                        self.bridge.lights[L].state(on=True)
-                    except QhueException as e:
-                        logger.debug("Ambi: Initial Hue call fail: {}".format(e))
+        if self.isPlayingVideo():
+            self.videoInfoTag=self.getVideoInfoTag()
+            if self.enabled and self.checkActiveTime() and self.checkVideoActivation(self.videoInfoTag):
 
-            if self.setBrightness:
-                for L in self.ambiLights:
-                    try:
-                        self.bridge.lights[L].state(bri=self.brightness)
-                    except QhueException as e:
-                        logger.debug("Ambi: Initial Hue call fail: {}".format(e))
-            
-            ambiLoopThread=Thread(target=self._ambiLoop,name="_ambiLoop")
-            ambiLoopThread.daemon = True
-            ambiLoopThread.start()
+                if self.forceOn:
+                    for L in self.ambiLights:
+                        try:
+                            self.bridge.lights[L].state(on=True)
+                        except QhueException as e:
+                            logger.debug("Ambi: Initial Hue call fail: {}".format(e))
+    
+                if self.setBrightness:
+                    for L in self.ambiLights:
+                        try:
+                            self.bridge.lights[L].state(bri=self.brightness)
+                        except QhueException as e:
+                            logger.debug("Ambi: Initial Hue call fail: {}".format(e))
+                
+                self.ambiRunning.set()
+                ambiLoopThread=Thread(target=self._ambiLoop,name="_ambiLoop")
+                ambiLoopThread.daemon = True
+                ambiLoopThread.start()
 
     def onPlayBackStopped(self):
         logger.info("In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
@@ -88,9 +90,9 @@ class AmbiGroup(KodiGroup.KodiGroup):
             index=index+1
     
     
-    def setup(self, monitor,bridge, kgroupID, flash=False, mediaType=VIDEO):
+    def setup(self, monitor,bridge, kgroupID, flash=False):
         self.ambiRunning = Event()
-        super(AmbiGroup,self).setup(bridge, kgroupID, flash=flash, mediaType=1)
+        super(AmbiGroup,self).setup(bridge, kgroupID, flash, VIDEO)
         self.monitor=monitor
         
         #=======================================================================

@@ -94,7 +94,7 @@ def service():
        
         kgroups = kodiHue.setupGroups(bridge,globals.initialFlash)
         ambiGroup = AmbiGroup.AmbiGroup()
-        ambiGroup.setup(monitor,bridge, kgroupID=3, flash=globals.initialFlash, mediaType=3)
+        ambiGroup.setup(monitor,bridge, kgroupID=3, flash=globals.initialFlash)
         
         
         connectionRetries = 0
