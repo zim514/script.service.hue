@@ -67,15 +67,15 @@ class KodiGroup(xbmc.Player):
         def onAVStarted(self):
             logger.info("In KodiGroup[{}], onPlaybackStarted. Group enabled: {},startBehavior: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.startBehavior, self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
             self.state = STATE_PLAYING
-            if self.isPlayingVideo():
+            
+            #If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
+            if self.isPlayingVideo() and self.mediaType == VIDEO:
                 self.videoInfoTag=self.getVideoInfoTag()
-            else:
-                self.videoInfoTag=False
+                if not self.checkVideoActivation(self.videoInfoTag):
+                    return
+                
             globals.lastMediaType = self.playbackType()
             if self.enabled and self.checkActiveTime() and self.startBehavior and self.mediaType == self.playbackType():
-                if self.mediaType == VIDEO and not self.checkVideoActivation(self.videoInfoTag):
-                     #TODO: this condition can probably be combined with self.isPlayVideo at beginning of method
-                    return
                 try:
                     self.groupResource.action(scene=self.startScene)
                 except QhueException as e:
