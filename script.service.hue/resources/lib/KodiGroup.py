@@ -80,9 +80,9 @@ class KodiGroup(xbmc.Player):
         def onPlayBackStopped(self):
             logger.info("In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroupID,self.mediaType,globals.lastMediaType))
             self.state = STATE_IDLE
-            if self.enabled and self.checkActiveTime() and self.stopBehavior and self.mediaType == globals.lastMediaType:
+            if self.enabled and self.checkActiveTime() and self.stopBehavior and self.mediaType == globals.lastMediaType and self.checkVideoActivation():
                 try:
-                    xbmc.sleep(500) #sleep 500ms for any left over ambilight calls to complete first.
+                    xbmc.sleep(200) #sleep 500ms for any left over ambilight calls to complete first.
                     self.groupResource.action(scene=self.stopScene)
                 except QhueException as e:
                     logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
@@ -91,10 +91,10 @@ class KodiGroup(xbmc.Player):
         def onPlayBackPaused(self):
             logger.info("In KodiGroup[{}], onPlaybackPaused() , isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID,self.isPlayingVideo(),self.isPlayingAudio()))
             self.state = STATE_PAUSED
-            if self.enabled and self.checkActiveTime() and self.pauseBehavior and self.mediaType == self.playbackType():
+            if self.enabled and self.checkActiveTime() and self.pauseBehavior and self.mediaType == self.playbackType() and self.checkVideoActivation():
                 self.lastMediaType = self.playbackType()
                 try:
-                    xbmc.sleep(500) #sleep 500ms for any left over ambilight calls to complete first.
+                    xbmc.sleep(200) #sleep 500ms for any left over ambilight calls to complete first.
                     self.groupResource.action(scene=self.pauseScene)
                 except QhueException as e:
                     logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
