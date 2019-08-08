@@ -73,7 +73,8 @@ class KodiGroup(xbmc.Player):
                 self.videoInfoTag=self.getVideoInfoTag()
                 if not self.checkVideoActivation(self.videoInfoTag):
                     return
-                
+            else:
+                self.videoInfoTag = None
             globals.lastMediaType = self.playbackType()
             if self.enabled and self.checkActiveTime() and self.startBehavior and self.mediaType == self.playbackType():
                 try:

@@ -106,7 +106,7 @@ def service():
                
             if globals.settingsChanged:
                 kgroups = kodiHue.setupGroups(bridge, globals.reloadFlash)
-                ambiGroup.setup(monitor,bridge, kgroupID=3, flash=globals.reloadFlash, mediaType=1)
+                ambiGroup.setup(monitor,bridge, kgroupID=3, flash=globals.reloadFlash)
                 globals.settingsChanged = False
 
 
