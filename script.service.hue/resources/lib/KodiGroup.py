@@ -84,7 +84,7 @@ class KodiGroup(xbmc.Player):
 
         def onPlayBackStopped(self):
             logger.info("In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroupID,self.mediaType,globals.lastMediaType))
-            if self.state == STATE_PLAYING:
+            if self.state == STATE_PLAYING or self.state==STATE_PAUSED:
                 if self.enabled and self.checkActiveTime() and self.stopBehavior and self.mediaType == globals.lastMediaType:
                     try:
                         xbmc.sleep(200) #sleep for any left over ambilight calls to complete first.
@@ -162,7 +162,7 @@ class KodiGroup(xbmc.Player):
                     return True
                 logger.debug("Disabled by schedule time")
                 return False
-            logger.debug("Schedule not enabled")
+            logger.debug("Schedule not enabled, ignoring")
             return True
 
 
