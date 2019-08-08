@@ -43,6 +43,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                         except QhueException as e:
                             logger.debug("Ambi: Initial Hue call fail: {}".format(e))
                 
+                self.state = STATE_PLAYING
                 self.ambiRunning.set()
                 ambiLoopThread=Thread(target=self._ambiLoop,name="_ambiLoop")
                 ambiLoopThread.daemon = True
