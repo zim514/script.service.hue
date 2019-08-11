@@ -455,6 +455,8 @@ def getLightGamut(bridge,L):
         return None
     if gamut == "A"  or gamut == "B" or gamut == "C":
         return gamut
+    else:
+        return "C"
     return None
 
 
