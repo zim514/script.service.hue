@@ -8,7 +8,7 @@ import datetime
 
 import xbmc
 from . import globals
-import kodiHue
+from . import kodiHue
 from .globals import logger
 from .qhue import QhueException
 
