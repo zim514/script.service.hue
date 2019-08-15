@@ -290,12 +290,9 @@ def configureAmbiLights(bridge,kGroupID):
     if lights is not None:
         for L in lights:
             gamut = getLightGamut(bridge, L)
-            if gamut == "A" or gamut== "B" or gamut == "C":
+            if gamut == "A" or gamut== "B" or gamut == "C": #defaults to C if unknown model
                 lightNames.append(_getLightName(bridge,L))
                 colorLights.append(L)
-            else:
-                notification(_("Hue Service"), _("Only colour lights are supported"), icon=xbmcgui.NOTIFICATION_ERROR)
-                
 
         globals.ADDON.setSettingString("group{}_Lights".format(kGroupID),','.join(colorLights))
         globals.ADDON.setSettingString("group{}_LightNames".format(kGroupID),','.join(lightNames))
@@ -456,8 +453,8 @@ def getLightGamut(bridge,L):
     if gamut == "A"  or gamut == "B" or gamut == "C":
         return gamut
     else:
-        return "C"
-    return None
+        return "C" #default to C if unknown gamut type
+
 
 
 def checkBridgeModel(bridge):
