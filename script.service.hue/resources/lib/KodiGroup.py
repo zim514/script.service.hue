@@ -7,10 +7,16 @@ Created on Apr. 17, 2019
 import datetime
 
 import xbmc
-from . import globals
-from . import kodiHue
-from .globals import logger
-from .qhue import QhueException
+from resources.lib.qhue import QhueException
+
+from resources.lib import globals
+from resources.lib.globals import logger
+import kodiHue
+
+#import kodiHue
+
+
+
 
 
 STATE_IDLE = 0

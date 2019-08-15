@@ -2,18 +2,17 @@ from logging import getLogger
 from socket import getfqdn
 import datetime
 
-import requests
-
 import xbmc
 import xbmcgui
 
+import requests
+from . import qhue
+from resources.lib.qhue.qhue import QhueException
+
 from . import KodiGroup
 from . import globals
-
-from . import qhue
-
 from .language import get_string as _
-from resources.lib.qhue.qhue import QhueException
+
 
 
 logger = getLogger(globals.ADDONID)
@@ -452,8 +451,7 @@ def getLightGamut(bridge,L):
         return None
     if gamut == "A"  or gamut == "B" or gamut == "C":
         return gamut
-    else:
-        return "C" #default to C if unknown gamut type
+    return "C" #default to C if unknown gamut type
 
 
 

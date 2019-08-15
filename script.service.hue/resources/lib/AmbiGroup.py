@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from threading import Thread, Event
 
+import xbmc,xbmcgui
 from PIL import Image
+
 from . import colorgram #https://github.com/obskyr/colorgram.py
 from .rgbxy import Converter,ColorHelper# https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA,GamutB,GamutC
 from .qhue import QhueException
-
-import xbmc,xbmcgui
 
 from . import globals
 from . import KodiGroup
