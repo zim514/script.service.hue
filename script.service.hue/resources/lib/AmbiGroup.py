@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from threading import Thread, Event
 
+import xbmc,xbmcgui
 from PIL import Image
+
 from . import colorgram #https://github.com/obskyr/colorgram.py
 from .rgbxy import Converter,ColorHelper# https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA,GamutB,GamutC
 from .qhue import QhueException
-
-import xbmc,xbmcgui
 
 from . import globals
 from . import KodiGroup
@@ -96,6 +96,17 @@ class AmbiGroup(KodiGroup.KodiGroup):
         super(AmbiGroup,self).setup(bridge, kgroupID, flash, VIDEO)
         self.monitor=monitor
         
+        
+        self.converterA=Converter(GamutA)
+        self.helperA=ColorHelper(GamutA)
+        
+        self.converterB=Converter(GamutB)
+        self.helperB=ColorHelper(GamutB)
+        
+        self.converterC=Converter(GamutC)
+        self.helperC=ColorHelper(GamutC)        
+    
+        
         #=======================================================================
         # calls=1/(self.updateInterval)*len(self.ambiLights)  #updateInterval is in seconds, eg. 0.2 for 200ms.
         # if calls > 25 and calls < 2000:
@@ -165,14 +176,14 @@ class AmbiGroup(KodiGroup.KodiGroup):
         prevxy=self.ambiLights[light].get('prevxy')
         
         if gamut == "A":
-            converter=Converter(GamutA)
-            helper=ColorHelper(GamutA)
+            converter=self.converterA
+            helper=self.helperA
         elif gamut == "B":
-            converter=Converter(GamutB)
-            helper=ColorHelper(GamutB)
+            converter=self.converterB
+            helper=self.helperB
         elif gamut == "C":
-            converter=Converter(GamutC)
-            helper=ColorHelper(GamutC)
+            converter=self.converterC
+            helper=self.helperC
         
         xy=converter.rgb_to_xy(r,g,b)
         xy=round(xy[0],4),round(xy[1],4) #Hue has a max precision of 4 decimal points.
@@ -195,11 +206,11 @@ class AmbiGroup(KodiGroup.KodiGroup):
         prevxy=self.ambiLights[light].get('prevxy')
         
         if gamut == "A":
-            helper=ColorHelper(GamutA)
+            helper=self.helperA
         elif gamut == "B":
-            helper=ColorHelper(GamutB)
+            helper=self.helperB
         elif gamut == "C":
-            helper=ColorHelper(GamutC)
+            helper=self.helperC
 
         xy=(round(xy[0],4),round(xy[1],4)) #Hue has a max precision of 4 decimal points.
 

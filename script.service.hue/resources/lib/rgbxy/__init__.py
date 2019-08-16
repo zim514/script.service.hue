@@ -201,20 +201,17 @@ class ColorHelper:
         b = X * 0.051713 - Y * 0.121364 + Z * 1.011530
 
         # Apply reverse gamma correction
-        r, g, b = map(
-            lambda x: (12.92 * x) if (x <= 0.0031308) else ((1.0 + 0.055) * pow(x, (1.0 / 2.4)) - 0.055),
-            [r, g, b]
-        )
+        r, g, b = [(12.92 * x) if (x <= 0.0031308) else ((1.0 + 0.055) * pow(x, (1.0 / 2.4)) - 0.055) for x in [r, g, b]]
 
         # Bring all negative components to zero
-        r, g, b = map(lambda x: max(0, x), [r, g, b])
+        r, g, b = [max(0, x) for x in [r, g, b]]
 
         # If one component is greater than 1, weight components by that value.
         max_component = max(r, g, b)
         if max_component > 1:
-            r, g, b = map(lambda x: x / max_component, [r, g, b])
+            r, g, b = [x / max_component for x in [r, g, b]]
 
-        r, g, b = map(lambda x: int(x * 255), [r, g, b])
+        r, g, b = [int(x * 255) for x in [r, g, b]]
 
         # Convert the RGB values to your color object The rgb values from the above formulas are between 0.0 and 1.0.
         return (r, g, b)
