@@ -278,7 +278,6 @@ def configureScene(bridge,kGroupID,action):
         #group0_startSceneID
         globals.ADDON.setSettingString("group{}_{}SceneID".format(kGroupID, action),scene[0])
         globals.ADDON.setSettingString("group{}_{}SceneName".format(kGroupID,action), scene[1])
-
         globals.ADDON.openSettings()
 
 
@@ -288,10 +287,10 @@ def configureAmbiLights(bridge,kGroupID):
     colorLights=[]
     if lights is not None:
         for L in lights:
-            gamut = getLightGamut(bridge, L)
-            if gamut == "A" or gamut== "B" or gamut == "C": #defaults to C if unknown model
-                lightNames.append(_getLightName(bridge,L))
-                colorLights.append(L)
+            #gamut = getLightGamut(bridge, L)
+            #if gamut == "A" or gamut== "B" or gamut == "C": #defaults to C if unknown model
+            lightNames.append(_getLightName(bridge,L))
+            colorLights.append(L)
 
         globals.ADDON.setSettingString("group{}_Lights".format(kGroupID),','.join(colorLights))
         globals.ADDON.setSettingString("group{}_LightNames".format(kGroupID),','.join(lightNames))
