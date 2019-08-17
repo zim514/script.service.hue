@@ -132,12 +132,11 @@ class KodiGroup(xbmc.Player):
         def sunset(self):
             logger.info("In KodiGroup[{}], in sunset()".format(self.kgroupID))
 
-            if self.state == STATE_PLAYING:
+            if self.isPlaying(): #if Kodi is playing any file, start up
                 self.onAVStarted()
             elif self.state == STATE_PAUSED:
                 self.onPlayBackPaused()
-            elif self.state == STATE_IDLE:
-                #self.onPlayBackStopped()
+            else:
                 #if not playing and sunset happens, probably should do nothing.
                 logger.debug("In KodiGroup[{}], in sunset(). playback stopped, doing nothing. ".format(self.kgroupID))
 
