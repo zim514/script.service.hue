@@ -14,7 +14,7 @@ script:
 
 before_deploy:
   - pip install  git+https://github.com/romanvm/kodi-addon-submitter.git
-  - submit-addon -s -z $ADDON_ID
+  - submit-addon -s -z $ADDON_ID -b leia -s -r repo-scripts --push-branch
   - export RELEASE_ZIP=$(ls *.zip)
 
 
