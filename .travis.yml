@@ -25,7 +25,6 @@ deploy:
     file_glob: true
     file: $RELEASE_ZIP
     skip_cleanup: true
-    prerelease: true
     draft: false
     on:
       branch: master
