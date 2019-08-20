@@ -11,7 +11,7 @@ from .qhue import QhueException
 
 from . import globals
 from . import KodiGroup
-from .KodiGroup import VIDEO,AUDIO,ALLMEDIA,STATE_IDLE,STATE_PAUSED,STATE_PLAYING
+from .KodiGroup import VIDEO,AUDIO,ALLMEDIA,STATE_STOPPED,STATE_PAUSED,STATE_PLAYING
 from . import kodiHue
 
 from .globals import logger
@@ -25,6 +25,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         logger.info("Ambilight Settings. Colours: {}, Interval: {}, transitionTime: {}".format(self.numColors,self.updateInterval,self.transitionTime))
         logger.info("Ambilight Settings. enabled: {}, forceOn: {}, setBrightness: {}, Brightness: {}".format(self.enabled,self.forceOn,self.setBrightness,self.brightness))
         self.state = STATE_PLAYING
+        
         if self.isPlayingVideo():
             self.videoInfoTag=self.getVideoInfoTag()
             if self.enabled and self.checkActiveTime() and self.checkVideoActivation(self.videoInfoTag):
@@ -43,23 +44,22 @@ class AmbiGroup(KodiGroup.KodiGroup):
                         except QhueException as e:
                             logger.debug("Ambi: Initial Hue call fail: {}".format(e))
                 
-                self.state = STATE_PLAYING
                 self.ambiRunning.set()
                 ambiLoopThread=Thread(target=self._ambiLoop,name="_ambiLoop")
                 ambiLoopThread.daemon = True
                 ambiLoopThread.start()
 
+
     def onPlayBackStopped(self):
         logger.info("In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
+        self.state = STATE_STOPPED
         self.ambiRunning.clear()
-        self.state = STATE_IDLE
 
 
     def onPlayBackPaused(self):
         logger.info("In ambiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
-        self.ambiRunning.clear()
         self.state = STATE_PAUSED
-        
+        self.ambiRunning.clear()
 
     
     def loadSettings(self):
@@ -198,7 +198,6 @@ class AmbiGroup(KodiGroup.KodiGroup):
             #logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
             pass
         self.ambiLights[light].update(prevxy=xy)
-
 
 
     def _updateHueXY(self,xy,light,transitionTime):

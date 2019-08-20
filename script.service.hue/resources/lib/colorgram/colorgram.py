@@ -107,7 +107,7 @@ def _process(samples,pixels,x,y,top_two_bits):
     samples[packed + 1] += g
     samples[packed + 2] += b
     samples[packed + 3] += 1
-    return samples
+    return
 
 def pick_used(samples):
     used = []
