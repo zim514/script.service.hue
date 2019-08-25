@@ -31,10 +31,10 @@ deploy:
       branch: master
       tags: true
 
-#  - provider: script
-#    script: submit-addon -s $ADDON_ID -b $BRANCH -r $REPO --push-branch
-#    on:
-#      tags: true
+  - provider: script
+    script: submit-addon -s $ADDON_ID -b $BRANCH -r $REPO --push-branch
+    on:
+      tags: true
 
 #notifications:
 #    webhooks: https://www.travisbuddy.com/
