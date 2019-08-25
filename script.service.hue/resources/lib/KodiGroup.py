@@ -93,7 +93,7 @@ class KodiGroup(xbmc.Player):
         def onPlayBackStopped(self):
             logger.info("In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroupID,self.mediaType,globals.lastMediaType))
             self.state = STATE_STOPPED
-            
+        
             if self.mediaType == VIDEO and not self.checkVideoActivation(self.videoInfoTag):#If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
                 return
             
@@ -179,19 +179,18 @@ class KodiGroup(xbmc.Player):
 
 
         def checkVideoActivation(self,infoTag):
-            if self.isPlayingVideo():
-                duration=infoTag.getDuration() / 60 #returns seconds, convert to minutes
-                mediaType=infoTag.getMediaType()
-                logger.debug("Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, Other: {}".
-                             format(self.kgroupID,globals.videoMinimumDuration,globals.video_enableMovie,globals.video_enableEpisode,globals.video_enableMusicVideo,globals.video_enableOther))
-                logger.debug("Video Activation ({}): Duration: {}, mediaType: {}".format(self.kgroupID,duration,mediaType))
-                if duration > globals.videoMinimumDuration and \
-                    ((globals.video_enableMovie and mediaType == "movie") or
-                    (globals.video_enableEpisode and mediaType == "episode") or 
-                    (globals.video_enableMusicVideo and mediaType == "MusicVideo") or 
-                    globals.video_enableOther):
-                    logger.debug("Video activation: True")
-                    return True
+            duration=infoTag.getDuration() / 60 #returns seconds, convert to minutes
+            mediaType=infoTag.getMediaType()
+            logger.debug("Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, Other: {}".
+                         format(self.kgroupID,globals.videoMinimumDuration,globals.video_enableMovie,globals.video_enableEpisode,globals.video_enableMusicVideo,globals.video_enableOther))
+            logger.debug("Video Activation ({}): Duration: {}, mediaType: {}".format(self.kgroupID,duration,mediaType))
+            if duration > globals.videoMinimumDuration and \
+                ((globals.video_enableMovie and mediaType == "movie") or
+                (globals.video_enableEpisode and mediaType == "episode") or 
+                (globals.video_enableMusicVideo and mediaType == "MusicVideo") or 
+                globals.video_enableOther):
+                logger.debug("Video activation: True")
+                return True
             logger.debug("Video activation: False")
             return False
 

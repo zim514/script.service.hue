@@ -4,6 +4,7 @@ python: "3.7"
 env:
    - ADDON_ID=script.service.hue
      BRANCH=leia
+     REPO=repo-scripts
 
 # command to install dependencies
 install:
@@ -14,7 +15,7 @@ script:
 
 before_deploy:
   - pip install  git+https://github.com/romanvm/kodi-addon-submitter.git
-  - submit-addon -s -z $ADDON_ID -b leia -s -r repo-scripts --push-branch
+  - submit-addon -s -z $ADDON_ID
   - export RELEASE_ZIP=$(ls *.zip)
 
 
@@ -31,7 +32,7 @@ deploy:
       tags: true
 
 #  - provider: script
-#    script: submit-addon -r repo-scripts -b $BRANCH -s --pull-request $ADDON_ID
+#    script: submit-addon -s $ADDON_ID -b $BRANCH -r $REPO --push-branch
 #    on:
 #      tags: true
 
