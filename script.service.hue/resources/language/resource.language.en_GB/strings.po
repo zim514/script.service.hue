@@ -482,7 +482,9 @@ msgctxt "#30809"
 msgid "Pumpkin"
 msgstr "Pumpkin"
 
-
+msgctxt "#30810"
+msgid "Minimum colour distance"
+msgstr "Minimum colour distance"
 
 
 msgctxt "#30069"
@@ -503,6 +505,11 @@ msgstr ""
 
 msgctxt "#30073"
 msgid ""
-"Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for"
-" certain features."
-msgstr "
+"Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for certain features."
+msgstr ""
+
+
+
+
+
+
