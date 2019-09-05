@@ -446,8 +446,8 @@ def getLightGamut(bridge,L):
         gamut = bridge.lights()[L]['capabilities']['control']['colorgamuttype']
         logger.debug("Light: {}, gamut: {}".format(L,gamut))
     except Exception:
-        logger.exception("getLightGamut Exception")
-        return None
+        logger.exception("Can't get gamut for light, defaulting to Gamut C: {}".format(L))
+        return "C"
     if gamut == "A"  or gamut == "B" or gamut == "C":
         return gamut
     return "C" #default to C if unknown gamut type
