@@ -53,9 +53,9 @@ def sample(image):
     top_two_bits = 0b11000000
 
     sides = 1 << 2 # Left by the number of bits used.
-    cubes = sides ** 6
+    cubes = sides ** 3
 
-    samples = array.array(ARRAY_DATATYPE, (0 for _ in range(cubes)))
+    samples = array.array(ARRAY_DATATYPE, (0 for _ in range(cubes*4)))
     width, height = image.size
     
     pixels = image.load()
@@ -81,9 +81,9 @@ def _process(samples,pixels,x,y,top_two_bits):
 
     # Everything's shifted into place from the top two
     # bits' original position - that is, bits 7-8.
-    packed = (Y & top_two_bits) << 4
-    packed |= (h & top_two_bits) << 2
-    packed |= (l & top_two_bits) << 0
+    packed = (Y & top_two_bits) >> 2
+    packed |= (h & top_two_bits) >> 4
+    packed |= (l & top_two_bits) >> 6
 
     # Due to a bug in the original colorgram.js, RGB isn't included.
     # The original author tries using negative bit shifts, while in
