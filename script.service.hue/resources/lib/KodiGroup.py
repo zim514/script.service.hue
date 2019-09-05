@@ -16,9 +16,6 @@ import kodiHue
 #import kodiHue
 
 
-
-
-
 STATE_STOPPED = 0
 STATE_PLAYING = 1
 STATE_PAUSED = 2
@@ -81,8 +78,7 @@ class KodiGroup(xbmc.Player):
                     return
             else:
                 self.videoInfoTag = None
-                
-            
+        
             if self.enabled and self.checkActiveTime() and self.startBehavior and self.mediaType == self.playbackType():
                 try:
                     self.groupResource.action(scene=self.startScene)
@@ -179,8 +175,13 @@ class KodiGroup(xbmc.Player):
 
 
         def checkVideoActivation(self,infoTag):
-            duration=infoTag.getDuration() / 60 #returns seconds, convert to minutes
-            mediaType=infoTag.getMediaType()
+            try:
+                logger.debug("InfoTag: {}".format(self.infoTag))
+                duration=infoTag.getDuration() / 60 #returns seconds, convert to minutes
+                mediaType=infoTag.getMediaType()
+            except AttributeError:
+                logger.exception("Can't read infoTag")
+                return False
             logger.debug("Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, Other: {}".
                          format(self.kgroupID,globals.videoMinimumDuration,globals.video_enableMovie,globals.video_enableEpisode,globals.video_enableMusicVideo,globals.video_enableOther))
             logger.debug("Video Activation ({}): Duration: {}, mediaType: {}".format(self.kgroupID,duration,mediaType))
