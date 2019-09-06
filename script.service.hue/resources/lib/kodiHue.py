@@ -37,6 +37,8 @@ def loadSettings():
     globals.video_enableEpisode = globals.ADDON.getSettingBool("video_Episode")
     globals.video_enableOther = globals.ADDON.getSettingBool("video_Other")
     
+    globals.ambiEnabled = globals.ADDON.getSettingBool("group3_enabled") 
+    
     validateSchedule()
     
 def setupGroups(bridge,flash=False):

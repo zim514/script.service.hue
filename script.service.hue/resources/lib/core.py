@@ -93,9 +93,9 @@ def service():
         globals.daylight = kodiHue.getDaylight(bridge)
        
         kgroups = kodiHue.setupGroups(bridge,globals.initialFlash)
-        ambiGroup = AmbiGroup.AmbiGroup()
-        ambiGroup.setup(monitor,bridge, kgroupID=3, flash=globals.initialFlash)
-        
+        if globals.ambiEnabled:
+            ambiGroup = AmbiGroup.AmbiGroup()
+            ambiGroup.setup(monitor,bridge, kgroupID=3, flash=globals.initialFlash)
         
         connectionRetries = 0
         timer = 60 #Run loop once on first run
@@ -106,7 +106,8 @@ def service():
                
             if globals.settingsChanged:
                 kgroups = kodiHue.setupGroups(bridge, globals.reloadFlash)
-                ambiGroup.setup(monitor,bridge, kgroupID=3, flash=globals.reloadFlash)
+                if globals.ambiEnabled:
+                    ambiGroup.setup(monitor,bridge, kgroupID=3, flash=globals.reloadFlash)
                 globals.settingsChanged = False
 
 
