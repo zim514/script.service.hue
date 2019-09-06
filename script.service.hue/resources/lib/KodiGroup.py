@@ -73,7 +73,11 @@ class KodiGroup(xbmc.Player):
             globals.lastMediaType = self.playbackType()
             
             if self.isPlayingVideo() and self.mediaType == VIDEO:  #If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
-                self.videoInfoTag=self.getVideoInfoTag()
+                try:
+                    self.videoInfoTag=self.getVideoInfoTag()
+                except Exception as e:
+                    logger.debug("Get InfoTag Exception: {}".format(e))
+                logger.debug("InfoTag: {}".format(self.videoInfoTag))
                 if not self.checkVideoActivation(self.videoInfoTag):
                     return
             else:
@@ -175,10 +179,12 @@ class KodiGroup(xbmc.Player):
 
 
         def checkVideoActivation(self,infoTag):
+            logger.debug("InfoTag: {}".format(infoTag))
             try:
-                logger.debug("InfoTag: {}".format(self.infoTag))
                 duration=infoTag.getDuration() / 60 #returns seconds, convert to minutes
                 mediaType=infoTag.getMediaType()
+                file=infoTag.getFile()
+                logger.debug("InfoTag contents: duration: {}, mediaType: {}, file: {}".format(duration,mediaType,file))
             except AttributeError:
                 logger.exception("Can't read infoTag")
                 return False
