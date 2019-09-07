@@ -1,9 +1,4 @@
-'''
-Created on Apr. 17, 2019
-
-
-'''
-#from logging import getLogger
+# -*- coding: utf-8 -*-
 import datetime
 
 import xbmc
@@ -12,8 +7,6 @@ from resources.lib.qhue import QhueException
 from resources.lib import globals
 from resources.lib.globals import logger
 import kodiHue
-
-#import kodiHue
 
 
 STATE_STOPPED = 0
@@ -77,6 +70,7 @@ class KodiGroup(xbmc.Player):
                     self.videoInfoTag=self.getVideoInfoTag()
                 except Exception as e:
                     logger.debug("Get InfoTag Exception: {}".format(e))
+                    return
                 logger.debug("InfoTag: {}".format(self.videoInfoTag))
                 if not self.checkVideoActivation(self.videoInfoTag):
                     return
@@ -159,7 +153,7 @@ class KodiGroup(xbmc.Player):
         
         
         def checkActiveTime(self):
-            #logger.debug("in checkActiveTime. Schedule: {}".format(globals.enableSchedule))
+            logger.debug("Schedule: {}, daylightDiable: {}, daylight: {}, startTime: {}, endTime: {}".format(globals.enableSchedule,globals.daylightDisable,globals.daylight,globals.startTime,globals.endTime))
             
             if globals.daylightDisable and globals.daylight:
                 logger.debug("Disabled by daylight")
@@ -183,8 +177,8 @@ class KodiGroup(xbmc.Player):
             try:
                 duration=infoTag.getDuration() / 60 #returns seconds, convert to minutes
                 mediaType=infoTag.getMediaType()
-                file=infoTag.getFile()
-                logger.debug("InfoTag contents: duration: {}, mediaType: {}, file: {}".format(duration,mediaType,file))
+                fileName=infoTag.getFile()
+                logger.debug("InfoTag contents: duration: {}, mediaType: {}, file: {}".format(duration,mediaType,fileName))
             except AttributeError:
                 logger.exception("Can't read infoTag")
                 return False
