@@ -159,7 +159,7 @@ class KodiGroup(xbmc.Player):
         
         
         def checkActiveTime(self):
-            logger.debug("in checkActiveTime. Schedule: {}".format(globals.enableSchedule))
+            #logger.debug("in checkActiveTime. Schedule: {}".format(globals.enableSchedule))
             
             if globals.daylightDisable and globals.daylight:
                 logger.debug("Disabled by daylight")
@@ -170,11 +170,11 @@ class KodiGroup(xbmc.Player):
                 end=kodiHue.convertTime(globals.endTime)
                 now=datetime.datetime.now().time()
                 if (now > start) and (now <end):
-                    logger.debug("Schedule active")
+                    logger.debug("Enabled by schedule")
                     return True
-                logger.debug("Disabled by schedule time")
+                logger.debug("Disabled by schedule")
                 return False
-            logger.debug("Schedule not enabled, ignoring")
+            logger.debug("Schedule not enabled")
             return True
 
 

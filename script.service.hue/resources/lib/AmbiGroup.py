@@ -21,9 +21,9 @@ from .language import get_string as _
 
 class AmbiGroup(KodiGroup.KodiGroup):
     def onAVStarted(self):
-        logger.info("Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.kgroupID, self.enabled,self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
-        logger.info("Ambilight Settings. Colours: {}, Interval: {}, transitionTime: {}".format(self.numColors,self.updateInterval,self.transitionTime))
-        logger.info("Ambilight Settings. enabled: {}, forceOn: {}, setBrightness: {}, Brightness: {}".format(self.enabled,self.forceOn,self.setBrightness,self.brightness))
+        logger.info("Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(self.enabled,self.isPlayingVideo(),self.isPlayingAudio(),self.mediaType,self.playbackType()))
+        logger.info("Ambilight Settings: Colours: {}, Interval: {}, transitionTime: {}".format(self.numColors,self.updateInterval,self.transitionTime))
+        logger.info("Ambilight Settings: forceOn: {}, setBrightness: {}, Brightness: {}, MinimumDistance: {}".format(self.forceOn,self.setBrightness,self.brightness,self.minimumDistance))
         self.state = STATE_PLAYING
         
         if self.isPlayingVideo():
@@ -75,7 +75,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         self.blackFilter=globals.ADDON.getSettingInt("group{}_BlackFilter".format(self.kgroupID))
         self.defaultRecipe=globals.ADDON.getSettingInt("group{}_DefaultRecipe".format(self.kgroupID))
         self.captureSize=globals.ADDON.getSettingInt("group{}_CaptureSize".format(self.kgroupID))
-        self.minimumDistance=globals.ADDON.getSettingInt("group{}_ColorDifference".format(self.kgroupID)) / 10000 #convert to float with 4 precision between 0-1
+        self.minimumDistance=float(globals.ADDON.getSettingInt("group{}_ColorDifference".format(self.kgroupID))) / 10000 #convert to float with 4 precision between 0-1
 
         self.updateInterval=globals.ADDON.getSettingInt("group{}_Interval".format(self.kgroupID)) /1000# convert MS to seconds
         if self.updateInterval == 0: 
