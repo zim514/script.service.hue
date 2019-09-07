@@ -98,14 +98,11 @@ class AmbiGroup(KodiGroup.KodiGroup):
         
         
         self.converterA=Converter(GamutA)
-        self.helperA=ColorHelper(GamutA)
+        self.helper=ColorHelper(GamutC)
         
         self.converterB=Converter(GamutB)
-        self.helperB=ColorHelper(GamutB)
         
         self.converterC=Converter(GamutC)
-        self.helperC=ColorHelper(GamutC)        
-    
         
         #=======================================================================
         # calls=1/(self.updateInterval)*len(self.ambiLights)  #updateInterval is in seconds, eg. 0.2 for 200ms.
@@ -177,49 +174,37 @@ class AmbiGroup(KodiGroup.KodiGroup):
         
         if gamut == "A":
             converter=self.converterA
-            helper=self.helperA
         elif gamut == "B":
             converter=self.converterB
-            helper=self.helperB
         elif gamut == "C":
             converter=self.converterC
-            helper=self.helperC
+
         
         xy=converter.rgb_to_xy(r,g,b)
         xy=round(xy[0],4),round(xy[1],4) #Hue has a max precision of 4 decimal points.
 
-        distance=round(helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1])) ,4)#only update hue if XY actually changed
+        distance=round(self.helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1])) ,4)#only update hue if XY actually changed
         if distance > self.minimumDistance:
             try:
                 self.bridge.lights[light].state(xy=xy,transitiontime=transitionTime)
             except QhueException as ex:
-                logger.exception("Ambi: Hue call fail:")
+                logger.exception("Ambi: Hue call fail")
         else:
-            #logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
-            pass
+            logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
         self.ambiLights[light].update(prevxy=xy)
 
 
     def _updateHueXY(self,xy,light,transitionTime):
-        gamut=self.ambiLights[light].get('gamut')
         prevxy=self.ambiLights[light].get('prevxy')
         
-        if gamut == "A":
-            helper=self.helperA
-        elif gamut == "B":
-            helper=self.helperB
-        elif gamut == "C":
-            helper=self.helperC
-
         xy=(round(xy[0],4),round(xy[1],4)) #Hue has a max precision of 4 decimal points.
 
-        distance=round(helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1])) ,4)#only update hue if XY actually changed
+        distance=round(self.helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1])) ,4)#only update hue if XY actually changed
         if distance > self.minimumDistance:
             try:
                 self.bridge.lights[light].state(xy=xy,transitiontime=transitionTime)
             except QhueException as ex:
-                logger.exception("Ambi: Hue call fail:")
+                logger.exception("Ambi: Hue call fail")
         else: 
-            #logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
-            pass
+            logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
         self.ambiLights[light].update(prevxy=xy)
