@@ -181,16 +181,16 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         
         xy=converter.rgb_to_xy(r,g,b)
-        xy=round(xy[0],4),round(xy[1],4) #Hue has a max precision of 4 decimal points.
+        xy=round(xy[0],3),round(xy[1],3) #Hue has a max precision of 4 decimal points, but 3 is enough
 
-        distance=round(self.helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1])) ,4)#only update hue if XY actually changed
+        distance=round(self.helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1])) ,4)#only update hue if XY changed enough
         if distance > self.minimumDistance:
             try:
                 self.bridge.lights[light].state(xy=xy,transitiontime=transitionTime)
             except QhueException as ex:
                 logger.exception("Ambi: Hue call fail")
-        else:
-            logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
+        #else:
+            #logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
         self.ambiLights[light].update(prevxy=xy)
 
 
@@ -199,12 +199,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
         
         xy=(round(xy[0],4),round(xy[1],4)) #Hue has a max precision of 4 decimal points.
 
-        distance=round(self.helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1])) ,4)#only update hue if XY actually changed
+        distance=round(self.helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1])) ,4)#only update hue if XY changed enough
         if distance > self.minimumDistance:
             try:
                 self.bridge.lights[light].state(xy=xy,transitiontime=transitionTime)
             except QhueException as ex:
                 logger.exception("Ambi: Hue call fail")
-        else: 
-            logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
+        #else: 
+            #logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
         self.ambiLights[light].update(prevxy=xy)
