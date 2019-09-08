@@ -98,22 +98,11 @@ class AmbiGroup(KodiGroup.KodiGroup):
         
         
         self.converterA=Converter(GamutA)
-        self.helper=ColorHelper(GamutC)
-        
         self.converterB=Converter(GamutB)
-        
         self.converterC=Converter(GamutC)
-        
-        #=======================================================================
-        # calls=1/(self.updateInterval)*len(self.ambiLights)  #updateInterval is in seconds, eg. 0.2 for 200ms.
-        # if calls > 25 and calls < 2000:
-        #     kodiHue.notification(_("Hue Service"), _("Est. Hue Commands/sec (max 20): {}").format(calls),time=3000,icon=xbmcgui.NOTIFICATION_WARNING)
-        # else:
-        #     logger.warn("Warning: 0 update interval ")
-        #     kodiHue.notification(_("Hue Service"), _("Recommended minimum update interval: 100ms").format(calls),time=3000,icon=xbmcgui.NOTIFICATION_WARNING)
-        # logger.debug("callsPerSec: lights: {},interval: {}, calls: {}".format(len(self.ambiLights),self.updateInterval,calls))
-        #=======================================================================
-    
+        self.helper=ColorHelper(GamutC)
+
+
     
     def _ambiLoop(self):
         
@@ -126,7 +115,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     capImage = cap.getImage() #timeout to wait for OS in ms, default 1000
                     if capImage is None or len(capImage) < 50:
                         logger.error("capImage is none or <50: {},{}".format(len(capImage),capImage))
-                        self.monitor.waitForAbort(0.25) #slow it down before restarting loop
+                        self.monitor.waitForAbort(0.25) #pause before trying again
                         continue #no image captured, try again next iteration
                     image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
                 except ValueError:
