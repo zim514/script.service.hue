@@ -419,8 +419,8 @@ msgid "Colour Filters"
 msgstr "Colour filters"
 
 msgctxt "#30063"
-msgid "Default Colour"
-msgstr "Default Colour"
+msgid "Black replacement colour"
+msgstr "Black replacement colour"
 
 msgctxt "#30064"
 msgid "Number of colours"
@@ -485,6 +485,11 @@ msgstr "Pumpkin"
 msgctxt "#30810"
 msgid "Colour sensitivity"
 msgstr "Colour sensitivity"
+
+msgctxt "#30811"
+msgid "Minimum colour proportion %:"
+msgstr "Minimum colour proportion %:"
+
 
 msgctxt "#30069"
 msgid "Recommended minimum update interval: 100ms"

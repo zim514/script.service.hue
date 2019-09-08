@@ -76,6 +76,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         self.defaultRecipe=globals.ADDON.getSettingInt("group{}_DefaultRecipe".format(self.kgroupID))
         self.captureSize=globals.ADDON.getSettingInt("group{}_CaptureSize".format(self.kgroupID))
         self.minimumDistance=float(globals.ADDON.getSettingInt("group{}_ColorDifference".format(self.kgroupID))) / 10000 #convert to float with 4 precision between 0-1
+        self.minimumColorProportion=float(globals.ADDON.getSettingInt("group{}_MinimumColorProportion".format(self.kgroupID))) /100 #convert percentage to float 0-1
 
         self.updateInterval=globals.ADDON.getSettingInt("group{}_Interval".format(self.kgroupID)) /1000# convert MS to seconds
         if self.updateInterval == 0: 
@@ -114,12 +115,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
                     capImage = cap.getImage() #timeout to wait for OS in ms, default 1000
                     if capImage is None or len(capImage) < 50:
-                        logger.error("capImage is none or <50: {},{}".format(len(capImage),capImage))
+                        logger.error("capImage is none or <50: {}".format(len(capImage)))
                         self.monitor.waitForAbort(0.25) #pause before trying again
                         continue #no image captured, try again next iteration
                     image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
                 except ValueError:
-                    logger.error("capImage: {},{}".format(len(capImage),capImage))
+                    logger.error("capImage: {}".format(len(capImage)))
                     logger.error("Value Error")
                     self.monitor.waitForAbort(0.25)
                     continue #returned capture is  smaller than expected when player stopping. give up this loop.
@@ -129,29 +130,30 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     continue 
                 
                 colors = colorgram.extract(image,self.numColors)
-        
-                if colors[0].rgb.r < self.blackFilter and colors[0].rgb.g < self.blackFilter and colors[0].rgb.b <self.blackFilter:
-                    #logger.debug("rgb filter: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
-                    if self.defaultRecipe: #defaultRecipe=0: Do nothing
-                        xy=HUE_RECIPES[self.defaultRecipe]["xy"]#Apply XY value from default recipe setting
-                        for L in self.ambiLights: 
-                            x = Thread(target=self._updateHueXY,name="updateHue", args=(xy,L,self.transitionTime))
+                logger.debug("proportion: {0:.0%}".format(colors[0].proportion))
+                if colors[0].proportion > self.minimumColorProportion:
+                    if colors[0].rgb.r < self.blackFilter and colors[0].rgb.g < self.blackFilter and colors[0].rgb.b <self.blackFilter:
+                        #logger.debug("rgb filter: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
+                        if self.defaultRecipe: #defaultRecipe=0: Do nothing
+                            xy=HUE_RECIPES[self.defaultRecipe]["xy"]#Apply XY value from default recipe setting
+                            for L in self.ambiLights: 
+                                x = Thread(target=self._updateHueXY,name="updateHue", args=(xy,L,self.transitionTime))
+                                x.daemon = True
+                                x.start()
+                    else:
+                        for L in self.ambiLights:
+                            if self.numColors == 1:
+                                #logger.debug("AmbiUpdate 1 Color: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
+                                x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b,L,self.transitionTime))
+                            else:
+                                colorIndex=self.ambiLights[L]["index"] % len(colors)
+                                #logger.debug("AmbiUpdate Colors: {}".format(colors))
+                                x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[colorIndex].rgb.r,colors[colorIndex].rgb.g,colors[colorIndex].rgb.b,L,self.transitionTime))
                             x.daemon = True
                             x.start()
-                else:
-                    for L in self.ambiLights:
-                        if self.numColors == 1:
-                            #logger.debug("AmbiUpdate 1 Color: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
-                            x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b,L,self.transitionTime))
-                        else:
-                            colorIndex=self.ambiLights[L]["index"] % len(colors)
-                            #logger.debug("AmbiUpdate Colors: {}".format(colors))
-                            x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors[colorIndex].rgb.r,colors[colorIndex].rgb.g,colors[colorIndex].rgb.b,L,self.transitionTime))
-                        x.daemon = True
-                        x.start()
-                        
-                        
-                        self.monitor.waitForAbort(self.updateInterval) #seconds
+                            
+                            
+                            self.monitor.waitForAbort(self.updateInterval) #seconds
         except Exception as ex:
             logger.exception("Exception in _ambiLoop")
         logger.debug("_ambiLoop stopped")
