@@ -194,4 +194,3 @@ class KodiGroup(xbmc.Player):
                 return True
             logger.debug("Video activation: False")
             return False
-

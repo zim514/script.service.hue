@@ -52,7 +52,3 @@ def discover(service, timeout=5, retries=1, mx=3):
             except socket.timeout:
                 break
     return list(responses.values())
-
-# Example:
-# import ssdp
-# ssdp.discover("roku:ecp")

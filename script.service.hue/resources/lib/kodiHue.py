@@ -489,7 +489,3 @@ class HueMonitor(xbmc.Monitor):
         self.waitForAbort(1)
         loadSettings()
         globals.settingsChanged = True
-
-
-
-
