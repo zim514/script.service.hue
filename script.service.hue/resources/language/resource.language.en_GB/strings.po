@@ -416,7 +416,7 @@ msgstr "RGB Whites filter"
 
 msgctxt "#30062"
 msgid "Colour Filters"
-msgstr "Colour filters"
+msgstr "Colour Filters"
 
 msgctxt "#30063"
 msgid "Black replacement colour"
@@ -487,8 +487,8 @@ msgid "Colour sensitivity"
 msgstr "Colour sensitivity"
 
 msgctxt "#30811"
-msgid "Minimum colour proportion %:"
-msgstr "Minimum colour proportion %:"
+msgid "Minimum colour proportion %"
+msgstr "Minimum colour proportion %"
 
 
 msgctxt "#30069"
