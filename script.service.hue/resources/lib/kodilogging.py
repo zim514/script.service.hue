@@ -64,4 +64,3 @@ def config():
     logger.addHandler(KodiLogHandler())
     logger.setLevel(logging.DEBUG)
 
-

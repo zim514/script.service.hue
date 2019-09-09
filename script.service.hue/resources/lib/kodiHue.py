@@ -37,6 +37,8 @@ def loadSettings():
     globals.video_enableEpisode = globals.ADDON.getSettingBool("video_Episode")
     globals.video_enableOther = globals.ADDON.getSettingBool("video_Other")
     
+    globals.ambiEnabled = globals.ADDON.getSettingBool("group3_enabled") 
+    
     validateSchedule()
     
 def setupGroups(bridge,flash=False):
@@ -446,8 +448,8 @@ def getLightGamut(bridge,L):
         gamut = bridge.lights()[L]['capabilities']['control']['colorgamuttype']
         logger.debug("Light: {}, gamut: {}".format(L,gamut))
     except Exception:
-        logger.exception("getLightGamut Exception")
-        return None
+        logger.exception("Can't get gamut for light, defaulting to Gamut C: {}".format(L))
+        return "C"
     if gamut == "A"  or gamut == "B" or gamut == "C":
         return gamut
     return "C" #default to C if unknown gamut type
@@ -487,7 +489,3 @@ class HueMonitor(xbmc.Monitor):
         self.waitForAbort(1)
         loadSettings()
         globals.settingsChanged = True
-
-
-
-

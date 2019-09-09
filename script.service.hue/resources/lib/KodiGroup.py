@@ -1,9 +1,4 @@
-'''
-Created on Apr. 17, 2019
-
-
-'''
-#from logging import getLogger
+# -*- coding: utf-8 -*-
 import datetime
 
 import xbmc
@@ -12,11 +7,6 @@ from resources.lib.qhue import QhueException
 from resources.lib import globals
 from resources.lib.globals import logger
 import kodiHue
-
-#import kodiHue
-
-
-
 
 
 STATE_STOPPED = 0
@@ -76,13 +66,17 @@ class KodiGroup(xbmc.Player):
             globals.lastMediaType = self.playbackType()
             
             if self.isPlayingVideo() and self.mediaType == VIDEO:  #If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
-                self.videoInfoTag=self.getVideoInfoTag()
+                try:
+                    self.videoInfoTag=self.getVideoInfoTag()
+                except Exception as e:
+                    logger.debug("Get InfoTag Exception: {}".format(e))
+                    return
+                logger.debug("InfoTag: {}".format(self.videoInfoTag))
                 if not self.checkVideoActivation(self.videoInfoTag):
                     return
             else:
                 self.videoInfoTag = None
-                
-            
+        
             if self.enabled and self.checkActiveTime() and self.startBehavior and self.mediaType == self.playbackType():
                 try:
                     self.groupResource.action(scene=self.startScene)
@@ -159,7 +153,7 @@ class KodiGroup(xbmc.Player):
         
         
         def checkActiveTime(self):
-            logger.debug("in checkActiveTime. Schedule: {}".format(globals.enableSchedule))
+            logger.debug("Schedule: {}, daylightDiable: {}, daylight: {}, startTime: {}, endTime: {}".format(globals.enableSchedule,globals.daylightDisable,globals.daylight,globals.startTime,globals.endTime))
             
             if globals.daylightDisable and globals.daylight:
                 logger.debug("Disabled by daylight")
@@ -170,17 +164,24 @@ class KodiGroup(xbmc.Player):
                 end=kodiHue.convertTime(globals.endTime)
                 now=datetime.datetime.now().time()
                 if (now > start) and (now <end):
-                    logger.debug("Schedule active")
+                    logger.debug("Enabled by schedule")
                     return True
-                logger.debug("Disabled by schedule time")
+                logger.debug("Disabled by schedule")
                 return False
-            logger.debug("Schedule not enabled, ignoring")
+            logger.debug("Schedule not enabled")
             return True
 
 
         def checkVideoActivation(self,infoTag):
-            duration=infoTag.getDuration() / 60 #returns seconds, convert to minutes
-            mediaType=infoTag.getMediaType()
+            logger.debug("InfoTag: {}".format(infoTag))
+            try:
+                duration=infoTag.getDuration() / 60 #returns seconds, convert to minutes
+                mediaType=infoTag.getMediaType()
+                fileName=infoTag.getFile()
+                logger.debug("InfoTag contents: duration: {}, mediaType: {}, file: {}".format(duration,mediaType,fileName))
+            except AttributeError:
+                logger.exception("Can't read infoTag")
+                return False
             logger.debug("Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, Other: {}".
                          format(self.kgroupID,globals.videoMinimumDuration,globals.video_enableMovie,globals.video_enableEpisode,globals.video_enableMusicVideo,globals.video_enableOther))
             logger.debug("Video Activation ({}): Duration: {}, mediaType: {}".format(self.kgroupID,duration,mediaType))
@@ -193,4 +194,3 @@ class KodiGroup(xbmc.Player):
                 return True
             logger.debug("Video activation: False")
             return False
-

@@ -49,8 +49,9 @@ Video rarely has perfect blacks (RGB 0,0,0) or whites (RGB 255,255,255). Colour 
 
  - **RGB Black Filter:** Minimum RGB value to apply colour. Color values below this number are replaced by the Default Colour. Useful 
    to avoid full white on black screens & credits. Setting this too high will replace colours in dark scenes. 
- - **RGB White  Filter:** Maximum RGB value to apply colour. Color values above this number are replaced by the Default Colour. 
- - **Default Colour:** The colour used to replace black or white.
+ - **Black replacement colour:** The colour used to replace blacks, from a list of Hue recipies
+ - **Colour Sensitivity:** How big the colour change must be for the lights to update. Can reduce flickering by filtering out colours that are too similar to the previous frame. The higher the value, the bigger the colour difference must be for the lights to update. The value represents the distance between two XY points in the CIE1935 colour space used by Hue.
+ - **Minimum Colour Proportion:** The percentage of the frame a colour must take to update the lights. Can reduce flickering by filtering out colours that only take up a small portion of the screen. 
  
 
 ### Performance:
@@ -63,11 +64,6 @@ Every selected light increases the number of necessary commands therefore influe
 - **Capture size:** CPU impact. Size at which frames are captured, in pixels of X by X. Colour calculation time is too slow with full sized frames, so they are resized first. May affect colour precision as some pixels are lost in the resize process.
 
 Performance logging can be enabled in the advanced setting to check the speed of the colour algorithm and Hue updates. However, these logs are very verbose and should be normally be disabled.
-
-### Notes:
-- [b]Hue Bridge V2 (Square) required[/b]
-- Does not support multiple bridges on your network
-- Only tested on LibreElec 9.0.2 & Windows 10, but no reason it shouldn't work anywhere.
 
 
 ### Problems?

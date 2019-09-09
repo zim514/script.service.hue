@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import functools
 import time
 
@@ -30,6 +31,7 @@ initialFlash = False
 reloadFlash = False
 enableSchedule = False
 performanceLogging = False
+ambiEnabled = False
 
 videoMinimumDuration = 0
 video_enableMovie  = True
