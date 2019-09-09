@@ -22,7 +22,7 @@
 		<summary lang="en_GB">Automate Hue lights with Kodi playback</summary>
 		<description lang="en_GB">Automate your Philips Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes experimental Ambilight support. Check forum for more information.</description>
 		<disclaimer lang="en_GB">Automate Hue lights with Kodi playback</disclaimer>
-		<news>v0.8.0:
+		<news>v0.8.1:
 - Add minimum colour proportion option for ambilight
 - Fix colour sensitivity setting (renamed from colour distance)
 - Ambilight algorithm performance improvements
