@@ -48,9 +48,9 @@ def sample(image):
     top_two_bits = 0b11000000
 
     sides = 1 << 2 # Left by the number of bits used.
-    cubes = sides ** 3
+    cubes = sides ** 7
 
-    samples = array.array(ARRAY_DATATYPE, (0 for _ in range(cubes*4)))
+    samples = array.array(ARRAY_DATATYPE, (0 for _ in range(cubes)))
     width, height = image.size
     
     pixels = image.load()
