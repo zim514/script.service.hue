@@ -109,6 +109,11 @@ class AmbiGroup(KodiGroup.KodiGroup):
         
         cap = xbmc.RenderCapture()
         logger.debug("_ambiLoop started")
+        
+        
+        for L in self.ambiLights: 
+            self.ambiLights[L].update(prevxy=(0.0001,0.0001))
+        
         try:
             while not self.monitor.abortRequested() and self.ambiRunning.is_set(): #loop until kodi tells add-on to stop or video playing flag is unset.
                 try:
@@ -130,7 +135,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     continue 
                 
                 colors = colorgram.extract(image,self.numColors)
-                #logger.debug("proportion: {0:.0%}".format(colors[0].proportion))
+                logger.debug("proportion: {0:.0%}".format(colors[0].proportion))
                 if colors[0].proportion > self.minimumColorProportion:
                     if colors[0].rgb.r < self.blackFilter and colors[0].rgb.g < self.blackFilter and colors[0].rgb.b <self.blackFilter:
                         #logger.debug("rgb filter: r,g,b: {},{},{}".format(colors[0].rgb.r,colors[0].rgb.g,colors[0].rgb.b))
