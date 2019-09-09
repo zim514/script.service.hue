@@ -66,7 +66,6 @@ Every selected light increases the number of necessary commands therefore influe
 Performance logging can be enabled in the advanced setting to check the speed of the colour algorithm and Hue updates. However, these logs are very verbose and should be normally be disabled.
 
 ### Notes:
-- [b]Hue Bridge V2 (Square) required[/b]
 - Does not support multiple bridges on your network
 - Only tested on LibreElec 9.0.2 & Windows 10, but no reason it shouldn't work anywhere.
 
