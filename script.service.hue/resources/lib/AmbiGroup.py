@@ -109,7 +109,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         
         cap = xbmc.RenderCapture()
         logger.debug("_ambiLoop started")
-        
+        expectedCaptureSize= self.captureSize*self.captureSize*4 #size * 4 bytes I guess
         
         for L in self.ambiLights: 
             self.ambiLights[L].update(prevxy=(0.0001,0.0001))
@@ -119,8 +119,9 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 try:
                     cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
                     capImage = cap.getImage() #timeout to wait for OS in ms, default 1000
-                    if capImage is None or len(capImage) < 50:
-                        logger.error("capImage is none or <50: {}".format(len(capImage)))
+                    #logger.debug("CapSize: {}".format(len(capImage)))
+                    if capImage is None or len(capImage) < expectedCaptureSize:
+                        logger.error("capImage is none or < expected: {}, expected: {}".format(len(capImage),expectedCaptureSize))
                         self.monitor.waitForAbort(0.25) #pause before trying again
                         continue #no image captured, try again next iteration
                     image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
@@ -177,30 +178,27 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         
         xy=converter.rgb_to_xy(r,g,b)
-        xy=round(xy[0],4),round(xy[1],4) #Hue has a max precision of 4 decimal points
+        xy=round(xy[0],3),round(xy[1],3) #Hue has a max precision of 4 decimal points, but three is plenty, lower is not noticable.
 
-        distance=self.helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1]))#only update hue if XY changed enough
-        if distance > self.minimumDistance:
-            try:
-                self.bridge.lights[light].state(xy=xy,transitiontime=transitionTime)
-            except QhueException as ex:
-                logger.exception("Ambi: Hue call fail")
-        #else:
-            #logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
+        #distance=self.helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1]))#only update hue if XY changed enough
+        #if distance > self.minimumDistance:
+        try:
+            self.bridge.lights[light].state(xy=xy,transitiontime=transitionTime)
+        except QhueException as ex:
+            logger.exception("Ambi: Hue call fail")
         self.ambiLights[light].update(prevxy=xy)
 
 
     def _updateHueXY(self,xy,light,transitionTime):
         prevxy=self.ambiLights[light].get('prevxy')
         
-        xy=(round(xy[0],4),round(xy[1],4)) #Hue has a max precision of 4 decimal points.
+        #xy=(round(xy[0],3),round(xy[1],3)) #Hue has a max precision of 4 decimal points.
 
-        distance=self.helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1]))#only update hue if XY changed enough
-        if distance > self.minimumDistance:
-            try:
-                self.bridge.lights[light].state(xy=xy,transitiontime=transitionTime)
-            except QhueException as ex:
-                logger.exception("Ambi: Hue call fail")
-        #else: 
-            #logger.debug("Distance too small: min: {}, current: {}".format(self.minimumDistance,distance))
+        #distance=self.helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1]))#only update hue if XY changed enough
+        #if distance > self.minimumDistance:
+        try:
+            self.bridge.lights[light].state(xy=xy,transitiontime=transitionTime)
+        except QhueException as ex:
+            logger.exception("Ambi: Hue call fail")
+    
         self.ambiLights[light].update(prevxy=xy)
