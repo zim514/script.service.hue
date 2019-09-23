@@ -38,23 +38,26 @@ def extract(image, number_of_colors):
 
     totalPixels=image.size[0] * image.size[1]
     
-    samples = sample(image)
+    samples = sample(image,totalPixels)
     used = pick_used(samples)
     used.sort(key=lambda x: x[0], reverse=True)
     return get_colors(samples, used, number_of_colors,totalPixels)
 
 
-def sample(image):
-    top_two_bits = 0b11000000
+def sample(image,totalPixels):
 
-    sides = 1 << 2 # Left by the number of bits used.
-    cubes = sides ** 7
+    mask = 0b11000000
 
-    samples = array.array(ARRAY_DATATYPE, (0 for _ in range(cubes)))
+    #sides = 1 << 2 # Left by the number of bits used.
+    #cubes = sides ** 4
+
+    samples = array.array(ARRAY_DATATYPE, (0 for _ in range(totalPixels)))
     width, height = image.size
     
     pixels = image.load()
-    [_process(samples,pixels,x,y,top_two_bits) for x in range(width) for y in range(height)] #python2.7&3 ~60-65ms on dev machine w/ BBBunny
+    
+    
+    [_process(samples,pixels,x,y,mask) for x in range(width) for y in range(height)] #python2.7&3 ~60-65ms on dev machine w/ BBBunny
     #map(lambda x: map(lambda y: _process(samples,pixels,x,y,top_two_bits), range(height)), range(width)) #python2.7&3 ~70ms on dev machine w/ BBBunny
     #imap(lambda x: imap(lambda y: (samples = _process(samples,pixels,x,y,top_two_bits))), range(height)), range(width))
     
@@ -65,11 +68,13 @@ def sample(image):
     #        samples=_process(samples, pixels, x, y, top_two_bits)
     return samples
 
-def _process(samples,pixels,x,y,top_two_bits):
+def _process(samples,pixels,x,y,mask):
     # Pack the top two bits of all 6 values into 12 bits.
     # 0bYYhhllrrggbb - luminance, hue, luminosity, red, green, blue.
 
     r, g, b = pixels[x, y][:3]
+    if r < 0 and g < 0 and b < 0:
+        return
     #h, s, l = hsl(r, g, b)
     # Standard constants for converting RGB to relative luminance.
     #Y = int(r * 0.2126 + g * 0.7152 + b * 0.0722)
@@ -88,9 +93,9 @@ def _process(samples,pixels,x,y,top_two_bits):
     # original the "error" exists here too. Add back in if it is
     # ever fixed in colorgram.js.
 
-    packed = (r & top_two_bits) >> 2
-    packed |= (g & top_two_bits) >> 4
-    packed |= (b & top_two_bits) >> 6
+    packed = (r & mask) >> 2
+    packed |= (g & mask) >> 4
+    packed |= (b & mask) >> 6
     # print "Pixel #{}".format(str(y * width + x))
     # print "h: {}, s: {}, l: {}".format(str(h), str(s), str(l))
     # print "R: {}, G: {}, B: {}".format(str(r), str(g), str(b))
