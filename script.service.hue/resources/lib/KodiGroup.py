@@ -185,10 +185,10 @@ class KodiGroup(xbmc.Player):
             logger.debug("Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, Other: {}".
                          format(self.kgroupID,globals.videoMinimumDuration,globals.video_enableMovie,globals.video_enableEpisode,globals.video_enableMusicVideo,globals.video_enableOther))
             logger.debug("Video Activation ({}): Duration: {}, mediaType: {}".format(self.kgroupID,duration,mediaType))
-            if duration > globals.videoMinimumDuration and \
+            if (duration > globals.videoMinimumDuration and \
                 ((globals.video_enableMovie and mediaType == "movie") or
                 (globals.video_enableEpisode and mediaType == "episode") or 
-                (globals.video_enableMusicVideo and mediaType == "MusicVideo") or 
+                (globals.video_enableMusicVideo and mediaType == "MusicVideo")) or 
                 globals.video_enableOther):
                 logger.debug("Video activation: True")
                 return True
