@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.8.2">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.9.0~dev1">
 	<requires>
 		<import addon="xbmc.python" version="2.26.0" />
 		<import addon="script.module.requests" version="2.22.0" />
@@ -22,7 +22,9 @@
 		<summary lang="en_GB">Automate Hue lights with Kodi playback</summary>
 		<description lang="en_GB">Automate your Philips Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes experimental Ambilight support. Check forum for more information.</description>
 		<disclaimer lang="en_GB">Automate Hue lights with Kodi playback</disclaimer>
-		<news>v0.8.2:
+		<news>v0.9.0:
+Rewrite Ambilight algorithm based on ScreenBloom (http://www.screenbloom.com/) 
+		v0.8.2:
 - Ambilight algorithm fixes
 - Enable video types without duration (TV, discs) when "other" is enabled.
 v0.8.1:

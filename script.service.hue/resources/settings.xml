@@ -82,26 +82,20 @@
 
         <setting id="group3_SelectLights" type="action" label="30015" action="RunScript(script.service.hue,ambiLightSelect,3)" visible="eq(-1,true)" option="close" />
         <setting id="group3_LightNames" type="text" label="30058"  default="-1" enable="false" visible="eq(-2,true)"/>
-        <setting id="group3_Lights" type="text" label="30035"  default="-1" enable="false" visible="false" />
         
+        <setting type="lsep" label="Color Settings" visible="eq(-3,true)"/>
         <setting id="group3_forceOn" type="bool" label="30057"  default="false" visible="eq(-4,true)"/>
-        <setting id="group3_setBrightness" type="bool" label="30056"  default="false" visible="eq(-5,true)"/>
-        <setting id="group3_Brightness" type="slider" label="30055"  range="1,1,100" default="80" option="percent" enable="eq(-1,true)" visible="eq(-6,true)"/>
-        
-        <setting type="lsep" label="30062" visible="eq(-7,true)"/>
-        <setting id="group3_BlackFilter" type="slider" label="30060" default="1" range="1,1,50" option="int" visible="eq(-8,true)"/>
-        <setting id="group3_DefaultRecipe" type="enum" label="30063"  lvalues="30800|30801|30802|30803|30804|30805|30806|30807|30808" visible="eq(-9,true)"/>
-        <setting id="group3_ColorDifference" type="slider" label="30810" default="100" range="0,50,5000" option="int" visible="false"/>
-        <setting id="group3_MinimumColorProportion" type="slider" label="30811" default="10" range="0,1,100" option="int" visible="eq(-11,true)"/>
+        <setting id="group3_MinBrightness" type="slider" label="MinBri"  range="1,1,100" default="10" option="percent" enable="true" visible="eq(-5,true)"/>
+        <setting id="group3_MaxBrightness" type="slider" label="MaxBri"  range="1,1,100" default="100" option="percent" enable="true" visible="eq(-6,true)"/>
+        <setting id="group3_Saturation" type="slider" label="Saturation"  range="1,1,20" default="1" option="int" enable="true" visible="eq(-7,true)"/>
 
-        
-        <setting type="sep" visible="eq(-12,true)"/>
-        <setting type="lsep" label="30522" visible="eq(-13,true)"/>
-        <setting id="group3_NumColors" type="slider" label="30064" default="1" range="1,1,5" option="int" visible="eq(-14,true)"/>
-        <setting id="group3_Interval" type="slider" label="30065" default="100" range="0,100,1000" option="int" visible="eq(-15,true)" />
-        <setting id="group3_TransitionTime" type="slider" label="30066" default="100" range="0,100,500" option="int" visible="eq(-16,true)"/>
-        <setting id="group3_CaptureSize" type="slider" label="30067" default="250" range="150,50,500" option="int" visible="eq(-17,true)"/>
+        <setting type="lsep" label="30522" visible="eq(-8,true)"/>
+        <setting id="group3_Interval" type="slider" label="30065" default="100" range="0,100,1000" option="int" visible="eq(-9,true)" />
+        <setting id="group3_TransitionTime" type="slider" label="30066" default="100" range="0,100,500" option="int" visible="eq(-10,true)"/>
+        <setting id="group3_CaptureSize" type="slider" label="30067" default="250" range="150,50,500" option="int" visible="eq(-11,true)"/>
 
+
+        <setting id="group3_Lights" type="text" label="30035"  default="-1" enable="false" visible="false" />
     </category>
 <!--  /GROUP SECTION  0-->
 

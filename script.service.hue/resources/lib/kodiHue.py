@@ -486,6 +486,6 @@ class HueMonitor(xbmc.Monitor):
 
     def onSettingsChanged(self):
         logger.debug("Settings changed")
-        self.waitForAbort(1)
+        #self.waitForAbort(1)
         loadSettings()
         globals.settingsChanged = True
