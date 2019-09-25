@@ -80,10 +80,10 @@
     	<setting type="lsep" label="30521" />
         <setting id="group3_enabled" type="bool" label="30520" default="false" />
         <setting id="group3_SelectLights" type="action" label="30015" action="RunScript(script.service.hue,ambiLightSelect,3)" visible="eq(-1,true)" option="close" />
-        <setting id="group3_LightNames" type="text" label="30058"  default="-1" enable="false" visible="eq(-3,true)"/>
+        <setting id="group3_LightNames" type="text" label="30058"  default="-1" enable="false" visible="eq(-2,true)"/>
         
-        <setting type="sep" label="" visible="eq(-4,true)"/>
-        <setting id="group3_forceOn" type="bool" label="30057"  default="false" visible="eq(-2,true)"/>
+        <setting type="sep" label="" visible="eq(-3,true)"/>
+        <setting id="group3_forceOn" type="bool" label="30057"  default="false" visible="eq(-4,true)"/>
         <setting id="group3_MinBrightness" type="slider" label="30810"  range="1,1,100" default="10" option="percent" enable="true" visible="eq(-5,true)"/>
         <setting id="group3_MaxBrightness" type="slider" label="30811"  range="1,1,100" default="100" option="percent" enable="true" visible="eq(-6,true)"/>
         <setting id="group3_Saturation" type="slider" label="30809"  range="1,1,20" default="1" option="int" enable="true" visible="eq(-7,true)"/>
