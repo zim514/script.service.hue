@@ -73,7 +73,7 @@
         <setting id="group1_stopSceneID" type="text" label="32511"  default="-1" enable="false" visible="false" />
     </category>
 <!--  /GROUP SECTION  0-->
-
+ 
 
 <!--  GROUP SECTION  3 AMBILIGHT -->    
     <category label="30523">
@@ -85,9 +85,9 @@
         
         <setting type="lsep" label="Color Settings" visible="eq(-3,true)"/>
         <setting id="group3_forceOn" type="bool" label="30057"  default="false" visible="eq(-4,true)"/>
-        <setting id="group3_MinBrightness" type="slider" label="MinBri"  range="1,1,100" default="10" option="percent" enable="true" visible="eq(-5,true)"/>
-        <setting id="group3_MaxBrightness" type="slider" label="MaxBri"  range="1,1,100" default="100" option="percent" enable="true" visible="eq(-6,true)"/>
-        <setting id="group3_Saturation" type="slider" label="Saturation"  range="1,1,20" default="1" option="int" enable="true" visible="eq(-7,true)"/>
+        <setting id="group3_MinBrightness" type="slider" label="30810"  range="1,1,100" default="10" option="percent" enable="true" visible="eq(-5,true)"/>
+        <setting id="group3_MaxBrightness" type="slider" label="30811"  range="1,1,100" default="100" option="percent" enable="true" visible="eq(-6,true)"/>
+        <setting id="group3_Saturation" type="slider" label="30809"  range="1,1,20" default="1" option="int" enable="true" visible="eq(-7,true)"/>
 
         <setting type="lsep" label="30522" visible="eq(-8,true)"/>
         <setting id="group3_Interval" type="slider" label="30065" default="100" range="0,100,1000" option="int" visible="eq(-9,true)" />

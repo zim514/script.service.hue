@@ -16,7 +16,6 @@ from .KodiGroup import VIDEO,AUDIO,ALLMEDIA,STATE_STOPPED,STATE_PAUSED,STATE_PLA
 from . import kodiHue
 
 from .globals import logger
-from .recipes import HUE_RECIPES
 from .language import get_string as _
 
 
@@ -69,8 +68,6 @@ class AmbiGroup(KodiGroup.KodiGroup):
         
         self.saturation=globals.ADDON.getSettingInt("group{}_Saturation".format(self.kgroupID))
         
-        
-        
         self.captureSize=globals.ADDON.getSettingInt("group{}_CaptureSize".format(self.kgroupID))
 
         self.updateInterval=globals.ADDON.getSettingInt("group{}_Interval".format(self.kgroupID)) /1000# convert MS to seconds
@@ -88,18 +85,20 @@ class AmbiGroup(KodiGroup.KodiGroup):
     
     
     def setup(self, monitor,bridge, kgroupID, flash=False):
-        self.ambiRunning = Event()
+        try:
+            self.ambiRunning
+        except NameError:
+            self.ambiRunning = Event()
+        
         super(AmbiGroup,self).setup(bridge, kgroupID, flash, VIDEO)
         self.monitor=monitor
         
         self.imageProcess = ImageProcess.ImageProcess()
         
-        
         self.converterA=Converter(GamutA)
         self.converterB=Converter(GamutB)
         self.converterC=Converter(GamutC)
         self.helper=ColorHelper(GamutC)
-
 
     
     def _ambiLoop(self):
@@ -160,8 +159,6 @@ class AmbiGroup(KodiGroup.KodiGroup):
         xy=converter.rgb_to_xy(r,g,b)
         xy=round(xy[0],3),round(xy[1],3) #Hue has a max precision of 4 decimal points, but three is plenty, lower is not noticable.
 
-        #distance=self.helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1]))#only update hue if XY changed enough
-        #if distance > self.minimumDistance:
         try:
             self.bridge.lights[light].state(xy=xy,bri=bri,transitiontime=transitionTime)
         except QhueException as ex:
