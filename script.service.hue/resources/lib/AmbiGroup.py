@@ -133,11 +133,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 
 
                 colors = self.imageProcess.img_avg(image,self.minBri,self.maxBri,self.saturation)
+                for L in self.ambiLights:
+                    x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors['rgb'][0],colors['rgb'][1],colors['rgb'][2],L,self.transitionTime,colors['bri']))
+                    x.daemon = True
+                    x.start()
+                    self.monitor.waitForAbort(self.updateInterval) #seconds
 
-                x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors['rgb'][0],colors['rgb'][1],colors['rgb'][2],L,self.transitionTime,colors['bri']))
-                x.daemon = True
-                x.start()
-                self.monitor.waitForAbort(self.updateInterval) #seconds
 
         except Exception as ex:
             logger.exception("Exception in _ambiLoop")
