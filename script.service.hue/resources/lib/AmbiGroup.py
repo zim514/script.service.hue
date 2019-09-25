@@ -87,7 +87,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
     def setup(self, monitor,bridge, kgroupID, flash=False):
         try:
             self.ambiRunning
-        except NameError:
+        except AttributeError:
             self.ambiRunning = Event()
         
         super(AmbiGroup,self).setup(bridge, kgroupID, flash, VIDEO)
