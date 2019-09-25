@@ -34,27 +34,14 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 ## Experimental Ambilight Support
 You can now configure multiple lights to match playing video as closely as possible.  [Coloured bias lighting](https://en.wikipedia.org/wiki/Bias_lighting)  can reduce eye strain and add colour effects to your media center. 
 
-This system uses colorgram.py to find the most *predominant* colour in a frame. Colourful/saturated scenes look best, while live action, talk shows or less colorful SD shows tend to generate skin-tones and whites, which still looks good when translated to lighting.
-
 These settings can impact performance, and may need to be tuned for your set up. 
 
 ### Basic Settings:
 - **Select Lights:** Only Hue bulbs and lamps that support colours (Gamuts A, B and C) can be used with this system. Lights that can only reproduce whites or color temperatures are ignored.
-- **Force on & Set Brightness:** Force the selected lights on or to a particular brightness when playback starts. Otherwise, lights will stay at the previous brightness and turned off. This can also be accomplished via Start Scene in Video Actions. Using both can cause conflicts
+- **Force on :** Force the selected lights on when playback starts. Otherwise, lights will stay turned off. 
 
-### Colour Filters:
-As the system is based on colour of the current frame, predominantly white and black frames can produce harsh white light. This is mostly noticeable during credit sequences and transitions between scenes or commercials. 
-Colour filters allow you to replace full whites or blacks to a selection of neutral white recipes for a more pleasant experience.  
-Video rarely has perfect blacks (RGB 0,0,0) or whites (RGB 255,255,255). Colour filters allow you to specify the minimum black or white values to apply to your lights. Outside of that range, the default colour is applied.
 
- - **RGB Black Filter:** Minimum RGB value to apply colour. Color values below this number are replaced by the Default Colour. Useful 
-   to avoid full white on black screens & credits. Setting this too high will replace colours in dark scenes. 
- - **Black replacement colour:** The colour used to replace blacks, from a list of Hue recipies
- - **Colour Sensitivity:** How big the colour change must be for the lights to update. Can reduce flickering by filtering out colours that are too similar to the previous frame. The higher the value, the bigger the colour difference must be for the lights to update. The value represents the distance between two XY points in the CIE1935 colour space used by Hue.
- - **Minimum Colour Proportion:** The percentage of the frame a colour must take to update the lights. Can reduce flickering by filtering out colours that only take up a small portion of the screen. 
- 
-
-### Performance:
+### Ambilight Performance:
 
 Hue has a total limit of 20 commands per second which can be used by all applications and switches. Issuing too many Hue commands can cause your lights to lag or ignore input.
 Every selected light increases the number of necessary commands therefore influences how often lights can be updated. For more information on Hue system performance, refer to the [Hue documentation](https://developers.meethue.com/develop/application-design-guidance/hue-system-performance/).
@@ -76,5 +63,5 @@ Performance logging can be enabled in the advanced setting to check the speed of
 - Based on original work by @cees-elzinga, @michaelrcarroll, @mpolednik on github
 - [Qhue by Quentin Stafford-Fraser](https://github.com/quentinsf/qhue)
 - [ssdp.py by dankrause](https://gist.github.com/dankrause/6000248)
-- [Colorgram.py by obskyr](https://github.com/obskyr/colorgram.py) 
+- [ScreenBloom by Tyler Kershner](https://github.com/kershner/screenBloom) 
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)

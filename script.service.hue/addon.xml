@@ -23,8 +23,9 @@
 		<description lang="en_GB">Automate your Philips Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes experimental Ambilight support. Check forum for more information.</description>
 		<disclaimer lang="en_GB">Automate Hue lights with Kodi playback</disclaimer>
 		<news>v0.9.0:
-Rewrite Ambilight algorithm based on ScreenBloom (http://www.screenbloom.com/) 
-		v0.8.2:
+- New ambilight algorithm (based on http://www.screenbloom.com/)
+- Changing settings while video playing will no longer stop ambilight
+v0.8.2:
 - Ambilight algorithm fixes
 - Enable video types without duration (TV, discs) when "other" is enabled.
 v0.8.1:
