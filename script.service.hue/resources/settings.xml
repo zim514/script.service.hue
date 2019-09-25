@@ -41,11 +41,11 @@
 
 <!-- VIDEO ACTIVATION  --> 
     <category label="Video Activation">
-        <setting id="video_MinimumDuration" type="number" label="Minimum duration (Minutes)" default="0" />
-        <setting id="video_Movie" type="bool" label="Enable for Movies" default="True" />
-        <setting id="video_Episode" type="bool" label="Enable for TV episodes" default="True" />
-        <setting id="video_MusicVideo" type="bool" label="Enable for music videos" default="True" />
-        <setting id="video_Other" type="bool" label="Enable for other videos" default="True" />
+        <setting id="video_MinimumDuration" type="number" label="30800" default="0" />
+        <setting id="video_Movie" type="bool" label="30801" default="True" />
+        <setting id="video_Episode" type="bool" label="30802" default="True" />
+        <setting id="video_MusicVideo" type="bool" label="30803" default="True" />
+        <setting id="video_Other" type="bool" label="30804" default="True" />
 	</category>
 
 <!--  GROUP SECTION  1 AUDIO -->    
@@ -79,12 +79,11 @@
     <category label="30523">
     	<setting type="lsep" label="30521" />
         <setting id="group3_enabled" type="bool" label="30520" default="false" />
-
         <setting id="group3_SelectLights" type="action" label="30015" action="RunScript(script.service.hue,ambiLightSelect,3)" visible="eq(-1,true)" option="close" />
-        <setting id="group3_LightNames" type="text" label="30058"  default="-1" enable="false" visible="eq(-2,true)"/>
+        <setting id="group3_LightNames" type="text" label="30058"  default="-1" enable="false" visible="eq(-3,true)"/>
         
-        <setting type="lsep" label="Color Settings" visible="eq(-3,true)"/>
-        <setting id="group3_forceOn" type="bool" label="30057"  default="false" visible="eq(-4,true)"/>
+        <setting type="sep" label="" visible="eq(-4,true)"/>
+        <setting id="group3_forceOn" type="bool" label="30057"  default="false" visible="eq(-2,true)"/>
         <setting id="group3_MinBrightness" type="slider" label="30810"  range="1,1,100" default="10" option="percent" enable="true" visible="eq(-5,true)"/>
         <setting id="group3_MaxBrightness" type="slider" label="30811"  range="1,1,100" default="100" option="percent" enable="true" visible="eq(-6,true)"/>
         <setting id="group3_Saturation" type="slider" label="30809"  range="1,1,20" default="1" option="int" enable="true" visible="eq(-7,true)"/>

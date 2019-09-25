@@ -418,6 +418,25 @@ msgctxt "#30068"
 msgid "Performance debug logging"
 msgstr "Performance debug logging"
 
+msgctxt "#30800"
+msgid "Minimum duration (Minutes)"
+msgstr "Minimum duration (Minutes)"
+
+msgctxt "#30801"
+msgid "Enable for Movies"
+msgstr "Enable for Movies"
+
+msgctxt "#30802"
+msgid "Enable for TV episodes"
+msgstr "Enable for TV episodes
+
+msgctxt "#30803"
+msgid "Enable for music videos"
+msgstr "Enable for music videos"
+
+msgctxt "#30804"
+msgid "Enable for other videos (Discs and Live TV)"
+msgstr "Enable for other videos (Discs and Live TV)"
 
 msgctxt "#30809"
 msgid "Saturation"
