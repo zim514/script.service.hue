@@ -35,19 +35,13 @@ class ImageProcess(object):
         g = 1
         b = 1
     
-        #=======================================================================
-        # # Win version of imgGrab does not contain alpha channel
-        # if img.mode == 'RGB':
-        #     img.putalpha(0)
-        #=======================================================================
-    
         # Create list of pixels
         pixels = list(img.getdata())
         
         
         if saturation > 1.0:
             sat_converter = ImageEnhance.Color(img)
-            img = sat_converter.enhance(self.saturation)
+            img = sat_converter.enhance(saturation)
         
         for red, green, blue, alpha in pixels:
             # Don't count pixels that are too dark
@@ -104,54 +98,4 @@ class ImageProcess(object):
             scaled_brightness = int(maxBri)
     
         return int(scaled_brightness)
-
-
     
-    
-    # Grabs screenshot of current window, calls img_avg (including on zones if present)
-    #===========================================================================
-    # def screen_avg(self,_screen):
-    #     screen_data = {}
-    # 
-    #     # Win version uses DesktopMagic for multiple displays
-    #     if params.BUILD == 'win':
-    #         try:
-    #             img = getRectAsImage(_screen.bbox)
-    #         except IndexError:
-    #             utility.display_check(_screen)
-    #             img = getRectAsImage(_screen.bbox)
-    #     # Mac version uses standard PIL ImageGrab
-    #     else:
-    #         img = ImageGrab.grab()
-    # 
-    #     # Resize for performance - this could be a user editable setting
-    #     size = (16, 9)
-    #     img = img.resize(size)
-    #===========================================================================
-    
-        #=======================================================================
-        # # Enhance saturation according to user settings
-        # sat_scale_factor = float(_screen.sat)
-        # if sat_scale_factor > 1.0:
-        #     sat_converter = ImageEnhance.Color(img)
-        #     img = sat_converter.enhance(sat_scale_factor)
-        #=======================================================================
-    
-    #===========================================================================
-    #     zone_result = []
-    #     if _screen.zone_state:
-    #         for zone in _screen.zones:
-    #             box = (int(zone['x1']), int(zone['y1']), int(zone['x2']), int(zone['y2']))
-    #             zone_img = img.copy().crop(box)
-    #             zone_data = self.img_avg(zone_img)
-    #             zone_data['bulbs'] = zone['bulbs']
-    #             zone_result.append(zone_data)
-    # 
-    #         screen_data['zones'] = zone_result
-    #     else:
-    #===========================================================================
-    #===========================================================================
-    #     screen_data = self.img_avg(img)
-    # 
-    #     return screen_data        
-    #===========================================================================
