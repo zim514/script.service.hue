@@ -386,10 +386,6 @@ msgctxt "#30054"
 msgid "Est. Hue Calls/sec (max 10): {}"
 msgstr ""
 
-msgctxt "#30055"
-msgid "Brightness"
-msgstr "Brightness"
-
 msgctxt "#30056"
 msgid "Set brightness on start"
 msgstr "Set brightness on start"
@@ -405,26 +401,6 @@ msgstr "Light Names:"
 msgctxt "#30059"
 msgid "Light Gamut:"
 msgstr "Light Gamut:"
-
-msgctxt "#30060"
-msgid "RGB Blacks filter"
-msgstr "RGB Blacks filter"
-
-msgctxt "#30061"
-msgid "RGB Whites filter"
-msgstr "RGB Whites filter"
-
-msgctxt "#30062"
-msgid "Colour Filters"
-msgstr "Colour Filters"
-
-msgctxt "#30063"
-msgid "Black replacement colour"
-msgstr "Black replacement colour"
-
-msgctxt "#30064"
-msgid "Number of colours"
-msgstr "Number of colours"
 
 msgctxt "#30065"
 msgid "Update interval (ms)"
@@ -443,52 +419,36 @@ msgid "Performance debug logging"
 msgstr "Performance debug logging"
 
 msgctxt "#30800"
-msgid "Do nothing"
-msgstr "Do nothing"
+msgid "Minimum duration (Minutes)"
+msgstr "Minimum duration (Minutes)"
 
 msgctxt "#30801"
-msgid "Relax"
-msgstr "Relax"
+msgid "Enable for Movies"
+msgstr "Enable for Movies"
 
 msgctxt "#30802"
-msgid "Read"
-msgstr "Read"
+msgid "Enable for TV episodes"
+msgstr "Enable for TV episodes
 
 msgctxt "#30803"
-msgid "Concentrate"
-msgstr "Concentrate"
+msgid "Enable for music videos"
+msgstr "Enable for music videos"
 
 msgctxt "#30804"
-msgid "Relax"
-msgstr "Relax"
-
-msgctxt "#30805"
-msgid "Bright"
-msgstr "Bright"
-
-msgctxt "#30806"
-msgid "Energize"
-msgstr "Energize"
-
-msgctxt "#30807"
-msgid "Candelight"
-msgstr "Candelight"
-
-msgctxt "#30808"
-msgid "Incandescent"
-msgstr "Incandescent"
+msgid "Enable for other videos (Discs and Live TV)"
+msgstr "Enable for other videos (Discs and Live TV)"
 
 msgctxt "#30809"
-msgid "Pumpkin"
-msgstr "Pumpkin"
+msgid "Saturation"
+msgstr "Saturation"
 
 msgctxt "#30810"
-msgid "Colour sensitivity"
-msgstr "Colour sensitivity"
+msgid "Minimum Brightness"
+msgstr "Minimum Brightness"
 
 msgctxt "#30811"
-msgid "Minimum colour proportion %"
-msgstr "Minimum colour proportion %"
+msgid "Maximum Brightness"
+msgstr "Maximum Brightness"
 
 
 msgctxt "#30069"

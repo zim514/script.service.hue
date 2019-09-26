@@ -111,7 +111,7 @@ def service():
                 globals.settingsChanged = False
 
 
-            if timer > 59: #run this loop once per minute.
+            if timer > 59: 
                 timer = 0
                 try:
                     if connectionRetries > 0:
@@ -127,7 +127,7 @@ def service():
                     if connectionRetries <= 5:
                         logger.error("Bridge Connection Error. Attempt: {}/5 : {}".format(connectionRetries, error))
                         xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
-                        timer = -60 #set timer to negative 1 minute
+                        timer = -60 
                         
                     else:
                         logger.error("Bridge Connection Error. Attempt: {}/5. Shutting down : {}".format(connectionRetries, error))
