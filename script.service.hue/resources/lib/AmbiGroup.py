@@ -105,7 +105,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
         
         cap = xbmc.RenderCapture()
         logger.debug("_ambiLoop started")
-        expectedCaptureSize= self.captureSize*self.captureSize*4 #size * 4 bytes I guess
+        
+        aspectRatio=cap.getAspectRatio()
+        
+        self.captureSizeY=int(self.captureSize / aspectRatio)
+        expectedCaptureSize= self.captureSize*self.captureSizeY*4 #size * 4 bytes I guess
+        logger.debug("aspectRatio: {}, CaptureSize: ({},{}), expectedCaptureSize: {}".format(aspectRatio,self.captureSize,self.captureSizeY,expectedCaptureSize))
         
         for L in self.ambiLights: 
             self.ambiLights[L].update(prevxy=(0.0001,0.0001))
@@ -113,17 +118,17 @@ class AmbiGroup(KodiGroup.KodiGroup):
         try:
             while not self.monitor.abortRequested() and self.ambiRunning.is_set(): #loop until kodi tells add-on to stop or video playing flag is unset.
                 try:
-                    cap.capture(self.captureSize, self.captureSize) #async capture request to underlying OS
+                    cap.capture(self.captureSize, self.captureSizeY) #async capture request to underlying OS
                     capImage = cap.getImage() #timeout to wait for OS in ms, default 1000
                     #logger.debug("CapSize: {}".format(len(capImage)))
                     if capImage is None or len(capImage) < expectedCaptureSize:
                         logger.error("capImage is none or < expected: {}, expected: {}".format(len(capImage),expectedCaptureSize))
                         self.monitor.waitForAbort(0.25) #pause before trying again
                         continue #no image captured, try again next iteration
-                    image = Image.frombuffer("RGBA", (self.captureSize, self.captureSize), buffer(capImage), "raw", "BGRA")
+                    image = Image.frombuffer("RGBA", (self.captureSize, self.captureSizeY), buffer(capImage), "raw", "BGRA")
                 except ValueError:
                     logger.error("capImage: {}".format(len(capImage)))
-                    logger.error("Value Error")
+                    logger.exception("Value Error")
                     self.monitor.waitForAbort(0.25)
                     continue #returned capture is  smaller than expected when player stopping. give up this loop.
                 except Exception as ex:
