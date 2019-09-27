@@ -89,9 +89,9 @@
         <setting id="group3_Saturation" type="slider" label="30809"  range="1,1,20" default="1" option="int" enable="true" visible="eq(-7,true)"/>
 
         <setting type="lsep" label="30522" visible="eq(-8,true)"/>
-        <setting id="group3_Interval" type="slider" label="30065" default="100" range="0,100,1000" option="int" visible="eq(-9,true)" />
-        <setting id="group3_TransitionTime" type="slider" label="30066" default="100" range="0,100,500" option="int" visible="eq(-10,true)"/>
-        <setting id="group3_CaptureSize" type="slider" label="30067" default="250" range="150,50,500" option="int" visible="eq(-11,true)"/>
+        <setting id="group3_Interval" type="slider" label="30065" default="200" range="0,100,1000" option="int" visible="eq(-9,true)" />
+        <setting id="group3_TransitionTime" type="slider" label="30066" default="200" range="0,100,500" option="int" visible="eq(-10,true)"/>
+        <setting id="group3_CaptureSize" type="slider" label="30067" default="400" range="150,100,1000" option="int" visible="eq(-11,true)"/>
 
 
         <setting id="group3_Lights" type="text" label="30035"  default="-1" enable="false" visible="false" />
