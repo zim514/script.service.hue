@@ -13,14 +13,17 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
  2. [Install to Kodi from Zip](https://kodi.wiki/view/HOW-TO:Install_add-ons_from_zip_files)
 
 ## Features:
-- Create and delete multi-room Light Scenes
-    - Adjust your lights as desired, and use the add-on to select the lights and transition time.
-    - Supports lights in multiple rooms or groups.
-    - The official Hue app won't show scenes made outside of the official app, but most 3rd party apps will let you see and edit your scene
--   Apply selected scene on playback
-    - Select scenes to apply when on Play, Pause and Stop
-    - Separate scenes for Audio or Video playback
--   Daylight detection
+- Create and delete multi-room LightScenes
+    - Adjust your light's colour and brightness
+    - Optional transition time for scenes
+    - Supports lights in multiple rooms or groups
+    - Edit your scenes in 3rd party apps
+    - - Apply selected scene on video or audio player actions
+    - Can be disabled based on video type (Episode, Movie or music video) or duration
+- Ambilight Support
+    - Lighting effects synced with on-screen action
+    - Hardware decoding not supported on Android
+- Daylight detection
     - Uses Hue's sunrise and sunset settings
     - Disable during daylight hours
     - If sunset falls while watching media, optionally turn on lights
@@ -29,7 +32,6 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
     - Set a start and end time at which the add-on should be enabled
     - Time in 24h format (Eg: 22:00, not 10:00 PM)
     - Disable during daylight setting takes precedence over active hours
-    - Not tested if end time is after midnight (Eg. activate from 6PM to 1AM)
 
 ## Experimental Ambilight Support
 You can now configure multiple lights to match playing video as closely as possible.  [Coloured bias lighting](https://en.wikipedia.org/wiki/Bias_lighting)  can reduce eye strain and add colour effects to your media center. 
@@ -60,8 +62,8 @@ Performance logging can be enabled in the advanced setting to check the speed of
 
 ### Credits:
 
-- Based on original work by @cees-elzinga, @michaelrcarroll, @mpolednik on github
+- [ScreenBloom by Tyler Kershner](https://github.com/kershner/screenBloom) 
 - [Qhue by Quentin Stafford-Fraser](https://github.com/quentinsf/qhue)
 - [ssdp.py by dankrause](https://gist.github.com/dankrause/6000248)
-- [ScreenBloom by Tyler Kershner](https://github.com/kershner/screenBloom) 
+
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
