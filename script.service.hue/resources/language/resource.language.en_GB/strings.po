@@ -451,6 +451,11 @@ msgid "Maximum Brightness"
 msgstr "Maximum Brightness"
 
 
+msgctxt "#30812"
+msgid "Disable connection message"
+msgstr "Disable connection message"
+
+
 msgctxt "#30069"
 msgid "Recommended minimum update interval: 100ms"
 msgstr ""

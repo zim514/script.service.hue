@@ -30,6 +30,9 @@ def loadSettings():
     globals.startTime = globals.ADDON.getSetting("startTime") #string HH:MM
     globals.endTime = globals.ADDON.getSetting("endTime") #string HH:MM
     globals.performanceLogging = globals.ADDON.getSettingBool("performanceLogging")
+    globals.disableConnectionMessage = globals.ADDON.getSettingBool("disableConnectionMessage")
+    
+    
     
     globals.videoMinimumDuration = globals.ADDON.getSettingInt("video_MinimumDuration") #Setting in Minutes. Kodi library uses seconds, needs to be converted.
     globals.video_enableMovie = globals.ADDON.getSettingBool("video_Movie")

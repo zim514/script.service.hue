@@ -32,6 +32,7 @@ reloadFlash = False
 enableSchedule = False
 performanceLogging = False
 ambiEnabled = False
+connectionMessage = False
 
 videoMinimumDuration = 0
 video_enableMovie  = True
