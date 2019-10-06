@@ -86,7 +86,7 @@ def service():
     monitor = kodiHue.HueMonitor()
 
 
-    bridge = kodiHue.connectBridge(monitor,silent=False)
+    bridge = kodiHue.connectBridge(monitor,silent=globals.disableConnectionMessage)
 
     if bridge is not None:
         globals.settingsChanged = False
