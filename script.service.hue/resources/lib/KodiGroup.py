@@ -93,8 +93,9 @@ class KodiGroup(xbmc.Player):
             
             if self.enabled and self.checkActiveTime() and self.stopBehavior and self.mediaType == globals.lastMediaType:
                 try:
-                    xbmc.sleep(200) #sleep for any left over ambilight calls to complete first.
+                    xbmc.sleep(500) #sleep for any left over ambilight calls to complete first.
                     self.groupResource.action(scene=self.stopScene)
+                    logger.info("In KodiGroup[{}], onPlaybackStop() Stop scene activated")
                 except QhueException as e:
                     logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
 
@@ -103,15 +104,15 @@ class KodiGroup(xbmc.Player):
             logger.info("In KodiGroup[{}], onPlaybackPaused() , isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID,self.isPlayingVideo(),self.isPlayingAudio()))
             self.state = STATE_PAUSED
             
-            if self.mediaType == VIDEO and not self.checkVideoActivation(self.videoInfoTag):#If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
+            if self.mediaType == VIDEO and not self.checkVideoActivation(self.videoInfoTag):#If video group, check video activation. Otherwise it's audio so we ignore this and continue
                 return
             
             if self.enabled and self.checkActiveTime() and self.pauseBehavior and self.mediaType == self.playbackType():
                 self.lastMediaType = self.playbackType()
                 try:
-                    xbmc.sleep(200) #sleep for any left over ambilight calls to complete first.
-                    
+                    xbmc.sleep(500) #sleep for any left over ambilight calls to complete first.
                     self.groupResource.action(scene=self.pauseScene)
+                    logger.info("In KodiGroup[{}], onPlaybackPaused() Pause scene activated")
                 except QhueException as e:
                     logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
 
