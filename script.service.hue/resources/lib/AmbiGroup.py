@@ -172,9 +172,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         try:
             self.bridge.lights[light].state(xy=xy,bri=bri,transitiontime=transitionTime)
+            self.ambiLights[light].update(prevxy=xy)
         except QhueException as ex:
             logger.exception("Ambi: Hue call fail")
-        self.ambiLights[light].update(prevxy=xy)
+        except KeyError:
+            logger.exception("Ambi: KeyError")
+        
 
 
     def _updateHueXY(self,xy,light,transitionTime):
@@ -186,7 +189,10 @@ class AmbiGroup(KodiGroup.KodiGroup):
         #if distance > self.minimumDistance:
         try:
             self.bridge.lights[light].state(xy=xy,transitiontime=transitionTime)
+            self.ambiLights[light].update(prevxy=xy)
         except QhueException as ex:
             logger.exception("Ambi: Hue call fail")
+        except KeyError:
+            logger.exception("Ambi: KeyError")
     
-        self.ambiLights[light].update(prevxy=xy)
+
