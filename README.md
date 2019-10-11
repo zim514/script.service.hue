@@ -40,19 +40,19 @@ These settings can impact performance, and may need to be tuned for your set up.
 
 ### Basic Settings:
 - **Select Lights:** Only Hue bulbs and lamps that support colours (Gamuts A, B and C) can be used with this system. Lights that can only reproduce whites or color temperatures are ignored.
-- **Force on :** Force the selected lights on when playback starts. Otherwise, lights will stay turned off. 
+- **Force on :** Force the selected lights on when playback starts. Otherwise, lights will stay turned off.
+- **Minimum & Maximum Brightness:** Sets the brightness
+- **Saturation:** Increase the colour saturation factor, with 1 being no change. This can create more colourful effects, but may cause incorrect colours with some content.
 
-
-### Ambilight Performance:
+### Performance:
 
 Hue has a total limit of 20 commands per second which can be used by all applications and switches. Issuing too many Hue commands can cause your lights to lag or ignore input.
 Every selected light increases the number of necessary commands therefore influences how often lights can be updated. For more information on Hue system performance, refer to the [Hue documentation](https://developers.meethue.com/develop/application-design-guidance/hue-system-performance/).
-- **Number of colours:** CPU impact. The number of colours generated from one frame. With several lights, this will produce a variety of colours. Setting this higher than your number of lights will waste CPU time generating colours that can't be displayed.
+ 
 - **Update interval:** CPU and Hue impact. The minimum amount of time to wait before updating the lights, in milliseconds. 100ms will update the lights 10 times per second, 500ms, twice per second.
 - **Hue transition time:** Hue impact. The amount of time the lights will take to fade from one colour to the next, in milliseconds. Set to 0 for instant transition. 100ms is recommended for a quick and smooth. Hue will wait for this transition to complete before applying the next command. Normally should be the same as the update interval. 
 - **Capture size:** CPU impact. Size at which frames are captured, in pixels of X by X. Colour calculation time is too slow with full sized frames, so they are resized first. May affect colour precision as some pixels are lost in the resize process.
-
-Performance logging can be enabled in the advanced setting to check the speed of the colour algorithm and Hue updates. However, these logs are very verbose and should be normally be disabled.
+- **Average image processing time:** Shows the average time it took to process the colours before updating the Hue bulbs, in milliseconds. This value is updated whenever a video is stopped.
 
 
 ### Problems?
