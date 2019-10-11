@@ -92,7 +92,7 @@
         <setting id="group3_Interval" type="slider" label="30065" default="200" range="0,50,1000" option="int" visible="eq(-9,true)" />
         <setting id="group3_TransitionTime" type="slider" label="30066" default="200" range="0,50,500" option="int" visible="eq(-10,true)"/>
         <setting id="group3_CaptureSize" type="slider" label="30067" default="400" range="150,50,1920" option="int" visible="eq(-11,true)"/>
-        <setting id="averageProcessTime" type="text" label="Average colour analysis delay (ms)"  enable="false" visible="eq(-12,true)"/>
+        <setting id="averageProcessTime" type="text" label="30813"  enable="false" visible="eq(-12,true)"/>
         
 
 
