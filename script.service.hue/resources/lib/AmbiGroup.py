@@ -4,7 +4,6 @@ from threading import Thread, Event
 import xbmc,xbmcgui
 from PIL import Image
 
-#from . import colorgram #https://github.com/obskyr/colorgram.py
 from . import ImageProcess
 from .rgbxy import Converter,ColorHelper# https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA,GamutB,GamutC
@@ -17,6 +16,8 @@ from . import kodiHue
 
 from .globals import logger
 from .language import get_string as _
+from resources.lib import kodiHue
+
 
 
 class AmbiGroup(KodiGroup.KodiGroup):
@@ -66,7 +67,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         self.minBri=globals.ADDON.getSettingInt("group{}_MinBrightness".format(self.kgroupID))*255/100#convert percentage to value 1-254
         self.maxBri=globals.ADDON.getSettingInt("group{}_MaxBrightness".format(self.kgroupID))*255/100#convert percentage to value 1-254
         
-        self.saturation=globals.ADDON.getSettingInt("group{}_Saturation".format(self.kgroupID))
+        self.saturation=globals.ADDON.getSettingNumber("group{}_Saturation".format(self.kgroupID))
         
         self.captureSize=globals.ADDON.getSettingInt("group{}_CaptureSize".format(self.kgroupID))
 
@@ -142,7 +143,10 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors['rgb'][0],colors['rgb'][1],colors['rgb'][2],L,self.transitionTime,colors['bri']))
                     x.daemon = True
                     x.start()
-                    self.monitor.waitForAbort(self.updateInterval) #seconds
+                self.monitor.waitForAbort(self.updateInterval) #seconds
+            averageProcessTime=kodiHue.perfAverage(globals.processTimes)
+            logger.info("Average process time: {}".format(averageProcessTime))
+            self.captureSize=globals.ADDON.setSettingString("averageProcessTime","{}".format(averageProcessTime))
 
 
         except Exception as ex:
@@ -167,9 +171,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         try:
             self.bridge.lights[light].state(xy=xy,bri=bri,transitiontime=transitionTime)
+            self.ambiLights[light].update(prevxy=xy)
         except QhueException as ex:
             logger.exception("Ambi: Hue call fail")
-        self.ambiLights[light].update(prevxy=xy)
+        except KeyError:
+            logger.exception("Ambi: KeyError")
+        
 
 
     def _updateHueXY(self,xy,light,transitionTime):
@@ -181,7 +188,9 @@ class AmbiGroup(KodiGroup.KodiGroup):
         #if distance > self.minimumDistance:
         try:
             self.bridge.lights[light].state(xy=xy,transitiontime=transitionTime)
+            self.ambiLights[light].update(prevxy=xy)
         except QhueException as ex:
             logger.exception("Ambi: Hue call fail")
-    
-        self.ambiLights[light].update(prevxy=xy)
+        except KeyError:
+            logger.exception("Ambi: KeyError")
+            

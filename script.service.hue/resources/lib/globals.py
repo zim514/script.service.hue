@@ -3,6 +3,7 @@ import functools
 import time
 
 from logging import getLogger
+from collections import deque
 
 import xbmc,xbmcaddon
 
@@ -40,10 +41,13 @@ video_enableEpisode = True
 video_enableMusicVideo = True
 video_enableOther = True
 
+lastMediaType=0
+
 startTime = ""
 endTime = ""
+processTimes = deque(maxlen=100)
+averageProcessTime = 0
 
-lastMediaType=0
 
 def timer(func):
     """Logs the runtime of the decorated function"""
@@ -53,6 +57,7 @@ def timer(func):
         value = func(*args, **kwargs)
         endTime = time.time()      # 2
         runTime = endTime - startTime    # 3
+        processTimes.append(runTime)
         if performanceLogging:
             logger.debug("[{}] Completed in {:02.0f}ms".format(func.__name__,runTime*1000))
         return value
