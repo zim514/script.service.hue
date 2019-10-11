@@ -48,10 +48,6 @@ class AmbiGroup(KodiGroup.KodiGroup):
         logger.info("In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
         self.state = STATE_STOPPED
         self.ambiRunning.clear()
-        averageProcessTime=kodiHue.perfAverage(globals.processTimes)
-        logger.info("Average process time: {}".format(averageProcessTime))
-        self.captureSize=globals.ADDON.setSettingString("averageProcessTime","{}".format(averageProcessTime))
-        
 
 
     def onPlayBackPaused(self):
@@ -148,6 +144,9 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     x.daemon = True
                     x.start()
                 self.monitor.waitForAbort(self.updateInterval) #seconds
+            averageProcessTime=kodiHue.perfAverage(globals.processTimes)
+            logger.info("Average process time: {}".format(averageProcessTime))
+            self.captureSize=globals.ADDON.setSettingString("averageProcessTime","{}".format(averageProcessTime))
 
 
         except Exception as ex:
