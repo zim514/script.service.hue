@@ -11,6 +11,13 @@ http://www.screenbloom.com/
 from PIL import ImageEnhance
 from globals import timer
 
+#===============================================================================
+# import os
+# import xbmc
+# import time
+#===============================================================================
+
+
 class ImageProcess(object):
     '''
     classdocs
@@ -35,13 +42,22 @@ class ImageProcess(object):
         g = 1
         b = 1
     
+        if saturation > 1.0:
+            sat_converter = ImageEnhance.Color(img)
+            img = sat_converter.enhance(saturation)
+
+        #=======================================================================
+        # clock=time.localtime()
+        # savepath = os.path.join(xbmc.translatePath("special://userdata/addon_data/script.service.hue/debugimages/"), str(clock) + ".png")
+        # img.save(savepath)
+        #=======================================================================
+
+
         # Create list of pixels
         pixels = list(img.getdata())
         
         
-        if saturation > 1.0:
-            sat_converter = ImageEnhance.Color(img)
-            img = sat_converter.enhance(saturation)
+
         
         for red, green, blue, alpha in pixels:
             # Don't count pixels that are too dark

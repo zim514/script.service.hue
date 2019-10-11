@@ -1,5 +1,6 @@
 from logging import getLogger
 from socket import getfqdn
+from collections import deque
 import datetime
 
 import xbmc
@@ -12,8 +13,6 @@ from resources.lib.qhue.qhue import QhueException
 from . import KodiGroup
 from . import globals
 from .language import get_string as _
-
-
 
 logger = getLogger(globals.ADDONID)
 
@@ -482,13 +481,22 @@ def convertTime(time):
 def notification(header, message, time=5000, icon=globals.ADDON.getAddonInfo('icon'), sound=True):
     xbmcgui.Dialog().notification(header, message, icon, time, sound)
 
+def perfAverage(processTimes):
+    processTimes=list(processTimes) #deque is mutating during iteration for some reason, so copy to list.
+    size=len(processTimes)
+    total = 0
+    for x in processTimes: 
+        total += x
+    averageProcessTime=int(total/size * 1000)
+    return "{} ms".format(averageProcessTime)
+
 
 class HueMonitor(xbmc.Monitor):
     def __init__(self):
         super(xbmc.Monitor,self).__init__()
 
     def onSettingsChanged(self):
-        logger.debug("Settings changed")
+        logger.info("Settings changed")
         #self.waitForAbort(1)
         loadSettings()
         globals.settingsChanged = True

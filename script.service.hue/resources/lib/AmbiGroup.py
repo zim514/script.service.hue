@@ -4,7 +4,6 @@ from threading import Thread, Event
 import xbmc,xbmcgui
 from PIL import Image
 
-#from . import colorgram #https://github.com/obskyr/colorgram.py
 from . import ImageProcess
 from .rgbxy import Converter,ColorHelper# https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA,GamutB,GamutC
@@ -17,6 +16,8 @@ from . import kodiHue
 
 from .globals import logger
 from .language import get_string as _
+from resources.lib import kodiHue
+
 
 
 class AmbiGroup(KodiGroup.KodiGroup):
@@ -47,6 +48,10 @@ class AmbiGroup(KodiGroup.KodiGroup):
         logger.info("In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
         self.state = STATE_STOPPED
         self.ambiRunning.clear()
+        averageProcessTime=kodiHue.perfAverage(globals.processTimes)
+        logger.info("Average process time: {}".format(averageProcessTime))
+        self.captureSize=globals.ADDON.setSettingString("averageProcessTime","{}".format(averageProcessTime))
+        
 
 
     def onPlayBackPaused(self):
@@ -142,7 +147,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     x = Thread(target=self._updateHueRGB,name="updateHue", args=(colors['rgb'][0],colors['rgb'][1],colors['rgb'][2],L,self.transitionTime,colors['bri']))
                     x.daemon = True
                     x.start()
-                    self.monitor.waitForAbort(self.updateInterval) #seconds
+                self.monitor.waitForAbort(self.updateInterval) #seconds
 
 
         except Exception as ex:
