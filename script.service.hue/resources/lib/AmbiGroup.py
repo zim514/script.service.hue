@@ -193,5 +193,4 @@ class AmbiGroup(KodiGroup.KodiGroup):
             logger.exception("Ambi: Hue call fail")
         except KeyError:
             logger.exception("Ambi: KeyError")
-    
-
+            
