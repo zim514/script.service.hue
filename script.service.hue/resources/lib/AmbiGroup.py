@@ -71,7 +71,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         self.minBri=globals.ADDON.getSettingInt("group{}_MinBrightness".format(self.kgroupID))*255/100#convert percentage to value 1-254
         self.maxBri=globals.ADDON.getSettingInt("group{}_MaxBrightness".format(self.kgroupID))*255/100#convert percentage to value 1-254
         
-        self.saturation=globals.ADDON.getSettingInt("group{}_Saturation".format(self.kgroupID))
+        self.saturation=globals.ADDON.getSettingNumber("group{}_Saturation".format(self.kgroupID))
         
         self.captureSize=globals.ADDON.getSettingInt("group{}_CaptureSize".format(self.kgroupID))
 
