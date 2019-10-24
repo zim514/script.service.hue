@@ -13,15 +13,16 @@ from . import AmbiGroup
 
 logger = getLogger(globals.ADDONID)
 
+
 def menu():
     monitor = kodiHue.HueMonitor()
 
     if len(sys.argv) >1:
         args = sys.argv[1]
-    else: 
+    else:
         args = ""
 
-    logger.info("menu started, version: {}, Arguments: {}".format(globals.ADDON.getAddonInfo("version"), args))
+    logger.info("menu started, version: {}, Arguments: {}".format(globals.ADDON.getAddonInfo("version"), sys.argv))
 
     if args == "discover":
         logger.debug("Started with Discovery")
