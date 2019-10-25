@@ -3,17 +3,15 @@
 		<import addon="xbmc.python" version="2.26.0" />
 		<import addon="script.module.requests" version="2.22.0" />
 		<import addon="script.module.pil" />
-		<import addon="script.module.routing" version="0.2.0"/>
-        <!-- <import addon="script.module.pydevd"/> -->  
+        <!-- <import addon="script.module.pydevd"/> -->
 	</requires>
+<extension point="xbmc.python.pluginsource" library="plugin.py">
+		<provides>executable</provides>
+	</extension>
+	<extension point="xbmc.python.script" library="script.py">
+		<provides>executable</provides>
+	</extension>
 	<extension point="xbmc.service" name="service.hue" library="service.py" />
-<!--	<extension point="xbmc.python.script" library="default.py">
-		<provides>executable</provides>
-	</extension>
--->
-	<extension point="xbmc.python.pluginsource" library="default.py">
-		<provides>executable</provides>
-	</extension>
 	<extension point="xbmc.addon.metadata">
 		<platform>all</platform>
 		<license>MIT License</license>

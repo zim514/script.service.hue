@@ -7,6 +7,7 @@ import xbmc
 import xbmcgui
 
 import requests
+from .kodisettings import settings
 from . import qhue
 from resources.lib.qhue.qhue import QhueException
 
@@ -21,7 +22,7 @@ def loadSettings():
     logger.debug("Loading settings")
     globals.reloadFlash = globals.ADDON.getSettingBool("reloadFlash")
     globals.initialFlash = globals.ADDON.getSettingBool("initialFlash")
-    
+    settings['service_enabled'] = globals.ADDON.getSettingBool("service_enabled")
     globals.forceOnSunset = globals.ADDON.getSettingBool("forceOnSunset")
     globals.daylightDisable = globals.ADDON.getSettingBool("daylightDisable")
     
@@ -40,7 +41,7 @@ def loadSettings():
     globals.video_enableOther = globals.ADDON.getSettingBool("video_Other")
     
     globals.ambiEnabled = globals.ADDON.getSettingBool("group3_enabled") 
-    
+
     validateSchedule()
     
 def setupGroups(bridge,flash=False):

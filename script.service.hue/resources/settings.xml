@@ -2,9 +2,11 @@
 
 <!-- GENERAL SECTION -->
     <category label="30510">
+        <setting id="service_enabled" type="bool" label="Service Enabled"  visible="true" default="true" />
 		<setting type="lsep" label="30512" />
-        <setting id="createScene" type="action" label="9007" action="RunScript(script.service.hue,createHueScene)" />
+        <setting id="createScene" type="action" label="9007" action="RunScript(script.service.hue,createHueScene)" /> -->
         <setting id="deleteScene" type="action" label="9008" action="RunScript(script.service.hue,deleteHueScene)" />
+
 
 <!-- Bridge -->
         <setting type="lsep" label="30500" />
