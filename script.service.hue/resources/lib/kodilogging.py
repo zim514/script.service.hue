@@ -6,8 +6,9 @@ import os
 
 import xbmc
 
-from resources.lib import globals
-prefix = "[{}]".format(globals.ADDONID)
+from resources.lib import ADDONID, ADDON, ADDONDIR
+
+prefix = "[{}]".format(ADDONID)
 formatter = logging.Formatter(prefix + '[%(module)s][%(funcName)s](%(lineno)d): %(message)s')
 fileFormatter = logging.Formatter('%(asctime)s %(levelname)s [%(module)s][%(funcName)s](%(lineno)d): %(message)s')
 
@@ -43,23 +44,23 @@ class KodiLogHandler(logging.StreamHandler):
 
 
 def config():
-    separateLogFile=globals.ADDON.getSettingBool("separateLogFile")
-    logger = logging.getLogger(globals.ADDONID)
+    separateLogFile=ADDON.getSettingBool("separateLogFile")
+    logger = logging.getLogger(ADDONID)
 
     if separateLogFile:
-        if not os.path.isdir(globals.ADDONDIR):
-            #xbmc.log("Hue Service: profile directory doesn't exist: " + globals.ADDONDIR + "   Trying to create.", level=xbmc.LOGNOTICE)
+        if not os.path.isdir(ADDONDIR):
+            #xbmc.log("Hue Service: profile directory doesn't exist: " + ADDONDIR + "   Trying to create.", level=xbmc.LOGNOTICE)
             try:
-                os.mkdir(globals.ADDONDIR)
-                xbmc.log("Hue Service: profile directory created: " + globals.ADDONDIR, level=xbmc.LOGNOTICE)
+                os.mkdir(ADDONDIR)
+                xbmc.log("Hue Service: profile directory created: " + ADDONDIR, level=xbmc.LOGNOTICE)
             except OSError as e:
-                xbmc.log("Hue Service: Log: can't create directory: " + globals.ADDONDIR, level=xbmc.LOGERROR)
+                xbmc.log("Hue Service: Log: can't create directory: " + ADDONDIR, level=xbmc.LOGERROR)
                 xbmc.log("Exception: {}".format(e.message), xbmc.LOGERROR)
 
-        fileHandler = TimedRotatingFileHandler(os.path.join(globals.ADDONDIR, 'kodiHue.log'), when="midnight",  backupCount=2)
-        fileHandler.setLevel(logging.DEBUG)
-        fileHandler.setFormatter(fileFormatter)
-        logger.addHandler(fileHandler)
+        file_handler = TimedRotatingFileHandler(os.path.join(ADDONDIR, 'kodiHue.log'), when="midnight",  backupCount=2)
+        file_handler.setLevel(logging.DEBUG)
+        file_handler.setFormatter(fileFormatter)
+        logger.addHandler(file_handler)
 
     logger.addHandler(KodiLogHandler())
     logger.setLevel(logging.DEBUG)

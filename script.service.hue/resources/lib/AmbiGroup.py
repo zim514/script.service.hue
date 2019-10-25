@@ -11,7 +11,7 @@ from .qhue import QhueException
 
 from . import globals
 from . import KodiGroup
-from .KodiGroup import VIDEO,AUDIO,ALLMEDIA,STATE_STOPPED,STATE_PAUSED,STATE_PLAYING
+from .KodiGroup import VIDEO,AUDIO,ALL_MEDIA,STATE_STOPPED,STATE_PAUSED,STATE_PLAYING
 from . import kodiHue
 
 from .globals import logger

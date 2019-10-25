@@ -1,5 +1,4 @@
 from logging import getLogger
-from resources.lib import kodilogging
 
 import xbmc, xbmcaddon
 
@@ -15,5 +14,6 @@ ADDONDIR = xbmc.translatePath(ADDON.getAddonInfo('profile'))  # .decode('utf-8')
 ADDONVERSION = ADDON.getAddonInfo('version')
 KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
 
+from resources.lib import kodilogging
 logger = getLogger(ADDONID)
 kodilogging.config()
