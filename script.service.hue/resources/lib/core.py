@@ -15,72 +15,142 @@ from .kodisettings import settings
 
 def service():
     logger.info("service started, version: {}".format(ADDON.getAddonInfo("version")))
-    kodiHue.loadSettings()
+    logger.info("Args: {}".format(sys.argv))
+    if len(sys.argv) > 1:
+        command = sys.argv[1]
+    else:
+        command = ""
+
     monitor = kodiHue.HueMonitor()
 
-    bridge = kodiHue.connectBridge(monitor, silent=globals.disableConnectionMessage)
+    if command:
+        # execute command
+        if command == "discover":
+            logger.debug("Started with Discovery")
+            bridge_discovered = kodiHue.bridgeDiscover(monitor)
+            if bridge_discovered:
+                bridge = kodiHue.connectBridge(monitor, silent=True)
+                if bridge:
+                    logger.debug("Found bridge. Running model check & starting service.")
+                    kodiHue.checkBridgeModel(bridge)
+                    ADDON.openSettings()
+                    service()
 
-    if bridge is not None:
-        globals.settingsChanged = False
-        globals.daylight = kodiHue.getDaylight(bridge)
+        elif command == "createHueScene":
+            logger.debug("Started with {}".format(command))
+            bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
+            if bridge is not None:
+                kodiHue.createHueScene(bridge)
+            else:
+                logger.debug("No bridge found. createHueScene cancelled.")
+                xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
-        kgroups = kodiHue.setupGroups(bridge, globals.initialFlash)
-        if globals.ambiEnabled:
-            ambiGroup = AmbiGroup.AmbiGroup()
-            ambiGroup.setup(monitor, bridge, kgroupID=3, flash=globals.initialFlash)
+        elif command == "deleteHueScene":
+            logger.debug("Started with {}".format(command))
 
-        connection_retries = 0
-        timer = 60  # Run loop once on first run
-        # #Ready to go! Start running until Kodi exit.
-        logger.debug("Main service loop starting")
+            bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
+            if bridge is not None:
+                kodiHue.deleteHueScene(bridge)
+            else:
+                logger.debug("No bridge found. deleteHueScene cancelled.")
+                xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
-        while globals.connected and settings['service_enabled'] and not monitor.abortRequested():
+        elif command == "sceneSelect":  # sceneSelect=kgroup,action  / sceneSelect=0,play
+            kgroup = sys.argv[2]
+            action = sys.argv[3]
+            logger.debug("Started with {}, kgroup: {}, kaction: {}".format(command, kgroup, action))
 
-            if globals.settingsChanged:
-                kgroups = kodiHue.setupGroups(bridge, globals.reloadFlash)
-                if globals.ambiEnabled:
-                    ambiGroup.setup(monitor, bridge, kgroupID=3, flash=globals.reloadFlash)
-                globals.settingsChanged = False
+            bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
+            if bridge is not None:
+                kodiHue.configureScene(bridge, kgroup, action)
+            else:
+                logger.debug("No bridge found. sceneSelect cancelled.")
+                xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
-            if timer > 59:
-                timer = 0
-                try:
-                    if connection_retries > 0:
-                        bridge = kodiHue.connectBridge(monitor, silent=True)
-                        if bridge is not None:
+        elif command == "ambiLightSelect":  # ambiLightSelect=kgroupID
+            kgroup = sys.argv[2]
+            logger.debug("Started with {}, kgroupID: {}".format(command, kgroup))
+
+            bridge = kodiHue.connectBridge(monitor, silent=True)  # don't rediscover, proceed silently
+            if bridge is not None:
+                kodiHue.configureAmbiLights(bridge, kgroup)
+            else:
+                logger.debug("No bridge found. scene ambi lights cancelled.")
+                xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+        else:
+            logger.critical("Unknown command")
+            return
+
+
+    else:
+        # run as service
+
+        kodiHue.loadSettings()
+        bridge = kodiHue.connectBridge(monitor, silent=globals.disableConnectionMessage)
+
+        if bridge is not None:
+            globals.settingsChanged = False
+            globals.daylight = kodiHue.getDaylight(bridge)
+
+            kgroups = kodiHue.setupGroups(bridge, globals.initialFlash)
+            if globals.ambiEnabled:
+                ambi_group = AmbiGroup.AmbiGroup()
+                ambi_group.setup(monitor, bridge, kgroupID=3, flash=globals.initialFlash)
+
+            connection_retries = 0
+            timer = 60  # Run loop once on first run
+            # #Ready to go! Start running until Kodi exit.
+            logger.debug("Main service loop starting")
+
+            while globals.connected and settings['service_enabled'] and not monitor.abortRequested():
+
+                if globals.settingsChanged:
+                    kgroups = kodiHue.setupGroups(bridge, globals.reloadFlash)
+                    if globals.ambiEnabled:
+                        ambi_group.setup(monitor, bridge, kgroupID=3, flash=globals.reloadFlash)
+                    globals.settingsChanged = False
+
+                if timer > 59:
+                    timer = 0
+                    try:
+                        if connection_retries > 0:
+                            bridge = kodiHue.connectBridge(monitor, silent=True)
+                            if bridge is not None:
+                                previousDaylight = kodiHue.getDaylight(bridge)
+                                connection_retries = 0
+                        else:
                             previousDaylight = kodiHue.getDaylight(bridge)
-                            connection_retries = 0
-                    else:
-                        previousDaylight = kodiHue.getDaylight(bridge)
 
-                except ConnectionError as error:
-                    connection_retries = connection_retries + 1
-                    if connection_retries <= 5:
-                        logger.error("Bridge Connection Error. Attempt: {}/5 : {}".format(connection_retries, error))
-                        xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
-                        timer = -60
+                    except ConnectionError as error:
+                        connection_retries = connection_retries + 1
+                        if connection_retries <= 5:
+                            logger.error(
+                                "Bridge Connection Error. Attempt: {}/5 : {}".format(connection_retries, error))
+                            xbmcgui.Dialog().notification(_("Hue Service"),
+                                                          _("Connection lost. Trying again in 2 minutes"))
+                            timer = -60
 
-                    else:
-                        logger.error(
-                            "Bridge Connection Error. Attempt: {}/5. Shutting down : {}".format(connection_retries,
-                                                                                                error))
-                        xbmcgui.Dialog().notification(_("Hue Service"),
-                                                      _("Connection lost. Check settings. Shutting down"))
-                        globals.connected = False
-                except Exception as ex:
-                    logger.exception("Get daylight exception")
+                        else:
+                            logger.error(
+                                "Bridge Connection Error. Attempt: {}/5. Shutting down : {}".format(connection_retries,
+                                                                                                    error))
+                            xbmcgui.Dialog().notification(_("Hue Service"),
+                                                          _("Connection lost. Check settings. Shutting down"))
+                            globals.connected = False
+                    except Exception as ex:
+                        logger.exception("Get daylight exception")
 
-                if globals.daylight != previousDaylight:
-                    logger.debug(
-                        "Daylight change! current: {}, previous: {}".format(globals.daylight, previousDaylight))
+                    if globals.daylight != previousDaylight:
+                        logger.debug(
+                            "Daylight change! current: {}, previous: {}".format(globals.daylight, previousDaylight))
 
-                    globals.daylight = kodiHue.getDaylight(bridge)
-                    if not globals.daylight:
-                        kodiHue.sunset(bridge, kgroups, ambiGroup)
+                        globals.daylight = kodiHue.getDaylight(bridge)
+                        if not globals.daylight:
+                            kodiHue.sunset(bridge, kgroups, ambi_group)
 
-            timer += 1
-            monitor.waitForAbort(1)
-        logger.debug("Process exiting...")
+                timer += 1
+                monitor.waitForAbort(1)
+            logger.debug("Process exiting...")
+            return
+        logger.debug("No connected bridge, exiting...")
         return
-    logger.debug("No connected bridge, exiting...")
-    return
