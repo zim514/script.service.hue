@@ -1,9 +1,12 @@
 import sys
+from datetime import timedelta
 
 import xbmc
 import xbmcgui
 import xbmcplugin
 from xbmcgui import ListItem
+import simplecache
+
 from .kodisettings import settings
 from resources.lib import logger, ADDON, ADDONID, kodiHue, core
 from language import get_string as _
@@ -22,40 +25,31 @@ def menu():
     base_url = sys.argv[0]
     command = sys.argv[2][1:]
     parsed = parse_qs(command)
+    cache = simplecache.SimpleCache()
 
     logger.debug(
-        "Menu started.  route: {}, handle: {}, command: {}, parsed: {}, Arguments: {}".format(route, addon_handle, command, parsed, sys.argv))
+        "Menu started.  route: {}, handle: {}, command: {}, parsed: {}, Arguments: {}".format(route, addon_handle,
+                                                                                              command, parsed,
+                                                                                              sys.argv))
 
     if route == "plugin://script.service.hue/":
         if not command:
 
-            # List - list of (url, listitem[, isFolder]) as a tuple to add.
-            items = [
-                # TODO: Only display enabled groups
-                (base_url + "/actions?kgroupid=1&action=menu", ListItem(_("Video Actions")), True),
-                (base_url + "/actions?kgroupid=2&action=menu", ListItem(_("Audio Actions")), True),
-                (base_url + "?enable", ListItem(_("Enable"))),
-                (base_url + "?disable", ListItem(_("Disable"))),
-                (base_url + "?settings", ListItem(_("Settings")))
-            ]
-
-            xbmcplugin.addDirectoryItems(addon_handle, items, len(items))
-            xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=False)
+            build_menu(base_url, addon_handle, cache)
 
         elif command == "settings":
             logger.debug("Opening settings")
             ADDON.openSettings()
 
-        elif command == "enable":
-            logger.debug("Enable service")
-            if not settings['service_enabled']:
-                ADDON.setSettingBool("service_enabled", True)
-                from .core import service
-                service()
+        elif command == "toggle":
+            if cache.get("script.service.hue.service_enabled"):
+                logger.info("Disable service")
+                cache.set("script.service.hue.service_enabled", False)
 
-        elif command == "disable":
-            logger.debug("Disable service")
-            ADDON.setSettingBool("service_enabled", False)
+            else:
+                logger.info("Enable service")
+                cache.set("script.service.hue.service_enabled", True)
+            xbmc.executebuiltin('Container.Refresh')
 
     elif route == "plugin://script.service.hue/actions":
         action = parsed['action'][0]
@@ -70,17 +64,24 @@ def menu():
             ]
 
             xbmcplugin.addDirectoryItems(addon_handle, items, len(items))
-            xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=False)
+            xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=True)
             logger.debug("BUILT MENU")
-        elif command == "play":
-            # TODO make actions work.
-            pass
-        elif command == "pause":
-            pass
-        elif command == "stop":
-            pass
-
-
+        else:
+            cache.set("script.service.hue.action", (action, kgroupid), expiration=(timedelta(seconds=5)))
 
     else:
         logger.error("Unknown command. Handle: {}, route: {}, Arguments: {}".format(addon_handle, route, sys.argv))
+
+
+def build_menu(base_url, addon_handle, cache):
+    items = [
+        # TODO: Only display enabled groups
+        (base_url + "/actions?kgroupid=1&action=menu", ListItem(_("Video Actions")), True),
+        (base_url + "/actions?kgroupid=2&action=menu", ListItem(_("Audio Actions")), True),
+        (base_url + "?toggle",
+         ListItem(_("Hue Status: ") + (_("Enabled") if cache.get("script.service.hue.service_enabled") else _("Disabled")))),
+        (base_url + "?settings", ListItem(_("Settings")))
+    ]
+
+    xbmcplugin.addDirectoryItems(addon_handle, items, len(items))
+    xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=False)

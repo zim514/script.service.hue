@@ -43,8 +43,9 @@ def loadSettings():
     globals.ambiEnabled = globals.ADDON.getSettingBool("group3_enabled") 
 
     validateSchedule()
-    
-def setupGroups(bridge,flash=False):
+
+
+def setupGroups(bridge, flash=False):
     logger.debug("in setupGroups()")
     kgroups= []
     
