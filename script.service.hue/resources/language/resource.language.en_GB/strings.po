@@ -428,7 +428,7 @@ msgstr "Enable for Movies"
 
 msgctxt "#30802"
 msgid "Enable for TV episodes"
-msgstr "Enable for TV episodes
+msgstr "Enable for TV episode"
 
 msgctxt "#30803"
 msgid "Enable for music videos"
@@ -450,7 +450,6 @@ msgctxt "#30811"
 msgid "Maximum Brightness"
 msgstr "Maximum Brightness"
 
-
 msgctxt "#30812"
 msgid "Disable connection message"
 msgstr "Disable connection message"
@@ -458,7 +457,6 @@ msgstr "Disable connection message"
 msgctxt "#30813"
 msgid "Average image processing time:"
 msgstr "Average image processing time:"
-
 
 msgctxt "#30069"
 msgid "Recommended minimum update interval: 100ms"
@@ -477,11 +475,23 @@ msgid "Unsupported Hue Bridge"
 msgstr ""
 
 msgctxt "#30073"
-msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for certain features."
+msgid ""
+"Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for"
+" certain features."
 msgstr ""
 
+msgctxt "#30055"
+msgid "Disabled"
+msgstr ""
 
+msgctxt "#30060"
+msgid "Play"
+msgstr ""
 
+msgctxt "#30061"
+msgid "Hue Status: "
+msgstr ""
 
-
-
+msgctxt "#30062"
+msgid "Settings"
+msgstr ""

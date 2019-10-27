@@ -2,9 +2,10 @@
 
 <!-- GENERAL SECTION -->
     <category label="30510">
-		<setting type="lsep" label="30512" />
-        <setting id="createScene" type="action" label="9007" action="RunScript(script.service.hue,createHueScene)" />
+        <setting type="lsep" label="30512" />
+        <setting id="createScene" type="action" label="9007" action="RunScript(script.service.hue,createHueScene)" /> -->
         <setting id="deleteScene" type="action" label="9008" action="RunScript(script.service.hue,deleteHueScene)" />
+
 
 <!-- Bridge -->
         <setting type="lsep" label="30500" />
@@ -86,7 +87,7 @@
         <setting id="group3_forceOn" type="bool" label="30057"  default="false" visible="eq(-4,true)"/>
         <setting id="group3_MinBrightness" type="slider" label="30810"  range="1,1,100" default="10" option="percent" enable="true" visible="eq(-5,true)"/>
         <setting id="group3_MaxBrightness" type="slider" label="30811"  range="1,1,100" default="100" option="percent" enable="true" visible="eq(-6,true)"/>
-        <setting id="group3_Saturation" type="slider" label="30809"  range="1.00,0.1,5.00" default="1" option="float" enable="true" visible="eq(-7,true)"/>
+        <setting id="group3_Saturation" type="slider" label="30809"  range="1.00,0.1,5.00" default="1.5" option="float" enable="true" visible="eq(-7,true)"/>
 
         <setting type="lsep" label="30522" visible="eq(-8,true)"/>
         <setting id="group3_Interval" type="slider" label="30065" default="200" range="0,50,1000" option="int" visible="eq(-9,true)" />
