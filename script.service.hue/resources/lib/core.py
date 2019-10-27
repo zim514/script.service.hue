@@ -107,67 +107,66 @@ def service():
 
             while globals.connected and not monitor.abortRequested():
                 service_enabled = cache.get("script.service.hue.service_enabled")
-                if service_enabled:
-                    action = cache.get("script.service.hue.action")
-                    if action:
-                        # process an action command stored in the cache.
-                        action_action = action[0]
-                        action_kgroupid = int(action[1]) - 1
-                        logger.debug("kgroups: {}".format(kgroups))
-                        logger.debug("Action command: {}, action_action: {}, action_kgroupid: {}".format(action, action_action, action_kgroupid))
-                        if action_action == "play":
-                            kgroups[action_kgroupid].run_play()
-                        if action_action == "pause":
-                            kgroups[action_kgroupid].run_pause()
-                        if action_action == "stop":
-                            kgroups[action_kgroupid].run_stop()
+                action = cache.get("script.service.hue.action")
+                if action:
+                    # process an action command stored in the cache.
+                    action_action = action[0]
+                    action_kgroupid = int(action[1]) - 1
+                    logger.debug("kgroups: {}".format(kgroups))
+                    logger.debug("Action command: {}, action_action: {}, action_kgroupid: {}".format(action, action_action, action_kgroupid))
+                    if action_action == "play":
+                        kgroups[action_kgroupid].run_play()
+                    if action_action == "pause":
+                        kgroups[action_kgroupid].run_pause()
+                    if action_action == "stop":
+                        kgroups[action_kgroupid].run_stop()
 
 
-                        cache.set("script.service.hue.action", None)
+                    cache.set("script.service.hue.action", None)
 
-                    if globals.settingsChanged:
-                        kgroups = kodiHue.setupGroups(bridge, globals.reloadFlash)
-                        if globals.ambiEnabled:
-                            ambi_group.setup(monitor, bridge, kgroupID=3, flash=globals.reloadFlash)
-                        globals.settingsChanged = False
+                if globals.settingsChanged:
+                    kgroups = kodiHue.setupGroups(bridge, globals.reloadFlash)
+                    if globals.ambiEnabled:
+                        ambi_group.setup(monitor, bridge, kgroupID=3, flash=globals.reloadFlash)
+                    globals.settingsChanged = False
 
-                    if timer > 59:
-                        timer = 0
-                        try:
-                            if connection_retries > 0:
-                                bridge = kodiHue.connectBridge(monitor, silent=True)
-                                if bridge is not None:
-                                    previousDaylight = kodiHue.getDaylight(bridge)
-                                    connection_retries = 0
-                            else:
+                if timer > 59:
+                    timer = 0
+                    try:
+                        if connection_retries > 0:
+                            bridge = kodiHue.connectBridge(monitor, silent=True)
+                            if bridge is not None:
                                 previousDaylight = kodiHue.getDaylight(bridge)
+                                connection_retries = 0
+                        else:
+                            previousDaylight = kodiHue.getDaylight(bridge)
 
-                        except ConnectionError as error:
-                            connection_retries = connection_retries + 1
-                            if connection_retries <= 5:
-                                logger.error(
-                                    "Bridge Connection Error. Attempt: {}/5 : {}".format(connection_retries, error))
-                                xbmcgui.Dialog().notification(_("Hue Service"),
-                                                              _("Connection lost. Trying again in 2 minutes"))
-                                timer = -60
+                    except ConnectionError as error:
+                        connection_retries = connection_retries + 1
+                        if connection_retries <= 5:
+                            logger.error(
+                                "Bridge Connection Error. Attempt: {}/5 : {}".format(connection_retries, error))
+                            xbmcgui.Dialog().notification(_("Hue Service"),
+                                                          _("Connection lost. Trying again in 2 minutes"))
+                            timer = -60
 
-                            else:
-                                logger.error(
-                                    "Bridge Connection Error. Attempt: {}/5. Shutting down : {}".format(connection_retries,
-                                                                                                        error))
-                                xbmcgui.Dialog().notification(_("Hue Service"),
-                                                              _("Connection lost. Check settings. Shutting down"))
-                                globals.connected = False
-                        except Exception as ex:
-                            logger.exception("Get daylight exception")
+                        else:
+                            logger.error(
+                                "Bridge Connection Error. Attempt: {}/5. Shutting down : {}".format(connection_retries,
+                                                                                                    error))
+                            xbmcgui.Dialog().notification(_("Hue Service"),
+                                                          _("Connection lost. Check settings. Shutting down"))
+                            globals.connected = False
+                    except Exception as ex:
+                        logger.exception("Get daylight exception")
 
-                        if globals.daylight != previousDaylight:
-                            logger.debug(
-                                "Daylight change! current: {}, previous: {}".format(globals.daylight, previousDaylight))
+                    if globals.daylight != previousDaylight:
+                        logger.debug(
+                            "Daylight change! current: {}, previous: {}".format(globals.daylight, previousDaylight))
 
-                            globals.daylight = kodiHue.getDaylight(bridge)
-                            if not globals.daylight:
-                                kodiHue.sunset(bridge, kgroups, ambi_group)
+                        globals.daylight = kodiHue.getDaylight(bridge)
+                        if not globals.daylight and service_enabled:
+                            kodiHue.sunset(bridge, kgroups, ambi_group)
                 timer += 1
                 monitor.waitForAbort(1)
             logger.debug("Process exiting...")

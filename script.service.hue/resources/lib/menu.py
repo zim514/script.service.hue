@@ -1,3 +1,4 @@
+import os
 import sys
 from datetime import timedelta
 
@@ -8,7 +9,7 @@ from xbmcgui import ListItem
 import simplecache
 
 from .kodisettings import settings
-from resources.lib import logger, ADDON, ADDONID, kodiHue, core
+from resources.lib import logger, ADDON, ADDONID, kodiHue, core, ADDONPATH
 from language import get_string as _
 
 try:
@@ -76,12 +77,15 @@ def menu():
 def build_menu(base_url, addon_handle, cache):
     items = [
         # TODO: Only display enabled groups
-        (base_url + "/actions?kgroupid=1&action=menu", ListItem(_("Video Actions")), True),
-        (base_url + "/actions?kgroupid=2&action=menu", ListItem(_("Audio Actions")), True),
+        (base_url + "/actions?kgroupid=1&action=menu", ListItem(_("Video Actions"), iconImage="DefaultVideo.png"), True),
+        (base_url + "/actions?kgroupid=2&action=menu", ListItem(_("Audio Actions"), iconImage="DefaultAudio.png"), True),
         (base_url + "?toggle",
          ListItem(_("Hue Status: ") + (_("Enabled") if cache.get("script.service.hue.service_enabled") else _("Disabled")))),
-        (base_url + "?settings", ListItem(_("Settings")))
+        (base_url + "?settings", ListItem(_("Settings"), iconImage=get_icon_path("settings")))
     ]
 
     xbmcplugin.addDirectoryItems(addon_handle, items, len(items))
     xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=False)
+
+def get_icon_path(icon_name):
+    return os.path.join(ADDONPATH, 'resources', 'icons', icon_name+".png")

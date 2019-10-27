@@ -3,6 +3,7 @@ import datetime
 
 import xbmc
 from resources.lib.qhue import QhueException
+import simplecache
 
 from resources.lib import globals, logger, ADDON
 from resources.lib.kodisettings import settings
@@ -16,9 +17,9 @@ VIDEO = 1
 AUDIO = 2
 ALL_MEDIA = 3
 
-
 class KodiGroup(xbmc.Player):
     def __init__(self):
+        self.cache = simplecache.SimpleCache()
         super(xbmc.Player, self).__init__()
 
     def loadSettings(self):
@@ -166,6 +167,7 @@ class KodiGroup(xbmc.Player):
         return mediaType
 
     def checkActiveTime(self):
+        service_enabled = self.cache.get("script.service.hue.service_enabled")
         logger.debug(
             "Schedule: {}, daylightDiable: {}, daylight: {}, startTime: {}, endTime: {}".format(globals.enableSchedule,
                                                                                                 globals.daylightDisable,
@@ -177,17 +179,21 @@ class KodiGroup(xbmc.Player):
             logger.debug("Disabled by daylight")
             return False
 
-        if globals.enableSchedule:
-            start = kodiHue.convertTime(globals.startTime)
-            end = kodiHue.convertTime(globals.endTime)
-            now = datetime.datetime.now().time()
-            if (now > start) and (now < end):
-                logger.debug("Enabled by schedule")
-                return True
-            logger.debug("Disabled by schedule")
+        if service_enabled:
+            if globals.enableSchedule:
+                start = kodiHue.convertTime(globals.startTime)
+                end = kodiHue.convertTime(globals.endTime)
+                now = datetime.datetime.now().time()
+                if (now > start) and (now < end):
+                    logger.debug("Enabled by schedule")
+                    return True
+                logger.debug("Disabled by schedule")
+                return False
+            logger.debug("Schedule not enabled")
+            return True
+        else:
+            logger.debug("Service disabled")
             return False
-        logger.debug("Schedule not enabled")
-        return True
 
     def checkVideoActivation(self, infoTag):
         logger.debug("InfoTag: {}".format(infoTag))

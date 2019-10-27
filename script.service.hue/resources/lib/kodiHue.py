@@ -22,7 +22,6 @@ def loadSettings():
     logger.debug("Loading settings")
     globals.reloadFlash = globals.ADDON.getSettingBool("reloadFlash")
     globals.initialFlash = globals.ADDON.getSettingBool("initialFlash")
-    settings['service_enabled'] = globals.ADDON.getSettingBool("service_enabled")
     globals.forceOnSunset = globals.ADDON.getSettingBool("forceOnSunset")
     globals.daylightDisable = globals.ADDON.getSettingBool("daylightDisable")
     
@@ -31,9 +30,7 @@ def loadSettings():
     globals.endTime = globals.ADDON.getSetting("endTime") #string HH:MM
     globals.performanceLogging = globals.ADDON.getSettingBool("performanceLogging")
     globals.disableConnectionMessage = globals.ADDON.getSettingBool("disableConnectionMessage")
-    
-    
-    
+
     globals.videoMinimumDuration = globals.ADDON.getSettingInt("video_MinimumDuration") #Setting in Minutes. Kodi library uses seconds, needs to be converted.
     globals.video_enableMovie = globals.ADDON.getSettingBool("video_Movie")
     globals.video_enableMusicVideo  = globals.ADDON.getSettingBool("video_MusicVideo")
@@ -41,7 +38,6 @@ def loadSettings():
     globals.video_enableOther = globals.ADDON.getSettingBool("video_Other")
     
     globals.ambiEnabled = globals.ADDON.getSettingBool("group3_enabled") 
-
     validateSchedule()
 
 
