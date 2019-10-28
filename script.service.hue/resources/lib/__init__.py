@@ -1,12 +1,14 @@
 from logging import getLogger
 
 import xbmc, xbmcaddon
+import simplecache
 
 NUM_GROUPS = 2  # group0= video, group1=audio
 STRDEBUG = False  # Show string ID in UI
 DEBUG = False  # Enable python remote debug
 REMOTE_DBG_SUSPEND = False  # Auto suspend thread when debugger attached
 QHUE_TIMEOUT = 0.5  # passed to requests, in seconds.
+MINIMUM_COLOR_DISTANCE = 0.005
 
 ADDON = xbmcaddon.Addon()
 ADDONID = ADDON.getAddonInfo('id')
@@ -18,3 +20,6 @@ KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
 from resources.lib import kodilogging
 logger = getLogger(ADDONID)
 kodilogging.config()
+
+cache = simplecache.SimpleCache()
+settings = cache.get("script.service.hue.settings")

@@ -63,13 +63,12 @@ if __name__ == "__main__":
                                                     m.msgctxt.replace("#", "").strip())
             f.write(line)
 else:
-    from .globals import STRDEBUG,ADDON,ADDONID
-    from logging import getLogger
-    logger = getLogger(ADDONID)
+    from . import STRDEBUG, ADDON, ADDONID, logger
+
     def get_string(t):
         string_id = _strings.get(t.lower())
         if not string_id:
-            logger.error("ERROR LANGUAGE: missing translation for '%s'" % t.lower())
+            logger.error("LANGUAGE: missing translation for '%s'" % t.lower())
             return t
 
         if STRDEBUG is True:

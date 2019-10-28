@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.10.0">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.10.1~dev1">
 	<requires>
 		<import addon="xbmc.python" version="2.26.0" />
 		<import addon="script.module.requests" version="2.22.0" />
@@ -33,16 +33,6 @@ v0.9.5:
 v0.9.0:
 - New ambilight algorithm (based on http://www.screenbloom.com/)
 - Changing settings while video playing will no longer stop ambilight
-v0.8.2:
-- Ambilight algorithm fixes
-- Enable video types without duration (TV, discs) when "other" is enabled.
-v0.8.1:
-- Add minimum colour proportion option for ambilight
-- Fix colour sensitivity setting (renamed from colour distance)
-- Ambilight algorithm performance improvements
-- Fix ambilight being initialized when disabled
-- Crash fix
-- Improved logging
 		</news>
 	</extension>
 </addon>

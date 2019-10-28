@@ -6,7 +6,6 @@ from resources.lib.qhue import QhueException
 import simplecache
 
 from resources.lib import globals, logger, ADDON
-from resources.lib.kodisettings import settings
 import kodiHue
 
 STATE_STOPPED = 0

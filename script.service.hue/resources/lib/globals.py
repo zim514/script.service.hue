@@ -15,14 +15,6 @@ DEBUG = False  # Enable python remote debug
 REMOTE_DBG_SUSPEND = False  # Auto suspend thread when debugger attached
 QHUE_TIMEOUT = 0.5  # passed to requests, in seconds.
 
-ADDON = xbmcaddon.Addon()
-ADDONID = ADDON.getAddonInfo('id')
-ADDONDIR = xbmc.translatePath(ADDON.getAddonInfo('profile'))  # .decode('utf-8'))
-ADDONVERSION = ADDON.getAddonInfo('version')
-KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
-
-logger = getLogger(ADDONID)
-
 settingsChanged = False
 connected = False
 daylight = False
