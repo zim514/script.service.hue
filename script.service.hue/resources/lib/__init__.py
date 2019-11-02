@@ -21,3 +21,4 @@ logger = getLogger(ADDONID)
 kodilogging.config()
 
 cache = simplecache.SimpleCache()
+settings = cache.get("script.service.hue.settings", "settings")

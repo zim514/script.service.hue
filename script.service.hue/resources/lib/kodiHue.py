@@ -8,7 +8,8 @@ import xbmcgui
 import simplecache
 
 import requests
-from .kodisettings import settings
+
+from resources.lib import kodisettings, ADDON
 from . import qhue, ADDONID, logger, cache
 from resources.lib.qhue.qhue import QhueException
 
@@ -17,29 +18,27 @@ from . import globals
 from .language import get_string as _
 
 
-
-
 def loadSettings():
     logger.debug("Loading settings")
-    globals.reloadFlash = globals.ADDON.getSettingBool("reloadFlash")
-    globals.initialFlash = globals.ADDON.getSettingBool("initialFlash")
-    globals.forceOnSunset = globals.ADDON.getSettingBool("forceOnSunset")
-    globals.daylightDisable = globals.ADDON.getSettingBool("daylightDisable")
+    globals.reloadFlash = ADDON.getSettingBool("reloadFlash")
+    globals.initialFlash = ADDON.getSettingBool("initialFlash")
+    globals.forceOnSunset = ADDON.getSettingBool("forceOnSunset")
+    globals.daylightDisable = ADDON.getSettingBool("daylightDisable")
 
-    globals.enableSchedule = globals.ADDON.getSettingBool("enableSchedule")
-    globals.startTime = globals.ADDON.getSetting("startTime")  # string HH:MM
-    globals.endTime = globals.ADDON.getSetting("endTime")  # string HH:MM
-    globals.performanceLogging = globals.ADDON.getSettingBool("performanceLogging")
-    globals.disableConnectionMessage = globals.ADDON.getSettingBool("disableConnectionMessage")
+    globals.enableSchedule = ADDON.getSettingBool("enableSchedule")
+    globals.startTime = ADDON.getSetting("startTime")  # string HH:MM
+    globals.endTime = ADDON.getSetting("endTime")  # string HH:MM
+    globals.performanceLogging = ADDON.getSettingBool("performanceLogging")
+    globals.disableConnectionMessage = ADDON.getSettingBool("disableConnectionMessage")
 
-    globals.videoMinimumDuration = globals.ADDON.getSettingInt(
+    globals.videoMinimumDuration = ADDON.getSettingInt(
         "video_MinimumDuration")  # Setting in Minutes. Kodi library uses seconds, needs to be converted.
-    globals.video_enableMovie = globals.ADDON.getSettingBool("video_Movie")
-    globals.video_enableMusicVideo = globals.ADDON.getSettingBool("video_MusicVideo")
-    globals.video_enableEpisode = globals.ADDON.getSettingBool("video_Episode")
-    globals.video_enableOther = globals.ADDON.getSettingBool("video_Other")
+    globals.video_enableMovie = ADDON.getSettingBool("video_Movie")
+    globals.video_enableMusicVideo = ADDON.getSettingBool("video_MusicVideo")
+    globals.video_enableEpisode = ADDON.getSettingBool("video_Episode")
+    globals.video_enableOther = ADDON.getSettingBool("video_Other")
 
-    globals.ambiEnabled = globals.ADDON.getSettingBool("group3_enabled")
+    globals.ambiEnabled = ADDON.getSettingBool("group3_enabled")
     validateSchedule()
 
 
@@ -47,11 +46,11 @@ def setupGroups(bridge, flash=False):
     logger.debug("in setupGroups()")
     kgroups = []
 
-    if globals.ADDON.getSettingBool("group0_enabled"):  # VIDEO Group
+    if ADDON.getSettingBool("group0_enabled"):  # VIDEO Group
         kgroups.append(KodiGroup.KodiGroup())
         kgroups[0].setup(bridge, 0, flash, KodiGroup.VIDEO)
 
-    if globals.ADDON.getSettingBool("group1_enabled"):  # Audio Group
+    if ADDON.getSettingBool("group1_enabled"):  # Audio Group
         kgroups.append(KodiGroup.KodiGroup())
         kgroups[1].setup(bridge, 1, flash, KodiGroup.AUDIO)
 
@@ -135,8 +134,8 @@ def _discoverSsdp():
 def bridgeDiscover(monitor):
     logger.debug("Start bridgeDiscover")
     # Create new config if none exists. Returns success or fail as bool
-    globals.ADDON.setSettingString("bridgeIP", "")
-    globals.ADDON.setSettingString("bridgeUser", "")
+    ADDON.setSettingString("bridgeIP", "")
+    ADDON.setSettingString("bridgeUser", "")
     globals.connected = False
 
     progressBar = xbmcgui.DialogProgress()
@@ -162,8 +161,8 @@ def bridgeDiscover(monitor):
                 logger.debug("User created: {}".format(bridgeUser))
                 progressBar.update(90, _("User Found!"), _("Saving settings"))
 
-                globals.ADDON.setSettingString("bridgeIP", bridgeIP)
-                globals.ADDON.setSettingString("bridgeUser", bridgeUser)
+                ADDON.setSettingString("bridgeIP", bridgeIP)
+                ADDON.setSettingString("bridgeUser", bridgeUser)
                 complete = True
                 globals.connected = True
                 progressBar.update(100, _("Complete!"))
@@ -281,9 +280,9 @@ def configureScene(bridge, kGroupID, action):
     scene = selectHueScene(bridge)
     if scene is not None:
         # group0_startSceneID
-        globals.ADDON.setSettingString("group{}_{}SceneID".format(kGroupID, action), scene[0])
-        globals.ADDON.setSettingString("group{}_{}SceneName".format(kGroupID, action), scene[1])
-        globals.ADDON.openSettings()
+        ADDON.setSettingString("group{}_{}SceneID".format(kGroupID, action), scene[0])
+        ADDON.setSettingString("group{}_{}SceneName".format(kGroupID, action), scene[1])
+        ADDON.openSettings()
 
 
 def configureAmbiLights(bridge, kGroupID):
@@ -297,9 +296,9 @@ def configureAmbiLights(bridge, kGroupID):
             lightNames.append(_getLightName(bridge, L))
             colorLights.append(L)
 
-        globals.ADDON.setSettingString("group{}_Lights".format(kGroupID), ','.join(colorLights))
-        globals.ADDON.setSettingString("group{}_LightNames".format(kGroupID), ','.join(lightNames))
-        globals.ADDON.openSettings()
+        ADDON.setSettingString("group{}_Lights".format(kGroupID), ','.join(colorLights))
+        ADDON.setSettingString("group{}_LightNames".format(kGroupID), ','.join(lightNames))
+        ADDON.openSettings()
 
 
 def _getLightName(bridge, L):
@@ -384,7 +383,7 @@ def sunset(bridge, kgroups, ambiGroup):
 
     for g in kgroups:
         logger.debug("in sunset() g: {}, kgroupID: {}".format(g, g.kgroupID))
-        if globals.ADDON.getSettingBool("group{}_enabled".format(g.kgroupID)):
+        if ADDON.getSettingBool("group{}_enabled".format(g.kgroupID)):
             g.sunset()
     if ADDON.getSettingBool("group3_enabled"):
         ambiGroup.sunset()
@@ -392,8 +391,8 @@ def sunset(bridge, kgroups, ambiGroup):
 
 
 def connectBridge(monitor, silent=False):
-    bridgeIP = globals.ADDON.getSettingString("bridgeIP")
-    bridgeUser = globals.ADDON.getSettingString("bridgeUser")
+    bridgeIP = ADDON.getSettingString("bridgeIP")
+    bridgeUser = ADDON.getSettingString("bridgeUser")
     logger.debug("in Connect() with settings: bridgeIP: {}, bridgeUser: {}".format(bridgeIP, bridgeUser))
 
     if bridgeIP and bridgeUser:
@@ -404,7 +403,7 @@ def connectBridge(monitor, silent=False):
             bridgeIP = discoverBridgeIP(monitor)
             if bridgeIP:
                 logger.debug("in Connect(): New IP found: {}. Saving".format(bridgeIP))
-                globals.ADDON.setSettingString("bridgeIP", bridgeIP)
+                ADDON.setSettingString("bridgeIP", bridgeIP)
 
         if bridgeIP:
             logger.debug("in Connect(): Checking User")
@@ -439,7 +438,7 @@ def validateSchedule():
             logger.error("Invalid time settings: {}".format(e))
             notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"),
                          icon=xbmcgui.NOTIFICATION_ERROR)
-            globals.ADDON.setSettingBool("EnableSchedule", False)
+            ADDON.setSettingBool("EnableSchedule", False)
             globals.enableSchedule = False
 
 
