@@ -1,7 +1,6 @@
 from logging import getLogger
 
-import xbmc, xbmcaddon
-import simplecache
+import xbmc, xbmcaddon, simplecache
 
 NUM_GROUPS = 2  # group0= video, group1=audio
 STRDEBUG = False  # Show string ID in UI
@@ -22,4 +21,3 @@ logger = getLogger(ADDONID)
 kodilogging.config()
 
 cache = simplecache.SimpleCache()
-settings = cache.get("script.service.hue.settings")
