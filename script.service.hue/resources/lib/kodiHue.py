@@ -1,11 +1,8 @@
-from logging import getLogger
 from socket import getfqdn
-from collections import deque
-import datetime
+from datetime import timedelta
 
 import xbmc
 import xbmcgui
-import simplecache
 
 import requests
 
@@ -513,5 +510,9 @@ class HueMonitor(xbmc.Monitor):
                 logger.info("Notification received: Enable")
                 cache.set("script.service.hue.service_enabled", True)
 
+            if method == "Other.actions":
+                action = "play"
+                kgroupid = 1
+                cache.set("script.service.hue.action", (action, kgroupid), expiration=(timedelta(seconds=5)))
 
 

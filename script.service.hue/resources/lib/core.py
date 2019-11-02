@@ -113,20 +113,7 @@ def service(monitor):
             service_enabled = cache.get("script.service.hue.service_enabled")
             action = cache.get("script.service.hue.action")
             if action:
-                # process an action command stored in the cache.
-                action_action = action[0]
-                action_kgroupid = int(action[1]) - 1
-                logger.debug("kgroups: {}".format(kgroups))
-                logger.debug("Action command: {}, action_action: {}, action_kgroupid: {}".format(action, action_action,
-                                                                                                 action_kgroupid))
-                if action_action == "play":
-                    kgroups[action_kgroupid].run_play()
-                if action_action == "pause":
-                    kgroups[action_kgroupid].run_pause()
-                if action_action == "stop":
-                    kgroups[action_kgroupid].run_stop()
-
-                cache.set("script.service.hue.action", None)
+                process_actions(action, kgroups)
 
             if globals.settingsChanged:
                 kgroups = kodiHue.setupGroups(bridge, globals.reloadFlash)
@@ -177,3 +164,19 @@ def service(monitor):
         return
     logger.debug("No connected bridge, exiting...")
     return
+
+
+def process_actions(action, kgroups):
+    # process an action command stored in the cache.
+    action_action = action[0]
+    action_kgroupid = int(action[1]) - 1
+    logger.debug("kgroups: {}".format(kgroups))
+    logger.debug("Action command: {}, action_action: {}, action_kgroupid: {}".format(action, action_action,
+                                                                                     action_kgroupid))
+    if action_action == "play":
+        kgroups[action_kgroupid].run_play()
+    if action_action == "pause":
+        kgroups[action_kgroupid].run_pause()
+    if action_action == "stop":
+        kgroups[action_kgroupid].run_stop()
+    cache.set("script.service.hue.action", None)
