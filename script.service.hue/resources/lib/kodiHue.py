@@ -49,6 +49,7 @@ def setupGroups(bridge, flash=False):
 
     if globals.ADDON.getSettingBool("group0_enabled"):  # VIDEO Group
         kgroups.append(KodiGroup.KodiGroup())
+        kgroups[0].setup(bridge, 0, flash, KodiGroup.VIDEO)
 
     if globals.ADDON.getSettingBool("group1_enabled"):  # Audio Group
         kgroups.append(KodiGroup.KodiGroup())
