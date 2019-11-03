@@ -4,7 +4,7 @@ from threading import Thread, Event
 import xbmc
 from PIL import Image
 
-from resources.lib import kodiHue
+from resources.lib import kodiHue, PROCESS_TIMES
 from resources.lib.kodisettings import settings_storage
 from . import ImageProcess
 from . import KodiGroup
@@ -19,7 +19,6 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 class AmbiGroup(KodiGroup.KodiGroup):
     def __init__(self):
         super(AmbiGroup, self).__init__()
-        self.videoInfoTag = self.getVideoInfoTag()
 
     def onAVStarted(self):
         logger.info(
@@ -30,7 +29,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         # logger.info("Ambilight Settings: forceOn: {}, setBrightness: {}, Brightness: {}, MinimumDistance: {}".format(self.forceOn,self.setBrightness,self.brightness,self.minimumDistance))
         self.state = STATE_PLAYING
 
-
+        self.videoInfoTag = self.getVideoInfoTag()
         if self.isPlayingVideo():
             if self.enabled and self.checkActiveTime() and self.checkVideoActivation(self.videoInfoTag):
 
@@ -129,7 +128,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     # logger.debug("CapSize: {}".format(len(capImage)))
                     if capImage is None or len(capImage) < expected_capture_size:
                         logger.error("capImage is none or < expected. captured: {}, expected: {}".format(len(capImage),
-                                                                                               expected_capture_size))
+                                                                                                         expected_capture_size))
                         self.monitor.waitForAbort(0.25)  # pause before trying again
                         continue  # no image captured, try again next iteration
                     image = Image.frombuffer("RGBA", (self.captureSize, self.captureSizeY), buffer(capImage), "raw",
@@ -156,7 +155,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     self.ambiRunning.clear()
                 self.monitor.waitForAbort(self.updateInterval)  # seconds
 
-            average_process_time = kodiHue.perfAverage(settings_storage['processTimes'])
+            average_process_time = kodiHue.perfAverage(PROCESS_TIMES)
             logger.info("Average process time: {}".format(average_process_time))
             self.captureSize = ADDON.setSettingString("average_process_time", "{}".format(average_process_time))
 

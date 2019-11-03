@@ -1,5 +1,6 @@
 import functools
 import time
+from collections import deque
 from logging import getLogger
 from threading import Event
 
@@ -15,6 +16,7 @@ REMOTE_DBG_SUSPEND = False  # Auto suspend thread when debugger attached
 QHUE_TIMEOUT = 0.5  # passed to requests, in seconds.
 MINIMUM_COLOR_DISTANCE = 0.005
 SETTINGS_CHANGED = Event()
+PROCESS_TIMES = deque(maxlen=100)
 
 ADDON = xbmcaddon.Addon()
 ADDONID = ADDON.getAddonInfo('id')
@@ -40,7 +42,7 @@ def timer(func):
         value = func(*args, **kwargs)
         endTime = time.time()  # 2
         runTime = endTime - startTime  # 3
-        settings_storage['processTimes'].append(runTime)
+        PROCESS_TIMES.append(runTime)
 
         return value
 

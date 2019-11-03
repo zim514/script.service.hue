@@ -100,7 +100,7 @@ def service(monitor):
         settings_storage['daylight'] = kodiHue.getDaylight(bridge)
 
         kgroups = kodiHue.setupGroups(bridge, settings_storage['initialFlash'])
-        if settings_storage['ambiEnabled:']:
+        if settings_storage['ambiEnabled']:
             ambi_group = AmbiGroup.AmbiGroup()
             ambi_group.setup(monitor, bridge, kgroupID=3, flash=settings_storage['initialFlash'])
 

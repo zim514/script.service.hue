@@ -99,4 +99,3 @@ class ImageProcess(object):
             scaled_brightness = int(maxBri)
     
         return int(scaled_brightness)
-    

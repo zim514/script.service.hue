@@ -27,7 +27,7 @@ class KodiGroup(xbmc.Player):
         super(xbmc.Player, self).__init__()
 
     def loadSettings(self):
-        logger.debug("KodiGroup Load settings")
+        logger.debug("KodiGroup Load settings for group: {}".format(self.kgroupID))
         self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))
 
         self.startBehavior = ADDON.getSettingBool("group{}_startBehavior".format(self.kgroupID))
@@ -86,10 +86,7 @@ class KodiGroup(xbmc.Player):
             self.run_play()
 
     def onPlayBackStopped(self):
-        logger.info("In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroupID,
-                                                                                                       self.mediaType,
-                                                                                                       settings_storage[
-                                                                                                           'lastMediaType']))
+        logger.info("In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroupID, self.mediaType, settings_storage['lastMediaType']))
         self.state = STATE_STOPPED
 
         try:

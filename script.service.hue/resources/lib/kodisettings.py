@@ -30,10 +30,10 @@ def read_settings():
     settings_storage['forceOnSunset'] = ADDON.getSettingBool("forceOnSunset")
     settings_storage['daylightDisable'] = ADDON.getSettingBool("daylightDisable")
 
+
     settings_storage['enableSchedule'] = ADDON.getSettingBool("enableSchedule")
     settings_storage['startTime'] = ADDON.getSetting("startTime")  # string HH:MM
     settings_storage['endTime'] = ADDON.getSetting("endTime")  # string HH:MM
-    settings_storage['performanceLogging'] = ADDON.getSettingBool("performanceLogging")
     settings_storage['disableConnectionMessage'] = ADDON.getSettingBool("disableConnectionMessage")
 
     settings_storage['videoMinimumDuration'] = ADDON.getSettingInt(
