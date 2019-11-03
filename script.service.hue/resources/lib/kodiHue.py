@@ -1,3 +1,4 @@
+import json
 from socket import getfqdn
 from datetime import timedelta
 
@@ -502,6 +503,7 @@ class HueMonitor(xbmc.Monitor):
     def onNotification(self, sender, method, data):
         if sender == ADDONID:
             logger.info("Notification received: method: {}, data: {}".format(method, data))
+
             if method == "Other.disable":
                 logger.info("Notification received: Disable")
                 cache.set("script.service.hue.service_enabled", False)
@@ -511,8 +513,11 @@ class HueMonitor(xbmc.Monitor):
                 cache.set("script.service.hue.service_enabled", True)
 
             if method == "Other.actions":
-                action = "play"
-                kgroupid = 1
+                json_loads = json.loads(data)
+
+                kgroupid = json_loads['group']
+                action = json_loads['command']
+                logger.debug("group: {}, command: {}".format(kgroupid, action))
                 cache.set("script.service.hue.action", (action, kgroupid), expiration=(timedelta(seconds=5)))
 
 

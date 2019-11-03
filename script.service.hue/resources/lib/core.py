@@ -170,7 +170,6 @@ def process_actions(action, kgroups):
     # process an action command stored in the cache.
     action_action = action[0]
     action_kgroupid = int(action[1]) - 1
-    logger.debug("kgroups: {}".format(kgroups))
     logger.debug("Action command: {}, action_action: {}, action_kgroupid: {}".format(action, action_action,
                                                                                      action_kgroupid))
     if action_action == "play":
