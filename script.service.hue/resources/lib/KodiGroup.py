@@ -3,11 +3,11 @@ import datetime
 
 import xbmc
 
-import resources.lib.kodisettings
+from resources.lib.kodisettings import settings_storage, convert_time
 from resources.lib.qhue import QhueException
 import simplecache
 
-from resources.lib import globals, logger, ADDON
+from resources.lib import logger, ADDON
 import kodiHue
 
 STATE_STOPPED = 0
@@ -65,7 +65,7 @@ class KodiGroup(xbmc.Player):
                 self.kgroupID, self.enabled, self.startBehavior, self.isPlayingVideo(), self.isPlayingAudio(),
                 self.mediaType, self.playbackType()))
         self.state = STATE_PLAYING
-        globals.lastMediaType = self.playbackType()
+        settings_storage['lastMediaType'] = self.playbackType()
 
         if self.isPlayingVideo() and self.mediaType == VIDEO:  # If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
             try:
@@ -85,7 +85,7 @@ class KodiGroup(xbmc.Player):
     def onPlayBackStopped(self):
         logger.info("In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroupID,
                                                                                                        self.mediaType,
-                                                                                                       globals.lastMediaType))
+                                                                                                       settings_storage['lastMediaType']))
         self.state = STATE_STOPPED
 
         try:
@@ -95,7 +95,7 @@ class KodiGroup(xbmc.Player):
         except AttributeError:
             logger.error("No videoInfoTag")
 
-        if self.enabled and self.checkActiveTime() and self.stopBehavior and self.mediaType == globals.lastMediaType:
+        if self.enabled and self.checkActiveTime() and self.stopBehavior and self.mediaType == settings_storage['lastMediaType']:
             self.run_stop()
 
     def onPlayBackPaused(self):
@@ -170,20 +170,20 @@ class KodiGroup(xbmc.Player):
     def checkActiveTime(self):
         service_enabled = self.cache.get("script.service.hue.service_enabled")
         logger.debug(
-            "Schedule: {}, daylightDiable: {}, daylight: {}, startTime: {}, endTime: {}".format(globals.enableSchedule,
-                                                                                                globals.daylightDisable,
-                                                                                                globals.daylight,
-                                                                                                globals.startTime,
-                                                                                                globals.endTime))
+            "Schedule: {}, daylightDiable: {}, daylight: {}, startTime: {}, endTime: {}".format(settings_storage['enableSchedule'],
+                                                                                                settings_storage['daylightDisable'],
+                                                                                                settings_storage['daylight'],
+                                                                                                settings_storage['startTime'],
+                                                                                                settings_storage['endTime']))
 
-        if globals.daylightDisable and globals.daylight:
-            logger.debug("Disabled by daylight")
+        if settings_storage['daylightDisable'] and settings_storage['daylight']:
+            logger.debug("Disabled by daylight']")
             return False
 
         if service_enabled:
-            if globals.enableSchedule:
-                start = resources.lib.kodisettings.convert_time(globals.startTime)
-                end = resources.lib.kodisettings.convert_time(globals.endTime)
+            if settings_storage['enableSchedule']:
+                start = convert_time(settings_storage['startTime'])
+                end = convert_time(settings_storage['endTime'])
                 now = datetime.datetime.now().time()
                 if (now > start) and (now < end):
                     logger.debug("Enabled by schedule")
@@ -209,15 +209,15 @@ class KodiGroup(xbmc.Player):
             return False
         logger.debug(
             "Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, Other: {}".
-                format(self.kgroupID, globals.videoMinimumDuration, globals.video_enableMovie,
-                       globals.video_enableEpisode,
-                       globals.video_enableMusicVideo, globals.video_enableOther))
+                format(self.kgroupID, settings_storage['videoMinimumDuration'], settings_storage['video_enableMovie'],
+                       settings_storage['video_enableEpisode'],
+                       settings_storage['video_enableMusicVideo'], settings_storage['video_enableOther']))
         logger.debug("Video Activation ({}): Duration: {}, mediaType: {}".format(self.kgroupID, duration, mediaType))
-        if (duration > globals.videoMinimumDuration and \
-                ((globals.video_enableMovie and mediaType == "movie") or
-                 (globals.video_enableEpisode and mediaType == "episode") or
-                 (globals.video_enableMusicVideo and mediaType == "MusicVideo")) or
-                globals.video_enableOther):
+        if (duration > settings_storage['videoMinimumDuration'] and
+                ((settings_storage['video_enableMovie'] and mediaType == "movie") or
+                 (settings_storage['video_enableEpisode'] and mediaType == "episode") or
+                 (settings_storage['video_enableMusicVideo'] and mediaType == "MusicVideo")) or
+                settings_storage['video_enableOther']):
             logger.debug("Video activation: True")
             return True
         logger.debug("Video activation: False")

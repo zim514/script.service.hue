@@ -2,9 +2,6 @@
 import logging
 
 from resources.lib import core, logger, ADDONVERSION, KODIVERSION
-from resources.lib import globals
-from resources.lib import kodilogging
-
 
 logger.info("Starting service.py, version {}, Kodi: {}".format(ADDONVERSION, KODIVERSION))
 try:

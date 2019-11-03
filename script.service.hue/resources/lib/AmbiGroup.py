@@ -1,27 +1,25 @@
 # -*- coding: utf-8 -*-
 from threading import Thread, Event
 
-import xbmc, xbmcgui
+import xbmc
 from PIL import Image
-import simplecache
 
+from resources.lib import kodiHue
+from resources.lib.kodisettings import settings_storage
+from . import ImageProcess
+from . import KodiGroup
+from . import MINIMUM_COLOR_DISTANCE
+from . import ADDON, logger
+from .KodiGroup import VIDEO, STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
+from .qhue import QhueException
 from .rgbxy import Converter, ColorHelper  # https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA, GamutB, GamutC
-from .qhue import QhueException
-
-from . import globals, ADDON, logger
-from . import KodiGroup
-from . import ImageProcess
-from . import MINIMUM_COLOR_DISTANCE
-from .KodiGroup import VIDEO, AUDIO, ALL_MEDIA, STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
-from . import kodiHue
-from .language import get_string as _
-from resources.lib import kodiHue
 
 
 class AmbiGroup(KodiGroup.KodiGroup):
     def __init__(self):
         super(AmbiGroup, self).__init__()
+        self.videoInfoTag = self.getVideoInfoTag()
 
     def onAVStarted(self):
         logger.info(
@@ -34,7 +32,6 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
 
         if self.isPlayingVideo():
-            self.videoInfoTag = self.getVideoInfoTag()
             if self.enabled and self.checkActiveTime() and self.checkVideoActivation(self.videoInfoTag):
 
                 if self.forceOn:
@@ -159,7 +156,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     self.ambiRunning.clear()
                 self.monitor.waitForAbort(self.updateInterval)  # seconds
 
-            average_process_time = kodiHue.perfAverage(globals.processTimes)
+            average_process_time = kodiHue.perfAverage(settings_storage['processTimes'])
             logger.info("Average process time: {}".format(average_process_time))
             self.captureSize = ADDON.setSettingString("average_process_time", "{}".format(average_process_time))
 

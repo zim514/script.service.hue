@@ -2,9 +2,13 @@ import functools
 import time
 from logging import getLogger
 
-import xbmc, xbmcaddon, simplecache
 
-from resources.lib.globals import processTimes, performanceLogging
+import xbmc
+import xbmcaddon
+import simplecache
+
+from resources.lib import kodilogging
+from resources.lib.kodisettings import settings_storage
 
 NUM_GROUPS = 2  # group0= video, group1=audio
 STRDEBUG = False  # Show string ID in UI
@@ -20,12 +24,11 @@ ADDONPATH = xbmc.translatePath(ADDON.getAddonInfo("path"))
 ADDONVERSION = ADDON.getAddonInfo('version')
 KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
 
-from resources.lib import kodilogging
+
 logger = getLogger(ADDONID)
 kodilogging.config()
 
 cache = simplecache.SimpleCache()
-settings = cache.get("script.service.hue.settings")
 
 
 def timer(func):
@@ -36,8 +39,7 @@ def timer(func):
         value = func(*args, **kwargs)
         endTime = time.time()      # 2
         runTime = endTime - startTime    # 3
-        processTimes.append(runTime)
-        if performanceLogging:
-            logger.debug("[{}] Completed in {:02.0f}ms".format(func.__name__,runTime*1000))
+        settings_storage['processTimes'].append(runTime)
+
         return value
     return wrapper_timer

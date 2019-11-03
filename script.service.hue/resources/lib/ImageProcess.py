@@ -1,4 +1,4 @@
-'''
+"""
 Created on Sep. 25, 2019
 
 Based on ScreenBloom by Tyler Kershner
@@ -6,29 +6,16 @@ https://github.com/kershner/screenBloom
 http://www.screenbloom.com/
 
 
-'''
+"""
 
 from PIL import ImageEnhance
 from resources.lib import timer
 
 
-#===============================================================================
-# import os
-# import xbmc
-# import time
-#===============================================================================
-
-
 class ImageProcess(object):
-    '''
-    classdocs
-    '''
-
 
     def __init__(self):
-        '''
-        Constructor
-        '''
+
         self.LOW_THRESHOLD = 10
         self.MID_THRESHOLD = 40
         self.HIGH_THRESHOLD = 240
@@ -56,10 +43,7 @@ class ImageProcess(object):
 
         # Create list of pixels
         pixels = list(img.getdata())
-        
-        
 
-        
         for red, green, blue, alpha in pixels:
             # Don't count pixels that are too dark
             if red < self.LOW_THRESHOLD and green < self.LOW_THRESHOLD and blue < self.LOW_THRESHOLD:

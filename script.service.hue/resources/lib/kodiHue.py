@@ -7,38 +7,13 @@ import xbmcgui
 
 import requests
 
-from resources.lib import kodisettings, ADDON
-from resources.lib.kodisettings import validate_schedule
+from resources.lib import kodisettings, ADDON, QHUE_TIMEOUT
+from resources.lib.kodisettings import validate_schedule, settings_storage
 from . import qhue, ADDONID, logger, cache
 from resources.lib.qhue.qhue import QhueException
 
 from . import KodiGroup
-from . import globals
 from .language import get_string as _
-
-
-def loadSettings():
-    logger.debug("Loading settings")
-    globals.reloadFlash = ADDON.getSettingBool("reloadFlash")
-    globals.initialFlash = ADDON.getSettingBool("initialFlash")
-    globals.forceOnSunset = ADDON.getSettingBool("forceOnSunset")
-    globals.daylightDisable = ADDON.getSettingBool("daylightDisable")
-
-    globals.enableSchedule = ADDON.getSettingBool("enableSchedule")
-    globals.startTime = ADDON.getSetting("startTime")  # string HH:MM
-    globals.endTime = ADDON.getSetting("endTime")  # string HH:MM
-    globals.performanceLogging = ADDON.getSettingBool("performanceLogging")
-    globals.disableConnectionMessage = ADDON.getSettingBool("disableConnectionMessage")
-
-    globals.videoMinimumDuration = ADDON.getSettingInt(
-        "video_MinimumDuration")  # Setting in Minutes. Kodi library uses seconds, needs to be converted.
-    globals.video_enableMovie = ADDON.getSettingBool("video_Movie")
-    globals.video_enableMusicVideo = ADDON.getSettingBool("video_MusicVideo")
-    globals.video_enableEpisode = ADDON.getSettingBool("video_Episode")
-    globals.video_enableOther = ADDON.getSettingBool("video_Other")
-
-    globals.ambiEnabled = ADDON.getSettingBool("group3_enabled")
-    validate_schedule()
 
 
 def setupGroups(bridge, flash=False):
@@ -135,7 +110,7 @@ def bridgeDiscover(monitor):
     # Create new config if none exists. Returns success or fail as bool
     ADDON.setSettingString("bridgeIP", "")
     ADDON.setSettingString("bridgeUser", "")
-    globals.connected = False
+    settings_storage['connected'] = False
 
     progressBar = xbmcgui.DialogProgress()
     progressBar.create(_('Searching for bridge...'))
@@ -163,7 +138,7 @@ def bridgeDiscover(monitor):
                 ADDON.setSettingString("bridgeIP", bridgeIP)
                 ADDON.setSettingString("bridgeUser", bridgeUser)
                 complete = True
-                globals.connected = True
+                settings_storage['connected'] = True
                 progressBar.update(100, _("Complete!"))
                 monitor.waitForAbort(5)
                 progressBar.close()
@@ -212,7 +187,7 @@ def connectionTest(bridgeIP):
 
 def userTest(bridgeIP, bridgeUser):
     logger.debug("in ConnectionTest() Attempt initial connection")
-    b = qhue.Bridge(bridgeIP, bridgeUser, timeout=globals.QHUE_TIMEOUT)
+    b = qhue.Bridge(bridgeIP, bridgeUser, timeout=QHUE_TIMEOUT)
     try:
         zigbeechan = b.config()['zigbeechannel']
     except (requests.exceptions.ConnectionError, qhue.QhueException):
@@ -410,8 +385,8 @@ def connectBridge(monitor, silent=False):
         if bridgeIP:
             logger.debug("in Connect(): Checking User")
             if userTest(bridgeIP, bridgeUser):
-                bridge = qhue.Bridge(bridgeIP, bridgeUser, timeout=globals.QHUE_TIMEOUT)
-                globals.connected = True
+                bridge = qhue.Bridge(bridgeIP, bridgeUser, timeout=QHUE_TIMEOUT)
+                settings_storage['connected'] = True
                 logger.info("Successfully connected to Hue Bridge: {}".format(bridgeIP))
                 if not silent:
                     notification(_("Hue Service"), _("Hue connected"), icon=xbmcgui.NOTIFICATION_INFO)
@@ -419,13 +394,13 @@ def connectBridge(monitor, silent=False):
         else:
             logger.debug("Bridge not responding")
             notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
-            globals.connected = False
+            settings_storage['connected'] = False
             return None
 
     else:
         logger.debug("Bridge not configured")
         notification(_("Hue Service"), _("Bridge not configured"), icon=xbmcgui.NOTIFICATION_ERROR)
-        globals.connected = False
+        settings_storage['connected'] = False
         return None
 
 
@@ -478,15 +453,13 @@ class HueMonitor(xbmc.Monitor):
     def onSettingsChanged(self):
         logger.info("Settings changed")
         # self.waitForAbort(1)
-        loadSettings()
-        kodisettings.update_settings_cache()
+        kodisettings.read_settings()
 
-        globals.settingsChanged = True
+        settings_storage['settingsChanged'] = True
 
     def onNotification(self, sender, method, data):
         if sender == ADDONID:
             logger.info("Notification received: method: {}, data: {}".format(method, data))
-
 
             if method == "Other.disable":
                 logger.info("Notification received: Disable")
@@ -503,5 +476,3 @@ class HueMonitor(xbmc.Monitor):
                 action = json_loads['command']
                 logger.debug("Action Notification: group: {}, command: {}".format(kgroupid, action))
                 cache.set("script.service.hue.action", (action, kgroupid), expiration=(timedelta(seconds=5)))
-
-
