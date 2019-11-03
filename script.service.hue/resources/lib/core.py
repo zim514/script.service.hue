@@ -7,7 +7,7 @@ from requests.exceptions import ConnectionError
 import xbmcgui
 import simplecache
 
-from . import logger, ADDON, cache
+from . import logger, ADDON, cache, SETTINGS_CHANGED
 from kodisettings import settings_storage
 
 from . import kodiHue
@@ -97,7 +97,6 @@ def service(monitor):
     service_enabled = cache.get("script.service.hue.service_enabled")
 
     if bridge is not None:
-        settings_storage['settingsChanged'] = False
         settings_storage['daylight'] = kodiHue.getDaylight(bridge)
 
         kgroups = kodiHue.setupGroups(bridge, settings_storage['initialFlash'])
@@ -125,11 +124,11 @@ def service(monitor):
                 process_actions(action, kgroups)
 
             #reload if settings changed
-            if settings_storage['settingsChanged']:
+            if SETTINGS_CHANGED.is_set():
                 kgroups = kodiHue.setupGroups(bridge, settings_storage['reloadFlash'])
                 if settings_storage['ambiEnabled']:
                     ambi_group.setup(monitor, bridge, kgroupID=3, flash=settings_storage['reloadFlash'])
-                settings_storage['settingsChanged'] = False
+                SETTINGS_CHANGED.clear()
 
             #check for sunset & connection every minute
             if timer > 59:

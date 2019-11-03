@@ -7,7 +7,7 @@ import xbmcgui
 
 import requests
 
-from resources.lib import kodisettings, ADDON, QHUE_TIMEOUT
+from resources.lib import kodisettings, ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED
 from resources.lib.kodisettings import validate_schedule, settings_storage
 from . import qhue, ADDONID, logger, cache
 from resources.lib.qhue.qhue import QhueException
@@ -454,8 +454,8 @@ class HueMonitor(xbmc.Monitor):
         logger.info("Settings changed")
         # self.waitForAbort(1)
         kodisettings.read_settings()
+        SETTINGS_CHANGED.set()
 
-        settings_storage['settingsChanged'] = True
 
     def onNotification(self, sender, method, data):
         if sender == ADDONID:

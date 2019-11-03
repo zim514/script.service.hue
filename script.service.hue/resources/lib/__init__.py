@@ -1,7 +1,7 @@
 import functools
 import time
 from logging import getLogger
-
+from threading import Event
 
 import xbmc
 import xbmcaddon
@@ -16,6 +16,7 @@ DEBUG = False  # Enable python remote debug
 REMOTE_DBG_SUSPEND = False  # Auto suspend thread when debugger attached
 QHUE_TIMEOUT = 0.5  # passed to requests, in seconds.
 MINIMUM_COLOR_DISTANCE = 0.005
+SETTINGS_CHANGED = Event()
 
 ADDON = xbmcaddon.Addon()
 ADDONID = ADDON.getAddonInfo('id')
