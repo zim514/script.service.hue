@@ -376,15 +376,18 @@ def getDaylight(bridge):
     return bridge.sensors['1']()['state']['daylight']
 
 
-def sunset(bridge, kgroups, ambiGroup):
-    logger.info("Applying sunset scenes")
+def activate(bridge, kgroups, ambiGroup):
+    """
+    Activates play action as appropriate for all groups. Used at sunset and when service is renabled via Actions.
+    """
+    logger.info("Activating scenes")
 
     for g in kgroups:
         logger.debug("in sunset() g: {}, kgroupID: {}".format(g, g.kgroupID))
         if ADDON.getSettingBool("group{}_enabled".format(g.kgroupID)):
-            g.sunset()
+            g.activate()
     if ADDON.getSettingBool("group3_enabled"):
-        ambiGroup.sunset()
+        ambiGroup.activate()
     return
 
 
@@ -504,11 +507,12 @@ class HueMonitor(xbmc.Monitor):
         if sender == ADDONID:
             logger.info("Notification received: method: {}, data: {}".format(method, data))
 
+
             if method == "Other.disable":
                 logger.info("Notification received: Disable")
                 cache.set("script.service.hue.service_enabled", False)
 
-            if method == "Other.enable:":
+            if method == "Other.enable":
                 logger.info("Notification received: Enable")
                 cache.set("script.service.hue.service_enabled", True)
 
@@ -517,7 +521,7 @@ class HueMonitor(xbmc.Monitor):
 
                 kgroupid = json_loads['group']
                 action = json_loads['command']
-                logger.debug("group: {}, command: {}".format(kgroupid, action))
+                logger.debug("Action Notification: group: {}, command: {}".format(kgroupid, action))
                 cache.set("script.service.hue.action", (action, kgroupid), expiration=(timedelta(seconds=5)))
 
 

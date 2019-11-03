@@ -32,6 +32,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         # logger.info("Ambilight Settings: forceOn: {}, setBrightness: {}, Brightness: {}, MinimumDistance: {}".format(self.forceOn,self.setBrightness,self.brightness,self.minimumDistance))
         self.state = STATE_PLAYING
 
+
         if self.isPlayingVideo():
             self.videoInfoTag = self.getVideoInfoTag()
             if self.enabled and self.checkActiveTime() and self.checkVideoActivation(self.videoInfoTag):
@@ -130,7 +131,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     capImage = cap.getImage()  # timeout to wait for OS in ms, default 1000
                     # logger.debug("CapSize: {}".format(len(capImage)))
                     if capImage is None or len(capImage) < expected_capture_size:
-                        logger.error("capImage is none or < expected: {}, expected: {}".format(len(capImage),
+                        logger.error("capImage is none or < expected. captured: {}, expected: {}".format(len(capImage),
                                                                                                expected_capture_size))
                         self.monitor.waitForAbort(0.25)  # pause before trying again
                         continue  # no image captured, try again next iteration

@@ -93,6 +93,7 @@ def commands(monitor, command):
 def service(monitor):
     kodiHue.loadSettings()
     bridge = kodiHue.connectBridge(monitor, silent=settings['disable_connection_message'])
+    service_enabled = cache.get("script.service.hue.service_enabled")
 
     if bridge is not None:
         globals.settingsChanged = False
@@ -110,17 +111,26 @@ def service(monitor):
         logger.debug("Main service loop starting")
 
         while globals.connected and not monitor.abortRequested():
+
+            # check if service was just renabled and if so restart groups
+            prev_service_enabled = service_enabled
             service_enabled = cache.get("script.service.hue.service_enabled")
+            if service_enabled and not prev_service_enabled:
+                kodiHue.activate(bridge, kgroups, ambi_group)
+
+            #process cached waiting commands
             action = cache.get("script.service.hue.action")
             if action:
                 process_actions(action, kgroups)
 
+            #reload if settings changed
             if globals.settingsChanged:
                 kgroups = kodiHue.setupGroups(bridge, globals.reloadFlash)
                 if globals.ambiEnabled:
                     ambi_group.setup(monitor, bridge, kgroupID=3, flash=globals.reloadFlash)
                 globals.settingsChanged = False
 
+            #check for sunset & connection every minute
             if timer > 59:
                 timer = 0
                 try:
@@ -151,13 +161,14 @@ def service(monitor):
                 except Exception as ex:
                     logger.exception("Get daylight exception")
 
+                #check if sunset took place
                 if globals.daylight != previousDaylight:
                     logger.debug(
                         "Daylight change! current: {}, previous: {}".format(globals.daylight, previousDaylight))
 
                     globals.daylight = kodiHue.getDaylight(bridge)
                     if not globals.daylight and service_enabled:
-                        kodiHue.sunset(bridge, kgroups, ambi_group)
+                        kodiHue.activate(bridge, kgroups, ambi_group)
             timer += 1
             monitor.waitForAbort(1)
         logger.debug("Process exiting...")
