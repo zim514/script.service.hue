@@ -2,13 +2,15 @@
 import datetime
 
 import xbmc
-
-from resources.lib.kodisettings import settings_storage, convert_time
-from resources.lib.qhue import QhueException
 import simplecache
 
-from resources.lib import logger, ADDON
-import kodiHue
+from resources.lib.qhue import QhueException
+
+
+from resources.lib.kodisettings import convert_time
+from resources.lib import logger
+from . import ADDON
+from kodisettings import settings_storage
 
 STATE_STOPPED = 0
 STATE_PLAYING = 1
@@ -17,6 +19,7 @@ STATE_PAUSED = 2
 VIDEO = 1
 AUDIO = 2
 ALL_MEDIA = 3
+
 
 class KodiGroup(xbmc.Player):
     def __init__(self):
@@ -85,7 +88,8 @@ class KodiGroup(xbmc.Player):
     def onPlayBackStopped(self):
         logger.info("In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroupID,
                                                                                                        self.mediaType,
-                                                                                                       settings_storage['lastMediaType']))
+                                                                                                       settings_storage[
+                                                                                                           'lastMediaType']))
         self.state = STATE_STOPPED
 
         try:
@@ -95,7 +99,8 @@ class KodiGroup(xbmc.Player):
         except AttributeError:
             logger.error("No videoInfoTag")
 
-        if self.enabled and self.checkActiveTime() and self.stopBehavior and self.mediaType == settings_storage['lastMediaType']:
+        if self.enabled and self.checkActiveTime() and self.stopBehavior and self.mediaType == settings_storage[
+            'lastMediaType']:
             self.run_stop()
 
     def onPlayBackPaused(self):
@@ -170,11 +175,12 @@ class KodiGroup(xbmc.Player):
     def checkActiveTime(self):
         service_enabled = self.cache.get("script.service.hue.service_enabled")
         logger.debug(
-            "Schedule: {}, daylightDiable: {}, daylight: {}, startTime: {}, endTime: {}".format(settings_storage['enableSchedule'],
-                                                                                                settings_storage['daylightDisable'],
-                                                                                                settings_storage['daylight'],
-                                                                                                settings_storage['startTime'],
-                                                                                                settings_storage['endTime']))
+            "Schedule: {}, daylightDiable: {}, daylight: {}, startTime: {}, endTime: {}".format(
+                settings_storage['enableSchedule'],
+                settings_storage['daylightDisable'],
+                settings_storage['daylight'],
+                settings_storage['startTime'],
+                settings_storage['endTime']))
 
         if settings_storage['daylightDisable'] and settings_storage['daylight']:
             logger.debug("Disabled by daylight']")

@@ -1,19 +1,20 @@
 import json
-from socket import getfqdn
 from datetime import timedelta
+from socket import getfqdn
 
+import requests
 import xbmc
 import xbmcgui
 
-import requests
 
-from resources.lib import kodisettings, ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED
-from resources.lib.kodisettings import validate_schedule, settings_storage
-from . import qhue, ADDONID, logger, cache
 from resources.lib.qhue.qhue import QhueException
+from . import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED
+from kodisettings import settings_storage
+from . import qhue, ADDONID, logger, cache
+from .kodisettings import read_settings
 
-from . import KodiGroup
 from .language import get_string as _
+from . import KodiGroup
 
 
 def setupGroups(bridge, flash=False):
@@ -453,7 +454,7 @@ class HueMonitor(xbmc.Monitor):
     def onSettingsChanged(self):
         logger.info("Settings changed")
         # self.waitForAbort(1)
-        kodisettings.read_settings()
+        read_settings()
         SETTINGS_CHANGED.set()
 
 

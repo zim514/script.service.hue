@@ -3,9 +3,6 @@ from datetime import datetime
 import xbmcgui
 
 from resources.lib import logger, ADDON
-from resources.lib.kodiHue import notification
-from . import ADDON
-from . import cache
 
 settings_storage = {}
 
@@ -19,8 +16,9 @@ def validate_schedule():
             logger.debug("Time looks valid")
         except ValueError as e:
             logger.error("Invalid time settings: {}".format(e))
-            notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"),
-                         icon=xbmcgui.NOTIFICATION_ERROR)
+
+            xbmcgui.Dialog().notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"),
+                                          icon=xbmcgui.NOTIFICATION_ERROR)
             ADDON.setSettingBool("EnableSchedule", False)
             settings_storage['enableSchedule'] = False
 

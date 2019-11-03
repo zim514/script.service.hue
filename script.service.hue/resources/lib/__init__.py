@@ -7,8 +7,6 @@ import xbmc
 import xbmcaddon
 import simplecache
 
-from resources.lib import kodilogging
-from resources.lib.kodisettings import settings_storage
 
 NUM_GROUPS = 2  # group0= video, group1=audio
 STRDEBUG = False  # Show string ID in UI
@@ -26,6 +24,7 @@ ADDONVERSION = ADDON.getAddonInfo('version')
 KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
 
 
+from resources.lib import kodilogging
 logger = getLogger(ADDONID)
 kodilogging.config()
 
@@ -34,13 +33,15 @@ cache = simplecache.SimpleCache()
 
 def timer(func):
     """Logs the runtime of the decorated function"""
+
     @functools.wraps(func)
     def wrapper_timer(*args, **kwargs):
-        startTime = time.time()    # 1
+        startTime = time.time()  # 1
         value = func(*args, **kwargs)
-        endTime = time.time()      # 2
-        runTime = endTime - startTime    # 3
+        endTime = time.time()  # 2
+        runTime = endTime - startTime  # 3
         settings_storage['processTimes'].append(runTime)
 
         return value
+
     return wrapper_timer

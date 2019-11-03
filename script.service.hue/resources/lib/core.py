@@ -92,7 +92,7 @@ def commands(monitor, command):
 
 
 def service(monitor):
-    kodiHue.loadSettings()
+    kodisettings.read_settings()
     bridge = kodiHue.connectBridge(monitor, silent=settings_storage['disable_connection_message'])
     service_enabled = cache.get("script.service.hue.service_enabled")
 

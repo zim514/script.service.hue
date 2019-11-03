@@ -6,7 +6,7 @@ import os
 
 import xbmc
 
-from resources.lib import ADDONID, ADDON, ADDONDIR
+from . import ADDONID, ADDON, ADDONDIR
 
 prefix = "[{}]".format(ADDONID)
 formatter = logging.Formatter(prefix + '[%(module)s][%(funcName)s](%(lineno)d): %(message)s')
