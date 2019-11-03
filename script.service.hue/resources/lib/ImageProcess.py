@@ -9,7 +9,8 @@ http://www.screenbloom.com/
 '''
 
 from PIL import ImageEnhance
-from globals import timer
+from resources.lib import timer
+
 
 #===============================================================================
 # import os

@@ -2,6 +2,8 @@
 import datetime
 
 import xbmc
+
+import resources.lib.kodisettings
 from resources.lib.qhue import QhueException
 import simplecache
 
@@ -180,8 +182,8 @@ class KodiGroup(xbmc.Player):
 
         if service_enabled:
             if globals.enableSchedule:
-                start = kodiHue.convertTime(globals.startTime)
-                end = kodiHue.convertTime(globals.endTime)
+                start = resources.lib.kodisettings.convert_time(globals.startTime)
+                end = resources.lib.kodisettings.convert_time(globals.endTime)
                 now = datetime.datetime.now().time()
                 if (now > start) and (now < end):
                     logger.debug("Enabled by schedule")

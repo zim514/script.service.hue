@@ -8,6 +8,7 @@ import xbmcgui
 import requests
 
 from resources.lib import kodisettings, ADDON
+from resources.lib.kodisettings import validate_schedule
 from . import qhue, ADDONID, logger, cache
 from resources.lib.qhue.qhue import QhueException
 
@@ -37,7 +38,7 @@ def loadSettings():
     globals.video_enableOther = ADDON.getSettingBool("video_Other")
 
     globals.ambiEnabled = ADDON.getSettingBool("group3_enabled")
-    validateSchedule()
+    validate_schedule()
 
 
 def setupGroups(bridge, flash=False):
@@ -428,21 +429,6 @@ def connectBridge(monitor, silent=False):
         return None
 
 
-def validateSchedule():
-    logger.debug("Validate schedule. Schedule Enabled: {}".format(globals.enableSchedule))
-    if globals.enableSchedule:
-        try:
-            convertTime(globals.startTime)
-            convertTime(globals.endTime)
-            logger.debug("Time looks valid")
-        except ValueError as e:
-            logger.error("Invalid time settings: {}".format(e))
-            notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"),
-                         icon=xbmcgui.NOTIFICATION_ERROR)
-            ADDON.setSettingBool("EnableSchedule", False)
-            globals.enableSchedule = False
-
-
 def getLightGamut(bridge, L):
     try:
         gamut = bridge.lights()[L]['capabilities']['control']['colorgamuttype']
@@ -469,12 +455,6 @@ def checkBridgeModel(bridge):
     xbmcgui.Dialog().ok(_("Unsupported Hue Bridge"), _(
         "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for certain features."))
     return None
-
-
-def convertTime(time):
-    hour = int(time.split(":")[0])
-    minute = int(time.split(":")[1])
-    return datetime.time(hour, minute)
 
 
 def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), sound=True):

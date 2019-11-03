@@ -18,7 +18,7 @@ import kodisettings
 def core():
     logger.info("service started, version: {}".format(ADDON.getAddonInfo("version")))
     logger.info("Args: {}".format(sys.argv))
-    kodisettings.update_settings_cache()
+    kodisettings.read_settings()
 
     if len(sys.argv) > 1:
         command = sys.argv[1]
