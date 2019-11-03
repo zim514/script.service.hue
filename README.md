@@ -55,6 +55,56 @@ Every selected light increases the number of necessary commands therefore influe
 - **Average image processing time:** Shows the average time it took to process the colours before updating the Hue bulbs, in milliseconds. This value is updated whenever a video is stopped.
 
 
+### JSON RPC Commands
+This addon supports Kodi JSON RPC commands that can be sent by HTTP, other add-ons or skins. These commands simulate the same result as the commands in the plugin menu.
+
+**Disable**:
+Temporarily disable service. Service will be re-enabled when Kodi restarts. 
+```json
+    {
+        "jsonrpc": "2.0",
+        "method": "JSONRPC.NotifyAll",
+        "params": {
+            "sender": "script.service.hue",
+            "message": "disable"
+        },
+        "id": 1
+    }
+```
+**Enable**
+```json
+    {
+        "jsonrpc": "2.0",
+        "method": "JSONRPC.NotifyAll",
+        "params": {
+            "sender": "script.service.hue",
+            "message": "enable"
+        },
+        "id": 1
+    }
+```
+
+**Actions**:
+
+Available commands: play, pause, stop
+
+Video Group: 1
+
+Audio Group: 2
+
+```json
+    {
+        "jsonrpc": "2.0",
+        "method": "JSONRPC.NotifyAll",
+        "params": {
+            "sender": "script.service.hue",
+            "message": "actions",
+            "data": {"command": "stop","group": "1"}
+        },
+        "id": 1
+    }
+```
+
 ### Problems?
 
 - Make sure you update your Hue bridge to the latest version. This add-on assumes you have the latest features
