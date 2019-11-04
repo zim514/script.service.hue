@@ -2,15 +2,13 @@ import os
 import sys
 from datetime import timedelta
 
+import simplecache
 import xbmc
-import xbmcgui
 import xbmcplugin
 from xbmcgui import ListItem
-import simplecache
 
-from .kodisettings import settings
-from resources.lib import logger, ADDON, ADDONID, kodiHue, core, ADDONPATH
 from language import get_string as _
+from resources.lib import logger, ADDON, ADDONPATH
 
 try:
     # Python 3
