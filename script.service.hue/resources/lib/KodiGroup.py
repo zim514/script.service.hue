@@ -96,8 +96,7 @@ class KodiGroup(xbmc.Player):
         except AttributeError:
             logger.error("No videoInfoTag")
 
-        if self.enabled and self.checkActiveTime() and self.stopBehavior and self.mediaType == settings_storage[
-            'lastMediaType']:
+        if self.enabled and self.checkActiveTime() and self.stopBehavior and self.mediaType == settings_storage['lastMediaType']:
             self.run_stop()
 
     def onPlayBackPaused(self):
@@ -112,7 +111,7 @@ class KodiGroup(xbmc.Player):
             return
 
         if self.enabled and self.checkActiveTime() and self.pauseBehavior and self.mediaType == self.playbackType():
-            self.lastMediaType = self.playbackType()
+            settings_storage['lastMediaType'] = self.playbackType()
             self.run_pause()
 
     def onPlayBackResumed(self):
