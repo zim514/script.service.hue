@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from logging import getLogger
 from requests.exceptions import ConnectionError
 
 import xbmcgui
-import simplecache
 
+
+from resources.lib import kodisettings
+from resources.lib.kodisettings import settings_storage
 from . import logger, ADDON, cache, SETTINGS_CHANGED
-from kodisettings import settings_storage
 
-from . import kodiHue
-from .language import get_string as _
-from . import AmbiGroup
-import kodisettings
+from resources.lib import kodiHue
+from resources.lib.language import get_string as _
+from resources.lib import AmbiGroup
 
 
 def core():
@@ -137,10 +136,10 @@ def service(monitor):
                     if connection_retries > 0:
                         bridge = kodiHue.connectBridge(monitor, silent=True)
                         if bridge is not None:
-                            previousDaylight = kodiHue.getDaylight(bridge)
+                            previous_daylight = kodiHue.getDaylight(bridge)
                             connection_retries = 0
                     else:
-                        previousDaylight = kodiHue.getDaylight(bridge)
+                        previous_daylight = kodiHue.getDaylight(bridge)
 
                 except ConnectionError as error:
                     connection_retries = connection_retries + 1
@@ -162,9 +161,9 @@ def service(monitor):
                     logger.exception("Get daylight exception")
 
                 #check if sunset took place
-                if settings_storage['daylight'] != previousDaylight:
+                if settings_storage['daylight'] != previous_daylight:
                     logger.debug(
-                        "Daylight change! current: {}, previous: {}".format(settings_storage['daylight'], previousDaylight))
+                        "Daylight change! current: {}, previous: {}".format(settings_storage['daylight'], previous_daylight))
 
                     settings_storage['daylight'] = kodiHue.getDaylight(bridge)
                     if not settings_storage['daylight'] and service_enabled:

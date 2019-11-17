@@ -10,7 +10,7 @@ from resources.lib.qhue import QhueException
 from resources.lib.kodisettings import convert_time
 from resources.lib import logger
 from . import ADDON
-from kodisettings import settings_storage
+from .kodisettings import settings_storage
 
 STATE_STOPPED = 0
 STATE_PLAYING = 1
