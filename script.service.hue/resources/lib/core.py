@@ -97,6 +97,7 @@ def service(monitor):
 
     if bridge is not None:
         settings_storage['daylight'] = kodiHue.getDaylight(bridge)
+        cache.set("script.service.hue.daylight", kodiHue.getDaylight(bridge))
 
         kgroups = kodiHue.setupGroups(bridge, settings_storage['initialFlash'])
         if settings_storage['ambiEnabled']:
@@ -141,6 +142,7 @@ def service(monitor):
                     else:
                         previous_daylight = kodiHue.getDaylight(bridge)
 
+
                 except ConnectionError as error:
                     connection_retries = connection_retries + 1
                     if connection_retries <= 5:
@@ -160,13 +162,12 @@ def service(monitor):
                 except Exception as ex:
                     logger.exception("Get daylight exception")
 
-                #check if sunset took place
-                if settings_storage['daylight'] != previous_daylight:
-                    logger.debug(
-                        "Daylight change! current: {}, previous: {}".format(settings_storage['daylight'], previous_daylight))
-
-                    settings_storage['daylight'] = kodiHue.getDaylight(bridge)
-                    if not settings_storage['daylight'] and service_enabled:
+                # check if sunset took place
+                daylight = cache.get("script.service.hue.daylight")
+                if daylight != previous_daylight:
+                    logger.debug("Daylight change! current: {}, previous: {}".format(settings_storage['daylight'], previous_daylight))
+                    cache.set("script.service.hue.daylight", kodiHue.getDaylight(bridge))
+                    if not daylight and service_enabled:
                         kodiHue.activate(bridge, kgroups, ambi_group)
             timer += 1
             monitor.waitForAbort(1)

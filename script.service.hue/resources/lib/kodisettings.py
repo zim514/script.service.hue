@@ -1,9 +1,11 @@
 from datetime import datetime
 
 import xbmcgui
+import simplecache
 
 from resources.lib import logger, ADDON
 
+cache = simplecache.SimpleCache()
 settings_storage = {}
 
 
@@ -17,8 +19,7 @@ def validate_schedule():
         except ValueError as e:
             logger.error("Invalid time settings: {}".format(e))
 
-            xbmcgui.Dialog().notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"),
-                                          icon=xbmcgui.NOTIFICATION_ERROR)
+            xbmcgui.Dialog().notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"), icon=xbmcgui.NOTIFICATION_ERROR)
             ADDON.setSettingBool("EnableSchedule", False)
             settings_storage['enableSchedule'] = False
 
@@ -29,15 +30,14 @@ def read_settings():
     settings_storage['initialFlash'] = ADDON.getSettingBool("initialFlash")
     settings_storage['forceOnSunset'] = ADDON.getSettingBool("forceOnSunset")
     settings_storage['daylightDisable'] = ADDON.getSettingBool("daylightDisable")
-
+    cache.set("script.service.hue.daylightDisable", ADDON.getSettingBool("daylightDisable"))
 
     settings_storage['enableSchedule'] = ADDON.getSettingBool("enableSchedule")
     settings_storage['startTime'] = ADDON.getSetting("startTime")  # string HH:MM
     settings_storage['endTime'] = ADDON.getSetting("endTime")  # string HH:MM
     settings_storage['disableConnectionMessage'] = ADDON.getSettingBool("disableConnectionMessage")
 
-    settings_storage['videoMinimumDuration'] = ADDON.getSettingInt(
-        "video_MinimumDuration")  # Setting in Minutes. Kodi library uses seconds, needs to be converted.
+    settings_storage['videoMinimumDuration'] = ADDON.getSettingInt("video_MinimumDuration")  # Setting in Minutes. Kodi library uses seconds, needs to be converted.
     settings_storage['video_enableMovie'] = ADDON.getSettingBool("video_Movie")
     settings_storage['video_enableMusicVideo'] = ADDON.getSettingBool("video_MusicVideo")
     settings_storage['video_enableEpisode'] = ADDON.getSettingBool("video_Episode")
