@@ -179,7 +179,7 @@ class KodiGroup(xbmc.Player):
                 settings_storage['endTime']))
 
         if settings_storage['daylightDisable'] and settings_storage['daylight']:
-            logger.debug("Disabled by daylight']")
+            logger.debug("Disabled by daylight")
             return False
 
         if service_enabled:
