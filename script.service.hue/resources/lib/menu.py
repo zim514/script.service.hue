@@ -9,7 +9,7 @@ from xbmcgui import ListItem
 
 from language import get_string as _
 from resources.lib import logger, ADDON, ADDONPATH
-from resources.lib.kodisettings import settings_storage
+
 
 try:
     # Python 3
@@ -20,6 +20,7 @@ except ImportError:
 
 cache = simplecache.SimpleCache()
 
+
 def menu():
     route = sys.argv[0]
     addon_handle = int(sys.argv[1])
@@ -28,10 +29,7 @@ def menu():
     parsed = parse_qs(command)
 
 
-    logger.debug(
-        "Menu started.  route: {}, handle: {}, command: {}, parsed: {}, Arguments: {}".format(route, addon_handle,
-                                                                                              command, parsed,
-                                                                                              sys.argv))
+    logger.debug("Menu started.  route: {}, handle: {}, command: {}, parsed: {}, Arguments: {}".format(route, addon_handle, command, parsed, sys.argv))
 
     if route == "plugin://script.service.hue/":
         if not command:
@@ -43,13 +41,16 @@ def menu():
             ADDON.openSettings()
 
         elif command == "toggle":
-            if cache.get("script.service.hue.service_enabled"):
+            if cache.get("script.service.hue.service_enabled") and get_status() != "Disabled by daylight":
                 logger.info("Disable service")
                 cache.set("script.service.hue.service_enabled", False)
 
-            else:
+            elif get_status() != "Disabled by daylight":
                 logger.info("Enable service")
                 cache.set("script.service.hue.service_enabled", True)
+            else:
+                logger.info("Disabled by daylight, ignoring")
+
             xbmc.executebuiltin('Container.Refresh')
 
     elif route == "plugin://script.service.hue/actions":
@@ -66,7 +67,7 @@ def menu():
 
             xbmcplugin.addDirectoryItems(addon_handle, items, len(items))
             xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=True)
-            logger.debug("BUILT MENU")
+
         else:
             cache.set("script.service.hue.action", (action, kgroupid), expiration=(timedelta(seconds=5)))
 
@@ -92,7 +93,7 @@ def get_status():
     enabled = cache.get("script.service.hue.service_enabled")
     daylight = cache.get("script.service.hue.daylight")
     daylight_disable = cache.get("script.service.hue.daylightDisable")
-    logger.debug("status: {}".format(daylight_disable))
+    #logger.debug("Current status: {}".format(daylight_disable))
     if daylight and daylight_disable:
         return _("Disabled by daylight")
     elif enabled:
