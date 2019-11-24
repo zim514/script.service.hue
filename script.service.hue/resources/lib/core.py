@@ -145,9 +145,9 @@ def service(monitor):
 
                 except ConnectionError as error:
                     connection_retries = connection_retries + 1
-                    if connection_retries <= 5:
+                    if connection_retries <= 10:
                         logger.error(
-                            "Bridge Connection Error. Attempt: {}/5 : {}".format(connection_retries, error))
+                            "Bridge Connection Error. Attempt: {}/10 : {}".format(connection_retries, error))
                         xbmcgui.Dialog().notification(_("Hue Service"),
                                                       _("Connection lost. Trying again in 2 minutes"))
                         timer = -60
