@@ -458,14 +458,6 @@ msgctxt "#30813"
 msgid "Average image processing time:"
 msgstr "Average image processing time:"
 
-msgctxt "#30069"
-msgid "Recommended minimum update interval: 100ms"
-msgstr ""
-
-msgctxt "#30070"
-msgid "Est. Hue Commands/sec (max 20): {}"
-msgstr ""
-
 msgctxt "#30071"
 msgid "Only colour lights are supported"
 msgstr ""
@@ -494,4 +486,8 @@ msgstr ""
 
 msgctxt "#30062"
 msgid "Settings"
+msgstr ""
+
+msgctxt "#30063"
+msgid "Disabled by daylight"
 msgstr ""

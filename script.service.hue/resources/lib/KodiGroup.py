@@ -8,9 +8,9 @@ from resources.lib.qhue import QhueException
 
 
 from resources.lib.kodisettings import convert_time
-from resources.lib import logger
+from resources.lib import logger, cache
 from . import ADDON
-from kodisettings import settings_storage
+from .kodisettings import settings_storage
 
 STATE_STOPPED = 0
 STATE_PLAYING = 1
@@ -23,7 +23,7 @@ ALL_MEDIA = 3
 
 class KodiGroup(xbmc.Player):
     def __init__(self):
-        self.cache = simplecache.SimpleCache()
+
         super(xbmc.Player, self).__init__()
 
     def loadSettings(self):
@@ -169,17 +169,18 @@ class KodiGroup(xbmc.Player):
         return mediaType
 
     def checkActiveTime(self):
-        service_enabled = self.cache.get("script.service.hue.service_enabled")
+        service_enabled = cache.get("script.service.hue.service_enabled")
+        daylight = cache.get("script.service.hue.daylight")
         logger.debug(
             "Schedule: {}, daylightDiable: {}, daylight: {}, startTime: {}, endTime: {}".format(
                 settings_storage['enableSchedule'],
                 settings_storage['daylightDisable'],
-                settings_storage['daylight'],
+                daylight,
                 settings_storage['startTime'],
                 settings_storage['endTime']))
 
-        if settings_storage['daylightDisable'] and settings_storage['daylight']:
-            logger.debug("Disabled by daylight']")
+        if settings_storage['daylightDisable'] and daylight:
+            logger.debug("Disabled by daylight")
             return False
 
         if service_enabled:

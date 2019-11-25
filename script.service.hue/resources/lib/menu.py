@@ -10,12 +10,15 @@ from xbmcgui import ListItem
 from language import get_string as _
 from resources.lib import logger, ADDON, ADDONPATH
 
+
 try:
     # Python 3
     from urllib.parse import urlparse, parse_qs
 except ImportError:
     # Python 2
     from urlparse import urlparse, parse_qs
+
+cache = simplecache.SimpleCache()
 
 
 def menu():
@@ -24,30 +27,30 @@ def menu():
     base_url = sys.argv[0]
     command = sys.argv[2][1:]
     parsed = parse_qs(command)
-    cache = simplecache.SimpleCache()
 
-    logger.debug(
-        "Menu started.  route: {}, handle: {}, command: {}, parsed: {}, Arguments: {}".format(route, addon_handle,
-                                                                                              command, parsed,
-                                                                                              sys.argv))
+
+    logger.debug("Menu started.  route: {}, handle: {}, command: {}, parsed: {}, Arguments: {}".format(route, addon_handle, command, parsed, sys.argv))
 
     if route == "plugin://script.service.hue/":
         if not command:
 
-            build_menu(base_url, addon_handle, cache)
+            build_menu(base_url, addon_handle)
 
         elif command == "settings":
             logger.debug("Opening settings")
             ADDON.openSettings()
 
         elif command == "toggle":
-            if cache.get("script.service.hue.service_enabled"):
+            if cache.get("script.service.hue.service_enabled") and get_status() != "Disabled by daylight":
                 logger.info("Disable service")
                 cache.set("script.service.hue.service_enabled", False)
 
-            else:
+            elif get_status() != "Disabled by daylight":
                 logger.info("Enable service")
                 cache.set("script.service.hue.service_enabled", True)
+            else:
+                logger.info("Disabled by daylight, ignoring")
+
             xbmc.executebuiltin('Container.Refresh')
 
     elif route == "plugin://script.service.hue/actions":
@@ -64,7 +67,7 @@ def menu():
 
             xbmcplugin.addDirectoryItems(addon_handle, items, len(items))
             xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=True)
-            logger.debug("BUILT MENU")
+
         else:
             cache.set("script.service.hue.action", (action, kgroupid), expiration=(timedelta(seconds=5)))
 
@@ -72,18 +75,33 @@ def menu():
         logger.error("Unknown command. Handle: {}, route: {}, Arguments: {}".format(addon_handle, route, sys.argv))
 
 
-def build_menu(base_url, addon_handle, cache):
+def build_menu(base_url, addon_handle):
     items = [
-        # TODO: Only display enabled groups
+
         (base_url + "/actions?kgroupid=1&action=menu", ListItem(_("Video Actions"), iconImage="DefaultVideo.png"), True),
         (base_url + "/actions?kgroupid=2&action=menu", ListItem(_("Audio Actions"), iconImage="DefaultAudio.png"), True),
         (base_url + "?toggle",
-         ListItem(_("Hue Status: ") + (_("Enabled") if cache.get("script.service.hue.service_enabled") else _("Disabled")))),
+         ListItem(_("Hue Status: ") + get_status())),
         (base_url + "?settings", ListItem(_("Settings"), iconImage=get_icon_path("settings")))
     ]
 
     xbmcplugin.addDirectoryItems(addon_handle, items, len(items))
     xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=False)
+
+
+def get_status():
+    enabled = cache.get("script.service.hue.service_enabled")
+    daylight = cache.get("script.service.hue.daylight")
+    daylight_disable = cache.get("script.service.hue.daylightDisable")
+    #logger.debug("Current status: {}".format(daylight_disable))
+    if daylight and daylight_disable:
+        return _("Disabled by daylight")
+    elif enabled:
+        return _("Enabled")
+    else:
+        return _("Disabled")
+
+
 
 def get_icon_path(icon_name):
     return os.path.join(ADDONPATH, 'resources', 'icons', icon_name+".png")

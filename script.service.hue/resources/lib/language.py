@@ -1,10 +1,8 @@
 #! /usr/bin/python
 
-#from __future__ import print_function
-
-
 ######### Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
 ######### https://forum.kodi.tv/showthread.php?tid=268081&highlight=generate+.po+python+gettext
+import traceback
 
 _strings = {}
 
@@ -40,9 +38,11 @@ if __name__ == "__main__":
         strings = re.compile("_\([\"'](.*?)[\"']\)", re.IGNORECASE).findall(r)
         translated = [m.msgid.lower().replace("'", "\\'") for m in po]
         missing = set([s for s in strings if s.lower() not in translated])
-        
+
+        print("Missing:"+ str(missing))
+
         if missing:
-            ids_range = list(range(30000, 31000))
+            ids_range = list(range(30000, 35000))
             ids_reserved = [int(m.msgctxt[1:]) for m in po]
             ids_available = [x for x in ids_range if x not in ids_reserved]
             print("WARNING: adding missing translation for '%s'" % missing)
@@ -52,6 +52,8 @@ if __name__ == "__main__":
                 po.append(entry)
             po.save(string_file)
     except Exception as e:
+        print("Exception:")
+        traceback.print_exc()
         content = []
     with open(__file__, "r") as me:
         content = me.readlines()
@@ -63,7 +65,7 @@ if __name__ == "__main__":
                                                     m.msgctxt.replace("#", "").strip())
             f.write(line)
 else:
-    from . import STRDEBUG, ADDON, ADDONID, logger
+    from . import STRDEBUG, ADDON, logger
 
     def get_string(t):
         string_id = _strings.get(t.lower())
@@ -196,8 +198,6 @@ _strings['minimum brightness'] = 30810
 _strings['maximum brightness'] = 30811
 _strings['disable connection message'] = 30812
 _strings['average image processing time:'] = 30813
-_strings['recommended minimum update interval: 100ms'] = 30069
-_strings['est. hue commands/sec (max 20): {}'] = 30070
 _strings['only colour lights are supported'] = 30071
 _strings['unsupported hue bridge'] = 30072
 _strings['hue bridge v1 (round) is unsupported. hue bridge v2 (square) is required for certain features.'] = 30073
@@ -205,3 +205,4 @@ _strings['disabled'] = 30055
 _strings['play'] = 30060
 _strings['hue status: '] = 30061
 _strings['settings'] = 30062
+_strings['disabled by daylight'] = 30063

@@ -4,7 +4,7 @@ from threading import Thread, Event
 import xbmc
 from PIL import Image
 
-from resources.lib import kodiHue, PROCESS_TIMES
+from resources.lib import kodiHue, PROCESS_TIMES, cache
 from resources.lib.kodisettings import settings_storage
 from . import ImageProcess
 from . import KodiGroup
@@ -107,7 +107,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         cap = xbmc.RenderCapture()
         logger.debug("_ambiLoop started")
-        service_enabled = self.cache.get("script.service.hue.service_enabled")
+        service_enabled = cache.get("script.service.hue.service_enabled")
         aspect_ratio = cap.getAspectRatio()
 
         self.captureSizeY = int(self.captureSize / aspect_ratio)
@@ -150,7 +150,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     x.daemon = True
                     x.start()
 
-                if not self.cache.get("script.service.hue.service_enabled"):
+                if not cache.get("script.service.hue.service_enabled"):
                     logger.info("Service disabled, stopping Ambilight")
                     self.ambiRunning.clear()
                 self.monitor.waitForAbort(self.updateInterval)  # seconds
