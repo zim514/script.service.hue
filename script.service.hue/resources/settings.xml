@@ -94,6 +94,10 @@
         <setting id="group3_CaptureSize" type="slider" label="30067" default="400" range="150,50,1920" option="int" visible="eq(-11,true)"/>
         <setting id="averageProcessTime" type="text" label="30813"  enable="false" visible="eq(-12,true)"/>
 
+        <setting type="lsep" label="30814" visible="eq(-13,true)"/>
+        <setting id="group3_ResumeState" type="bool" label="30815"  default="false" visible="eq(-14,true)"/>
+        <setting id="group3_ResumeTransition" type="slider" label="30816" default="10" range="0,1,30" option="int" visible="eq(-15,true)"/>
+
         <setting id="group3_Lights" type="text" label="30035"  default="-1" enable="false" visible="false" />
     </category>
 <!--  /GROUP SECTION  3-->

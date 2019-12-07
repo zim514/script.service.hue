@@ -26,12 +26,15 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 self.enabled, self.isPlayingVideo(), self.isPlayingAudio(), self.mediaType, self.playbackType()))
         logger.info(
             "Ambilight Settings: Interval: {}, transitionTime: {}".format(self.updateInterval, self.transitionTime))
-        # logger.info("Ambilight Settings: forceOn: {}, setBrightness: {}, Brightness: {}, MinimumDistance: {}".format(self.forceOn,self.setBrightness,self.brightness,self.minimumDistance))
+
         self.state = STATE_PLAYING
 
         self.videoInfoTag = self.getVideoInfoTag()
         if self.isPlayingVideo():
             if self.enabled and self.checkActiveTime() and self.checkVideoActivation(self.videoInfoTag):
+
+                #save light state
+                self.savedLightStates = kodiHue.get_light_states(self.ambiLights, self.bridge)
 
                 if self.forceOn:
                     for L in self.ambiLights:
@@ -50,6 +53,20 @@ class AmbiGroup(KodiGroup.KodiGroup):
         self.state = STATE_STOPPED
         self.ambiRunning.clear()
 
+        # logger.debug("#######Saved states: {}".format(self.savedLightStates))
+        if self.resume_state:
+            logger.info("Resuming light state")
+            for L in self.savedLightStates:
+                xy = self.savedLightStates[L]['state']['xy']
+                bri = self.savedLightStates[L]['state']['bri']
+                on = self.savedLightStates[L]['state']['on']
+                logger.debug("Resume state: Light: {}, xy: {}, bri: {}, on: {},transition time: {}".format(L, xy, bri, on, self.resume_transition))
+                try:
+                    self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
+                except QhueException as e:
+                    logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
+
+
     def onPlayBackPaused(self):
         logger.info("In ambiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
         self.state = STATE_PAUSED
@@ -60,21 +77,19 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))
 
-        self.transitionTime = ADDON.getSettingInt("group{}_TransitionTime".format(
-            self.kgroupID)) / 100  # This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
+        self.transitionTime = ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroupID)) / 100  # This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
         self.forceOn = ADDON.getSettingBool("group{}_forceOn".format(self.kgroupID))
 
-        self.minBri = ADDON.getSettingInt(
-            "group{}_MinBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
-        self.maxBri = ADDON.getSettingInt(
-            "group{}_MaxBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
+        self.minBri = ADDON.getSettingInt("group{}_MinBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
+        self.maxBri = ADDON.getSettingInt("group{}_MaxBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
 
         self.saturation = ADDON.getSettingNumber("group{}_Saturation".format(self.kgroupID))
-
         self.captureSize = ADDON.getSettingInt("group{}_CaptureSize".format(self.kgroupID))
 
-        self.updateInterval = ADDON.getSettingInt(
-            "group{}_Interval".format(self.kgroupID)) / 1000  # convert MS to seconds
+        self.resume_state = ADDON.getSettingBool("group{}_ResumeState".format(self.kgroupID))
+        self.resume_transition = ADDON.getSettingInt("group{}_ResumeTransition".format(self.kgroupID)) * 10 #convert seconds to multiple of 100ms
+
+        self.updateInterval = ADDON.getSettingInt("group{}_Interval".format(self.kgroupID)) / 1000  # convert MS to seconds
         if self.updateInterval == 0:
             self.updateInterval = 0.002
 
