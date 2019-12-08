@@ -489,5 +489,4 @@ class HueMonitor(xbmc.Monitor):
                 action = json_loads['command']
                 logger.debug("Action Notification: group: {}, command: {}".format(kgroupid, action))
                 cache.set("script.service.hue.action", (action, kgroupid), expiration=(timedelta(seconds=5)))
-
-
+                
