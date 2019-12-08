@@ -447,6 +447,18 @@ def perfAverage(process_times):
     return "{} ms".format(average_process_time)
 
 
+def get_light_states(lights, bridge):
+    states = {}
+
+    for L in lights:
+        try:
+            states[L] = (bridge.lights[L]())
+        except QhueException as e:
+            logger.error("Hue call fail: {}".format(e))
+
+    return states
+
+
 class HueMonitor(xbmc.Monitor):
     def __init__(self):
         super(xbmc.Monitor, self).__init__()
@@ -477,3 +489,4 @@ class HueMonitor(xbmc.Monitor):
                 action = json_loads['command']
                 logger.debug("Action Notification: group: {}, command: {}".format(kgroupid, action))
                 cache.set("script.service.hue.action", (action, kgroupid), expiration=(timedelta(seconds=5)))
+                

@@ -58,7 +58,7 @@ class Resource(object):
         if type(resp) == list:
             errors = [m['error']['description'] for m in resp if 'error' in m]
             if errors:
-                raise QhueException("\n".join(errors))
+                raise QhueException(errors)
         return resp
 
     def __getattr__(self, name):
