@@ -3,6 +3,7 @@ import datetime
 
 import xbmc
 import simplecache
+import xbmcgui
 
 from resources.lib.qhue import QhueException
 
@@ -11,6 +12,7 @@ from resources.lib.kodisettings import convert_time
 from resources.lib import logger, cache
 from . import ADDON
 from .kodisettings import settings_storage
+from .language import get_string as _
 
 STATE_STOPPED = 0
 STATE_PLAYING = 1
@@ -131,6 +133,10 @@ class KodiGroup(xbmc.Player):
             self.groupResource.action(scene=self.startScene)
         except QhueException as e:
             logger.error("onAVStarted: Hue call fail: {}".format(e))
+            if e.args[0][0] == 7:
+                logger.error("Scene not found")
+                xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+
 
     def run_pause(self):
         try:
@@ -139,6 +145,9 @@ class KodiGroup(xbmc.Player):
             logger.info("In KodiGroup[{}], onPlaybackPaused() Pause scene activated")
         except QhueException as e:
             logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
+            if e.args[0][0] == 7:
+                logger.error("Scene not found")
+                xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
 
     def run_stop(self):
         try:
@@ -147,6 +156,10 @@ class KodiGroup(xbmc.Player):
             logger.info("In KodiGroup[{}], onPlaybackStop() Stop scene activated")
         except QhueException as e:
             logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
+            if e.args[0][0] == 7:
+                logger.error("Scene not found")
+                xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+
 
     def activate(self):
         logger.info("Activate group [{}]".format(self.kgroupID))

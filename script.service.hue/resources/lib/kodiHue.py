@@ -176,13 +176,13 @@ def connectionTest(bridgeIP):
         logger.debug("Connection test failed.  {}".format(error))
         return False
 
-    # TODO: compare API version properly, ensure api version >= 1.28
-    if apiversion:
+    api_split = apiversion.split(".")
+    if apiversion and api_split[0] >= 1 and api_split[1] >= 28: # minimum bridge version 1.28
         logger.info("Bridge Found! Hue API version: {}".format(apiversion))
         return True
+
+    notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)), icon=xbmcgui.NOTIFICATION_ERROR)
     logger.debug("in ConnectionTest():  Connected! Bridge too old: {}".format(apiversion))
-    notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)),
-                 icon=xbmcgui.NOTIFICATION_ERROR)
     return False
 
 
