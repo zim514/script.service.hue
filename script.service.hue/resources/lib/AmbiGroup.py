@@ -199,8 +199,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
             try:
                 self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=transitionTime)
                 self.ambiLights[light].update(prevxy=xy)
-            except QhueException as ex:
-                logger.exception("Ambi: Hue call fail")
+            except QhueException as e:
+                if e.args[0][0] == 201:  # Param not modifiable because light is off error. ignore
+                    pass
+                else:
+                    logger.exception("Ambi: Hue call fail: {}".format(e))
+
             except KeyError:
                 logger.exception("Ambi: KeyError")
 
@@ -215,7 +219,11 @@ class AmbiGroup(KodiGroup.KodiGroup):
         try:
             self.bridge.lights[light].state(xy=xy, transitiontime=transitionTime)
             self.ambiLights[light].update(prevxy=xy)
-        except QhueException as ex:
-            logger.exception("Ambi: Hue call fail")
+        except QhueException as e:
+            if e.args[0] == 201: # Param not modifiable because light is off error. ignore
+                pass
+            else:
+                logger.exception("Ambi: Hue call fail: {}".format(e.args))
+
         except KeyError:
             logger.exception("Ambi: KeyError")
