@@ -213,7 +213,6 @@ class KodiGroup(xbmc.Player):
             return False
 
     def checkVideoActivation(self, infoTag):
-        logger.debug("InfoTag: {}".format(infoTag))
         try:
             duration = infoTag.getDuration() / 60  # returns seconds, convert to minutes
             mediaType = infoTag.getMediaType()
