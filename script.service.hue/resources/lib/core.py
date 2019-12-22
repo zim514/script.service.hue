@@ -96,7 +96,6 @@ def service(monitor):
     service_enabled = cache.get("script.service.hue.service_enabled")
 
     if bridge is not None:
-        settings_storage['daylight'] = kodiHue.getDaylight(bridge)
         cache.set("script.service.hue.daylight", kodiHue.getDaylight(bridge))
 
         kgroups = kodiHue.setupGroups(bridge, settings_storage['initialFlash'])
@@ -165,9 +164,10 @@ def service(monitor):
                 # check if sunset took place
                 daylight = cache.get("script.service.hue.daylight")
                 if daylight != previous_daylight:
-                    logger.debug("Daylight change! current: {}, previous: {}".format(settings_storage['daylight'], previous_daylight))
+                    logger.debug("Daylight change! current: {}, previous: {}".format(daylight, previous_daylight))
                     cache.set("script.service.hue.daylight", kodiHue.getDaylight(bridge))
                     if not daylight and service_enabled:
+                        logger.debug("Call Activate")
                         kodiHue.activate(bridge, kgroups, ambi_group)
             timer += 1
             monitor.waitForAbort(1)
