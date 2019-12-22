@@ -29,12 +29,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         self.state = STATE_PLAYING
 
+        # save light state
+        self.savedLightStates = kodiHue.get_light_states(self.ambiLights, self.bridge)
+
         self.videoInfoTag = self.getVideoInfoTag()
         if self.isPlayingVideo():
             if self.enabled and self.checkActiveTime() and self.checkVideoActivation(self.videoInfoTag):
-
-                #save light state
-                self.savedLightStates = kodiHue.get_light_states(self.ambiLights, self.bridge)
 
                 if self.forceOn:
                     for L in self.ambiLights:
