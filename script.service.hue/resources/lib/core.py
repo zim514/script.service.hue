@@ -8,7 +8,7 @@ import xbmcgui
 
 from resources.lib import kodisettings
 from resources.lib.kodisettings import settings_storage
-from . import logger, ADDON, cache, SETTINGS_CHANGED
+from . import logger, ADDON, cache, SETTINGS_CHANGED, rollbar, ADDONVERSION
 
 from resources.lib import kodiHue
 from resources.lib.language import get_string as _
@@ -158,7 +158,8 @@ def service(monitor):
                         xbmcgui.Dialog().notification(_("Hue Service"),
                                                       _("Connection lost. Check settings. Shutting down"))
                         settings_storage['connected'] = False
-                except Exception as ex:
+                except Exception as exc:
+                    rollbar.kodi.report_error(access_token='b871c6292a454fb490344f77da186e10', version=ADDONVERSION)
                     logger.exception("Get daylight exception")
 
                 # check if sunset took place
