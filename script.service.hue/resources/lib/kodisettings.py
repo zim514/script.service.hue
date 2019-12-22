@@ -4,6 +4,7 @@ import xbmcgui
 import simplecache
 
 from resources.lib import logger, ADDON
+from resources.lib.language import get_string as _
 
 cache = simplecache.SimpleCache()
 settings_storage = {}

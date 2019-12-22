@@ -164,8 +164,8 @@ def service(monitor):
                 # check if sunset took place
                 daylight = cache.get("script.service.hue.daylight")
                 if daylight != previous_daylight:
-                    logger.debug("Daylight change! current: {}, previous: {}".format(daylight, previous_daylight))
-                    cache.set("script.service.hue.daylight", kodiHue.getDaylight(bridge))
+                    logger.debug("Daylight change. current: {}, previous: {}".format(daylight, previous_daylight))
+                    cache.set("script.service.hue.daylight", daylight)
                     if not daylight and service_enabled:
                         logger.debug("Call Activate")
                         kodiHue.activate(bridge, kgroups, ambi_group)
