@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from threading import Thread, Event
+import rollbar.kodi
 
 import xbmc
 from PIL import Image
 
-from resources.lib import kodiHue, PROCESS_TIMES, cache
+from resources.lib import kodiHue, PROCESS_TIMES, cache, ADDONVERSION
 from resources.lib.kodisettings import settings_storage
 from . import ImageProcess
 from . import KodiGroup
@@ -53,24 +54,31 @@ class AmbiGroup(KodiGroup.KodiGroup):
         self.state = STATE_STOPPED
         self.ambiRunning.clear()
 
-        # logger.debug("#######Saved states: {}".format(self.savedLightStates))
         if self.resume_state:
-            logger.info("Resuming light state")
-            for L in self.savedLightStates:
-                xy = self.savedLightStates[L]['state']['xy']
-                bri = self.savedLightStates[L]['state']['bri']
-                on = self.savedLightStates[L]['state']['on']
-                logger.debug("Resume state: Light: {}, xy: {}, bri: {}, on: {},transition time: {}".format(L, xy, bri, on, self.resume_transition))
-                try:
-                    self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
-                except QhueException as e:
-                    logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
+            self.resumeLightState()
 
 
     def onPlayBackPaused(self):
         logger.info("In ambiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
         self.state = STATE_PAUSED
         self.ambiRunning.clear()
+        if self.resume_state:
+            self.resumeLightState()
+
+
+    def resumeLightState(self):
+        logger.info("Resuming light state")
+        for L in self.savedLightStates:
+            xy = self.savedLightStates[L]['state']['xy']
+            bri = self.savedLightStates[L]['state']['bri']
+            on = self.savedLightStates[L]['state']['on']
+            logger.debug("Resume state: Light: {}, xy: {}, bri: {}, on: {},transition time: {}".format(L, xy, bri, on, self.resume_transition))
+            try:
+                self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
+                logger.info("OK???")
+            except QhueException as exc:
+                logger.error("onPlaybackStopped: Hue call fail: {}".format(exc))
+                rollbar.kodi.report_error(access_token='b871c6292a454fb490344f77da186e10', version=ADDONVERSION)
 
     def loadSettings(self):
         logger.debug("AmbiGroup Load settings")
