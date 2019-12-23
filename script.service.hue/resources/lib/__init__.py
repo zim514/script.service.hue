@@ -8,8 +8,8 @@ import xbmc
 import xbmcaddon
 import simplecache
 
-import rollbar
-rollbar.init('b871c6292a454fb490344f77da186e10')
+#import rollbar
+#rollbar.init('b871c6292a454fb490344f77da186e10')
 
 
 NUM_GROUPS = 2  # group0= video, group1=audio
