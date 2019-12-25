@@ -5,7 +5,7 @@ from threading import Thread, Event
 import xbmc
 from PIL import Image
 
-from resources.lib import kodiHue, PROCESS_TIMES, cache, ADDONVERSION, reporting
+from resources.lib import kodiHue, PROCESS_TIMES, cache, reporting
 
 from . import ImageProcess
 from . import KodiGroup
@@ -43,6 +43,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                             self.bridge.lights[L].state(on=True)
                         except QhueException as e:
                             logger.debug("Ambi: Initial Hue call fail: {}".format(e))
+                            reporting.process_exception(e)
 
                 self.ambiRunning.set()
                 ambiLoopThread = Thread(target=self._ambiLoop, name="_ambiLoop")
@@ -162,8 +163,9 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     logger.exception("Value Error")
                     self.monitor.waitForAbort(0.25)
                     continue  # returned capture is  smaller than expected when player stopping. give up this loop.
-                except Exception as ex:
+                except Exception as exc:
                     logger.warning("Capture exception", exc_info=1)
+                    reporting.process_exception(exc)
                     self.monitor.waitForAbort(0.25)
                     continue
 
@@ -183,8 +185,9 @@ class AmbiGroup(KodiGroup.KodiGroup):
             logger.info("Average process time: {}".format(average_process_time))
             self.captureSize = ADDON.setSettingString("average_process_time", "{}".format(average_process_time))
 
-        except Exception as ex:
+        except Exception as exc:
             logger.exception("Exception in _ambiLoop")
+            reporting.process_exception(exc)
         logger.debug("_ambiLoop stopped")
 
     def _updateHueRGB(self, r, g, b, light, transitionTime, bri):
@@ -208,11 +211,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
             try:
                 self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=transitionTime)
                 self.ambiLights[light].update(prevxy=xy)
-            except QhueException as e:
-                if e.args[0][0] == 201:  # Param not modifiable because light is off error. ignore
+            except QhueException as exc:
+                if exc.args[0][0] == 201:  # Param not modifiable because light is off error. ignore
                     pass
                 else:
-                    logger.exception("Ambi: Hue call fail: {}".format(e))
+                    logger.exception("Ambi: Hue call fail: {}".format(exc))
+                    reporting.process_exception(exc)
 
             except KeyError:
                 logger.exception("Ambi: KeyError")
@@ -228,11 +232,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
         try:
             self.bridge.lights[light].state(xy=xy, transitiontime=transitionTime)
             self.ambiLights[light].update(prevxy=xy)
-        except QhueException as e:
-            if e.args[0] == 201: # Param not modifiable because light is off error. ignore
+        except QhueException as exc:
+            if exc.args[0] == 201: # Param not modifiable because light is off error. ignore
                 pass
             else:
-                logger.exception("Ambi: Hue call fail: {}".format(e.args))
+                logger.exception("Ambi: Hue call fail: {}".format(exc.args))
+                reporting.process_exception(exc)
 
         except KeyError:
             logger.exception("Ambi: KeyError")
