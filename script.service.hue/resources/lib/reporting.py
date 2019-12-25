@@ -5,7 +5,7 @@ import sys
 import xbmc
 import xbmcgui
 
-from resources.lib import rollbar
+import rollbar
 from . import logger, ADDON, ADDONVERSION, ROLLBAR_API_KEY, ADDONID,KODIVERSION
 
 def _kodi_version():
