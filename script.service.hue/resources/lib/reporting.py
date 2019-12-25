@@ -34,7 +34,7 @@ def report_error(url=None):
         #'kodi': _kodi_version(),
         'url': url,
     }
-    rollbar.init(ROLLBAR_API_KEY, capture_ip=False, code_version=ADDONVERSION)
+    rollbar.init(ROLLBAR_API_KEY, capture_ip="anonymize", code_version=ADDONVERSION)
     rollbar.report_exc_info(sys.exc_info(), extra_data=data)
 
 
