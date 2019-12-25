@@ -4,9 +4,9 @@ import sys
 from requests.exceptions import ConnectionError
 
 import xbmcgui
-import rollbar.kodi
 
 from resources.lib import kodisettings
+from resources.lib import reporting
 from resources.lib.kodisettings import settings_storage
 from . import logger, ADDON, cache, SETTINGS_CHANGED, ADDONVERSION
 
@@ -132,6 +132,7 @@ def service(monitor):
             #check for sunset & connection every minute
             if timer > 59:
                 timer = 0
+
                 try:
                     if connection_retries > 0:
                         bridge = kodiHue.connectBridge(monitor, silent=True)
@@ -155,8 +156,9 @@ def service(monitor):
                         settings_storage['connected'] = False
 
                 except Exception as exc:
-                    rollbar.kodi.report_error(access_token='b871c6292a454fb490344f77da186e10', version=ADDONVERSION)
                     logger.exception("Get daylight exception")
+                    reporting.process_exception(exc)
+
 
                 # check if sunset took place
                 # daylight = cache.get("script.service.hue.daylight")

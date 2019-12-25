@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from threading import Thread, Event
-import rollbar.kodi
+
 
 import xbmc
 from PIL import Image
 
-from resources.lib import kodiHue, PROCESS_TIMES, cache, ADDONVERSION
-from resources.lib.kodisettings import settings_storage
+from resources.lib import kodiHue, PROCESS_TIMES, cache, ADDONVERSION, reporting
+
 from . import ImageProcess
 from . import KodiGroup
 from . import MINIMUM_COLOR_DISTANCE
@@ -49,6 +49,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 ambiLoopThread.daemon = True
                 ambiLoopThread.start()
 
+
     def onPlayBackStopped(self):
         logger.info("In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
         self.state = STATE_STOPPED
@@ -75,10 +76,10 @@ class AmbiGroup(KodiGroup.KodiGroup):
             logger.debug("Resume state: Light: {}, xy: {}, bri: {}, on: {},transition time: {}".format(L, xy, bri, on, self.resume_transition))
             try:
                 self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
-                logger.info("OK???")
             except QhueException as exc:
                 logger.error("onPlaybackStopped: Hue call fail: {}".format(exc))
-                rollbar.kodi.report_error(access_token='b871c6292a454fb490344f77da186e10', version=ADDONVERSION)
+                reporting.process_error(exc)
+
 
     def loadSettings(self):
         logger.debug("AmbiGroup Load settings")

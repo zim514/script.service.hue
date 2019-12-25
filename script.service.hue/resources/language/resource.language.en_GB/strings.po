@@ -479,9 +479,7 @@ msgid "Unsupported Hue Bridge"
 msgstr ""
 
 msgctxt "#30073"
-msgid ""
-"Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for"
-" certain features."
+msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for certain features."
 msgstr ""
 
 msgctxt "#30055"
@@ -506,4 +504,12 @@ msgstr ""
 
 msgctxt "#30064"
 msgid "ERROR: Scene not found"
+msgstr ""
+
+msgctxt "#30080"
+msgid "The following error occurred:"
+msgstr ""
+
+msgctxt "#30081"
+msgid "Automatically report this error?"
 msgstr ""

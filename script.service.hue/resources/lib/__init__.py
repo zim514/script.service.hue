@@ -8,10 +8,6 @@ import xbmc
 import xbmcaddon
 import simplecache
 
-#import rollbar
-#rollbar.init('b871c6292a454fb490344f77da186e10')
-
-
 NUM_GROUPS = 2  # group0= video, group1=audio
 STRDEBUG = False  # Show string ID in UI
 DEBUG = False  # Enable python remote debug
@@ -20,6 +16,7 @@ QHUE_TIMEOUT = 0.5  # passed to requests, in seconds.
 MINIMUM_COLOR_DISTANCE = 0.005
 SETTINGS_CHANGED = Event()
 PROCESS_TIMES = deque(maxlen=100)
+ROLLBAR_API_KEY = "b871c6292a454fb490344f77da186e10"
 
 ADDON = xbmcaddon.Addon()
 ADDONID = ADDON.getAddonInfo('id')
