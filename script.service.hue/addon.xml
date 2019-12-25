@@ -33,21 +33,6 @@ v0.12.3:
 v0.12.1:
 - Show error message if a configured scene no longer exists
 - Show error message if bridge API version is too old
-v0.12.0:
-- Add option to resume light state after ambilight is stopped
-v0.11.2:
-- Show correct daylight status in plugin
-v0.11.1:
-- Crash fix
-v0.11:
-- Add support for JSON RPC commands
-v0.10:
-- Add plug-in component
-- Ambilight performance improvement
-- Add simplecache
-v0.9.5:
-- Include performance information in settings window
-- Fix saturation option and related settings
 		</news>
 	</extension>
 </addon>
