@@ -42,7 +42,7 @@ def commands(monitor, command):
                 logger.debug("Found bridge. Running model check & starting service.")
                 kodiHue.checkBridgeModel(bridge)
                 ADDON.openSettings()
-                service()
+                service(monitor)
 
     elif command == "createHueScene":
         logger.debug("Started with {}".format(command))
