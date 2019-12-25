@@ -212,7 +212,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=transitionTime)
                 self.ambiLights[light].update(prevxy=xy)
             except QhueException as exc:
-                if exc.args[0][0] == 201:  # Param not modifiable because light is off error. ignore
+                if exc.args[0][0] == 201 or exc.args[0][0] == 901:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                     pass
                 else:
                     logger.exception("Ambi: Hue call fail: {}".format(exc))
@@ -233,7 +233,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
             self.bridge.lights[light].state(xy=xy, transitiontime=transitionTime)
             self.ambiLights[light].update(prevxy=xy)
         except QhueException as exc:
-            if exc.args[0] == 201: # Param not modifiable because light is off error. ignore
+            if exc.args[0][0] == 201 or exc.args[0][0] == 901:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                 pass
             else:
                 logger.exception("Ambi: Hue call fail: {}".format(exc.args))
