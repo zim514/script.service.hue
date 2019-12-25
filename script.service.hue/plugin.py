@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-import logging
 
-from resources.lib import menu
-from resources.lib import logger, ADDONVERSION, KODIVERSION
+
+from resources.lib import menu, logger, ADDONVERSION, KODIVERSION,reporting
+
 
 logger.info("*** Starting plugin.py, version {}, Kodi: {}".format(ADDONVERSION, KODIVERSION))
 try:
     menu.menu()  # Run menu
-except Exception:
+except Exception as exc:
     logger.exception("Command exception")
+    reporting.process_exception(exc)
 logger.info("*** Shutting down plugin.py, version {}, Kodi: {}".format(ADDONVERSION, KODIVERSION))

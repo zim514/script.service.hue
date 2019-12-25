@@ -9,7 +9,7 @@ from resources.lib.qhue import QhueException
 
 
 from resources.lib.kodisettings import convert_time
-from resources.lib import logger, cache
+from resources.lib import logger, cache, reporting
 from . import ADDON
 from .kodisettings import settings_storage
 from .language import get_string as _
@@ -61,8 +61,10 @@ class KodiGroup(xbmc.Player):
         logger.debug("in KodiGroup Flash")
         try:
             self.groupResource.action(alert="select")
-        except QhueException() as e:
-            logger.error("Hue Error: {}".format(e))
+        except QhueException() as exc:
+            logger.error("Hue Error: {}".format(exc))
+            reporting.process_exception(exc)
+
 
     def onAVStarted(self):
         logger.info(
@@ -75,8 +77,9 @@ class KodiGroup(xbmc.Player):
         if self.isPlayingVideo() and self.mediaType == VIDEO:  # If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
             try:
                 self.videoInfoTag = self.getVideoInfoTag()
-            except Exception as e:
-                logger.debug("Get InfoTag Exception: {}".format(e))
+            except Exception as exc:
+                logger.debug("Get InfoTag Exception: {}".format(exc))
+                reporting.process_exception(exc)
                 return
             logger.debug("InfoTag: {}".format(self.videoInfoTag))
             if not self.checkVideoActivation(self.videoInfoTag):
@@ -136,6 +139,8 @@ class KodiGroup(xbmc.Player):
             if e.args[0][0] == 7:
                 logger.error("Scene not found")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+            else:
+                reporting.process_exception(e)
 
 
     def run_pause(self):
@@ -148,6 +153,8 @@ class KodiGroup(xbmc.Player):
             if e.args[0][0] == 7:
                 logger.error("Scene not found")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+            else:
+                reporting.process_exception(e)
 
     def run_stop(self):
         try:
@@ -159,6 +166,9 @@ class KodiGroup(xbmc.Player):
             if e.args[0][0] == 7:
                 logger.error("Scene not found")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+            else:
+                reporting.process_exception(e)
+
 
 
     def activate(self):

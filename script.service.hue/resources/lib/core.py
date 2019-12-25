@@ -5,10 +5,10 @@ from requests.exceptions import ConnectionError
 
 import xbmcgui
 
-
 from resources.lib import kodisettings
+from resources.lib import reporting
 from resources.lib.kodisettings import settings_storage
-from . import logger, ADDON, cache, SETTINGS_CHANGED
+from . import logger, ADDON, cache, SETTINGS_CHANGED, ADDONVERSION
 
 from resources.lib import kodiHue
 from resources.lib.language import get_string as _
@@ -96,8 +96,6 @@ def service(monitor):
     service_enabled = cache.get("script.service.hue.service_enabled")
 
     if bridge is not None:
-        settings_storage['daylight'] = kodiHue.getDaylight(bridge)
-        cache.set("script.service.hue.daylight", kodiHue.getDaylight(bridge))
 
         kgroups = kodiHue.setupGroups(bridge, settings_storage['initialFlash'])
         if settings_storage['ambiEnabled']:
@@ -106,9 +104,10 @@ def service(monitor):
 
         connection_retries = 0
         timer = 60  # Run loop once on first run
-
+        daylight = kodiHue.getDaylight(bridge)
+        cache.set("script.service.hue.daylight", daylight)
         cache.set("script.service.hue.service_enabled", True)
-        logger.debug("Main service loop starting")
+        logger.info("Core service starting")
 
         while settings_storage['connected'] and not monitor.abortRequested():
 
@@ -133,41 +132,42 @@ def service(monitor):
             #check for sunset & connection every minute
             if timer > 59:
                 timer = 0
+
                 try:
                     if connection_retries > 0:
                         bridge = kodiHue.connectBridge(monitor, silent=True)
                         if bridge is not None:
-                            previous_daylight = kodiHue.getDaylight(bridge)
+                            new_daylight = kodiHue.getDaylight(bridge)
                             connection_retries = 0
                     else:
-                        previous_daylight = kodiHue.getDaylight(bridge)
+                        new_daylight = kodiHue.getDaylight(bridge)
 
 
                 except ConnectionError as error:
                     connection_retries = connection_retries + 1
                     if connection_retries <= 10:
-                        logger.error(
-                            "Bridge Connection Error. Attempt: {}/10 : {}".format(connection_retries, error))
-                        xbmcgui.Dialog().notification(_("Hue Service"),
-                                                      _("Connection lost. Trying again in 2 minutes"))
+                        logger.error("Bridge Connection Error. Attempt: {}/10 : {}".format(connection_retries, error))
+                        xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
                         timer = -60
 
                     else:
-                        logger.error(
-                            "Bridge Connection Error. Attempt: {}/5. Shutting down : {}".format(connection_retries,
-                                                                                                error))
-                        xbmcgui.Dialog().notification(_("Hue Service"),
-                                                      _("Connection lost. Check settings. Shutting down"))
+                        logger.error("Bridge Connection Error. Attempt: {}/5. Shutting down : {}".format(connection_retries, error))
+                        xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
                         settings_storage['connected'] = False
-                except Exception as ex:
+
+                except Exception as exc:
                     logger.exception("Get daylight exception")
+                    reporting.process_exception(exc)
+
 
                 # check if sunset took place
-                daylight = cache.get("script.service.hue.daylight")
-                if daylight != previous_daylight:
-                    logger.debug("Daylight change! current: {}, previous: {}".format(settings_storage['daylight'], previous_daylight))
-                    cache.set("script.service.hue.daylight", kodiHue.getDaylight(bridge))
+                # daylight = cache.get("script.service.hue.daylight")
+                if new_daylight != daylight:
+                    logger.info("Daylight change. current: {}, new: {}".format(daylight, new_daylight))
+                    daylight = new_daylight
+                    cache.set("script.service.hue.daylight", daylight)
                     if not daylight and service_enabled:
+                        logger.debug("Sunset activate")
                         kodiHue.activate(bridge, kgroups, ambi_group)
             timer += 1
             monitor.waitForAbort(1)

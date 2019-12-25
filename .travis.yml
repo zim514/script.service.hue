@@ -14,7 +14,7 @@ script:
   - kodi-addon-checker --branch $BRANCH $ADDON_ID
 
 before_deploy:
-  - pip install  git+https://github.com/romanvm/kodi-addon-submitter.git
+  - pip install -q  git+https://github.com/romanvm/kodi-addon-submitter.git
   - submit-addon -s -z $ADDON_ID
   - export RELEASE_ZIP=$(ls *.zip)
 
@@ -32,9 +32,7 @@ deploy:
       tags: true
 
   - provider: script
-    script: submit-addon -s $ADDON_ID -b $BRANCH -r $REPO --push-branch
+    #script: submit-addon -s -b $BRANCH -r $REPO --push-branch script.service.hue
+    script: submit-addon -r repo-scripts -b $BRANCH -s --push-branch $ADDON_ID
     on:
       tags: true
-
-#notifications:
-#    webhooks: https://www.travisbuddy.com/

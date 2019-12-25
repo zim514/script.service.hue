@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from threading import Thread, Event
 
+
 import xbmc
 from PIL import Image
 
-from resources.lib import kodiHue, PROCESS_TIMES, cache
-from resources.lib.kodisettings import settings_storage
+from resources.lib import kodiHue, PROCESS_TIMES, cache, reporting
+
 from . import ImageProcess
 from . import KodiGroup
 from . import MINIMUM_COLOR_DISTANCE
@@ -29,12 +30,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         self.state = STATE_PLAYING
 
+        # save light state
+        self.savedLightStates = kodiHue.get_light_states(self.ambiLights, self.bridge)
+
         self.videoInfoTag = self.getVideoInfoTag()
         if self.isPlayingVideo():
             if self.enabled and self.checkActiveTime() and self.checkVideoActivation(self.videoInfoTag):
-
-                #save light state
-                self.savedLightStates = kodiHue.get_light_states(self.ambiLights, self.bridge)
 
                 if self.forceOn:
                     for L in self.ambiLights:
@@ -42,35 +43,44 @@ class AmbiGroup(KodiGroup.KodiGroup):
                             self.bridge.lights[L].state(on=True)
                         except QhueException as e:
                             logger.debug("Ambi: Initial Hue call fail: {}".format(e))
+                            reporting.process_exception(e)
 
                 self.ambiRunning.set()
                 ambiLoopThread = Thread(target=self._ambiLoop, name="_ambiLoop")
                 ambiLoopThread.daemon = True
                 ambiLoopThread.start()
 
+
     def onPlayBackStopped(self):
         logger.info("In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
         self.state = STATE_STOPPED
         self.ambiRunning.clear()
 
-        # logger.debug("#######Saved states: {}".format(self.savedLightStates))
         if self.resume_state:
-            logger.info("Resuming light state")
-            for L in self.savedLightStates:
-                xy = self.savedLightStates[L]['state']['xy']
-                bri = self.savedLightStates[L]['state']['bri']
-                on = self.savedLightStates[L]['state']['on']
-                logger.debug("Resume state: Light: {}, xy: {}, bri: {}, on: {},transition time: {}".format(L, xy, bri, on, self.resume_transition))
-                try:
-                    self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
-                except QhueException as e:
-                    logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
+            self.resumeLightState()
 
 
     def onPlayBackPaused(self):
         logger.info("In ambiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
         self.state = STATE_PAUSED
         self.ambiRunning.clear()
+        if self.resume_state:
+            self.resumeLightState()
+
+
+    def resumeLightState(self):
+        logger.info("Resuming light state")
+        for L in self.savedLightStates:
+            xy = self.savedLightStates[L]['state']['xy']
+            bri = self.savedLightStates[L]['state']['bri']
+            on = self.savedLightStates[L]['state']['on']
+            logger.debug("Resume state: Light: {}, xy: {}, bri: {}, on: {},transition time: {}".format(L, xy, bri, on, self.resume_transition))
+            try:
+                self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
+            except QhueException as exc:
+                logger.error("onPlaybackStopped: Hue call fail: {}".format(exc))
+                reporting.process_error(exc)
+
 
     def loadSettings(self):
         logger.debug("AmbiGroup Load settings")
@@ -153,8 +163,9 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     logger.exception("Value Error")
                     self.monitor.waitForAbort(0.25)
                     continue  # returned capture is  smaller than expected when player stopping. give up this loop.
-                except Exception as ex:
+                except Exception as exc:
                     logger.warning("Capture exception", exc_info=1)
+                    reporting.process_exception(exc)
                     self.monitor.waitForAbort(0.25)
                     continue
 
@@ -174,8 +185,9 @@ class AmbiGroup(KodiGroup.KodiGroup):
             logger.info("Average process time: {}".format(average_process_time))
             self.captureSize = ADDON.setSettingString("average_process_time", "{}".format(average_process_time))
 
-        except Exception as ex:
+        except Exception as exc:
             logger.exception("Exception in _ambiLoop")
+            reporting.process_exception(exc)
         logger.debug("_ambiLoop stopped")
 
     def _updateHueRGB(self, r, g, b, light, transitionTime, bri):
@@ -199,11 +211,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
             try:
                 self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=transitionTime)
                 self.ambiLights[light].update(prevxy=xy)
-            except QhueException as e:
-                if e.args[0][0] == 201:  # Param not modifiable because light is off error. ignore
+            except QhueException as exc:
+                if exc.args[0][0] == 201 or exc.args[0][0] == 901:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                     pass
                 else:
-                    logger.exception("Ambi: Hue call fail: {}".format(e))
+                    logger.exception("Ambi: Hue call fail: {}".format(exc))
+                    reporting.process_exception(exc)
 
             except KeyError:
                 logger.exception("Ambi: KeyError")
@@ -219,11 +232,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
         try:
             self.bridge.lights[light].state(xy=xy, transitiontime=transitionTime)
             self.ambiLights[light].update(prevxy=xy)
-        except QhueException as e:
-            if e.args[0] == 201: # Param not modifiable because light is off error. ignore
+        except QhueException as exc:
+            if exc.args[0][0] == 201 or exc.args[0][0] == 901:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                 pass
             else:
-                logger.exception("Ambi: Hue call fail: {}".format(e.args))
+                logger.exception("Ambi: Hue call fail: {}".format(exc.args))
+                reporting.process_exception(exc)
 
         except KeyError:
             logger.exception("Ambi: KeyError")
