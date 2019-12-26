@@ -96,7 +96,6 @@ def service(monitor):
     service_enabled = cache.get("script.service.hue.service_enabled")
 
     if bridge is not None:
-        a = 10 / 0
         kgroups = kodiHue.setupGroups(bridge, settings_storage['initialFlash'])
         if settings_storage['ambiEnabled']:
             ambi_group = AmbiGroup.AmbiGroup()
