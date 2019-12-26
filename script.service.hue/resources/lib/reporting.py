@@ -6,7 +6,7 @@ import xbmc
 import xbmcgui
 
 import rollbar
-from . import logger, ADDON, ADDONVERSION, ROLLBAR_API_KEY, ADDONID,KODIVERSION
+from . import logger, ADDON, ADDONVERSION, ROLLBAR_API_KEY, ADDONID,KODIVERSION, ADDONPATH
 
 def _kodi_version():
     query = dict(jsonrpc='2.0',
@@ -34,7 +34,7 @@ def report_error(url=None):
         #'kodi': _kodi_version(),
         'url': url,
     }
-    rollbar.init(ROLLBAR_API_KEY, capture_ip="anonymize", code_version=ADDONVERSION)
+    rollbar.init(ROLLBAR_API_KEY, capture_ip="anonymize", code_version=ADDONVERSION, root=ADDONPATH, scrub_fields='bridgeUser')
     rollbar.report_exc_info(sys.exc_info(), extra_data=data)
 
 
