@@ -80,7 +80,7 @@
     	<setting type="lsep" label="30521" />
         <setting id="group3_enabled" type="bool" label="30520" default="false" />
         <setting id="group3_SelectLights" type="action" label="30015" action="RunScript(script.service.hue,ambiLightSelect,3)" visible="eq(-1,true)" option="close" />
-        <setting id="group3_LightNames" type="text" label="30058"  default="-1" enable="false" visible="eq(-2,true)"/>
+        <setting id="group3_LightNames" type="text" label="30058"  default="Not configured" enable="false" visible="eq(-2,true)"/>
         
         <setting type="sep" label="" visible="eq(-3,true)"/>
         <setting id="group3_forceOn" type="bool" label="30057"  default="false" visible="eq(-4,true)"/>
