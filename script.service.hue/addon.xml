@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.12.4">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.12.5">
 	<requires>
 		<import addon="xbmc.python" version="2.26.0" />
 		<import addon="script.module.requests" version="2.22.0" />
@@ -24,30 +24,19 @@
 		<summary lang="en_GB">Automate Hue lights with Kodi playback</summary>
 		<description lang="en_GB">Automate your Philips Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support.</description>
 		<disclaimer lang="en_GB">Automate Hue lights with Kodi playback</disclaimer>
-		<news>v0.12.4:
-- Fix service not auto-starting after bridge successfully found
-v0.12.3:
-- Add crash reporting system
-- Fix resume ambilight features not working for all events
-- Fix sunset activation and daylight handling
-v0.12.1:
-- Show error message if a configured scene no longer exists
-- Show error message if bridge API version is too old
-v0.12.0:
-- Add option to resume light state after ambilight is stopped
-v0.11.2:
-- Show correct daylight status in plugin
-v0.11.1:
-- Crash fix
-v0.11:
-- Add support for JSON RPC commands
-v0.10:
-- Add plug-in component
-- Ambilight performance improvement
-- Add simplecache
-v0.9.5:
-- Include performance information in settings window
-- Fix saturation option and related settings
+		<news>v0.12.5:
+			- Show error message if no ambilights selected
+			- Fix crash when configuring Ambilight for the first time
+			- Improve crash reporting
+			v0.12.4:
+			- Fix service not auto-starting after bridge successfully found
+			v0.12.3:
+			- Add crash reporting system
+			- Fix resume ambilight features not working for all events
+			- Fix sunset activation and daylight handling
+			v0.12.1:
+			- Show error message if a configured scene no longer exists
+			- Show error message if bridge API version is too old
 		</news>
 	</extension>
 </addon>

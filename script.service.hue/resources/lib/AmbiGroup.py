@@ -21,7 +21,9 @@ class AmbiGroup(KodiGroup.KodiGroup):
     def __init__(self):
         super(AmbiGroup, self).__init__()
 
+
     def onAVStarted(self):
+
         logger.info(
             "Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(
                 self.enabled, self.isPlayingVideo(), self.isPlayingAudio(), self.mediaType, self.playbackType()))
@@ -29,6 +31,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
             "Ambilight Settings: Interval: {}, transitionTime: {}".format(self.updateInterval, self.transitionTime))
 
         self.state = STATE_PLAYING
+
 
         # save light state
         self.savedLightStates = kodiHue.get_light_states(self.ambiLights, self.bridge)
@@ -42,7 +45,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                         try:
                             self.bridge.lights[L].state(on=True)
                         except QhueException as e:
-                            logger.debug("Ambi: Initial Hue call fail: {}".format(e))
+                            logger.debug("Ambi: Force On call fail: {}".format(e))
                             reporting.process_exception(e)
 
                 self.ambiRunning.set()

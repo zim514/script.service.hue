@@ -273,6 +273,7 @@ def configureAmbiLights(bridge, kGroupID):
 
         ADDON.setSettingString("group{}_Lights".format(kGroupID), ','.join(colorLights))
         ADDON.setSettingString("group{}_LightNames".format(kGroupID), ','.join(lightNames))
+        ADDON.setSettingBool("group{}_enabled".format(kGroupID), True)
         ADDON.openSettings()
 
 

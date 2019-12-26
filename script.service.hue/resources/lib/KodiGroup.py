@@ -7,6 +7,7 @@ import xbmcgui
 
 from resources.lib.qhue import QhueException
 
+from requests import ConnectTimeout
 
 from resources.lib.kodisettings import convert_time
 from resources.lib import logger, cache, reporting
@@ -64,6 +65,8 @@ class KodiGroup(xbmc.Player):
         except QhueException() as exc:
             logger.error("Hue Error: {}".format(exc))
             reporting.process_exception(exc)
+        except ConnectTimeout as exc:
+            logger.error("Hue Error: {}".format(exc))
 
 
     def onAVStarted(self):
