@@ -101,6 +101,7 @@ def service(monitor):
         if settings_storage['ambiEnabled']:
             ambi_group = AmbiGroup.AmbiGroup()
             ambi_group.setup(monitor, bridge, kgroupID=3, flash=settings_storage['initialFlash'])
+            #ambi_group = AmbiGroup.AmbiGroup(monitor, bridge, kgroupID=3, flash=settings_storage['reloadFlash'])
 
         connection_retries = 0
         timer = 60  # Run loop once on first run
@@ -126,7 +127,11 @@ def service(monitor):
             if SETTINGS_CHANGED.is_set():
                 kgroups = kodiHue.setupGroups(bridge, settings_storage['reloadFlash'])
                 if settings_storage['ambiEnabled']:
-                    ambi_group.setup(monitor, bridge, kgroupID=3, flash=settings_storage['reloadFlash'])
+                    try:
+                        ambi_group.setup(monitor, bridge, kgroupID=3, flash=settings_storage['reloadFlash'])
+                    except UnboundLocalError:
+                        ambi_group = AmbiGroup.AmbiGroup()
+                        ambi_group.setup(monitor, bridge, kgroupID=3, flash=settings_storage['reloadFlash'])
                 SETTINGS_CHANGED.clear()
 
             #check for sunset & connection every minute
