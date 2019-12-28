@@ -172,7 +172,13 @@ def service(monitor):
                     cache.set("script.service.hue.daylight", daylight)
                     if not daylight and service_enabled:
                         logger.debug("Sunset activate")
-                        kodiHue.activate(bridge, kgroups, ambi_group)
+                        try:
+                            kodiHue.activate(bridge, kgroups, ambi_group)
+                        except UnboundLocalError as exc:
+                            kodiHue.activate(bridge, kgroups)
+                        except Exception as exc:
+                            logger.exception("Get daylight exception")
+                            reporting.process_exception(exc)
             timer += 1
             monitor.waitForAbort(1)
         logger.debug("Process exiting...")
