@@ -34,25 +34,30 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
 
         # save light state
-        self.savedLightStates = kodiHue.get_light_states(self.ambiLights, self.bridge)
+        self.savedLightStates = kodiHue._get_light_states(self.ambiLights, self.bridge)
 
         self.videoInfoTag = self.getVideoInfoTag()
         if self.isPlayingVideo():
             if self.enabled and self.checkActiveTime() and self.checkVideoActivation(self.videoInfoTag):
 
                 if self.forceOn:
-                    for L in self.ambiLights:
-                        try:
-                            self.bridge.lights[L].state(on=True)
-                        except QhueException as e:
-                            logger.debug("Ambi: Force On call fail: {}".format(e))
-                            reporting.process_exception(e)
+                    self._force_on(self.ambiLights, self.bridge, self.savedLightStates)
 
                 self.ambiRunning.set()
                 ambiLoopThread = Thread(target=self._ambiLoop, name="_ambiLoop")
                 ambiLoopThread.daemon = True
                 ambiLoopThread.start()
 
+    def _force_on(self, ambi_lights, bridge, saved_light_states):
+        for L in ambi_lights:
+            try:
+                #logger.debug("###### forcing on: {}".format(saved_light_states))
+                if not saved_light_states[L]['state']['on']:
+                    logger.debug("Forcing lights on".format(saved_light_states))
+                    bridge.lights[L].state(on=True, bri=1)
+            except QhueException as e:
+                logger.debug("Force On Hue call fail: {}".format(e))
+                reporting.process_exception(e)
 
     def onPlayBackStopped(self):
         logger.info("In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
