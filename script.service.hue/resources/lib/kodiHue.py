@@ -354,7 +354,7 @@ def getDaylight(bridge):
     return bridge.sensors['1']()['state']['daylight']
 
 
-def activate(bridge, kgroups, ambiGroup):
+def activate(bridge, kgroups, ambiGroup = None):
     """
     Activates play action as appropriate for all groups. Used at sunset and when service is renabled via Actions.
     """
@@ -364,7 +364,7 @@ def activate(bridge, kgroups, ambiGroup):
         logger.debug("in sunset() g: {}, kgroupID: {}".format(g, g.kgroupID))
         if ADDON.getSettingBool("group{}_enabled".format(g.kgroupID)):
             g.activate()
-    if ADDON.getSettingBool("group3_enabled"):
+    if ADDON.getSettingBool("group3_enabled") and ambiGroup is not None:
         ambiGroup.activate()
     return
 

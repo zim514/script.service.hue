@@ -17,7 +17,7 @@ class ImageProcess(object):
     def __init__(self):
 
         self.LOW_THRESHOLD = 10
-        self.MID_THRESHOLD = 40
+        self.MID_THRESHOLD = 30
         self.HIGH_THRESHOLD = 240
 
 
