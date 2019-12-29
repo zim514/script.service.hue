@@ -115,7 +115,13 @@ def service(monitor):
             prev_service_enabled = service_enabled
             service_enabled = cache.get("script.service.hue.service_enabled")
             if service_enabled and not prev_service_enabled:
-                kodiHue.activate(bridge, kgroups, ambi_group)
+                try:
+                    kodiHue.activate(bridge, kgroups, ambi_group)
+                except UnboundLocalError:
+                    ambi_group = AmbiGroup.AmbiGroup()
+                    ambi_group.setup(monitor, bridge, kgroupID=3, flash=settings_storage['reloadFlash'])
+                    kodiHue.activate(bridge, kgroups, ambi_group)
+
 
             #process cached waiting commands
             action = cache.get("script.service.hue.action")

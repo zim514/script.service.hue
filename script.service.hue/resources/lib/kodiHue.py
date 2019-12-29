@@ -448,7 +448,7 @@ def perfAverage(process_times):
     return "{} ms".format(average_process_time)
 
 
-def get_light_states(lights, bridge):
+def _get_light_states(lights, bridge):
     states = {}
 
     for L in lights:

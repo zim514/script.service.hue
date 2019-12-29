@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 import xbmc
 import xbmcgui
@@ -59,6 +59,7 @@ def _validate_schedule():
             xbmcgui.Dialog().notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"), icon=xbmcgui.NOTIFICATION_ERROR)
             ADDON.setSettingBool("EnableSchedule", False)
             settings_storage['enableSchedule'] = False
+
 
 def convert_time(time):
     hour = int(time.split(":")[0])
