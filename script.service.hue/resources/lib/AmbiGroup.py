@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
+import datetime
+import os
+import time
 from threading import Thread, Event
 
 
 import xbmc
 from PIL import Image
 
-from resources.lib import kodiHue, PROCESS_TIMES, cache, reporting
+from resources.lib import kodiHue, PROCESS_TIMES, cache, reporting, ADDONDIR
 
 from . import ImageProcess
 from . import KodiGroup
@@ -157,15 +160,16 @@ class AmbiGroup(KodiGroup.KodiGroup):
             while not self.monitor.abortRequested() and self.ambiRunning.is_set():  # loop until kodi tells add-on to stop or video playing flag is unset.
                 try:
                     cap.capture(self.captureSize, self.captureSizeY)  # async capture request to underlying OS
-                    capImage = cap.getImage()  # timeout to wait for OS in ms, default 1000
-                    # logger.debug("CapSize: {}".format(len(capImage)))
+                    capImage = cap.getImage(100)  # timeout to wait for OS in ms, default 1000
+
                     if capImage is None or len(capImage) < expected_capture_size:
-                        logger.error("capImage is none or < expected. captured: {}, expected: {}".format(len(capImage),
-                                                                                                         expected_capture_size))
-                        self.monitor.waitForAbort(0.25)  # pause before trying again
+                        #logger.error("capImage is none or < expected. captured: {}, expected: {}".format(len(capImage),
+                        #                                                                                 expected_capture_size))
+                        xbmc.sleep(10)  # pause before trying again
                         continue  # no image captured, try again next iteration
                     image = Image.frombuffer("RGBA", (self.captureSize, self.captureSizeY), buffer(capImage), "raw",
                                              "BGRA")
+
                 except ValueError:
                     logger.error("capImage: {}".format(len(capImage)))
                     logger.exception("Value Error")
