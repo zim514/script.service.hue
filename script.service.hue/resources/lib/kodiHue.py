@@ -359,9 +359,14 @@ def activate(bridge, kgroups, ambiGroup = None):
     logger.info("Activating scenes")
 
     for g in kgroups:
-        logger.debug("in sunset() g: {}, kgroupID: {}".format(g, g.kgroupID))
-        if ADDON.getSettingBool("group{}_enabled".format(g.kgroupID)):
-            g.activate()
+        try:
+            if hasattr(g, 'kgroupID'):
+                logger.debug("in sunset() g: {}, kgroupID: {}".format(g, g.kgroupID))
+                if ADDON.getSettingBool("group{}_enabled".format(g.kgroupID)):
+                    g.activate()
+        except AttributeError:
+            pass
+
     if ADDON.getSettingBool("group3_enabled") and ambiGroup is not None:
         ambiGroup.activate()
     return
