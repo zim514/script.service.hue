@@ -163,8 +163,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     capImage = cap.getImage()  # timeout to wait for OS in ms, default 1000
 
                     if capImage is None or len(capImage) < expected_capture_size:
-                        #logger.error("capImage is none or < expected. captured: {}, expected: {}".format(len(capImage),
-                        #                                                                                 expected_capture_size))
+                        # logger.error("capImage is none or < expected. captured: {}, expected: {}".format(len(capImage), expected_capture_size))
                         xbmc.sleep(250)  # pause before trying again
                         continue  # no image captured, try again next iteration
                     image = Image.frombuffer("RGBA", (self.captureSize, self.captureSizeY), buffer(capImage), "raw",
@@ -195,7 +194,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
             average_process_time = kodiHue.perfAverage(PROCESS_TIMES)
             logger.info("Average process time: {}".format(average_process_time))
-            self.captureSize = ADDON.setSettingString("average_process_time", "{}".format(average_process_time))
+            self.captureSize = ADDON.setSetting("average_process_time", str(average_process_time))
 
         except Exception as exc:
             logger.exception("Exception in _ambiLoop")
