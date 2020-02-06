@@ -21,11 +21,8 @@ def setupGroups(bridge, flash=False):
     logger.debug("in setupGroups()")
     kgroups = [KodiGroup.KodiGroup(), KodiGroup.KodiGroup()]
 
-    if ADDON.getSettingBool("group0_enabled"):  # VIDEO Group
-        kgroups[0].setup(bridge, 0, flash, KodiGroup.VIDEO)
-
-    if ADDON.getSettingBool("group1_enabled"):  # Audio Group
-        kgroups[1].setup(bridge, 1, flash, KodiGroup.AUDIO)
+    kgroups[0].setup(bridge, 0, flash, KodiGroup.VIDEO)
+    kgroups[1].setup(bridge, 1, flash, KodiGroup.AUDIO)
 
     return kgroups
 
@@ -175,7 +172,7 @@ def connectionTest(bridgeIP):
         return False
 
     api_split = apiversion.split(".")
-    if apiversion and api_split[0] >= 1 and api_split[1] >= 28: # minimum bridge version 1.28
+    if apiversion and int(api_split[0]) >= 1 and int(api_split[1]) >= 28: # minimum bridge version 1.28
         logger.info("Bridge Found! Hue API version: {}".format(apiversion))
         return True
 
