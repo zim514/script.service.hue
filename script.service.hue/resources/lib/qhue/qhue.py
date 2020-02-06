@@ -4,6 +4,9 @@
 import json
 import re
 import sys
+
+#from .. import logger
+
 #from builtins import input
 #from builtins import object
 #from builtins import str
@@ -52,6 +55,7 @@ class Resource(object):
             r = requests.delete(url, timeout=self.timeout)
         else:
             r = requests.get(url, timeout=self.timeout)
+
         if r.status_code != 200:
             raise QhueException("Received response {c} from {u}".format(c=r.status_code, u=url))
         resp = r.json(object_pairs_hook=self.object_pairs_hook)
