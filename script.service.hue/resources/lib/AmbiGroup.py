@@ -213,24 +213,20 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         xy = converter.rgb_to_xy(r, g, b)
         xy = round(xy[0], 3), round(xy[1], 3)  # Hue has a max precision of 4 decimal points, but three is enough
-        distance = self.helper.get_distance_between_two_points(XYPoint(xy[0], xy[1]), XYPoint(prevxy[0], prevxy[
-            1]))  # only update hue if XY changed enough
+        distance = self.helper.get_distance_between_two_points(XYPoint(xy[0], xy[1]), XYPoint(prevxy[0], prevxy[1]))  # only update hue if XY changed enough
 
         if distance > MINIMUM_COLOR_DISTANCE:
-            #try:
-            logger.debug("******* update: {}".format(xy))
-            self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=transitionTime)
-            self.ambiLights[light].update(prevxy=xy)
-            #except QhueException as exc:
-            #    if exc.args[0][0] == 201 or exc.args[0][0] == 901:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
-            #        logger.exception("*****I dunno wtf")
-            #        pass
-            #    else:
-            #        logger.exception("Ambi: Hue call fail: {}".format(exc))
-            #        reporting.process_exception(exc)
-
-            #except KeyError:
-            #     logger.exception("Ambi: KeyError")
+            try:
+                self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=int(transitionTime))
+                self.ambiLights[light].update(prevxy=xy)
+            except QhueException as exc:
+                if exc.args[0][0] == 201 or exc.args[0][0] == 901:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
+                    pass
+                else:
+                    logger.exception("Ambi: Hue call fail: {}".format(exc))
+                    reporting.process_exception(exc)
+            except KeyError:
+                logger.exception("Ambi: KeyError, light not found")
 
     def _updateHueXY(self, xy, light, transitionTime):
 
