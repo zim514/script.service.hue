@@ -7,7 +7,10 @@ http://www.screenbloom.com/
 
 
 """
+import os
+import time
 
+import xbmc
 from PIL import ImageEnhance
 from resources.lib import timer
 
@@ -35,9 +38,9 @@ class ImageProcess(object):
             img = sat_converter.enhance(saturation)
 
         #=======================================================================
-        # clock=time.localtime()
-        # savepath = os.path.join(xbmc.translatePath("special://userdata/addon_data/script.service.hue/debugimages/"), str(clock) + ".png")
-        # img.save(savepath)
+        clock = time.localtime()
+        savepath = os.path.join(xbmc.translatePath("special://userdata/addon_data/script.service.hue/capture/"), str(clock) + ".png")
+        img.save(savepath)
         #=======================================================================
 
 
