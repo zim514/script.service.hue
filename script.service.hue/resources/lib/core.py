@@ -103,7 +103,7 @@ def service(monitor):
             #ambi_group = AmbiGroup.AmbiGroup(monitor, bridge, kgroupID=3, flash=settings_storage['reloadFlash'])
 
         connection_retries = 0
-        timer = 60  # Run loop once on first run
+        timer = 60
         daylight = kodiHue.getDaylight(bridge)
         cache.set("script.service.hue.daylight", daylight)
         cache.set("script.service.hue.service_enabled", True)

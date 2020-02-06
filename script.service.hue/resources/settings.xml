@@ -116,7 +116,7 @@
 <!-- ADVANCED SECTION -->
 	<category label = "32101">
 	    <setting id="initialFlash" type="bool" label="5110" default="False" />
-        <setting id="reloadFlash" type="bool" label="5111" default="False" />
+        <setting id="reloadFlash" type="bool" label="5111" default="False" visible="False"/>
         <setting id="disableConnectionMessage" type="bool" label="30812" default="False"/>
 		<setting id="separateLogFile" type="bool" label="32105" default="False"/>
 		<setting id="performanceLogging" type="bool" label="30068" default="False" visible="False"/>

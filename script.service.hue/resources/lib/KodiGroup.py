@@ -70,57 +70,60 @@ class KodiGroup(xbmc.Player):
 
 
     def onAVStarted(self):
-        logger.info(
-            "In KodiGroup[{}], onPlaybackStarted. Group enabled: {},startBehavior: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(
-                self.kgroupID, self.enabled, self.startBehavior, self.isPlayingVideo(), self.isPlayingAudio(),
-                self.mediaType, self.playbackType()))
-        self.state = STATE_PLAYING
-        settings_storage['lastMediaType'] = self.playbackType()
+        if self.enabled:
+            logger.info(
+                "In KodiGroup[{}], onPlaybackStarted. Group enabled: {},startBehavior: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(
+                    self.kgroupID, self.enabled, self.startBehavior, self.isPlayingVideo(), self.isPlayingAudio(),
+                    self.mediaType, self.playbackType()))
+            self.state = STATE_PLAYING
+            settings_storage['lastMediaType'] = self.playbackType()
 
-        if self.isPlayingVideo() and self.mediaType == VIDEO:  # If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
-            try:
-                self.videoInfoTag = self.getVideoInfoTag()
-            except Exception as exc:
-                logger.debug("Get InfoTag Exception: {}".format(exc))
-                reporting.process_exception(exc)
-                return
-            logger.debug("InfoTag: {}".format(self.videoInfoTag))
-            if not self.checkVideoActivation(self.videoInfoTag):
-                return
-        else:
-            self.videoInfoTag = None
+            if self.isPlayingVideo() and self.mediaType == VIDEO:  # If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
+                try:
+                    self.videoInfoTag = self.getVideoInfoTag()
+                except Exception as exc:
+                    logger.debug("Get InfoTag Exception: {}".format(exc))
+                    reporting.process_exception(exc)
+                    return
+                logger.debug("InfoTag: {}".format(self.videoInfoTag))
+                if not self.checkVideoActivation(self.videoInfoTag):
+                    return
+            else:
+                self.videoInfoTag = None
 
-        if self.enabled and self.checkActiveTime() and self.startBehavior and self.mediaType == self.playbackType():
-            self.run_play()
+            if self.checkActiveTime() and self.startBehavior and self.mediaType == self.playbackType():
+                self.run_play()
 
     def onPlayBackStopped(self):
-        logger.info("In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroupID, self.mediaType, settings_storage['lastMediaType']))
-        self.state = STATE_STOPPED
+        if self.enabled:
+            logger.info("In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroupID, self.mediaType, settings_storage['lastMediaType']))
+            self.state = STATE_STOPPED
 
-        try:
-            if self.mediaType == VIDEO and not self.checkVideoActivation(
-                    self.videoInfoTag):  # If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
-                return
-        except AttributeError:
-            logger.error("No videoInfoTag")
+            try:
+                if self.mediaType == VIDEO and not self.checkVideoActivation(
+                        self.videoInfoTag):  # If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
+                    return
+            except AttributeError:
+                logger.error("No videoInfoTag")
 
-        if self.enabled and self.checkActiveTime() and self.stopBehavior and self.mediaType == settings_storage['lastMediaType']:
-            self.run_stop()
+            if self.checkActiveTime() and self.stopBehavior and self.mediaType == settings_storage['lastMediaType']:
+                self.run_stop()
 
     def onPlayBackPaused(self):
-        logger.info(
-            "In KodiGroup[{}], onPlaybackPaused() , isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID,
-                                                                                                   self.isPlayingVideo(),
-                                                                                                   self.isPlayingAudio()))
-        self.state = STATE_PAUSED
+        if self.enabled:
+            logger.info(
+                "In KodiGroup[{}], onPlaybackPaused() , isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID,
+                                                                                                       self.isPlayingVideo(),
+                                                                                                       self.isPlayingAudio()))
+            self.state = STATE_PAUSED
 
-        if self.mediaType == VIDEO and not self.checkVideoActivation(
-                self.videoInfoTag):  # If video group, check video activation. Otherwise it's audio so we ignore this and continue
-            return
+            if self.mediaType == VIDEO and not self.checkVideoActivation(
+                    self.videoInfoTag):  # If video group, check video activation. Otherwise it's audio so we ignore this and continue
+                return
 
-        if self.enabled and self.checkActiveTime() and self.pauseBehavior and self.mediaType == self.playbackType():
-            settings_storage['lastMediaType'] = self.playbackType()
-            self.run_pause()
+            if self.checkActiveTime() and self.pauseBehavior and self.mediaType == self.playbackType():
+                settings_storage['lastMediaType'] = self.playbackType()
+                self.run_pause()
 
     def onPlayBackResumed(self):
         logger.info("In KodiGroup[{}], onPlaybackResumed()".format(self.kgroupID))

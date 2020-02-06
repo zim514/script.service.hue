@@ -21,11 +21,8 @@ def setupGroups(bridge, flash=False):
     logger.debug("in setupGroups()")
     kgroups = [KodiGroup.KodiGroup(), KodiGroup.KodiGroup()]
 
-    if ADDON.getSettingBool("group0_enabled"):  # VIDEO Group
-        kgroups[0].setup(bridge, 0, flash, KodiGroup.VIDEO)
-
-    if ADDON.getSettingBool("group1_enabled"):  # Audio Group
-        kgroups[1].setup(bridge, 1, flash, KodiGroup.AUDIO)
+    kgroups[0].setup(bridge, 0, flash, KodiGroup.VIDEO)
+    kgroups[1].setup(bridge, 1, flash, KodiGroup.AUDIO)
 
     return kgroups
 
