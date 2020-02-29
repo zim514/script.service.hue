@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, ReadTimeout, ConnectTimeout
 
 import xbmcgui
 
@@ -152,8 +152,7 @@ def service(monitor):
                     else:
                         new_daylight = kodiHue.getDaylight(bridge)
 
-
-                except ConnectionError as error:
+                except (ConnectionError, ReadTimeout, ConnectTimeout) as error:
                     connection_retries = connection_retries + 1
                     if connection_retries <= 10:
                         logger.error("Bridge Connection Error. Attempt: {}/10 : {}".format(connection_retries, error))

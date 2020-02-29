@@ -1,6 +1,6 @@
 import json
 from datetime import timedelta
-from socket import getfqdn
+from socket import getfqdn, socket
 
 import requests
 import xbmc
@@ -90,7 +90,12 @@ def _discoverSsdp():
     from . import ssdp
     from urlparse import urlsplit
 
-    ssdp_list = ssdp.discover("ssdp:all", timeout=5, mx=3)
+    try:
+        ssdp_list = ssdp.discover("ssdp:all", timeout=5, mx=3)
+    except socket.error as exc:
+        logger.exception("SSDP Socket error: {}".format(exc.args))
+        xbmcgui.Dialog().notification(_("Hue Service"), _("Network not ready"), xbmcgui.NOTIFICATION_ERROR)
+
     logger.debug("ssdp_list: {}".format(ssdp_list))
 
     bridges = [u for u in ssdp_list if 'IpBridge' in u.server]
