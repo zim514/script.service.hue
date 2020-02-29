@@ -7,6 +7,7 @@ from threading import Thread, Event
 
 import xbmc
 from PIL import Image
+from requests import ReadTimeout, ConnectionError
 
 from resources.lib import kodiHue, PROCESS_TIMES, cache, reporting, ADDONDIR
 
@@ -228,7 +229,8 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 else:
                     logger.exception("Ambi: Hue call fail: {}".format(exc))
                     reporting.process_exception(exc)
-
+            except (ConnectionError, ReadTimeout) as exc:
+                logger.exception("Ambi: Hue call fail: {}".format(exc.args))
             except KeyError:
                 logger.exception("Ambi: KeyError")
 
@@ -249,6 +251,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
             else:
                 logger.exception("Ambi: Hue call fail: {}".format(exc.args))
                 reporting.process_exception(exc)
-
+        except (ConnectionError, ReadTimeout) as exc:
+            logger.exception("Ambi: Hue call fail: {}".format(exc.args))
         except KeyError:
             logger.exception("Ambi: KeyError")
