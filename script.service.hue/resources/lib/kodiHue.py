@@ -92,8 +92,8 @@ def _discoverSsdp():
 
     try:
         ssdp_list = ssdp.discover("ssdp:all", timeout=5, mx=3)
-    except socket.error as exc:
-        logger.exception("SSDP Socket error: {}".format(exc.args))
+    except Exception as exc:
+        logger.exception("SSDP error: {}".format(exc.args))
         xbmcgui.Dialog().notification(_("Hue Service"), _("Network not ready"), xbmcgui.NOTIFICATION_ERROR)
 
     logger.debug("ssdp_list: {}".format(ssdp_list))
