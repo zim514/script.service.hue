@@ -102,8 +102,10 @@ msgid "Stop Scene Enabled"
 msgstr "Stop Scene Enabled"
 
 msgctxt "#30521"
-msgid "[B][I]Warning: Not supported on all platforms[/B][/I]"
-msgstr "[B][I]Warning: Not supported on all platforms[/B][/I]"
+
+msgid "[B][I]Warning: Android, RPi4 and 4K not supported[/B][/I]"
+msgstr "[B][I]Warning: Android, RPi4 and 4K not supported[/B][/I]"
+
 
 msgctxt "#30522"
 msgid "CPU & Hue performance"

@@ -26,6 +26,9 @@
 		<disclaimer lang="en_GB">Automate Hue lights with Kodi playback</disclaimer>
 		<news>v0.12.12:
 - Better error management of network problems
+v0.12.11
+- Various crash fixes and code improvement
+- Initial support for Kodi 19 Matrix
 v0.12.7
 - Fix crash when validating schedule
 - Change Ambilight Force On brightness to minimum for smoother start

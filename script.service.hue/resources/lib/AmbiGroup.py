@@ -99,7 +99,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))
 
-        self.transitionTime = ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroupID)) / 100  # This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
+        self.transitionTime = int(ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroupID)) / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
         self.forceOn = ADDON.getSettingBool("group{}_forceOn".format(self.kgroupID))
 
         self.minBri = ADDON.getSettingInt("group{}_MinBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
@@ -167,8 +167,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                         # logger.error("capImage is none or < expected. captured: {}, expected: {}".format(len(capImage), expected_capture_size))
                         xbmc.sleep(250)  # pause before trying again
                         continue  # no image captured, try again next iteration
-                    image = Image.frombuffer("RGBA", (self.captureSize, self.captureSizeY), buffer(capImage), "raw",
-                                             "BGRA")
+                    image = Image.frombytes("RGBA", (self.captureSize, self.captureSizeY), bytes(capImage), "raw", "BGRA", 0, 1)
 
                 except ValueError:
                     logger.error("capImage: {}".format(len(capImage)))
@@ -215,13 +214,11 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         xy = converter.rgb_to_xy(r, g, b)
         xy = round(xy[0], 3), round(xy[1], 3)  # Hue has a max precision of 4 decimal points, but three is enough
-        distance = self.helper.get_distance_between_two_points(XYPoint(xy[0], xy[1]), XYPoint(prevxy[0], prevxy[
-            1]))  # only update hue if XY changed enough
+        distance = self.helper.get_distance_between_two_points(XYPoint(xy[0], xy[1]), XYPoint(prevxy[0], prevxy[1]))  # only update hue if XY changed enough
 
         if distance > MINIMUM_COLOR_DISTANCE:
-            # if xy != prevxy:  # only update if value changed
             try:
-                self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=transitionTime)
+                self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=int(transitionTime))
                 self.ambiLights[light].update(prevxy=xy)
             except QhueException as exc:
                 if exc.args[0][0] == 201 or exc.args[0][0] == 901:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
@@ -232,7 +229,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
             except (ConnectionError, ReadTimeout) as exc:
                 logger.exception("Ambi: Hue call fail: {}".format(exc.args))
             except KeyError:
-                logger.exception("Ambi: KeyError")
+                logger.exception("Ambi: KeyError, light not found")
 
     def _updateHueXY(self, xy, light, transitionTime):
 
