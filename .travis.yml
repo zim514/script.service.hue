@@ -3,7 +3,7 @@ python: "3.7"
 
 env:
    - ADDON_ID=script.service.hue
-     BRANCH=matrix
+     BRANCH=leia
      REPO=repo-scripts
 
 # command to install dependencies
