@@ -31,6 +31,7 @@ def read_settings():
     settings_storage['video_enableOther'] = ADDON.getSettingBool("video_Other")
 
     settings_storage['ambiEnabled'] = ADDON.getSettingBool("group3_enabled")
+    settings_storage['show500Error'] = ADDON.getSettingBool("show500Error")
     _validate_schedule()
     _validate_ambilight()
 

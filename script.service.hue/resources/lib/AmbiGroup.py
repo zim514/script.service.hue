@@ -4,8 +4,8 @@ import os
 import time
 from threading import Thread, Event
 
-
 import xbmc
+import xbmcgui
 from PIL import Image
 from requests import ReadTimeout, ConnectionError
 
@@ -16,6 +16,7 @@ from . import KodiGroup
 from . import MINIMUM_COLOR_DISTANCE
 from . import ADDON, logger
 from .KodiGroup import VIDEO, STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
+from .kodisettings import settings_storage
 from .qhue import QhueException
 from .rgbxy import Converter, ColorHelper  # https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA, GamutB, GamutC
@@ -24,7 +25,6 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 class AmbiGroup(KodiGroup.KodiGroup):
     def __init__(self):
         super(AmbiGroup, self).__init__()
-
 
     def onAVStarted(self):
 
@@ -35,7 +35,6 @@ class AmbiGroup(KodiGroup.KodiGroup):
             "Ambilight Settings: Interval: {}, transitionTime: {}".format(self.updateInterval, self.transitionTime))
 
         self.state = STATE_PLAYING
-
 
         # save light state
         self.savedLightStates = kodiHue._get_light_states(self.ambiLights, self.bridge)
@@ -55,7 +54,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
     def _force_on(self, ambi_lights, bridge, saved_light_states):
         for L in ambi_lights:
             try:
-                #logger.debug("###### forcing on: {}".format(saved_light_states))
+                # logger.debug("###### forcing on: {}".format(saved_light_states))
                 if not saved_light_states[L]['state']['on']:
                     logger.debug("Forcing lights on".format(saved_light_states))
                     bridge.lights[L].state(on=True, bri=1)
@@ -71,14 +70,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
         if self.resume_state:
             self.resumeLightState()
 
-
     def onPlayBackPaused(self):
         logger.info("In ambiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
         self.state = STATE_PAUSED
         self.ambiRunning.clear()
         if self.resume_state:
             self.resumeLightState()
-
 
     def resumeLightState(self):
         logger.info("Resuming light state")
@@ -93,13 +90,13 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 logger.error("onPlaybackStopped: Hue call fail: {}".format(exc))
                 reporting.process_error(exc)
 
-
     def loadSettings(self):
         logger.debug("AmbiGroup Load settings")
 
         self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))
 
-        self.transitionTime = int(ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroupID)) / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
+        self.transitionTime = int(
+            ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroupID)) / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
         self.forceOn = ADDON.getSettingBool("group{}_forceOn".format(self.kgroupID))
 
         self.minBri = ADDON.getSettingInt("group{}_MinBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
@@ -109,7 +106,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         self.captureSize = ADDON.getSettingInt("group{}_CaptureSize".format(self.kgroupID))
 
         self.resume_state = ADDON.getSettingBool("group{}_ResumeState".format(self.kgroupID))
-        self.resume_transition = ADDON.getSettingInt("group{}_ResumeTransition".format(self.kgroupID)) * 10 #convert seconds to multiple of 100ms
+        self.resume_transition = ADDON.getSettingInt("group{}_ResumeTransition".format(self.kgroupID)) * 10  # convert seconds to multiple of 100ms
 
         self.updateInterval = ADDON.getSettingInt("group{}_Interval".format(self.kgroupID)) / 1000  # convert MS to seconds
         if self.updateInterval == 0:
@@ -132,6 +129,8 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         super(AmbiGroup, self).setup(bridge, kgroupID, flash, VIDEO)
         self.monitor = monitor
+
+        self.bridgeError500 = 0
 
         self.imageProcess = ImageProcess.ImageProcess()
 
@@ -223,6 +222,10 @@ class AmbiGroup(KodiGroup.KodiGroup):
             except QhueException as exc:
                 if exc.args[0][0] == 201 or exc.args[0][0] == 901:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                     pass
+                elif exc.args[0][0] == 500:  # bridge internal error
+                    logger.error("Bridge error 500: {}".format(exc))
+                    self._bridgeError500()
+                    pass
                 else:
                     logger.exception("Ambi: Hue call fail: {}".format(exc))
                     reporting.process_exception(exc)
@@ -233,10 +236,8 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
     def _updateHueXY(self, xy, light, transitionTime):
 
-        prevxy = self.ambiLights[light].get('prevxy')
-
+        # prevxy = self.ambiLights[light].get('prevxy')
         # xy=(round(xy[0],3),round(xy[1],3)) #Hue has a max precision of 4 decimal points.
-
         # distance=self.helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1]))#only update hue if XY changed enough
         # if distance > self.minimumDistance:
         try:
@@ -245,6 +246,10 @@ class AmbiGroup(KodiGroup.KodiGroup):
         except QhueException as exc:
             if exc.args[0][0] == 201 or exc.args[0][0] == 901:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                 pass
+            elif exc.args[0][0] == 500:  # bridge internal error
+                logger.error("Bridge error 500: {}".format(exc))
+                self._bridgeError500()
+                pass
             else:
                 logger.exception("Ambi: Hue call fail: {}".format(exc.args))
                 reporting.process_exception(exc)
@@ -252,3 +257,11 @@ class AmbiGroup(KodiGroup.KodiGroup):
             logger.exception("Ambi: Hue call fail: {}".format(exc.args))
         except KeyError:
             logger.exception("Ambi: KeyError")
+
+    def _bridgeError500(self):
+        self.bridgeError500 = self.bridgeError500 + 1  # increment counter
+        if self.bridgeError500 > 10 and settings_storage['show500Error']:
+            showAgain = xbmcgui.Dialog().yesno(_("Hue Bridge over capacity"), _("The Hue Bridge is over capacity. Increase refresh rate or reduce the number of Ambilights."), nolabel=_("Don't show again"), yeslabel=_("Ok"))
+            if not showAgain:
+                ADDON.setSettingBool("show500Error", False)
+            self.bridgeError500 = 0
