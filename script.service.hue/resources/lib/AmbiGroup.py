@@ -225,7 +225,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=int(transitionTime))
                 self.ambiLights[light].update(prevxy=xy)
             except QhueException as exc:
-                logger.error("***** Zexception: {} {} {}".format(exc ,exc.args, exc.args[0]))
+                #logger.error("***** Zexception: {} {} {}".format(exc ,exc.args, exc.args[0]))
                 if exc.args[0][0] == 201:   # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                     pass
                 elif exc.args[0][0] == 500 or exc.args[0][0] == 901: # or exc == 500:  # bridge internal error
@@ -269,11 +269,11 @@ class AmbiGroup(KodiGroup.KodiGroup):
             logger.exception("Ambi: KeyError")
 
     def _bridgeError500(self):
-        logger.error("************ 500 increment: {}, show: {}".format(self.bridgeError500, settings_storage['show500Error']))
+
         self.bridgeError500 = self.bridgeError500 + 1  # increment counter
         if self.bridgeError500 > 100 and settings_storage['show500Error']:
             stopShowingError = xbmcgui.Dialog().yesno(_("Hue Bridge over capacity"), _("The Hue Bridge is over capacity. Increase refresh rate or reduce the number of Ambilights."), yeslabel=_("Don't show again"), nolabel=_("Ok"))
-            logger.error("****** dialogue return: {}".format(stopShowingError))
+
             if stopShowingError:
                 ADDON.setSettingBool("show500Error", False)
             self.bridgeError500 = 0
