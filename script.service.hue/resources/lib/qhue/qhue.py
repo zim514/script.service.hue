@@ -59,7 +59,13 @@ class Resource(object):
             r = requests.get(url, timeout=self.timeout)
 
         if r.status_code != 200:
-            raise QhueException("Received response {c} from {u}".format(c=r.status_code, u=url))
+            if r.status_code == 500:
+                errors = []
+                errors.append(500)
+                errors.append(500)
+                raise QhueException(errors)
+            else:
+                raise QhueException("Received response {c} from {u}".format(c=r.status_code, u=url))
         resp = r.json(object_pairs_hook=self.object_pairs_hook)
         if type(resp) == list:
             errors = []
