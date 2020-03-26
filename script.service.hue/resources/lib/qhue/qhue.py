@@ -64,8 +64,7 @@ class Resource(object):
                 errors.append(500)
                 errors.append(500)
                 raise QhueException(errors)
-            else:
-                raise QhueException("Received response {c} from {u}".format(c=r.status_code, u=url))
+            raise QhueException("Received response {c} from {u}".format(c=r.status_code, u=url))
         resp = r.json(object_pairs_hook=self.object_pairs_hook)
         if type(resp) == list:
             errors = []

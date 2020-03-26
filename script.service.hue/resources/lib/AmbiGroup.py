@@ -231,7 +231,6 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 elif exc.args[0][0] == 500 or exc.args[0][0] == 901: # or exc == 500:  # bridge internal error
                     logger.error("Bridge internal error: {}".format(exc))
                     self._bridgeError500()
-                    pass
                 else:
                     #logger.exception("Ambi: QhueException Hue call fail: {}".format(exc))
                     logger.exception("Ambi: QhueException Hue call fail: {}".format(exc))
@@ -258,7 +257,6 @@ class AmbiGroup(KodiGroup.KodiGroup):
             elif exc.args[0][0] == 500 or exc.args[0][0] == 901:  # bridge internal error
                 logger.error("Bridge error 500: {}".format(exc))
                 self._bridgeError500()
-                pass
             else:
                 logger.exception("Ambi: Hue call fail. Other: {}".format(exc.args))
                 reporting.process_exception(exc)
