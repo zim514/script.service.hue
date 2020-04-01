@@ -96,7 +96,7 @@ def _discoverSsdp():
         logger.exception("SSDP error: {}".format(exc.args))
         xbmcgui.Dialog().notification(_("Hue Service"), _("Network not ready"), xbmcgui.NOTIFICATION_ERROR)
 
-    logger.debug("ssdp_list: {}".format(ssdp_list))
+    #logger.debug("ssdp_list: {}".format(ssdp_list))
 
     bridges = [u for u in ssdp_list if 'IpBridge' in u.server]
     if bridges:
