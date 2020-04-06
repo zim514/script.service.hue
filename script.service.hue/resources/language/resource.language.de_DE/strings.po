@@ -522,3 +522,29 @@ msgstr "Folgender Fehler ist aufgetreten:"
 msgctxt "#30081"
 msgid "Automatically report this error?"
 msgstr "Diesen Fehler automatisch melden?"
+
+msgctxt "#30069"
+msgid "Keine Lampen für Ambilight ausgewählt."
+msgstr ""
+
+msgctxt "#30070"
+msgid "Ok"
+msgstr ""
+
+msgctxt "#30074"
+msgid "nicht nochmal zeigen"
+msgstr ""
+
+msgctxt "#30075"
+msgid "Hue Bridge überlastet"
+msgstr ""
+
+msgctxt "#30076"
+msgid "Netzwerk nicht bereit"
+msgstr ""
+
+msgctxt "#30077"
+msgid ""
+"Die Hue Bridge überlastet. Aktualisierungsrate erhöhen oder Anzahl der "
+"Ambilights verringern."
+msgstr ""
