@@ -91,12 +91,13 @@ def _discoverSsdp():
     from urlparse import urlsplit
 
     try:
-        ssdp_list = ssdp.discover("ssdp:all", timeout=5, mx=3)
+        ssdp_list = ssdp.discover("ssdp:all", timeout=10, mx=3)
     except Exception as exc:
         logger.exception("SSDP error: {}".format(exc.args))
         xbmcgui.Dialog().notification(_("Hue Service"), _("Network not ready"), xbmcgui.NOTIFICATION_ERROR)
+        return None
 
-    #logger.debug("ssdp_list: {}".format(ssdp_list))
+    logger.debug("ssdp_list: {}".format(ssdp_list))
 
     bridges = [u for u in ssdp_list if 'IpBridge' in u.server]
     if bridges:
@@ -447,10 +448,12 @@ def perfAverage(process_times):
     process_times = list(process_times)  # deque is mutating during iteration for some reason, so copy to list.
     size = len(process_times)
     total = 0
-    for x in process_times:
-        total += x
-    average_process_time = int(total / size * 1000)
-    return "{} ms".format(average_process_time)
+    if size > 0:
+        for x in process_times:
+            total += x
+        average_process_time = int(total / size * 1000)
+        return "{} ms".format(average_process_time)
+    return _("Unknown")
 
 
 def _get_light_states(lights, bridge):
