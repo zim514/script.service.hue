@@ -231,6 +231,9 @@ class KodiGroup(xbmc.Player):
             duration = infoTag.getDuration() / 60  # returns seconds, convert to minutes
             mediaType = infoTag.getMediaType()
             fileName = infoTag.getFile()
+            if not fileName and self.isPlayingVideo():
+                fileName = self.getPlayingFile()
+
             logger.debug(
                 "InfoTag contents: duration: {}, mediaType: {}, file: {}".format(duration, mediaType, fileName))
         except AttributeError:
@@ -243,13 +246,13 @@ class KodiGroup(xbmc.Player):
                        settings_storage['video_enableMusicVideo'], 
                        settings_storage['video_enablePVR'],
                        settings_storage['video_enableOther']))
-        logger.debug("Video Activation ({}): Duration: {}, mediaType: {}".format(self.kgroupID, duration, mediaType))
-        if (duration > settings_storage['videoMinimumDuration'] and
+        logger.debug("Video Activation ({}): Duration: {}, mediaType: {}, ispvr: {}".format(self.kgroupID, duration, mediaType, fileName[0:3] == "pvr"))
+        if ((duration >= settings_storage['videoMinimumDuration'] or fileName[0:3] == "pvr") and
                 ((settings_storage['video_enableMovie'] and mediaType == "movie") or
                  (settings_storage['video_enableEpisode'] and mediaType == "episode") or
                  (settings_storage['video_enableMusicVideo'] and mediaType == "MusicVideo") or
-                 (settings_storage['video_enablePVR'] and fileName[0:3] == "pvr")) or
-                settings_storage['video_enableOther']):
+                 (settings_storage['video_enablePVR'] and fileName[0:3] == "pvr") or
+                 (settings_storage['video_enableOther'] and mediaType != "movie" and mediaType != "episode" and mediaType != "MusicVideo" and fileName[0:3] != "pvr"))):
             logger.debug("Video activation: True")
             return True
         logger.debug("Video activation: False")
