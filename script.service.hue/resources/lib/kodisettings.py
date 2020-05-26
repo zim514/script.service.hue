@@ -17,6 +17,7 @@ def read_settings():
     settings_storage['initialFlash'] = ADDON.getSettingBool("initialFlash")
     settings_storage['forceOnSunset'] = ADDON.getSettingBool("forceOnSunset")
     settings_storage['daylightDisable'] = ADDON.getSettingBool("daylightDisable")
+    settings_storage['enable_if_already_active'] = ADDON.getSettingBool("enable_if_already_active")
     cache.set("script.service.hue.daylightDisable", ADDON.getSettingBool("daylightDisable"))
 
     settings_storage['enableSchedule'] = ADDON.getSettingBool("enableSchedule")
@@ -28,6 +29,7 @@ def read_settings():
     settings_storage['video_enableMovie'] = ADDON.getSettingBool("video_Movie")
     settings_storage['video_enableMusicVideo'] = ADDON.getSettingBool("video_MusicVideo")
     settings_storage['video_enableEpisode'] = ADDON.getSettingBool("video_Episode")
+    settings_storage['video_enablePVR'] = ADDON.getSettingBool("video_PVR")
     settings_storage['video_enableOther'] = ADDON.getSettingBool("video_Other")
 
     settings_storage['ambiEnabled'] = ADDON.getSettingBool("group3_enabled")
