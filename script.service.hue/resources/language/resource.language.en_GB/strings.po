@@ -112,8 +112,12 @@ msgid "Stop Scene Enabled"
 msgstr "Stop Scene Enabled"
 
 msgctxt "#30516"
-msgid "Enable scenes if any light already on"
-msgstr "Enable scenes if any light already on"
+msgid "Disable time check if any light already on"
+msgstr "Disable time check if any light already on"
+
+msgctxt "#30517"
+msgid "Don't enable scene if any light is off"
+msgstr "Don't enable scene if any light is off"
 
 msgctxt "#30521"
 msgid "[B][I]Warning: Android, RPi4 and 4K not supported[/B][/I]"

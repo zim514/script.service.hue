@@ -91,7 +91,7 @@ class KodiGroup(xbmc.Player):
             else:
                 self.videoInfoTag = None
 
-            if (self.checkActiveTime() or self.checkAlreadyActive(self.startScene)) and self.startBehavior and self.mediaType == self.playbackType():
+            if (self.checkActiveTime() or self.checkAlreadyActive(self.startScene)) and self.checkKeepLightsOffRule(self.startScene) and self.startBehavior and self.mediaType == self.playbackType():
                 self.run_play()
 
     def onPlayBackStopped(self):
@@ -106,7 +106,7 @@ class KodiGroup(xbmc.Player):
             except AttributeError:
                 logger.error("No videoInfoTag")
 
-            if (self.checkActiveTime() or self.checkAlreadyActive(self.stopScene)) and self.stopBehavior and self.mediaType == settings_storage['lastMediaType']:
+            if (self.checkActiveTime() or self.checkAlreadyActive(self.stopScene)) and self.checkKeepLightsOffRule(self.stopScene) and self.stopBehavior and self.mediaType == settings_storage['lastMediaType']:
                 self.run_stop()
 
     def onPlayBackPaused(self):
@@ -121,7 +121,7 @@ class KodiGroup(xbmc.Player):
                     self.videoInfoTag):  # If video group, check video activation. Otherwise it's audio so we ignore this and continue
                 return
                 
-            if (self.checkActiveTime() or self.checkAlreadyActive(self.pauseScene)) and self.pauseBehavior and self.mediaType == self.playbackType():
+            if (self.checkActiveTime() or self.checkAlreadyActive(self.pauseScene)) and self.checkKeepLightsOffRule(self.pauseScene) and self.pauseBehavior and self.mediaType == self.playbackType():
                 settings_storage['lastMediaType'] = self.playbackType()
                 self.run_pause()
 
@@ -234,6 +234,11 @@ class KodiGroup(xbmc.Player):
             if not fileName and self.isPlayingVideo():
                 fileName = self.getPlayingFile()
 
+            if not fileName and settings_storage['previousFileName']:
+                fileName = settings_storage['previousFileName']
+            elif fileName:
+                settings_storage['previousFileName'] = fileName
+
             logger.debug(
                 "InfoTag contents: duration: {}, mediaType: {}, file: {}".format(duration, mediaType, fileName))
         except AttributeError:
@@ -268,7 +273,7 @@ class KodiGroup(xbmc.Player):
                 sceneData = self.bridge.scenes[scene]()
                 for light in sceneData["lights"]:
                     l = self.bridge.lights[light]()
-                    if l["state"]["on"] == True:
+                    if l["state"]["on"] == True: # one light is on, the scene can be applied
                         logger.debug("Check if scene light already active: True")
                         return True
                 logger.debug("Check if scene light already active: False")
@@ -276,4 +281,23 @@ class KodiGroup(xbmc.Player):
                 logger.error("checkAlreadyActive: Hue call fail: {}".format(e))
 
         return False
+    
+    def checkKeepLightsOffRule(self, scene):
+        if not scene:
+            return True
+
+        logger.debug("Check if lights should stay off, settings: enable {}".format(settings_storage['keep_lights_off']))
+        if settings_storage['keep_lights_off']:
+            try:
+                sceneData = self.bridge.scenes[scene]()
+                for light in sceneData["lights"]:
+                    l = self.bridge.lights[light]()
+                    if l["state"]["on"] == False: # one light is off, the scene should not be applied
+                        logger.debug("Check if lights should stay off: True")
+                        return False
+                logger.debug("Check if lights should stay off: False")
+            except QhueException as e:
+                logger.error("checkKeepLightsOffRule: Hue call fail: {}".format(e))
+
+        return True
                 

@@ -18,6 +18,7 @@ def read_settings():
     settings_storage['forceOnSunset'] = ADDON.getSettingBool("forceOnSunset")
     settings_storage['daylightDisable'] = ADDON.getSettingBool("daylightDisable")
     settings_storage['enable_if_already_active'] = ADDON.getSettingBool("enable_if_already_active")
+    settings_storage['keep_lights_off'] = ADDON.getSettingBool("keep_lights_off")
     cache.set("script.service.hue.daylightDisable", ADDON.getSettingBool("daylightDisable"))
 
     settings_storage['enableSchedule'] = ADDON.getSettingBool("enableSchedule")
