@@ -119,6 +119,7 @@ msgctxt "#30517"
 msgid "Don't enable scene if any light is off"
 msgstr "Don't enable scene if any light is off"
 
+
 msgctxt "#30521"
 msgid "[B][I]Warning: Not supported on all hardware[/B][/I]"
 msgstr "[B][I]Warnung: Not supported on all hardware[/B][/I]"
