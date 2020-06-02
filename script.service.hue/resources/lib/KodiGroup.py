@@ -91,7 +91,7 @@ class KodiGroup(xbmc.Player):
             else:
                 self.videoInfoTag = None
 
-            if self.checkActiveTime() and self.startBehavior and self.mediaType == self.playbackType():
+            if (self.checkActiveTime() or self.checkAlreadyActive(self.startScene)) and self.checkKeepLightsOffRule(self.startScene) and self.startBehavior and self.mediaType == self.playbackType():
                 self.run_play()
 
     def onPlayBackStopped(self):
@@ -106,7 +106,7 @@ class KodiGroup(xbmc.Player):
             except AttributeError:
                 logger.error("No videoInfoTag")
 
-            if self.checkActiveTime() and self.stopBehavior and self.mediaType == settings_storage['lastMediaType']:
+            if (self.checkActiveTime() or self.checkAlreadyActive(self.stopScene)) and self.checkKeepLightsOffRule(self.stopScene) and self.stopBehavior and self.mediaType == settings_storage['lastMediaType']:
                 self.run_stop()
 
     def onPlayBackPaused(self):
@@ -120,8 +120,8 @@ class KodiGroup(xbmc.Player):
             if self.mediaType == VIDEO and not self.checkVideoActivation(
                     self.videoInfoTag):  # If video group, check video activation. Otherwise it's audio so we ignore this and continue
                 return
-
-            if self.checkActiveTime() and self.pauseBehavior and self.mediaType == self.playbackType():
+                
+            if (self.checkActiveTime() or self.checkAlreadyActive(self.pauseScene)) and self.checkKeepLightsOffRule(self.pauseScene) and self.pauseBehavior and self.mediaType == self.playbackType():
                 settings_storage['lastMediaType'] = self.playbackType()
                 self.run_pause()
 
@@ -174,8 +174,6 @@ class KodiGroup(xbmc.Player):
                 xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
                 reporting.process_exception(e)
-
-
 
     def activate(self):
         logger.info("Activate group [{}]".format(self.kgroupID))
@@ -233,23 +231,73 @@ class KodiGroup(xbmc.Player):
             duration = infoTag.getDuration() / 60  # returns seconds, convert to minutes
             mediaType = infoTag.getMediaType()
             fileName = infoTag.getFile()
+            if not fileName and self.isPlayingVideo():
+                fileName = self.getPlayingFile()
+
+            if not fileName and settings_storage['previousFileName']:
+                fileName = settings_storage['previousFileName']
+            elif fileName:
+                settings_storage['previousFileName'] = fileName
+
             logger.debug(
                 "InfoTag contents: duration: {}, mediaType: {}, file: {}".format(duration, mediaType, fileName))
         except AttributeError:
             logger.exception("Can't read infoTag")
             return False
         logger.debug(
-            "Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, Other: {}".
+            "Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, PVR : {}, Other: {}".
                 format(self.kgroupID, settings_storage['videoMinimumDuration'], settings_storage['video_enableMovie'],
                        settings_storage['video_enableEpisode'],
-                       settings_storage['video_enableMusicVideo'], settings_storage['video_enableOther']))
-        logger.debug("Video Activation ({}): Duration: {}, mediaType: {}".format(self.kgroupID, duration, mediaType))
-        if (duration > settings_storage['videoMinimumDuration'] and
+                       settings_storage['video_enableMusicVideo'], 
+                       settings_storage['video_enablePVR'],
+                       settings_storage['video_enableOther']))
+        logger.debug("Video Activation ({}): Duration: {}, mediaType: {}, ispvr: {}".format(self.kgroupID, duration, mediaType, fileName[0:3] == "pvr"))
+        if ((duration >= settings_storage['videoMinimumDuration'] or fileName[0:3] == "pvr") and
                 ((settings_storage['video_enableMovie'] and mediaType == "movie") or
                  (settings_storage['video_enableEpisode'] and mediaType == "episode") or
-                 (settings_storage['video_enableMusicVideo'] and mediaType == "MusicVideo")) or
-                settings_storage['video_enableOther']):
+                 (settings_storage['video_enableMusicVideo'] and mediaType == "MusicVideo") or
+                 (settings_storage['video_enablePVR'] and fileName[0:3] == "pvr") or
+                 (settings_storage['video_enableOther'] and mediaType != "movie" and mediaType != "episode" and mediaType != "MusicVideo" and fileName[0:3] != "pvr"))):
             logger.debug("Video activation: True")
             return True
         logger.debug("Video activation: False")
         return False
+
+    def checkAlreadyActive(self, scene):
+        if not scene:
+            return False
+
+        logger.debug("Check if scene light already active, settings: enable {}".format(settings_storage['enable_if_already_active']))
+        if settings_storage['enable_if_already_active']:
+            try:
+                sceneData = self.bridge.scenes[scene]()
+                for light in sceneData["lights"]:
+                    l = self.bridge.lights[light]()
+                    if l["state"]["on"] == True: # one light is on, the scene can be applied
+                        logger.debug("Check if scene light already active: True")
+                        return True
+                logger.debug("Check if scene light already active: False")
+            except QhueException as e:
+                logger.error("checkAlreadyActive: Hue call fail: {}".format(e))
+
+        return False
+    
+    def checkKeepLightsOffRule(self, scene):
+        if not scene:
+            return True
+
+        logger.debug("Check if lights should stay off, settings: enable {}".format(settings_storage['keep_lights_off']))
+        if settings_storage['keep_lights_off']:
+            try:
+                sceneData = self.bridge.scenes[scene]()
+                for light in sceneData["lights"]:
+                    l = self.bridge.lights[light]()
+                    if l["state"]["on"] == False: # one light is off, the scene should not be applied
+                        logger.debug("Check if lights should stay off: True")
+                        return False
+                logger.debug("Check if lights should stay off: False")
+            except QhueException as e:
+                logger.error("checkKeepLightsOffRule: Hue call fail: {}".format(e))
+
+        return True
+                
