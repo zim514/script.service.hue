@@ -113,15 +113,15 @@ msgstr "Stop Szene aktiviert"
 
 msgctxt "#30516"
 msgid "Disable time check if any light already on"
-msgstr "Deaktivieren Sie die Zeitprüfung, wenn bereits Licht leuchtet"
+msgstr "Disable time check if any light already on"
 
 msgctxt "#30517"
 msgid "Don't enable scene if any light is off"
-msgstr "Aktivieren Sie die Szene nicht, wenn das Licht ausgeschaltet ist"
+msgstr "Don't enable scene if any light is off"
 
 msgctxt "#30521"
-msgid "[B][I]Warning: Android, RPi4 and 4K not supported[/B][/I]"
-msgstr "[B][I]Warnung: Android, RPi4 und 4K werden nicht unterstützt[/B][/I]"
+msgid "[B][I]Warning: Not supported on all hardware[/B][/I]"
+msgstr "[B][I]Warnung: Not supported on all hardware[/B][/I]"
 
 msgctxt "#30522"
 msgid "CPU & Hue performance"

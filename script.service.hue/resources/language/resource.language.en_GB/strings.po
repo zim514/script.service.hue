@@ -120,8 +120,8 @@ msgid "Don't enable scene if any light is off"
 msgstr "Don't enable scene if any light is off"
 
 msgctxt "#30521"
-msgid "[B][I]Warning: Android, RPi4 and 4K not supported[/B][/I]"
-msgstr "[B][I]Warning: Android, RPi4 and 4K not supported[/B][/I]"
+msgid "[B][I]Warning: Not supported on all hardware[/B][/I]"
+msgstr "[B][I]Warning: Not supported on all hardware[/B][/I]"
 
 msgctxt "#30522"
 msgid "CPU & Hue performance"
