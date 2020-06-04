@@ -192,7 +192,7 @@ def userTest(bridgeIP, bridgeUser):
     b = qhue.Bridge(bridgeIP, bridgeUser, timeout=QHUE_TIMEOUT)
     try:
         zigbeechan = b.config()['zigbeechannel']
-    except (requests.exceptions.ConnectionError, qhue.QhueException):
+    except (requests.exceptions.ConnectionError, qhue.QhueException, KeyError):
         return False
 
     if zigbeechan:
