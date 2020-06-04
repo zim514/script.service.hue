@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.13.0">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.13.1">
 	<requires>
 		<import addon="xbmc.python" version="2.26.0" />
 		<import addon="script.module.requests" version="2.22.0" />
@@ -27,6 +27,7 @@
 		<news>v0.13.0
 Add option to disable scenes if lights are off (thanks @cyberden!)
 Add option to always enable scenes if any lights are on (thanks @cyberden!)
+Add video activation toggle for PVR
 		</news>
 	</extension>
 </addon>
