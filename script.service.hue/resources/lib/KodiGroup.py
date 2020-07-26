@@ -178,10 +178,10 @@ class KodiGroup(xbmc.Player):
     def activate(self):
         logger.info("Activate group [{}]".format(self.kgroupID))
         xbmc.sleep(200)
-        if self.isPlaying():  # if Kodi is playing any file, start up
-            self.onAVStarted()
-        elif self.state == STATE_PAUSED:
+        if self.state == STATE_PAUSED:
             self.onPlayBackPaused()
+        elif self.state == STATE_PLAYING:
+            self.onAVStarted()
         else:
             # if not playing and activate is called, probably should do nothing.
             logger.debug("Activate group [{}]. playback stopped, doing nothing. ".format(self.kgroupID))
