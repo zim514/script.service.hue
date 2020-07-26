@@ -22,12 +22,14 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
     - Can be disabled based on video type (Episode, Movie or music video) or duration
 - Ambilight Support
     - Lighting effects synced with on-screen action
-    - Hardware decoding not supported on Android
+    - Not supported with all hardware
 - Daylight detection
     - Uses Hue's sunrise and sunset settings
     - Disable during daylight hours
     - If sunset falls while watching media, optionally turn on lights
     - Add-on does nothing at sunset if there's no playback
+  
+
 - Enable schedule
     - Set a start and end time at which the add-on should be enabled
     - Time in 24h format (Eg: 22:00, not 10:00 PM)
@@ -115,5 +117,4 @@ Audio Group: 2
 - [ScreenBloom by Tyler Kershner](https://github.com/kershner/screenBloom) 
 - [Qhue by Quentin Stafford-Fraser](https://github.com/quentinsf/qhue)
 - [ssdp.py by dankrause](https://gist.github.com/dankrause/6000248)
-
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
