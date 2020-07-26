@@ -176,7 +176,7 @@ class KodiGroup(xbmc.Player):
                 reporting.process_exception(e)
 
     def activate(self):
-        logger.info("Activate group [{}]".format(self.kgroupID))
+        logger.info("Activate group [{}]. State: {}".format(self.kgroupID, self.state))
         xbmc.sleep(200)
         if self.state == STATE_PAUSED:
             self.onPlayBackPaused()
