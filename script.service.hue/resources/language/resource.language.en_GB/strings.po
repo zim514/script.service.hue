@@ -143,6 +143,10 @@ msgctxt "#32105"
 msgid "Separate debug log"
 msgstr "Separate debug log"
 
+msgctxt "#32106"
+msgid "Video Activation"
+msgstr "Video Activation"
+
 msgctxt "#5110"
 msgid "Initial flash"
 msgstr "Initial flash"
