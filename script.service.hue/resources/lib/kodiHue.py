@@ -121,41 +121,41 @@ def bridgeDiscover(monitor):
     complete = False
     while not progressBar.iscanceled() and not complete:
 
-        progressBar.update(10, _("N-UPnP discovery..."))
+        progressBar.update(percent=10, message=_("N-UPnP discovery..."))
         bridgeIP = _discoverNupnp()
         if not bridgeIP:
-            progressBar.update(20, _("UPnP discovery..."))
+            progressBar.update(percent=20, message=_("UPnP discovery..."))
             bridgeIP = _discoverSsdp()
 
         if connectionTest(bridgeIP):
-            progressBar.update(100, _("Found bridge: ") + bridgeIP)
+            progressBar.update(percent=100, message=_("Found bridge: ") + bridgeIP)
             monitor.waitForAbort(1)
 
             bridgeUser = createUser(monitor, bridgeIP, progressBar)
 
             if bridgeUser:
                 logger.debug("User created: {}".format(bridgeUser))
-                progressBar.update(90, _("User Found!"), _("Saving settings"))
+                progressBar.update(percent=90, message=_("User Found![CR]Saving settings..."))
 
                 ADDON.setSettingString("bridgeIP", bridgeIP)
                 ADDON.setSettingString("bridgeUser", bridgeUser)
                 complete = True
                 settings_storage['connected'] = True
-                progressBar.update(100, _("Complete!"))
+                progressBar.update(percent=100, message=_("Complete!"))
                 monitor.waitForAbort(5)
                 progressBar.close()
                 logger.debug("Bridge discovery complete")
                 return True
             else:
                 logger.debug("User not created, received: {}".format(bridgeUser))
-                progressBar.update(100, _("User not found"), _("Check your bridge and network"))
+                progressBar.update(percent=100, message=_("User not found[CR]Check your bridge and network."))
                 monitor.waitForAbort(5)
                 complete = True
 
                 progressBar.close()
 
         else:
-            progressBar.update(100, _("Bridge not found"), _("Check your bridge and network"))
+            progressBar.update(percent=100, message=_("Bridge not found[CR]Check your bridge and network."))
             logger.debug("Bridge not found, check your bridge and network")
             monitor.waitForAbort(5)
             complete = True
@@ -226,14 +226,13 @@ def createUser(monitor, bridgeIP, progressBar=False):
     timeout = 0
     progress = 0
     if progressBar:
-        progressBar.update(progress, _("Press link button on bridge"),
-                           _("Waiting for 90 seconds..."))  # press link button on bridge
+        progressBar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))  # press link button on bridge
 
     while 'link button not pressed' in res and timeout <= 90 and not monitor.abortRequested() and not progressBar.iscanceled():
         logger.debug("In create_user: abortRquested: {}, timer: {}".format(str(monitor.abortRequested()), timeout))
 
         if progressBar:
-            progressBar.update(progress, _("Press link button on bridge"))  # press link button on bridge
+            progressBar.update(percent=progress, message=_("Press link button on bridge"))  # press link button on bridge
 
         req = requests.post('http://{}/api'.format(bridgeIP), data=data)
         res = req.text
