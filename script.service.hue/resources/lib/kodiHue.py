@@ -85,10 +85,10 @@ def _discoverNupnp():
 
 def _discoverSsdp():
     from . import ssdp
-    from urlparse import urlsplit
+    from urllib.parse import urlsplit
 
     try:
-        ssdp_list = ssdp.discover("ssdp:all", timeout=10, mx=3)
+        ssdp_list = ssdp.discover("upnp:rootdevice", timeout=10, mx=5)
     except Exception as exc:
         logger.exception("SSDP error: {}".format(exc.args))
         xbmcgui.Dialog().notification(_("Hue Service"), _("Network not ready"), xbmcgui.NOTIFICATION_ERROR)
@@ -120,6 +120,7 @@ def bridgeDiscover(monitor):
 
         progressBar.update(percent=10, message=_("N-UPnP discovery..."))
         bridgeIP = _discoverNupnp()
+
         if not bridgeIP:
             progressBar.update(percent=20, message=_("UPnP discovery..."))
             bridgeIP = _discoverSsdp()
