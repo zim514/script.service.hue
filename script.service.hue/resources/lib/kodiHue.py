@@ -31,8 +31,7 @@ def createHueScene(bridge):
     logger.debug("In kodiHue createHueScene")
     scenes = bridge.scenes
 
-    xbmcgui.Dialog().ok(_("Create New Scene"), _("Adjust lights to desired state in the Hue App to save as new scene."),
-                        _("Set a fade time in seconds, or set to 0 seconds for an instant transition."))
+    xbmcgui.Dialog().ok(heading=_("Create New Scene"), message=_("Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or set to 0 seconds for an instant transition."))
 
     sceneName = xbmcgui.Dialog().input(_("Scene Name"))
 
@@ -46,8 +45,7 @@ def createHueScene(bridge):
                              transitionTime) * 10)  # Hue API transition time is in 100msec. *10 to convert to seconds.
             logger.debug("In kodiHue createHueScene. Res: {}".format(res))
             if res[0]["success"]:
-                xbmcgui.Dialog().ok(_("Create New Scene"), _("Scene successfully created!"),
-                                    _("You may now assign your Scene to player actions."))
+                xbmcgui.Dialog().ok(heading=_("Create New Scene"),message=_("Scene successfully created![CR]You may now assign your Scene to player actions."))
             #   xbmcgui.Dialog().notification(_("Hue Service"), _("Scene Created"))
             else:
                 xbmcgui.Dialog().ok(_("Error"), _("Error: Scene not created."))
@@ -57,8 +55,7 @@ def deleteHueScene(bridge):
     logger.debug("In kodiHue deleteHueScene")
     scene = selectHueScene(bridge)
     if scene is not None:
-        confirm = xbmcgui.Dialog().yesno(_("Delete Hue Scene"), _("Are you sure you want to delete this scene: "),
-                                         str(scene[1]))
+        confirm = xbmcgui.Dialog().yesno(heading=_("Delete Hue Scene"), message=_("Are you sure you want to delete this scene:[CR]" + str(scene[1])))
     if scene and confirm:
         scenes = bridge.scenes
         res = scenes[scene[0]](http_method='delete')
