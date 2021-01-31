@@ -5,6 +5,7 @@ from logging import getLogger
 from threading import Event
 
 import xbmc
+import xbmcvfs
 import xbmcaddon
 import simplecache
 
@@ -20,8 +21,8 @@ ROLLBAR_API_KEY = "b871c6292a454fb490344f77da186e10"
 
 ADDON = xbmcaddon.Addon()
 ADDONID = ADDON.getAddonInfo('id')
-ADDONDIR = xbmc.translatePath(ADDON.getAddonInfo('profile'))  # .decode('utf-8'))
-ADDONPATH = xbmc.translatePath(ADDON.getAddonInfo("path"))
+ADDONDIR = xbmcvfs.translatePath(ADDON.getAddonInfo('profile'))  # .decode('utf-8'))
+ADDONPATH = xbmcvfs.translatePath(ADDON.getAddonInfo("path"))
 ADDONVERSION = ADDON.getAddonInfo('version')
 KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
 

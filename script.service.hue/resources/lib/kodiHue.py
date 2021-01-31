@@ -88,7 +88,7 @@ def _discoverNupnp():
 
 def _discoverSsdp():
     from . import ssdp
-    from urlparse import urlsplit
+    from urllib.parse import urlsplit
 
     try:
         ssdp_list = ssdp.discover("ssdp:all", timeout=10, mx=3)

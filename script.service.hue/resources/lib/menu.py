@@ -16,7 +16,7 @@ try:
     from urllib.parse import urlparse, parse_qs
 except ImportError:
     # Python 2
-    from urlparse import urlparse, parse_qs
+    from urllib.parse import urlparse, parse_qs
 
 cache = simplecache.SimpleCache()
 
@@ -78,11 +78,11 @@ def menu():
 def build_menu(base_url, addon_handle):
     items = [
 
-        (base_url + "/actions?kgroupid=1&action=menu", ListItem(_("Video Actions"), iconImage="DefaultVideo.png"), True),
-        (base_url + "/actions?kgroupid=2&action=menu", ListItem(_("Audio Actions"), iconImage="DefaultAudio.png"), True),
+        (base_url + "/actions?kgroupid=1&action=menu", ListItem(_("Video Actions")), True),
+        (base_url + "/actions?kgroupid=2&action=menu", ListItem(_("Audio Actions")), True),
         (base_url + "?toggle",
          ListItem(_("Hue Status: ") + get_status())),
-        (base_url + "?settings", ListItem(_("Settings"), iconImage=get_icon_path("settings")))
+        (base_url + "?settings", ListItem(_("Settings")))
     ]
 
     xbmcplugin.addDirectoryItems(addon_handle, items, len(items))

@@ -13,16 +13,16 @@ if __name__ == "__main__":
 
     import polib
 
-    print("PATH: {}".format(sys.path))
-    print("executable: " + sys.executable)
+    print(("PATH: {}".format(sys.path)))
+    print(("executable: " + sys.executable))
 
     dirpath = os.getcwd()
-    print("current directory is : " + dirpath)
+    print(("current directory is : " + dirpath))
     foldername = os.path.basename(dirpath)
-    print("Directory name is : " + foldername)
+    print(("Directory name is : " + foldername))
 
     string_file = "..\\language\\resource.language.en_GB\\strings.po"
-    print("input file: " + string_file)
+    print(("input file: " + string_file))
 
     po = polib.pofile(string_file)
 
@@ -30,7 +30,7 @@ if __name__ == "__main__":
         import re, subprocess
 
         command = ["grep", "-hnr", "_([\'\"]", "..\\.."]
-        print("grep command: {}".format(command))
+        print(("grep command: {}".format(command)))
         r = subprocess.check_output(command)
 
         print(r)
@@ -39,16 +39,16 @@ if __name__ == "__main__":
         translated = [m.msgid.lower().replace("'", "\\'") for m in po]
         missing = set([s for s in strings if s.lower() not in translated])
 
-        print("Missing:"+ str(missing))
+        print(("Missing:"+ str(missing)))
 
         if missing:
             ids_range = list(range(30000, 35000))
             ids_reserved = [int(m.msgctxt[1:]) for m in po]
             ids_available = [x for x in ids_range if x not in ids_reserved]
-            print("WARNING: adding missing translation for '%s'" % missing)
+            print(("WARNING: adding missing translation for '%s'" % missing))
             for text in missing:
                 id = ids_available.pop(0)
-                entry = polib.POEntry(msgid=text, msgstr=u'', msgctxt="#{0}".format(id))
+                entry = polib.POEntry(msgid=text, msgstr='', msgctxt="#{0}".format(id))
                 po.append(entry)
             po.save(string_file)
     except Exception as e:

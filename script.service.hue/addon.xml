@@ -1,6 +1,5 @@
 <addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="0.13.3">
 	<requires>
-		<import addon="xbmc.python" version="2.26.0" />
 		<import addon="script.module.requests" version="2.22.0" />
 		<import addon="script.module.pil" />
 		<import addon="script.module.simplecache" version="1.0.14" />
