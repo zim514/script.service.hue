@@ -4,7 +4,7 @@
 Automate your [Hue lights](https://www.meethue.com/) on audio or video playback with [Kodi Media Player](https://kodi.tv/)
 
 ## Requirements
-- Kodi Leia 18.x or higher
+- Kodi Matrix 19 or higher
 - Hue Bridge V2 (Square)
 
 ## Installation

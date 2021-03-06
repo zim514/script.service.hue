@@ -80,11 +80,11 @@ def discover(service, timeout=5, retries=1, mx=3):
 # ssdp.discover("roku:ecp")
 
 ##
-if __name__ == '__main__':
+##if __name__ == '__main__':
 ##    logging.basicConfig(level=logging.DEBUG,                                                 \
 ##        format='%(asctime)s.%(msecs)03d %(levelname)s:%(module)s:%(funcName)s: %(message)s', \
 ##        datefmt="%Y-%m-%d %H:%M:%S")
 
-    devices = discover("ssdp:all", timeout=8)
-    print('\nDiscovered {} device{pl}.'.format(len(devices), pl='s' if len(devices)!=1 else ''))
-    for device in devices: print('  {0.location} ==> {0.server}'.format(device))
+##    devices = discover("ssdp:all", timeout=8)
+##   print('\nDiscovered {} device{pl}.'.format(len(devices), pl='s' if len(devices)!=1 else ''))
+##    for device in devices: print('  {0.location} ==> {0.server}'.format(device))
