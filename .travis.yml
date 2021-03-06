@@ -3,7 +3,7 @@ python: "3.7"
 
 env:
    - ADDON_ID=script.service.hue
-     BRANCH=leia
+     BRANCH=matrix
      REPO=repo-scripts
 
 # command to install dependencies
@@ -14,7 +14,7 @@ script:
   - kodi-addon-checker --branch $BRANCH $ADDON_ID
 
 before_deploy:
-  - pip install -q  git+https://github.com/romanvm/kodi-addon-submitter.git
+  - pip install -q  git+https://github.com/xbmc/kodi-addon-submitter.git
   - submit-addon -s -z $ADDON_ID
   - export RELEASE_ZIP=$(ls *.zip)
 

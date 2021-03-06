@@ -40,7 +40,7 @@
 <!--  /GROUP SECTION  0-->
 
 <!-- VIDEO ACTIVATION  --> 
-    <category label="Video Activation">
+    <category label="32106">
         <setting id="video_MinimumDuration" type="number" label="30800" default="0" />
         <setting id="video_Movie" type="bool" label="30801" default="True" />
         <setting id="video_Episode" type="bool" label="30802" default="True" />

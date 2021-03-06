@@ -19,9 +19,9 @@ def _kodi_version():
 
 def error_report_requested(exc):
     return xbmcgui.Dialog().yesno(
-        "{} {}".format(ADDONID, ADDON.getLocalizedString(30043)),
-        ADDON.getLocalizedString(30080),
-        "[COLOR=red]{}[/COLOR]".format(exc),
+        heading="{} {}".format(ADDONID, ADDON.getLocalizedString(30043)),
+        message=ADDON.getLocalizedString(30080) +
+        "\n[COLOR=red]{}[/COLOR]\n".format(exc) +
         ADDON.getLocalizedString(30081)
     )
 

@@ -143,6 +143,10 @@ msgctxt "#32105"
 msgid "Separate debug log"
 msgstr "Separate debug log"
 
+msgctxt "#32106"
+msgid "Video Activation"
+msgstr "Video Activation"
+
 msgctxt "#5110"
 msgid "Initial flash"
 msgstr "Initial flash"
@@ -565,4 +569,40 @@ msgctxt "#30077"
 msgid ""
 "The Hue Bridge is over capacity. Increase refresh rate or reduce the number "
 "of Ambilights."
+msgstr ""
+
+msgctxt "#30078"
+msgid "Bridge not found[CR]Check your bridge and network."
+msgstr ""
+
+msgctxt "#30079"
+msgid "Don't show again"
+msgstr ""
+
+msgctxt "#30082"
+msgid "Press link button on bridge. Waiting for 90 seconds..."
+msgstr ""
+
+msgctxt "#30083"
+msgid "Unknown"
+msgstr ""
+
+msgctxt "#30084"
+msgid "User Found![CR]Saving settings..."
+msgstr ""
+
+msgctxt "#30085"
+msgid ""
+"Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a"
+" fade time in seconds, or set to 0 seconds for an instant transition."
+msgstr ""
+
+msgctxt "#30086"
+msgid "User not found[CR]Check your bridge and network."
+msgstr ""
+
+msgctxt "#30087"
+msgid ""
+"Scene successfully created![CR]You may now assign your Scene to player "
+"actions."
 msgstr ""

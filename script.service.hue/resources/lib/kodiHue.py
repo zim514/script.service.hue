@@ -31,8 +31,7 @@ def createHueScene(bridge):
     logger.debug("In kodiHue createHueScene")
     scenes = bridge.scenes
 
-    xbmcgui.Dialog().ok(_("Create New Scene"), _("Adjust lights to desired state in the Hue App to save as new scene."),
-                        _("Set a fade time in seconds, or set to 0 seconds for an instant transition."))
+    xbmcgui.Dialog().ok(heading=_("Create New Scene"), message=_("Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or set to 0 seconds for an instant transition."))
 
     sceneName = xbmcgui.Dialog().input(_("Scene Name"))
 
@@ -46,8 +45,7 @@ def createHueScene(bridge):
                              transitionTime) * 10)  # Hue API transition time is in 100msec. *10 to convert to seconds.
             logger.debug("In kodiHue createHueScene. Res: {}".format(res))
             if res[0]["success"]:
-                xbmcgui.Dialog().ok(_("Create New Scene"), _("Scene successfully created!"),
-                                    _("You may now assign your Scene to player actions."))
+                xbmcgui.Dialog().ok(heading=_("Create New Scene"),message=_("Scene successfully created![CR]You may now assign your Scene to player actions."))
             #   xbmcgui.Dialog().notification(_("Hue Service"), _("Scene Created"))
             else:
                 xbmcgui.Dialog().ok(_("Error"), _("Error: Scene not created."))
@@ -57,8 +55,7 @@ def deleteHueScene(bridge):
     logger.debug("In kodiHue deleteHueScene")
     scene = selectHueScene(bridge)
     if scene is not None:
-        confirm = xbmcgui.Dialog().yesno(_("Delete Hue Scene"), _("Are you sure you want to delete this scene: "),
-                                         str(scene[1]))
+        confirm = xbmcgui.Dialog().yesno(heading=_("Delete Hue Scene"), message=_("Are you sure you want to delete this scene:[CR]" + str(scene[1])))
     if scene and confirm:
         scenes = bridge.scenes
         res = scenes[scene[0]](http_method='delete')
@@ -88,10 +85,10 @@ def _discoverNupnp():
 
 def _discoverSsdp():
     from . import ssdp
-    from urlparse import urlsplit
+    from urllib.parse import urlsplit
 
     try:
-        ssdp_list = ssdp.discover("ssdp:all", timeout=10, mx=3)
+        ssdp_list = ssdp.discover("upnp:rootdevice", timeout=10, mx=5)
     except Exception as exc:
         logger.exception("SSDP error: {}".format(exc.args))
         xbmcgui.Dialog().notification(_("Hue Service"), _("Network not ready"), xbmcgui.NOTIFICATION_ERROR)
@@ -121,41 +118,42 @@ def bridgeDiscover(monitor):
     complete = False
     while not progressBar.iscanceled() and not complete:
 
-        progressBar.update(10, _("N-UPnP discovery..."))
+        progressBar.update(percent=10, message=_("N-UPnP discovery..."))
         bridgeIP = _discoverNupnp()
+
         if not bridgeIP:
-            progressBar.update(20, _("UPnP discovery..."))
+            progressBar.update(percent=20, message=_("UPnP discovery..."))
             bridgeIP = _discoverSsdp()
 
         if connectionTest(bridgeIP):
-            progressBar.update(100, _("Found bridge: ") + bridgeIP)
+            progressBar.update(percent=100, message=_("Found bridge: ") + bridgeIP)
             monitor.waitForAbort(1)
 
             bridgeUser = createUser(monitor, bridgeIP, progressBar)
 
             if bridgeUser:
                 logger.debug("User created: {}".format(bridgeUser))
-                progressBar.update(90, _("User Found!"), _("Saving settings"))
+                progressBar.update(percent=90, message=_("User Found![CR]Saving settings..."))
 
                 ADDON.setSettingString("bridgeIP", bridgeIP)
                 ADDON.setSettingString("bridgeUser", bridgeUser)
                 complete = True
                 settings_storage['connected'] = True
-                progressBar.update(100, _("Complete!"))
+                progressBar.update(percent=100, message=_("Complete!"))
                 monitor.waitForAbort(5)
                 progressBar.close()
                 logger.debug("Bridge discovery complete")
                 return True
             else:
                 logger.debug("User not created, received: {}".format(bridgeUser))
-                progressBar.update(100, _("User not found"), _("Check your bridge and network"))
+                progressBar.update(percent=100, message=_("User not found[CR]Check your bridge and network."))
                 monitor.waitForAbort(5)
                 complete = True
 
                 progressBar.close()
 
         else:
-            progressBar.update(100, _("Bridge not found"), _("Check your bridge and network"))
+            progressBar.update(percent=100, message=_("Bridge not found[CR]Check your bridge and network."))
             logger.debug("Bridge not found, check your bridge and network")
             monitor.waitForAbort(5)
             complete = True
@@ -226,14 +224,13 @@ def createUser(monitor, bridgeIP, progressBar=False):
     timeout = 0
     progress = 0
     if progressBar:
-        progressBar.update(progress, _("Press link button on bridge"),
-                           _("Waiting for 90 seconds..."))  # press link button on bridge
+        progressBar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))  # press link button on bridge
 
     while 'link button not pressed' in res and timeout <= 90 and not monitor.abortRequested() and not progressBar.iscanceled():
         logger.debug("In create_user: abortRquested: {}, timer: {}".format(str(monitor.abortRequested()), timeout))
 
         if progressBar:
-            progressBar.update(progress, _("Press link button on bridge"))  # press link button on bridge
+            progressBar.update(percent=progress, message=_("Press link button on bridge"))  # press link button on bridge
 
         req = requests.post('http://{}/api'.format(bridgeIP), data=data)
         res = req.text
