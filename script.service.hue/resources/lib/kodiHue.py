@@ -394,7 +394,7 @@ def connectBridge(monitor, silent=False):
                 settings_storage['connected'] = True
                 logger.info("Successfully connected to Hue Bridge: {}".format(bridgeIP))
                 if not silent:
-                    notification(_("Hue Service"), _("Hue connected"), icon=xbmcgui.NOTIFICATION_INFO)
+                    notification(_("Hue Service"), _("Hue connected"), icon=xbmcgui.NOTIFICATION_INFO, sound=False)
                 return bridge
         else:
             logger.debug("Bridge not responding")
