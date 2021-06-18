@@ -16,8 +16,8 @@ from resources.lib import AmbiGroup
 
 
 def core():
-    logger.info("service started, version: {}".format(ADDON.getAddonInfo("version")))
-    logger.info("Args: {}".format(sys.argv))
+    logger.debug("service started, version: {}".format(ADDON.getAddonInfo("version")))
+    logger.debug("Args: {}".format(sys.argv))
     kodisettings.read_settings()
 
     if len(sys.argv) > 1:
@@ -86,7 +86,7 @@ def commands(monitor, command):
             logger.debug("No bridge found. scene ambi lights cancelled.")
             xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
     else:
-        logger.critical("Unknown command")
+        logger.debug("Unknown command")
         return
 
 
@@ -107,7 +107,7 @@ def service(monitor):
         daylight = kodiHue.getDaylight(bridge)
         cache.set("script.service.hue.daylight", daylight)
         cache.set("script.service.hue.service_enabled", True)
-        logger.info("Core service starting")
+        logger.debug("Core service starting")
 
         while settings_storage['connected'] and not monitor.abortRequested():
 
@@ -155,24 +155,24 @@ def service(monitor):
                 except (ConnectionError, ReadTimeout, ConnectTimeout) as error:
                     connection_retries = connection_retries + 1
                     if connection_retries <= 10:
-                        logger.error("Bridge Connection Error. Attempt: {}/10 : {}".format(connection_retries, error))
+                        logger.debug("Bridge Connection Error. Attempt: {}/10 : {}".format(connection_retries, error))
                         xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
                         timer = -60
 
                     else:
-                        logger.error("Bridge Connection Error. Attempt: {}/5. Shutting down : {}".format(connection_retries, error))
+                        logger.debug("Bridge Connection Error. Attempt: {}/5. Shutting down : {}".format(connection_retries, error))
                         xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
                         settings_storage['connected'] = False
 
                 except Exception as exc:
-                    logger.exception("Get daylight exception")
+                    logger.debug("Get daylight exception")
                     reporting.process_exception(exc)
 
 
                 # check if sunset took place
                 # daylight = cache.get("script.service.hue.daylight")
                 if new_daylight != daylight:
-                    logger.info("Daylight change. current: {}, new: {}".format(daylight, new_daylight))
+                    logger.debug("Daylight change. current: {}, new: {}".format(daylight, new_daylight))
                     daylight = new_daylight
                     cache.set("script.service.hue.daylight", daylight)
                     if not daylight and service_enabled:
@@ -182,7 +182,7 @@ def service(monitor):
                         except UnboundLocalError as exc:
                             kodiHue.activate(bridge, kgroups)
                         except Exception as exc:
-                            logger.exception("Get daylight exception")
+                            logger.debug("Get daylight exception")
                             reporting.process_exception(exc)
             timer += 1
             monitor.waitForAbort(1)

@@ -42,14 +42,14 @@ def menu():
 
         elif command == "toggle":
             if cache.get("script.service.hue.service_enabled") and get_status() != "Disabled by daylight":
-                logger.info("Disable service")
+                logger.debug("Disable service")
                 cache.set("script.service.hue.service_enabled", False)
 
             elif get_status() != "Disabled by daylight":
-                logger.info("Enable service")
+                logger.debug("Enable service")
                 cache.set("script.service.hue.service_enabled", True)
             else:
-                logger.info("Disabled by daylight, ignoring")
+                logger.debug("Disabled by daylight, ignoring")
 
             xbmc.executebuiltin('Container.Refresh')
 
@@ -72,7 +72,7 @@ def menu():
             cache.set("script.service.hue.action", (action, kgroupid), expiration=(timedelta(seconds=5)))
 
     else:
-        logger.error("Unknown command. Handle: {}, route: {}, Arguments: {}".format(addon_handle, route, sys.argv))
+        logger.debug("Unknown command. Handle: {}, route: {}, Arguments: {}".format(addon_handle, route, sys.argv))
 
 
 def build_menu(base_url, addon_handle):

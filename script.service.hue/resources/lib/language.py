@@ -70,7 +70,7 @@ else:
     def get_string(t):
         string_id = _strings.get(t.lower())
         if not string_id:
-            logger.error("LANGUAGE: missing translation for '%s'" % t.lower())
+            logger.debug("LANGUAGE: missing translation for '%s'" % t.lower())
             return t
 
         if STRDEBUG is True:

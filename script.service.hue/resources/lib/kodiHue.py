@@ -73,7 +73,7 @@ def _discoverNupnp():
         # req = requests.get('https://www.meethue.com/api/nupnp')
         req = requests.get('https://discovery.meethue.com/')
     except requests.exceptions.ConnectionError as e:
-        logger.info("Nupnp failed: {}".format(e))
+        logger.debug("Nupnp failed: {}".format(e))
         return None
 
     res = req.json()
@@ -90,7 +90,7 @@ def _discoverSsdp():
     try:
         ssdp_list = ssdp.discover("upnp:rootdevice", timeout=10, mx=5)
     except Exception as exc:
-        logger.exception("SSDP error: {}".format(exc.args))
+        logger.debug("SSDP error: {}".format(exc.args))
         xbmcgui.Dialog().notification(_("Hue Service"), _("Network not ready"), xbmcgui.NOTIFICATION_ERROR)
         return None
 
@@ -116,7 +116,7 @@ def bridgeDiscover(monitor):
     progressBar.update(5, _("Discovery started"))
 
     complete = False
-    while not progressBar.iscanceled() and not complete:
+    while not progressBar.iscanceled() and not complete and not monitor.abortRequested():
 
         progressBar.update(percent=10, message=_("N-UPnP discovery..."))
         bridgeIP = _discoverNupnp()
@@ -177,7 +177,7 @@ def connectionTest(bridgeIP):
 
     api_split = apiversion.split(".")
     if apiversion and int(api_split[0]) >= 1 and int(api_split[1]) >= 28: # minimum bridge version 1.28
-        logger.info("Bridge Found! Hue API version: {}".format(apiversion))
+        logger.debug("Bridge Found! Hue API version: {}".format(apiversion))
         return True
 
     notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)), icon=xbmcgui.NOTIFICATION_ERROR)
@@ -194,7 +194,7 @@ def userTest(bridgeIP, bridgeUser):
         return False
 
     if zigbeechan:
-        logger.info("Hue User Authorized. Bridge Zigbee Channel: {}".format(zigbeechan))
+        logger.debug("Hue User Authorized. Bridge Zigbee Channel: {}".format(zigbeechan))
         return True
     return False
 
@@ -245,7 +245,7 @@ def createUser(monitor, bridgeIP, progressBar=False):
         username = res[0]['success']['username']
         return username
     except Exception:
-        logger.exception("Username exception")
+        logger.debug("Username exception")
         return False
 
 
@@ -279,7 +279,7 @@ def _getLightName(bridge, L):
     try:
         name = bridge.lights()[L]['name']
     except Exception:
-        logger.exception("getLightName Exception")
+        logger.debug("getLightName Exception")
         return None
 
     if name is None:
@@ -356,7 +356,7 @@ def activate(bridge, kgroups, ambiGroup = None):
     """
     Activates play action as appropriate for all groups. Used at sunset and when service is renabled via Actions.
     """
-    logger.info("Activating scenes")
+    logger.debug("Activating scenes")
 
     for g in kgroups:
         try:
@@ -392,7 +392,7 @@ def connectBridge(monitor, silent=False):
             if userTest(bridgeIP, bridgeUser):
                 bridge = qhue.Bridge(bridgeIP, bridgeUser, timeout=QHUE_TIMEOUT)
                 settings_storage['connected'] = True
-                logger.info("Successfully connected to Hue Bridge: {}".format(bridgeIP))
+                logger.debug("Successfully connected to Hue Bridge: {}".format(bridgeIP))
                 if not silent:
                     notification(_("Hue Service"), _("Hue connected"), icon=xbmcgui.NOTIFICATION_INFO, sound=False)
                 return bridge
@@ -414,7 +414,7 @@ def getLightGamut(bridge, L):
         gamut = bridge.lights()[L]['capabilities']['control']['colorgamuttype']
         logger.debug("Light: {}, gamut: {}".format(L, gamut))
     except Exception:
-        logger.exception("Can't get gamut for light, defaulting to Gamut C: {}".format(L))
+        logger.debug("Can't get gamut for light, defaulting to Gamut C: {}".format(L))
         return "C"
     if gamut == "A" or gamut == "B" or gamut == "C":
         return gamut
@@ -426,12 +426,12 @@ def checkBridgeModel(bridge):
         bridge_config = bridge.config()
         model = bridge_config["modelid"]
     except QhueException:
-        logger.exception("Exception: checkBridgeModel")
+        logger.debug("Exception: checkBridgeModel")
         return None
     if model == "BSB002":
         logger.debug("Bridge model OK: {}".format(model))
         return True
-    logger.error("Unsupported bridge model: {}".format(model))
+    logger.debug("Unsupported bridge model: {}".format(model))
     xbmcgui.Dialog().ok(_("Unsupported Hue Bridge"), _(
         "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for certain features."))
     return None
@@ -460,7 +460,7 @@ def _get_light_states(lights, bridge):
         try:
             states[L] = (bridge.lights[L]())
         except QhueException as e:
-            logger.error("Hue call fail: {}".format(e))
+            logger.debug("Hue call fail: {}".format(e))
 
     return states
 
@@ -470,7 +470,7 @@ class HueMonitor(xbmc.Monitor):
         super(xbmc.Monitor, self).__init__()
 
     def onSettingsChanged(self):
-        logger.info("Settings changed")
+        logger.debug("Settings changed")
         # self.waitForAbort(1)
         read_settings()
         SETTINGS_CHANGED.set()
@@ -478,14 +478,14 @@ class HueMonitor(xbmc.Monitor):
 
     def onNotification(self, sender, method, data):
         if sender == ADDONID:
-            logger.info("Notification received: method: {}, data: {}".format(method, data))
+            logger.debug("Notification received: method: {}, data: {}".format(method, data))
 
             if method == "Other.disable":
-                logger.info("Notification received: Disable")
+                logger.debug("Notification received: Disable")
                 cache.set("script.service.hue.service_enabled", False)
 
             if method == "Other.enable":
-                logger.info("Notification received: Enable")
+                logger.debug("Notification received: Enable")
                 cache.set("script.service.hue.service_enabled", True)
 
             if method == "Other.actions":

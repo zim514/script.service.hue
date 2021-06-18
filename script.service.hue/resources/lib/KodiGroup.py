@@ -63,15 +63,15 @@ class KodiGroup(xbmc.Player):
         try:
             self.groupResource.action(alert="select")
         except QhueException() as exc:
-            logger.error("Hue Error: {}".format(exc))
+            logger.debug("Hue Error: {}".format(exc))
             reporting.process_exception(exc)
         except ConnectTimeout as exc:
-            logger.error("Hue Error: {}".format(exc))
+            logger.debug("Hue Error: {}".format(exc))
 
 
     def onAVStarted(self):
         if self.enabled:
-            logger.info(
+            logger.debug(
                 "In KodiGroup[{}], onPlaybackStarted. Group enabled: {},startBehavior: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(
                     self.kgroupID, self.enabled, self.startBehavior, self.isPlayingVideo(), self.isPlayingAudio(),
                     self.mediaType, self.playbackType()))
@@ -96,7 +96,7 @@ class KodiGroup(xbmc.Player):
 
     def onPlayBackStopped(self):
         if self.enabled:
-            logger.info("In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroupID, self.mediaType, settings_storage['lastMediaType']))
+            logger.debug("In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroupID, self.mediaType, settings_storage['lastMediaType']))
             self.state = STATE_STOPPED
 
             try:
@@ -104,14 +104,14 @@ class KodiGroup(xbmc.Player):
                         self.videoInfoTag):  # If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
                     return
             except AttributeError:
-                logger.error("No videoInfoTag")
+                logger.debug("No videoInfoTag")
 
             if (self.checkActiveTime() or self.checkAlreadyActive(self.stopScene)) and self.checkKeepLightsOffRule(self.stopScene) and self.stopBehavior and self.mediaType == settings_storage['lastMediaType']:
                 self.run_stop()
 
     def onPlayBackPaused(self):
         if self.enabled:
-            logger.info(
+            logger.debug(
                 "In KodiGroup[{}], onPlaybackPaused() , isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroupID,
                                                                                                        self.isPlayingVideo(),
                                                                                                        self.isPlayingAudio()))
@@ -126,24 +126,24 @@ class KodiGroup(xbmc.Player):
                 self.run_pause()
 
     def onPlayBackResumed(self):
-        logger.info("In KodiGroup[{}], onPlaybackResumed()".format(self.kgroupID))
+        logger.debug("In KodiGroup[{}], onPlaybackResumed()".format(self.kgroupID))
         self.onAVStarted()
 
     def onPlayBackError(self):
-        logger.info("In KodiGroup[{}], onPlaybackError()".format(self.kgroupID))
+        logger.debug("In KodiGroup[{}], onPlaybackError()".format(self.kgroupID))
         self.onPlayBackStopped()
 
     def onPlayBackEnded(self):
-        logger.info("In KodiGroup[{}], onPlaybackEnded()".format(self.kgroupID))
+        logger.debug("In KodiGroup[{}], onPlaybackEnded()".format(self.kgroupID))
         self.onPlayBackStopped()
 
     def run_play(self):
         try:
             self.groupResource.action(scene=self.startScene)
         except QhueException as e:
-            logger.error("onAVStarted: Hue call fail: {}".format(e))
+            logger.debug("onAVStarted: Hue call fail: {}".format(e))
             if e.args[0][0] == 7:
-                logger.error("Scene not found")
+                logger.debug("Scene not found")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
                 reporting.process_exception(e)
@@ -153,11 +153,11 @@ class KodiGroup(xbmc.Player):
         try:
             xbmc.sleep(500)  # sleep for any left over ambilight calls to complete first.
             self.groupResource.action(scene=self.pauseScene)
-            logger.info("In KodiGroup[{}], onPlaybackPaused() Pause scene activated")
+            logger.debug("In KodiGroup[{}], onPlaybackPaused() Pause scene activated")
         except QhueException as e:
-            logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
+            logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))
             if e.args[0][0] == 7:
-                logger.error("Scene not found")
+                logger.debug("Scene not found")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
                 reporting.process_exception(e)
@@ -166,17 +166,17 @@ class KodiGroup(xbmc.Player):
         try:
             xbmc.sleep(100)  # sleep for any left over ambilight calls to complete first.
             self.groupResource.action(scene=self.stopScene)
-            logger.info("In KodiGroup[{}], onPlaybackStop() Stop scene activated")
+            logger.debug("In KodiGroup[{}], onPlaybackStop() Stop scene activated")
         except QhueException as e:
-            logger.error("onPlaybackStopped: Hue call fail: {}".format(e))
+            logger.debug("onPlaybackStopped: Hue call fail: {}".format(e))
             if e.args[0][0] == 7:
-                logger.error("Scene not found")
+                logger.debug("Scene not found")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
                 reporting.process_exception(e)
 
     def activate(self):
-        logger.info("Activate group [{}]. State: {}".format(self.kgroupID, self.state))
+        logger.debug("Activate group [{}]. State: {}".format(self.kgroupID, self.state))
         xbmc.sleep(200)
         if self.state == STATE_PAUSED:
             self.onPlayBackPaused()
@@ -242,7 +242,7 @@ class KodiGroup(xbmc.Player):
             logger.debug(
                 "InfoTag contents: duration: {}, mediaType: {}, file: {}".format(duration, mediaType, fileName))
         except AttributeError:
-            logger.exception("Can't read infoTag")
+            logger.debug("Can't read infoTag")
             return False
         logger.debug(
             "Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, PVR : {}, Other: {}".
@@ -278,7 +278,7 @@ class KodiGroup(xbmc.Player):
                         return True
                 logger.debug("Check if scene light already active: False")
             except QhueException as e:
-                logger.error("checkAlreadyActive: Hue call fail: {}".format(e))
+                logger.debug("checkAlreadyActive: Hue call fail: {}".format(e))
 
         return False
     
@@ -297,7 +297,7 @@ class KodiGroup(xbmc.Player):
                         return False
                 logger.debug("Check if lights should stay off: False")
             except QhueException as e:
-                logger.error("checkKeepLightsOffRule: Hue call fail: {}".format(e))
+                logger.debug("checkKeepLightsOffRule: Hue call fail: {}".format(e))
 
         return True
                 
