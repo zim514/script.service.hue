@@ -29,7 +29,7 @@ def menu():
     parsed = parse_qs(command)
 
 
-    logger.debug("Menu started.  route: {}, handle: {}, command: {}, parsed: {}, Arguments: {}".format(route, addon_handle, command, parsed, sys.argv))
+    xbmc.log("Menu started.  route: {}, handle: {}, command: {}, parsed: {}, Arguments: {}".format(route, addon_handle, command, parsed, sys.argv))
 
     if route == "plugin://script.service.hue/":
         if not command:
@@ -37,26 +37,26 @@ def menu():
             build_menu(base_url, addon_handle)
 
         elif command == "settings":
-            logger.debug("Opening settings")
+            xbmc.log("Opening settings")
             ADDON.openSettings()
 
         elif command == "toggle":
             if cache.get("script.service.hue.service_enabled") and get_status() != "Disabled by daylight":
-                logger.debug("Disable service")
+                xbmc.log("Disable service")
                 cache.set("script.service.hue.service_enabled", False)
 
             elif get_status() != "Disabled by daylight":
-                logger.debug("Enable service")
+                xbmc.log("Enable service")
                 cache.set("script.service.hue.service_enabled", True)
             else:
-                logger.debug("Disabled by daylight, ignoring")
+                xbmc.log("Disabled by daylight, ignoring")
 
             xbmc.executebuiltin('Container.Refresh')
 
     elif route == "plugin://script.service.hue/actions":
         action = parsed['action'][0]
         kgroupid = parsed['kgroupid'][0]
-        logger.debug("Actions: {}, kgroupid: {}".format(action, kgroupid))
+        xbmc.log("Actions: {}, kgroupid: {}".format(action, kgroupid))
         if action == "menu":
             items = [
 
@@ -72,7 +72,7 @@ def menu():
             cache.set("script.service.hue.action", (action, kgroupid), expiration=(timedelta(seconds=5)))
 
     else:
-        logger.debug("Unknown command. Handle: {}, route: {}, Arguments: {}".format(addon_handle, route, sys.argv))
+        xbmc.log("Unknown command. Handle: {}, route: {}, Arguments: {}".format(addon_handle, route, sys.argv))
 
 
 def build_menu(base_url, addon_handle):
@@ -93,7 +93,7 @@ def get_status():
     enabled = cache.get("script.service.hue.service_enabled")
     daylight = cache.get("script.service.hue.daylight")
     daylight_disable = cache.get("script.service.hue.daylightDisable")
-    #logger.debug("Current status: {}".format(daylight_disable))
+    #xbmc.log("Current status: {}".format(daylight_disable))
     if daylight and daylight_disable:
         return _("Disabled by daylight")
     elif enabled:
