@@ -15,7 +15,7 @@ from resources.lib import kodiHue, PROCESS_TIMES, cache, reporting, ADDONDIR
 from . import ImageProcess
 from . import KodiGroup
 from . import MINIMUM_COLOR_DISTANCE
-from . import ADDON, logger
+from . import ADDON
 
 from resources.lib.language import get_string as _
 from .KodiGroup import VIDEO, STATE_STOPPED, STATE_PAUSED, STATE_PLAYING

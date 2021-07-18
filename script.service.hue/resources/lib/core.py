@@ -8,7 +8,7 @@ import xbmcgui
 from resources.lib import kodisettings
 from resources.lib import reporting
 from resources.lib.kodisettings import settings_storage
-from . import logger, ADDON, cache, SETTINGS_CHANGED, ADDONVERSION
+from . import ADDON, cache, SETTINGS_CHANGED, ADDONVERSION
 
 from resources.lib import kodiHue
 from resources.lib.language import get_string as _

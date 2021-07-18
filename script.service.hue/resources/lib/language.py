@@ -65,7 +65,7 @@ if __name__ == "__main__":
                                                     m.msgctxt.replace("#", "").strip())
             f.write(line)
 else:
-    from . import STRDEBUG, ADDON, logger
+    from . import STRDEBUG, ADDON
 
     def get_string(t):
         string_id = _strings.get(t.lower())

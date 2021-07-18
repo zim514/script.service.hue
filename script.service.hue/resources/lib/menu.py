@@ -8,7 +8,7 @@ import xbmcplugin
 from xbmcgui import ListItem
 
 from .language import get_string as _
-from resources.lib import logger, ADDON, ADDONPATH
+from resources.lib import ADDON, ADDONPATH
 
 
 try:

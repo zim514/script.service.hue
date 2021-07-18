@@ -2,7 +2,6 @@
 import datetime
 
 import xbmc
-import simplecache
 import xbmcgui
 
 from resources.lib.qhue import QhueException
@@ -10,7 +9,7 @@ from resources.lib.qhue import QhueException
 from requests import ConnectTimeout
 
 from resources.lib.kodisettings import convert_time
-from resources.lib import logger, cache, reporting
+from resources.lib import cache, reporting
 from . import ADDON
 from .kodisettings import settings_storage
 from .language import get_string as _

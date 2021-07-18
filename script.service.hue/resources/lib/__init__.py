@@ -1,7 +1,6 @@
 import functools
 import time
 from collections import deque
-from logging import getLogger
 from threading import Event
 
 import xbmc
@@ -25,13 +24,7 @@ ADDONPATH = xbmc.translatePath(ADDON.getAddonInfo("path"))
 ADDONVERSION = ADDON.getAddonInfo('version')
 KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
 
-
-from resources.lib import kodilogging
-logger = getLogger(ADDONID)
-kodilogging.config()
-
 cache = simplecache.SimpleCache()
-
 
 def timer(func):
     """Logs the runtime of the decorated function"""
