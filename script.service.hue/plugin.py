@@ -8,6 +8,6 @@ from resources.lib import menu, ADDONVERSION, KODIVERSION,reporting
 try:
     menu.menu()  # Run menu
 except Exception as exc:
-    xbmc.log("Command exception")
+    xbmc.log("[script.service.hue] Command exception")
     reporting.process_exception(exc)
 

@@ -70,7 +70,7 @@ else:
     def get_string(t):
         string_id = _strings.get(t.lower())
         if not string_id:
-            xbmc.log("LANGUAGE: missing translation for '%s'" % t.lower())
+            xbmc.log("[script.service.hue] LANGUAGE: missing translation for '%s'" % t.lower())
             return t
 
         if STRDEBUG is True:
