@@ -117,6 +117,7 @@ _strings['ambilight'] = 30523
 _strings['advanced'] = 32101
 _strings['debug logs'] = 32102
 _strings['separate debug log'] = 32105
+_strings['video activation'] = 32106
 _strings['initial flash'] = 5110
 _strings['flash on settings reload'] = 5111
 _strings['light selection'] = 6100
