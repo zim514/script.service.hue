@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/zim514/script.service.hue.svg?branch=master)](https://travis-ci.com/zim514/script.service.hue) [![CodeFactor](https://www.codefactor.io/repository/github/zim514/script.service.hue/badge)](https://www.codefactor.io/repository/github/zim514/script.service.hue) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.com/zim514/script.service.hue.svg?branch=master)](https://travis-ci.com/zim514/script.service.hue) [![Kodi Addon-Check](https://github.com/zim514/script.service.hue/actions/workflows/kodi-addon-checker.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/kodi-addon-checker.yml) [![Sync addon metadata translations](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml) [![CodeFactor](https://www.codefactor.io/repository/github/zim514/script.service.hue/badge)](https://www.codefactor.io/repository/github/zim514/script.service.hue) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # script.service.hue
 **Kodi Service for Philips Hue**
 Automate your [Hue lights](https://www.meethue.com/) on audio or video playback with [Kodi Media Player](https://kodi.tv/)
@@ -9,6 +9,10 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 
 ## Installation
 
+**Stable version**
+- [Install from official Kodi repo](https://kodi.wiki/view/Add-on_manager#How_to_install_add-ons_from_a_repository)
+
+**Development version**
  1. [Download latest .zip version](https://github.com/zim514/script.service.hue/releases) or [Repo for auto-updates](https://github.com/zim514/zim514.github.io/raw/master/repo/repository.snapcase/repository.snapcase-1.0.0.zip)
  2. [Install to Kodi from Zip](https://kodi.wiki/view/HOW-TO:Install_add-ons_from_zip_files)
 

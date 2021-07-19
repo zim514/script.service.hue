@@ -5,8 +5,6 @@ import json
 import re
 import sys
 
-#from .. import logger
-
 #from builtins import input
 #from builtins import object
 #from builtins import str

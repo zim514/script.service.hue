@@ -6,7 +6,7 @@ import xbmc
 import xbmcgui
 
 import rollbar
-from . import logger, ADDON, ADDONVERSION, ROLLBAR_API_KEY, ADDONID,KODIVERSION, ADDONPATH
+from . import ADDON, ADDONVERSION, ROLLBAR_API_KEY, ADDONID,KODIVERSION, ADDONPATH
 
 def _kodi_version():
     query = dict(jsonrpc='2.0',

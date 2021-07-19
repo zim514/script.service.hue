@@ -59,10 +59,10 @@ def discover(service, timeout=5, retries=1, mx=3):
         #        sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
         #        sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP,
         #                        socket.inet_aton(group[0]) + socket.inet_aton(host))
-                #logger.debug('M-SEARCH on %s', host)
+                #xbmc.log('M-SEARCH on %s', host)
         #        sock.sendto(message_bytes, group)
         #else:
-            #logger.debug('M-SEARCH')
+            #xbmc.log('M-SEARCH')
         #    sock.sendto(message_bytes, group)
 
 
@@ -70,7 +70,7 @@ def discover(service, timeout=5, retries=1, mx=3):
             try:
                 response = SSDPResponse(sock.recv(1024))
                 responses[response.location] = response
-                #logger.debug('Response from %s',urlsplit(response.location).netloc)
+                #xbmc.log('Response from %s',urlsplit(response.location).netloc)
             except socket.timeout:
                 break
     return list(responses.values())

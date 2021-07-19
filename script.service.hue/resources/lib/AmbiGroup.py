@@ -15,7 +15,7 @@ from resources.lib import kodiHue, PROCESS_TIMES, cache, reporting, ADDONDIR
 from . import ImageProcess
 from . import KodiGroup
 from . import MINIMUM_COLOR_DISTANCE
-from . import ADDON, logger
+from . import ADDON
 
 from resources.lib.language import get_string as _
 from .KodiGroup import VIDEO, STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
@@ -33,10 +33,10 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
     def onAVStarted(self):
 
-        logger.debug(
+        xbmc.log(
             "Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(
                 self.enabled, self.isPlayingVideo(), self.isPlayingAudio(), self.mediaType, self.playbackType()))
-        logger.debug(
+        xbmc.log(
             "Ambilight Settings: Interval: {}, transitionTime: {}".format(self.updateInterval, self.transitionTime))
 
         self.state = STATE_PLAYING
@@ -59,16 +59,16 @@ class AmbiGroup(KodiGroup.KodiGroup):
     def _force_on(self, ambi_lights, bridge, saved_light_states):
         for L in ambi_lights:
             try:
-                # logger.debug("###### forcing on: {}".format(saved_light_states))
+                # xbmc.log("[script.service.hue] ###### forcing on: {}".format(saved_light_states))
                 if not saved_light_states[L]['state']['on']:
-                    logger.debug("Forcing lights on".format(saved_light_states))
+                    xbmc.log("[script.service.hue] Forcing lights on".format(saved_light_states))
                     bridge.lights[L].state(on=True, bri=1)
             except QhueException as e:
-                logger.debug("Force On Hue call fail: {}".format(e))
+                xbmc.log("[script.service.hue] Force On Hue call fail: {}".format(e))
                 reporting.process_exception(e)
 
     def onPlayBackStopped(self):
-        logger.debug("In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
+        xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
         self.state = STATE_STOPPED
         self.ambiRunning.clear()
 
@@ -76,27 +76,27 @@ class AmbiGroup(KodiGroup.KodiGroup):
             self.resumeLightState()
 
     def onPlayBackPaused(self):
-        logger.debug("In ambiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
+        xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
         self.state = STATE_PAUSED
         self.ambiRunning.clear()
         if self.resume_state:
             self.resumeLightState()
 
     def resumeLightState(self):
-        logger.debug("Resuming light state")
+        xbmc.log("[script.service.hue] Resuming light state")
         for L in self.savedLightStates:
             xy = self.savedLightStates[L]['state']['xy']
             bri = self.savedLightStates[L]['state']['bri']
             on = self.savedLightStates[L]['state']['on']
-            logger.debug("Resume state: Light: {}, xy: {}, bri: {}, on: {},transition time: {}".format(L, xy, bri, on, self.resume_transition))
+            xbmc.log("[script.service.hue] Resume state: Light: {}, xy: {}, bri: {}, on: {},transition time: {}".format(L, xy, bri, on, self.resume_transition))
             try:
                 self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
             except QhueException as exc:
-                logger.debug("onPlaybackStopped: Hue call fail: {}".format(exc))
+                xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}".format(exc))
                 reporting.process_error(exc)
 
     def loadSettings(self):
-        logger.debug("AmbiGroup Load settings")
+        xbmc.log("[script.service.hue] AmbiGroup Load settings")
 
         self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))
 
@@ -147,13 +147,13 @@ class AmbiGroup(KodiGroup.KodiGroup):
     def _ambiLoop(self):
 
         cap = xbmc.RenderCapture()
-        logger.debug("_ambiLoop started")
+        xbmc.log("[script.service.hue] _ambiLoop started")
         service_enabled = cache.get("script.service.hue.service_enabled")
         aspect_ratio = cap.getAspectRatio()
 
         self.captureSizeY = int(self.captureSize / aspect_ratio)
         expected_capture_size = self.captureSize * self.captureSizeY * 4  # size * 4 bytes I guess
-        logger.debug(
+        xbmc.log(
             "aspect_ratio: {}, Capture Size: ({},{}), expected_capture_size: {}".format(aspect_ratio, self.captureSize,
                                                                                         self.captureSizeY,
                                                                                         expected_capture_size))
@@ -168,18 +168,18 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     capImage = cap.getImage()  # timeout to wait for OS in ms, default 1000
 
                     if capImage is None or len(capImage) < expected_capture_size:
-                        # logger.debug("capImage is none or < expected. captured: {}, expected: {}".format(len(capImage), expected_capture_size))
+                        # xbmc.log("[script.service.hue] capImage is none or < expected. captured: {}, expected: {}".format(len(capImage), expected_capture_size))
                         xbmc.sleep(250)  # pause before trying again
                         continue  # no image captured, try again next iteration
                     image = Image.frombytes("RGBA", (self.captureSize, self.captureSizeY), bytes(capImage), "raw", "BGRA", 0, 1)
 
                 except ValueError:
-                    logger.debug("capImage: {}".format(len(capImage)))
-                    logger.debug("Value Error")
+                    xbmc.log("[script.service.hue] capImage: {}".format(len(capImage)))
+                    xbmc.log("[script.service.hue] Value Error")
                     self.monitor.waitForAbort(0.25)
                     continue  # returned capture is  smaller than expected when player stopping. give up this loop.
                 except Exception as exc:
-                    logger.debug("Capture exception", exc_info=1)
+                    xbmc.log("[script.service.hue] Capture exception", exc_info=1)
                     reporting.process_exception(exc)
                     self.monitor.waitForAbort(0.25)
                     continue
@@ -192,18 +192,18 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     x.start()
 
                 if not cache.get("script.service.hue.service_enabled"):
-                    logger.debug("Service disabled, stopping Ambilight")
+                    xbmc.log("[script.service.hue] Service disabled, stopping Ambilight")
                     self.ambiRunning.clear()
                 self.monitor.waitForAbort(self.updateInterval)  # seconds
 
             average_process_time = kodiHue.perfAverage(PROCESS_TIMES)
-            logger.debug("Average process time: {}".format(average_process_time))
+            xbmc.log("[script.service.hue] Average process time: {}".format(average_process_time))
             self.captureSize = ADDON.setSetting("average_process_time", str(average_process_time))
 
         except Exception as exc:
-            logger.debug("Exception in _ambiLoop")
+            xbmc.log("[script.service.hue] Exception in _ambiLoop")
             reporting.process_exception(exc)
-        logger.debug("_ambiLoop stopped")
+        xbmc.log("[script.service.hue] _ambiLoop stopped")
 
     def _updateHueRGB(self, r, g, b, light, transitionTime, bri):
         gamut = self.ambiLights[light].get('gamut')
@@ -225,22 +225,22 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=int(transitionTime))
                 self.ambiLights[light].update(prevxy=xy)
             except QhueException as exc:
-                #logger.debug("***** Zexception: {} {} {}".format(exc ,exc.args, exc.args[0]))
+                #xbmc.log("[script.service.hue] ***** Zexception: {} {} {}".format(exc ,exc.args, exc.args[0]))
                 if exc.args[0][0] == 201:   # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                     pass
                 elif exc.args[0][0] == 500 or exc.args[0][0] == 901: # or exc == 500:  # bridge internal error
-                    logger.debug("Bridge internal error: {}".format(exc))
+                    xbmc.log("[script.service.hue] Bridge internal error: {}".format(exc))
                     self._bridgeError500()
                 else:
-                    #logger.debug("Ambi: QhueException Hue call fail: {}".format(exc))
-                    logger.debug("Ambi: QhueException Hue call fail: {}".format(exc))
+                    #xbmc.log("[script.service.hue] Ambi: QhueException Hue call fail: {}".format(exc))
+                    xbmc.log("[script.service.hue] Ambi: QhueException Hue call fail: {}".format(exc))
                     reporting.process_exception(exc)
             except (ConnectionError, ReadTimeout) as exc:
-                #logger.debug("Ambi: ConnectionError Hue call fail: {}".format(exc.args))
-                logger.debug("Ambi: ConnectionError Hue call fail")
+                #xbmc.log("[script.service.hue] Ambi: ConnectionError Hue call fail: {}".format(exc.args))
+                xbmc.log("[script.service.hue] Ambi: ConnectionError Hue call fail")
                 self._bridgeError500()
             except KeyError:
-                logger.debug("Ambi: KeyError, light not found")
+                xbmc.log("[script.service.hue] Ambi: KeyError, light not found")
 
     def _updateHueXY(self, xy, light, transitionTime):
 
@@ -255,16 +255,16 @@ class AmbiGroup(KodiGroup.KodiGroup):
             if exc.args[0][0] == 201:  # 201 Param not modifiable because light is off error.
                 pass
             elif exc.args[0][0] == 500 or exc.args[0][0] == 901:  # bridge internal error
-                logger.debug("Bridge error 500: {}".format(exc))
+                xbmc.log("[script.service.hue] Bridge error 500: {}".format(exc))
                 self._bridgeError500()
             else:
-                logger.debug("Ambi: Hue call fail. Other: {}".format(exc.args))
+                xbmc.log("[script.service.hue] Ambi: Hue call fail. Other: {}".format(exc.args))
                 reporting.process_exception(exc)
         except (ConnectionError, ReadTimeout, MaxRetryError) as exc:
-            logger.debug("Ambi: Hue call fail: Connection Error: {}".format(exc.args))
+            xbmc.log("[script.service.hue] Ambi: Hue call fail: Connection Error: {}".format(exc.args))
             self._bridgeError500()
         except KeyError:
-            logger.debug("Ambi: KeyError")
+            xbmc.log("[script.service.hue] Ambi: KeyError")
 
     def _bridgeError500(self):
 

@@ -65,12 +65,12 @@ if __name__ == "__main__":
                                                     m.msgctxt.replace("#", "").strip())
             f.write(line)
 else:
-    from . import STRDEBUG, ADDON, logger
+    from . import STRDEBUG, ADDON
 
     def get_string(t):
         string_id = _strings.get(t.lower())
         if not string_id:
-            logger.debug("LANGUAGE: missing translation for '%s'" % t.lower())
+            xbmc.log("[script.service.hue] LANGUAGE: missing translation for '%s'" % t.lower())
             return t
 
         if STRDEBUG is True:
@@ -117,6 +117,7 @@ _strings['ambilight'] = 30523
 _strings['advanced'] = 32101
 _strings['debug logs'] = 32102
 _strings['separate debug log'] = 32105
+_strings['video activation'] = 32106
 _strings['initial flash'] = 5110
 _strings['flash on settings reload'] = 5111
 _strings['light selection'] = 6100
