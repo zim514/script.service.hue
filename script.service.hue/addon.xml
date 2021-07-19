@@ -21,8 +21,6 @@
 		</assets>
 		<source>https://github.com/zim514/script.service.hue</source>
 		<forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-		<summary lang="en_GB">Automate Hue lights with Kodi playback</summary>
-		<description lang="en_GB">Automate your Philips Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support.</description>
 		<news>v1.0.0
 Final version with requested edits.
 v0.14.0
@@ -35,6 +33,8 @@ Add option to disable scenes if lights are off (thanks @cyberden!)
 Add option to always enable scenes if any lights are on (thanks @cyberden!)
 Add video activation toggle for PVR
 		</news>
+		<summary lang="en_GB">Automate Hue lights with Kodi playback</summary>
+		<description lang="en_GB">Automate your Philips Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support.</description>
 	</extension>
 </addon>
 
