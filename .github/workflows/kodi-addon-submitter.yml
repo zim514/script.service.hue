@@ -15,16 +15,19 @@ jobs:
 
     - name: Generate distribution zip and submit to official kodi repository
       id: kodi-addon-submitter
-      uses: xbmc/action-kodi-addon-submitter@v1.2
+      uses: willforde/action-kodi-addon-submitter
       with: # Replace all the below values
         kodi-repository: repo-scripts
         kodi-version: matrix
         addon-id: script.service.hue
         kodi-matrix: false # Submit a Python 2/3 compatible addon to matrix branch in addition to the target branch
+        sub-directory: true #Addon is stored in its own directory within the git repo
+        push-only: true # Only push to your repo fork and not create a pull request'
       env: # Make sure you create the below secrets (GH_TOKEN and EMAIL)
         GH_USERNAME: ${{ github.actor }}
         GH_TOKEN: ${{secrets.GH_TOKEN}}
         EMAIL: ${{secrets.EMAIL}}
+
 
     - name: Create Github Release
       id: create_release
