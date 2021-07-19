@@ -15,7 +15,7 @@ jobs:
 
     - name: Generate distribution zip and submit to official kodi repository
       id: kodi-addon-submitter
-      uses: willforde/action-kodi-addon-submitter
+      uses: willforde/action-kodi-addon-submitter@master
       with: # Replace all the below values
         kodi-repository: repo-scripts
         kodi-version: matrix
