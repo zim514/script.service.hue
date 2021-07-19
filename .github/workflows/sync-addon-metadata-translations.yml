@@ -44,7 +44,7 @@ jobs:
       - name: Run sync-addon-metadata-translations
         run: |
           sync-addon-metadata-translations
-        working-directory: ./project
+        working-directory: ./project/script.service.hue/
 
       - name: Create PR for sync-addon-metadata-translations changes
         uses: peter-evans/create-pull-request@v3.10.0
