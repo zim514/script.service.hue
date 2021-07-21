@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/zim514/script.service.hue.svg?branch=master)](https://travis-ci.com/zim514/script.service.hue) [![Kodi Addon-Check](https://github.com/zim514/script.service.hue/actions/workflows/kodi-addon-checker.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/kodi-addon-checker.yml) [![Sync addon metadata translations](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml) [![CodeFactor](https://www.codefactor.io/repository/github/zim514/script.service.hue/badge)](https://www.codefactor.io/repository/github/zim514/script.service.hue) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Kodi Addon-Check](https://github.com/zim514/script.service.hue/actions/workflows/kodi-addon-checker.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/kodi-addon-checker.yml) [![Sync addon metadata translations](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml) [![CodeFactor](https://www.codefactor.io/repository/github/zim514/script.service.hue/badge)](https://www.codefactor.io/repository/github/zim514/script.service.hue) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # script.service.hue
 **Kodi Service for Philips Hue**
 Automate your [Hue lights](https://www.meethue.com/) on audio or video playback with [Kodi Media Player](https://kodi.tv/)
@@ -27,7 +27,7 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 - Ambilight Support
     - Lighting effects synced with on-screen action
     - Not supported with all hardware
-- Daylight detection
+- Daylight detection
     - Uses Hue's sunrise and sunset settings
     - Disable during daylight hours
     - If sunset falls while watching media, optionally turn on lights
