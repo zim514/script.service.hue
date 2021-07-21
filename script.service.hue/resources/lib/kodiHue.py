@@ -167,7 +167,7 @@ def bridgeDiscover(monitor):
 
 
 def connectionTest(bridgeIP):
-    xbmc.log("[script.service.hue] Connection Test IP: {}".format(bridgeIP))
+    #xbmc.log("[script.service.hue] Connection Test IP: {}".format(bridgeIP))
     b = qhue.qhue.Resource("http://{}/api".format(bridgeIP), requests.session())
     try:
         apiversion = b.config()['apiversion']
@@ -176,7 +176,7 @@ def connectionTest(bridgeIP):
         return False
 
     api_split = apiversion.split(".")
-    if apiversion and int(api_split[0]) >= 1 and int(api_split[1]) >= 28: # minimum bridge version 1.28
+    if apiversion and int(api_split[0]) >= 1 and int(api_split[1]) >= 38: # minimum bridge version 1.38
         xbmc.log("[script.service.hue] Bridge Found! Hue API version: {}".format(apiversion))
         return True
 
