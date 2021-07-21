@@ -168,7 +168,7 @@ def bridgeDiscover(monitor):
 
 def connectionTest(bridgeIP):
     xbmc.log("[script.service.hue] Connection Test IP: {}".format(bridgeIP))
-    b = qhue.qhue.Resource("http://{}/api".format(bridgeIP))
+    b = qhue.qhue.Resource("http://{}/api".format(bridgeIP), requests.session())
     try:
         apiversion = b.config()['apiversion']
     except (requests.exceptions.ConnectionError, qhue.QhueException) as error:
