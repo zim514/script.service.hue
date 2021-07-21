@@ -433,7 +433,7 @@ def checkBridgeModel(bridge):
         return True
     xbmc.log("[script.service.hue] Unsupported bridge model: {}".format(model))
     xbmcgui.Dialog().ok(_("Unsupported Hue Bridge"), _(
-        "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for certain features."))
+        "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."))
     return None
 
 
