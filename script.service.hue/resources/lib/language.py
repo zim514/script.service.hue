@@ -31,9 +31,10 @@ if __name__ == "__main__":
 
         command = ["grep", "-hnr", "_([\'\"]", "..\\.."]
         print("grep command: {}".format(command))
-        r = subprocess.check_output(command)
+        r = subprocess.check_output(command, text=True)
 
         print(r)
+        print("End grep")
 
         strings = re.compile("_\([\"'](.*?)[\"']\)", re.IGNORECASE).findall(r)
         translated = [m.msgid.lower().replace("'", "\\'") for m in po]
@@ -43,8 +44,20 @@ if __name__ == "__main__":
 
         if missing:
             ids_range = list(range(30000, 35000))
-            ids_reserved = [int(m.msgctxt[1:]) for m in po]
+            #ids_reserved = [int(m.msgctxt[1:]) for m in po]
+            ids_reserved = []
+            for m in po:
+                print("msgctxt: {0}".format(m.msgctxt))
+                if str(m.msgctxt).startswith("#"):
+                    ids_reserved.append(int(m.msgctxt[1:]))
+
             ids_available = [x for x in ids_range if x not in ids_reserved]
+            #print("IDs Reserved:")
+            #print(ids_reserved)
+            #print("IDs Available:")
+            #print(ids_available)
+
+
             print("WARNING: adding missing translation for '%s'" % missing)
             for text in missing:
                 id = ids_available.pop(0)
@@ -61,11 +74,11 @@ if __name__ == "__main__":
     with open(__file__, "w") as f:
         f.writelines(content)
         for m in po:
-            line = "_strings['{0}'] = {1}\n".format(m.msgid.lower().replace("'", "\\'"),
-                                                    m.msgctxt.replace("#", "").strip())
-            f.write(line)
+            if m.msgctxt.startswith("#"):
+                line = "_strings['{0}'] = {1}\n".format(m.msgid.lower().replace("'", "\\'"), m.msgctxt.replace("#", "").strip())
+                f.write(line)
 else:
-    from . import STRDEBUG, ADDON
+    from . import STRDEBUG, ADDON, xbmc
 
     def get_string(t):
         string_id = _strings.get(t.lower())
@@ -76,13 +89,7 @@ else:
         if STRDEBUG is True:
             return  "STR:{} {}".format(string_id,ADDON.getLocalizedString(string_id))
         return ADDON.getLocalizedString(string_id)
-        # =======================================================================
-        # elif id in range(30000, 31000) and ADDON_ID.startswith("plugin"): return ADDON.getLocalizedString(id)
-        # elif id in range(31000, 32000) and ADDON_ID.startswith("skin"): return ADDON.getLocalizedString(id)
-        # elif id in range(32000, 33000) and ADDON_ID.startswith("script"): return ADDON.getLocalizedString(id)
-        # elif not id in range(30000, 33000): return ADDON.getLocalizedString(id)
-        # =======================================================================
-    # setattr(__builtin__, "_", get_string)
+
 
 #GENERATED
 _strings['video actions'] = 32100
@@ -207,7 +214,6 @@ _strings['resume light state'] = 30815
 _strings['resume transition time (secs.)'] = 30816
 _strings['only colour lights are supported'] = 30071
 _strings['unsupported hue bridge'] = 30072
-_strings['hue bridge v1 (round) is unsupported. hue bridge v2 (square) is required for certain features.'] = 30073
 _strings['disabled'] = 30055
 _strings['play'] = 30060
 _strings['hue status: '] = 30061
@@ -218,15 +224,14 @@ _strings['the following error occurred:'] = 30080
 _strings['automatically report this error?'] = 30081
 _strings['no lights selected for ambilight.'] = 30069
 _strings['ok'] = 30070
-_strings['don\'t show again'] = 30074
 _strings['hue bridge over capacity'] = 30075
 _strings['network not ready'] = 30076
 _strings['the hue bridge is over capacity. increase refresh rate or reduce the number of ambilights.'] = 30077
 _strings['bridge not found[cr]check your bridge and network.'] = 30078
-_strings['don\'t show again'] = 30079
 _strings['press link button on bridge. waiting for 90 seconds...'] = 30082
 _strings['unknown'] = 30083
 _strings['user found![cr]saving settings...'] = 30084
 _strings['adjust lights to desired state in the hue app to save as new scene.[cr]set a fade time in seconds, or set to 0 seconds for an instant transition.'] = 30085
 _strings['user not found[cr]check your bridge and network.'] = 30086
 _strings['scene successfully created![cr]you may now assign your scene to player actions.'] = 30087
+_strings['do not show again'] = 30073

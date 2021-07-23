@@ -1,7 +1,7 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.0.2~dev1">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.0.2">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0" />
-		<import addon="script.module.requests" version="2.22.0" />
+		<import addon="script.module.requests" version="2.25.1" />
 		<import addon="script.module.pil" />
 		<import addon="script.module.simplecache" version="2.0.2" />
 		<import addon="script.module.pyrollbar" version="0.15.2" />
@@ -17,14 +17,17 @@
 		<assets>
 			<icon>resources/icons/icon.png</icon>
 			<fanart>resources/icons/fanart.jpg</fanart>
-			<screenshot>resources/icons/fanart.jpg</screenshot>
 		</assets>
 		<source>https://github.com/zim514/script.service.hue</source>
 		<forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-		<news>v1.0.1
- - Refactor logging system
-</news>
+		<news>
+v1.0.2
+Refactor logging system
+Update localisation system
+Crash fixes
+		</news>
 		<summary lang="en_GB">Automate Hue lights with Kodi playback</summary>
-		<description lang="en_GB">Automate your Philips Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support.</description>
+		<description lang="en_GB">Automate your Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support.</description>
+		<disclaimer lang="en_GB">Requires a Hue Bridge V2 (Square). Ambilight not available on all hardware.</disclaimer>
 	</extension>
 </addon>

@@ -167,16 +167,16 @@ def bridgeDiscover(monitor):
 
 
 def connectionTest(bridgeIP):
-    xbmc.log("[script.service.hue] Connection Test IP: {}".format(bridgeIP))
-    b = qhue.qhue.Resource("http://{}/api".format(bridgeIP))
+    #xbmc.log("[script.service.hue] Connection Test IP: {}".format(bridgeIP))
+    b = qhue.qhue.Resource("http://{}/api".format(bridgeIP), requests.session())
     try:
         apiversion = b.config()['apiversion']
-    except (requests.exceptions.ConnectionError, qhue.QhueException) as error:
+    except (requests.exceptions.ConnectionError, qhue.QhueException, requests.exceptions.ReadTimeout) as error:
         xbmc.log("[script.service.hue] Connection test failed.  {}".format(error))
         return False
 
     api_split = apiversion.split(".")
-    if apiversion and int(api_split[0]) >= 1 and int(api_split[1]) >= 28: # minimum bridge version 1.28
+    if apiversion and int(api_split[0]) >= 1 and int(api_split[1]) >= 38: # minimum bridge version 1.38
         xbmc.log("[script.service.hue] Bridge Found! Hue API version: {}".format(apiversion))
         return True
 
@@ -433,7 +433,7 @@ def checkBridgeModel(bridge):
         return True
     xbmc.log("[script.service.hue] Unsupported bridge model: {}".format(model))
     xbmcgui.Dialog().ok(_("Unsupported Hue Bridge"), _(
-        "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for certain features."))
+        "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."))
     return None
 
 
