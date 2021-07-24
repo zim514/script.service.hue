@@ -18,21 +18,21 @@
         <setting id="group0_enabled" type="bool" label="30520" default="false" />
         <!--  Group playback start setting -->
         <setting type="sep" visible="eq(-1,true)" />
-        <setting id="group0_startBehavior" type="bool" label="30513"  visible="eq(-2,true)" />
+        <setting id="group0_startBehavior" type="bool" label="30513" default="false" visible="eq(-2,true)" />
         <setting id="group0_startSceneName" type="text" label="30036" default="Not selected" enable="false" visible="eq(-1,true) + eq(-3,true)" />
         <setting id="group0_startSelectScene" type="action" label="32512" enable="true" action="RunScript(script.service.hue,sceneSelect,0,start)" visible="eq(-2,true) + eq(-4,true)" option="close" />
         <setting id="group0_startSceneID" type="text" label="32511"  default="-1" enable="false" visible="false" />
 
         <!--  Group playback pause setting -->
         <setting type="sep"  visible="eq(-6,true)"/>
-        <setting id="group0_pauseBehavior" type="bool" label="30514"  visible="eq(-7,true)" />
+        <setting id="group0_pauseBehavior" type="bool" label="30514" default="false" visible="eq(-7,true)" />
 		<setting id="group0_pauseSceneName" type="text" label="30036" default="Not selected" enable="false" visible="eq(-1,true) + eq(-8,true)" />
         <setting id="group0_pauseSelectScene" type="action" label="32512" enable="true" action="RunScript(script.service.hue,sceneSelect,0,pause)" visible="eq(-2,true) + eq(-9,true)" option="close"/>
         <setting id="group0_pauseSceneID" type="text" label="32511"  default="-1" enable="false" visible="false" />
 
 		<!--  Group playback stop setting --> 
         <setting type="sep" visible="eq(-11,true)"/>
-        <setting id="group0_stopBehavior" type="bool" label="30515"  visible="eq(-12,true)"/>
+        <setting id="group0_stopBehavior" type="bool" label="30515" default="false" visible="eq(-12,true)"/>
         <setting id="group0_stopSceneName" type="text" label="30036" default="Not selected" enable="false" visible="eq(-1,true) + eq(-13,true)" />
         <setting id="group0_stopSelectScene" type="action" label="32512" enable="true" action="RunScript(script.service.hue,sceneSelect,0,stop)" visible="eq(-2,true) + eq(-14,true)" option="close"/>
         <setting id="group0_stopSceneID" type="text" label="32511"  default="-1" enable="false" visible="false" />
@@ -54,21 +54,21 @@
         <setting id="group1_enabled" type="bool" label="30520" default="false" />
         <!--  Group playback start setting -->
         <setting type="sep" visible="eq(-1,true)" />
-        <setting id="group1_startBehavior" type="bool" label="30513"  visible="eq(-2,true)" />
+        <setting id="group1_startBehavior" type="bool" label="30513" default="false" visible="eq(-2,true)" />
         <setting id="group1_startSceneName" type="text" label="30036" default="Not selected" enable="false" visible="eq(-1,true) + eq(-3,true)" />
         <setting id="group1_startSelectScene" type="action" label="32512" action="RunScript(script.service.hue,sceneSelect,1,start)" visible="eq(-2,true) + eq(-4,true)" option="close" />
         <setting id="group1_startSceneID" type="text" label="32511"  default="-1" enable="false" visible="false" />
 
         <!--  Group playback pause setting -->
         <setting type="sep"  visible="eq(-6,true)"/>
-        <setting id="group1_pauseBehavior" type="bool" label="30514"  visible="eq(-7,true)" />
+        <setting id="group1_pauseBehavior" type="bool" label="30514" default="false" visible="eq(-7,true)" />
 		<setting id="group1_pauseSceneName" type="text" label="30036" default="Not selected" enable="false" visible="eq(-1,true) + eq(-8,true)" />
         <setting id="group1_pauseSelectScene" type="action" label="32512" action="RunScript(script.service.hue,sceneSelect,1,pause)" visible="eq(-2,true) + eq(-9,true)" option="close"/>
         <setting id="group1_pauseSceneID" type="text" label="32511"  default="-1" enable="false" visible="false" />
 
 		<!--  Group playback stop setting --> 
         <setting type="sep" visible="eq(-11,true)"/>
-        <setting id="group1_stopBehavior" type="bool" label="30515"  visible="eq(-12,true)"/>
+        <setting id="group1_stopBehavior" type="bool" label="30515" default="false" visible="eq(-12,true)"/>
         <setting id="group1_stopSceneName" type="text" label="30036" default="Not selected" enable="false" visible="eq(-1,true) + eq(-13,true)" />
         <setting id="group1_stopSelectScene" type="action" label="32512" action="RunScript(script.service.hue,sceneSelect,1,stop)" visible="eq(-2,true) + eq(-14,true)" option="close"/>
         <setting id="group1_stopSceneID" type="text" label="32511"  default="-1" enable="false" visible="false" />
