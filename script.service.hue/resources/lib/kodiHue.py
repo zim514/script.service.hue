@@ -174,6 +174,10 @@ def connectionTest(bridgeIP):
     except (requests.exceptions.ConnectionError, qhue.QhueException, requests.exceptions.ReadTimeout) as error:
         xbmc.log("[script.service.hue] Connection test failed.  {}".format(error))
         return False
+    except KeyError as error:
+        notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)), icon=xbmcgui.NOTIFICATION_ERROR)
+        xbmc.log("[script.service.hue] in ConnectionTest():  Connected! Bridge too old: {}".format(apiversion))
+        return False
 
     api_split = apiversion.split(".")
     if apiversion and int(api_split[0]) >= 1 and int(api_split[1]) >= 38: # minimum bridge version 1.38
