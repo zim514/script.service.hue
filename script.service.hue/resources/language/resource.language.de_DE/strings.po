@@ -516,10 +516,6 @@ msgctxt "#30072"
 msgid "Unsupported Hue Bridge"
 msgstr "Nicht unterstützte Hue Bridge"
 
-msgctxt "#30073"
-msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for certain features."
-msgstr "Hue Bridge V1 (rund) is nicht unterstützt. Hue Bridge V2 (quadratisch) ist für bestimmte Funktionen erforderlich."
-
 msgctxt "#30055"
 msgid "Disabled"
 msgstr "Deaktivert"
@@ -560,10 +556,6 @@ msgctxt "#30070"
 msgid "Ok"
 msgstr ""
 
-msgctxt "#30074"
-msgid "Don't show again"
-msgstr "Nicht nochmal zeigen"
-
 msgctxt "#30075"
 msgid "Hue Bridge over capacity"
 msgstr "Hue Bridge überlastet"
@@ -578,10 +570,6 @@ msgstr "Die Hue Bridge überlastet. Aktualisierungsrate erhöhen oder Anzahl der
 
 msgctxt "#30078"
 msgid "Bridge not found[CR]Check your bridge and network."
-msgstr ""
-
-msgctxt "#30079"
-msgid "Don't show again"
 msgstr ""
 
 msgctxt "#30082"
@@ -607,3 +595,15 @@ msgstr ""
 msgctxt "#30087"
 msgid "Scene successfully created![CR]You may now assign your Scene to player actions."
 msgstr ""
+
+msgctxt "#30073"
+msgid "Do not show again"
+msgstr ""
+
+#~ msgctxt "#30073"
+#~ msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for certain features."
+#~ msgstr "Hue Bridge V1 (rund) is nicht unterstützt. Hue Bridge V2 (quadratisch) ist für bestimmte Funktionen erforderlich."
+
+#~ msgctxt "#30074"
+#~ msgid "Don't show again"
+#~ msgstr "Nicht nochmal zeigen"
