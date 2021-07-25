@@ -21,7 +21,7 @@ msgid "Automate Hue lights with Kodi playback"
 msgstr ""
 
 msgctxt "Addon Description"
-msgid "Automate your Philips Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
+msgid "Automate your Philips/Signify Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
 msgstr ""
 
 msgctxt "Addon Disclaimer"
