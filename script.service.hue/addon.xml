@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.0.4~dev1">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.0.4">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0" />
 		<import addon="script.module.requests" version="2.25.1" />
@@ -21,6 +21,8 @@
 		<source>https://github.com/zim514/script.service.hue</source>
 		<forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
 		<news>
+v1.0.4
+Add Czech localisation
 v1.0.3
 Refactor logging system
 Update localisation system and translations
