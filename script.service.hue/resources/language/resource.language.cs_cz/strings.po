@@ -205,7 +205,7 @@ msgstr "Služba Hue"
 
 msgctxt "#30001"
 msgid "ERROR: Group not created"
-msgstr "Chyba: Skupina nebyla vytvořena
+msgstr "Chyba: Skupina nebyla vytvořena"
 
 msgctxt "#30003"
 msgid "Group deleted"
