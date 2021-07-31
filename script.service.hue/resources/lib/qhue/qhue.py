@@ -13,6 +13,8 @@ import requests
 __all__ = ("Bridge", "QhueException", "create_new_username")
 
 # default timeout in seconds
+import xbmc
+
 _DEFAULT_TIMEOUT = 5
 
 
@@ -59,12 +61,17 @@ class Resource(object):
         else:
             r = self.session.get(url, timeout=self.timeout)
         if r.status_code != 200:
+            #xbmc.log("[script.service.hue] ********************* 1: {}".format(r))
             raise QhueException("Received response {c} from {u}".format(c=r.status_code, u=url))
         resp = r.json(object_pairs_hook=self.object_pairs_hook)
         if type(resp) == list:
-            errors = [m["error"]["description"] for m in resp if "error" in m]
+            errors = []
+            for m in resp:
+                if 'error' in m:
+                    errors.append(m['error']['type'])
+                    errors.append(m['error']['description'])
             if errors:
-                raise QhueException("\n".join(errors))
+                raise QhueException(errors)
         return resp
 
     def __getattr__(self, name):
