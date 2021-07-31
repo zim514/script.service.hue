@@ -1,10 +1,11 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.0.4">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.0.5">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0" />
 		<import addon="script.module.requests" version="2.25.1" />
 		<import addon="script.module.pil" />
 		<import addon="script.module.simplecache" version="2.0.2" />
 		<import addon="script.module.pyrollbar" version="0.15.2" />
+		<!-- <import addon="script.module.web-pdb" version="1.5.6"/> -->
         <!-- <import addon="script.module.pydevd"/> -->
 	</requires>
 	<extension point="xbmc.service" name="service.hue" library="service.py" />
@@ -20,9 +21,12 @@
 		</assets>
 		<source>https://github.com/zim514/script.service.hue</source>
 		<forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-		<news>
+		<news>v1.0.5
+Fix Qhue exception handling
+
 v1.0.4
 Add Czech localisation
+
 v1.0.3
 Refactor logging system
 Update localisation system and translations

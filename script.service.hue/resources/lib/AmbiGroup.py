@@ -225,13 +225,15 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=int(transitionTime))
                 self.ambiLights[light].update(prevxy=xy)
             except QhueException as exc:
-                #xbmc.log("[script.service.hue] ***** Zexception: {} {} {}".format(exc ,exc.args, exc.args[0]))
+                #xbmc.log("[script.service.hue] ***** Zexception: \n{} \n {} \n{}".format(exc, exc.args, exc.args[0][0]))
+
                 if exc.args[0][0] == 201:   # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                     pass
                 elif exc.args[0][0] == 500 or exc.args[0][0] == 901: # or exc == 500:  # bridge internal error
                     xbmc.log("[script.service.hue] Bridge internal error: {}".format(exc))
                     self._bridgeError500()
                 else:
+
                     #xbmc.log("[script.service.hue] Ambi: QhueException Hue call fail: {}".format(exc))
                     xbmc.log("[script.service.hue] Ambi: QhueException Hue call fail: {}".format(exc))
                     reporting.process_exception(exc)
@@ -249,10 +251,13 @@ class AmbiGroup(KodiGroup.KodiGroup):
         # distance=self.helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1]))#only update hue if XY changed enough
         # if distance > self.minimumDistance:
         try:
+
             self.bridge.lights[light].state(xy=xy, transitiontime=transitionTime)
             self.ambiLights[light].update(prevxy=xy)
         except QhueException as exc:
-            if exc.args[0][0] == 201:  # 201 Param not modifiable because light is off error.
+
+            if exc.args[0][0] == 201:
+                #xbmc.log("[script.service.hue] 201 - lights are already off error, pass: {}".format(exc.args["type"]))# 201 Param not modifiable because light is off error.
                 pass
             elif exc.args[0][0] == 500 or exc.args[0][0] == 901:  # bridge internal error
                 xbmc.log("[script.service.hue] Bridge error 500: {}".format(exc))
@@ -261,6 +266,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 xbmc.log("[script.service.hue] Ambi: Hue call fail. Other: {}".format(exc.args))
                 reporting.process_exception(exc)
         except (ConnectionError, ReadTimeout, MaxRetryError) as exc:
+
             xbmc.log("[script.service.hue] Ambi: Hue call fail: Connection Error: {}".format(exc.args))
             self._bridgeError500()
         except KeyError:
