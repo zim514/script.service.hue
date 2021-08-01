@@ -147,10 +147,6 @@ msgctxt "#32101"
 msgid "Advanced"
 msgstr "Advanced"
 
-msgctxt "#32102"
-msgid "Debug Logs"
-msgstr "Debug Logs"
-
 msgctxt "#32105"
 msgid "Separate debug log"
 msgstr "Separate debug log"
