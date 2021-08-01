@@ -717,7 +717,7 @@
 			<group id="1">
 				<setting id="forceOnSunset" type="boolean" label="30509" help="">
 					<level>1</level>
-					<default>False</default>
+					<default>True</default>
 					<control type="toggle"/>
 				</setting>
 				<setting id="daylightDisable" type="boolean" label="30508" help="">
