@@ -148,10 +148,6 @@ msgctxt "#32101"
 msgid "Advanced"
 msgstr "Erweitert"
 
-msgctxt "#32102"
-msgid "Debug Logs"
-msgstr "Debug Logs"
-
 msgctxt "#32105"
 msgid "Separate debug log"
 msgstr "Separate debug log"
@@ -599,6 +595,10 @@ msgstr ""
 msgctxt "#30073"
 msgid "Do not show again"
 msgstr ""
+
+#~ msgctxt "#32102"
+#~ msgid "Debug Logs"
+#~ msgstr "Debug Logs"
 
 #~ msgctxt "#30073"
 #~ msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required for certain features."
