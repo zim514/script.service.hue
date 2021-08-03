@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.0.6~dev2">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.0.6">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0" />
 		<import addon="script.module.requests" version="2.25.1" />
@@ -21,7 +21,7 @@
 		</assets>
 		<source>https://github.com/zim514/script.service.hue</source>
 		<forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-		<news>v1.0.5
+		<news>v1.0.6
 Fix Qhue exception handling
 Fix ambilight crash when lights are off
 
