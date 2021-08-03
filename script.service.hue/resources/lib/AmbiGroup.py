@@ -1,30 +1,23 @@
 # -*- coding: utf-8 -*-
-import datetime
-import os
-import time
 from threading import Thread, Event
 
 import xbmc
 import xbmcgui
 from PIL import Image
 from requests import ReadTimeout, ConnectionError
-from urllib3.exceptions import MaxRetryError
 
-from resources.lib import kodiHue, PROCESS_TIMES, cache, reporting, ADDONDIR
-
+from resources.lib import kodiHue, PROCESS_TIMES, cache, reporting
+from resources.lib.language import get_string as _
+from . import ADDON
 from . import ImageProcess
 from . import KodiGroup
 from . import MINIMUM_COLOR_DISTANCE
-from . import ADDON
 
-from resources.lib.language import get_string as _
 from .KodiGroup import VIDEO, STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
 from .kodisettings import settings_storage
 from .qhue import QhueException
 from .rgbxy import Converter, ColorHelper  # https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA, GamutB, GamutC
-
-
 
 
 class AmbiGroup(KodiGroup.KodiGroup):
@@ -93,7 +86,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
             except QhueException as exc:
                 xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}".format(exc))
-                reporting.process_error(exc)
+                reporting.process_exception(exc)
 
     def loadSettings(self):
         xbmc.log("[script.service.hue] AmbiGroup Load settings")
@@ -225,52 +218,23 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=int(transitionTime))
                 self.ambiLights[light].update(prevxy=xy)
             except QhueException as exc:
-                #xbmc.log("[script.service.hue] ***** Zexception: \n{} \n {} \n{}".format(exc, exc.args, exc.args[0][0]))
+                #xbmc.log("[script.service.hue] ***** Zexception: \n{} \n {}".format(exc, exc.type_id))
 
-                if exc.args[0][0] == 201:   # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
+                if exc.type_id == 201:   # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                     pass
-                elif exc.args[0][0] == 500 or exc.args[0][0] == 901: # or exc == 500:  # bridge internal error
+                elif exc.type_id == 500 or exc.type_id == 901: # or exc == 500:  # bridge internal error
                     xbmc.log("[script.service.hue] Bridge internal error: {}".format(exc))
                     self._bridgeError500()
                 else:
-
-                    #xbmc.log("[script.service.hue] Ambi: QhueException Hue call fail: {}".format(exc))
                     xbmc.log("[script.service.hue] Ambi: QhueException Hue call fail: {}".format(exc))
                     reporting.process_exception(exc)
+
             except (ConnectionError, ReadTimeout) as exc:
-                #xbmc.log("[script.service.hue] Ambi: ConnectionError Hue call fail: {}".format(exc.args))
                 xbmc.log("[script.service.hue] Ambi: ConnectionError Hue call fail")
                 self._bridgeError500()
             except KeyError:
                 xbmc.log("[script.service.hue] Ambi: KeyError, light not found")
 
-    def _updateHueXY(self, xy, light, transitionTime):
-
-        # prevxy = self.ambiLights[light].get('prevxy')
-        # xy=(round(xy[0],3),round(xy[1],3)) #Hue has a max precision of 4 decimal points.
-        # distance=self.helper.get_distance_between_two_points(XYPoint(xy[0],xy[1]),XYPoint(prevxy[0],prevxy[1]))#only update hue if XY changed enough
-        # if distance > self.minimumDistance:
-        try:
-
-            self.bridge.lights[light].state(xy=xy, transitiontime=transitionTime)
-            self.ambiLights[light].update(prevxy=xy)
-        except QhueException as exc:
-
-            if exc.args[0][0] == 201:
-                #xbmc.log("[script.service.hue] 201 - lights are already off error, pass: {}".format(exc.args["type"]))# 201 Param not modifiable because light is off error.
-                pass
-            elif exc.args[0][0] == 500 or exc.args[0][0] == 901:  # bridge internal error
-                xbmc.log("[script.service.hue] Bridge error 500: {}".format(exc))
-                self._bridgeError500()
-            else:
-                xbmc.log("[script.service.hue] Ambi: Hue call fail. Other: {}".format(exc.args))
-                reporting.process_exception(exc)
-        except (ConnectionError, ReadTimeout, MaxRetryError) as exc:
-
-            xbmc.log("[script.service.hue] Ambi: Hue call fail: Connection Error: {}".format(exc.args))
-            self._bridgeError500()
-        except KeyError:
-            xbmc.log("[script.service.hue] Ambi: KeyError")
 
     def _bridgeError500(self):
 
