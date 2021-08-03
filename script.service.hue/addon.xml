@@ -23,6 +23,7 @@
 		<forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
 		<news>v1.0.5
 Fix Qhue exception handling
+Fix ambilight crash when lights are off
 
 v1.0.4
 Add Czech localisation
