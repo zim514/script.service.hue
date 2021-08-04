@@ -89,9 +89,7 @@ def get_status():
         return _("Disabled by daylight")
     elif enabled:
         return _("Enabled")
-    else:
-        return _("Disabled")
-
+    return _("Disabled")
 
 
 def get_icon_path(icon_name):

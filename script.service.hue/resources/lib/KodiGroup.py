@@ -217,9 +217,9 @@ class KodiGroup(xbmc.Player):
                 return False
             xbmc.log("[script.service.hue] Schedule not enabled")
             return True
-        else:
-            xbmc.log("[script.service.hue] Service disabled")
-            return False
+
+        xbmc.log("[script.service.hue] Service disabled")
+        return False
 
     def checkVideoActivation(self, infoTag):
         try:
@@ -268,7 +268,7 @@ class KodiGroup(xbmc.Player):
                 sceneData = self.bridge.scenes[scene]()
                 for light in sceneData["lights"]:
                     l = self.bridge.lights[light]()
-                    if l["state"]["on"] == True:  # one light is on, the scene can be applied
+                    if l["state"]["on"]:  # one light is on, the scene can be applied
                         xbmc.log("[script.service.hue] Check if scene light already active: True")
                         return True
                 xbmc.log("[script.service.hue] Check if scene light already active: False")
@@ -287,7 +287,7 @@ class KodiGroup(xbmc.Player):
                 sceneData = self.bridge.scenes[scene]()
                 for light in sceneData["lights"]:
                     l = self.bridge.lights[light]()
-                    if l["state"]["on"] == False:  # one light is off, the scene should not be applied
+                    if l["state"]["on"] is False:  # one light is off, the scene should not be applied
                         xbmc.log("[script.service.hue] Check if lights should stay off: True")
                         return False
                 xbmc.log("[script.service.hue] Check if lights should stay off: False")

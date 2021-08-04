@@ -8,4 +8,3 @@ try:
 except Exception as exc:
     xbmc.log("[script.service.hue] Command exception")
     reporting.process_exception(exc)
-
