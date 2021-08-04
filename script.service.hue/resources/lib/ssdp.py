@@ -13,11 +13,9 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import socket
 import http.client
 import io
-import sys
-from urllib.parse import urlsplit
+import socket
 
 
 class SSDPResponse(object):

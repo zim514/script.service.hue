@@ -31,7 +31,6 @@ def report_error(url=None):
         'machine': platform.machine(),
         'platform': platform.system(),
         'kodi': KODIVERSION,
-        #'kodi': _kodi_version(),
         'url': url,
     }
     rollbar.init(ROLLBAR_API_KEY, capture_ip="anonymize", code_version=ADDONVERSION, root=ADDONPATH, scrub_fields='bridgeUser')

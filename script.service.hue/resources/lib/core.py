@@ -1,20 +1,16 @@
-# -*- coding: utf-8 -*-
-
 import sys
 
-
+import xbmc
+import xbmcgui
 from requests.exceptions import ConnectionError, ReadTimeout, ConnectTimeout
 
-import xbmc, xbmcgui
-
+from resources.lib import AmbiGroup
+from resources.lib import kodiHue
 from resources.lib import kodisettings
 from resources.lib import reporting
 from resources.lib.kodisettings import settings_storage
-from . import ADDON, cache, SETTINGS_CHANGED, ADDONVERSION
-
-from resources.lib import kodiHue
 from resources.lib.language import get_string as _
-from resources.lib import AmbiGroup
+from . import ADDON, cache, SETTINGS_CHANGED
 
 
 def core():
@@ -172,7 +168,6 @@ def service(monitor):
 
 
                 # check if sunset took place
-                # daylight = cache.get("script.service.hue.daylight")
                 if new_daylight != daylight:
                     xbmc.log("[script.service.hue] Daylight change. current: {}, new: {}".format(daylight, new_daylight))
                     daylight = new_daylight
@@ -198,8 +193,7 @@ def process_actions(action, kgroups):
     # process an action command stored in the cache.
     action_action = action[0]
     action_kgroupid = int(action[1]) - 1
-    xbmc.log("[script.service.hue] Action command: {}, action_action: {}, action_kgroupid: {}".format(action, action_action,
-                                                                                     action_kgroupid))
+    xbmc.log("[script.service.hue] Action command: {}, action_action: {}, action_kgroupid: {}".format(action, action_action, action_kgroupid))
     if action_action == "play":
         kgroups[action_kgroupid].run_play()
     if action_action == "pause":

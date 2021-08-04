@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 import xbmc
 
-from resources.lib import menu, ADDONVERSION, KODIVERSION,reporting
-
-
+from resources.lib import menu, reporting
 
 try:
     menu.menu()  # Run menu

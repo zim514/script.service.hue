@@ -3,13 +3,11 @@ import datetime
 
 import xbmc
 import xbmcgui
+from requests import Timeout
 
-from resources.lib.qhue import QhueException
-
-from requests import ConnectTimeout
-
-from resources.lib.kodisettings import convert_time
 from resources.lib import cache, reporting
+from resources.lib.kodisettings import convert_time
+from resources.lib.qhue import QhueException
 from . import ADDON
 from .kodisettings import settings_storage
 from .language import get_string as _
@@ -61,12 +59,11 @@ class KodiGroup(xbmc.Player):
         xbmc.log("[script.service.hue] in KodiGroup Flash")
         try:
             self.groupResource.action(alert="select")
-        except QhueException() as exc:
+        except QhueException as exc:
             xbmc.log("[script.service.hue] Hue Error: {}".format(exc))
             reporting.process_exception(exc)
-        except ConnectTimeout as exc:
-            xbmc.log("[script.service.hue] Hue Error: {}".format(exc))
-
+        except Timeout as exc:
+            xbmc.log("[script.service.hue] Connect Timeout: {}".format(exc))
 
     def onAVStarted(self):
         if self.enabled:
@@ -119,7 +116,7 @@ class KodiGroup(xbmc.Player):
             if self.mediaType == VIDEO and not self.checkVideoActivation(
                     self.videoInfoTag):  # If video group, check video activation. Otherwise it's audio so we ignore this and continue
                 return
-                
+
             if (self.checkActiveTime() or self.checkAlreadyActive(self.pauseScene)) and self.checkKeepLightsOffRule(self.pauseScene) and self.pauseBehavior and self.mediaType == self.playbackType():
                 settings_storage['lastMediaType'] = self.playbackType()
                 self.run_pause()
@@ -146,7 +143,6 @@ class KodiGroup(xbmc.Player):
                 xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
                 reporting.process_exception(e)
-
 
     def run_pause(self):
         try:
@@ -247,7 +243,7 @@ class KodiGroup(xbmc.Player):
             "Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, PVR : {}, Other: {}".
                 format(self.kgroupID, settings_storage['videoMinimumDuration'], settings_storage['video_enableMovie'],
                        settings_storage['video_enableEpisode'],
-                       settings_storage['video_enableMusicVideo'], 
+                       settings_storage['video_enableMusicVideo'],
                        settings_storage['video_enablePVR'],
                        settings_storage['video_enableOther']))
         xbmc.log("[script.service.hue] Video Activation ({}): Duration: {}, mediaType: {}, ispvr: {}".format(self.kgroupID, duration, mediaType, fileName[0:3] == "pvr"))
@@ -272,7 +268,7 @@ class KodiGroup(xbmc.Player):
                 sceneData = self.bridge.scenes[scene]()
                 for light in sceneData["lights"]:
                     l = self.bridge.lights[light]()
-                    if l["state"]["on"] == True: # one light is on, the scene can be applied
+                    if l["state"]["on"] == True:  # one light is on, the scene can be applied
                         xbmc.log("[script.service.hue] Check if scene light already active: True")
                         return True
                 xbmc.log("[script.service.hue] Check if scene light already active: False")
@@ -280,7 +276,7 @@ class KodiGroup(xbmc.Player):
                 xbmc.log("[script.service.hue] checkAlreadyActive: Hue call fail: {}".format(e))
 
         return False
-    
+
     def checkKeepLightsOffRule(self, scene):
         if not scene:
             return True
@@ -291,7 +287,7 @@ class KodiGroup(xbmc.Player):
                 sceneData = self.bridge.scenes[scene]()
                 for light in sceneData["lights"]:
                     l = self.bridge.lights[light]()
-                    if l["state"]["on"] == False: # one light is off, the scene should not be applied
+                    if l["state"]["on"] == False:  # one light is off, the scene should not be applied
                         xbmc.log("[script.service.hue] Check if lights should stay off: True")
                         return False
                 xbmc.log("[script.service.hue] Check if lights should stay off: False")
@@ -299,4 +295,3 @@ class KodiGroup(xbmc.Player):
                 xbmc.log("[script.service.hue] checkKeepLightsOffRule: Hue call fail: {}".format(e))
 
         return True
-                

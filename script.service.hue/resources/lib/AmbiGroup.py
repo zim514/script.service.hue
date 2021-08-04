@@ -218,11 +218,11 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=int(transitionTime))
                 self.ambiLights[light].update(prevxy=xy)
             except QhueException as exc:
-                #xbmc.log("[script.service.hue] ***** Zexception: \n{} \n {}".format(exc, exc.type_id))
+                # xbmc.log("[script.service.hue] ***** Zexception: \n{} \n {}".format(exc, exc.type_id))
 
-                if exc.type_id == 201:   # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
+                if exc.type_id == 201:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                     pass
-                elif exc.type_id == 500 or exc.type_id == 901: # or exc == 500:  # bridge internal error
+                elif exc.type_id == 500 or exc.type_id == 901:  # or exc == 500:  # bridge internal error
                     xbmc.log("[script.service.hue] Bridge internal error: {}".format(exc))
                     self._bridgeError500()
                 else:
@@ -234,7 +234,6 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 self._bridgeError500()
             except KeyError:
                 xbmc.log("[script.service.hue] Ambi: KeyError, light not found")
-
 
     def _bridgeError500(self):
 
