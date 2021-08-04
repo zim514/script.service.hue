@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import xbmc
 
-from resources.lib import core, ADDONVERSION, KODIVERSION
+from resources.lib import core
 from resources.lib import reporting
 
 try:

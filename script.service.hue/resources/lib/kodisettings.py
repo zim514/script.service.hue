@@ -1,8 +1,8 @@
 import datetime
 
+import simplecache
 import xbmc
 import xbmcgui
-import simplecache
 
 from resources.lib import ADDON
 from resources.lib.language import get_string as _

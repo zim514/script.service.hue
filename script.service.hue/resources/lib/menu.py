@@ -1,22 +1,15 @@
 import os
 import sys
 from datetime import timedelta
+from urllib.parse import parse_qs
 
 import simplecache
 import xbmc
 import xbmcplugin
 from xbmcgui import ListItem
 
-from .language import get_string as _
 from resources.lib import ADDON, ADDONPATH
-
-
-try:
-    # Python 3
-    from urllib.parse import urlparse, parse_qs
-except ImportError:
-    # Python 2
-    from urlparse import urlparse, parse_qs
+from .language import get_string as _
 
 cache = simplecache.SimpleCache()
 
@@ -28,8 +21,6 @@ def menu():
     command = sys.argv[2][1:]
     parsed = parse_qs(command)
 
-
-    
 
     if route == "plugin://script.service.hue/":
         if not command:

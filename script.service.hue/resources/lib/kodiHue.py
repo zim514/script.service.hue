@@ -1,20 +1,18 @@
 import json
 from datetime import timedelta
-from socket import getfqdn, socket
+from socket import getfqdn
 
 import requests
 import xbmc
 import xbmcgui
 
-
 from resources.lib.qhue.qhue import QhueException
 from . import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED
-from .kodisettings import settings_storage
+from . import KodiGroup
 from . import qhue, ADDONID, cache
 from .kodisettings import read_settings
-
+from .kodisettings import settings_storage
 from .language import get_string as _
-from . import KodiGroup
 
 
 def setupGroups(bridge, flash=False):
@@ -69,8 +67,6 @@ def deleteHueScene(bridge):
 def _discoverNupnp():
     xbmc.log("[script.service.hue] In kodiHue discover_nupnp()")
     try:
-        # ssl chain on new URL seems to be fixed
-        # req = requests.get('https://www.meethue.com/api/nupnp')
         req = requests.get('https://discovery.meethue.com/')
     except requests.exceptions.ConnectionError as e:
         xbmc.log("[script.service.hue] Nupnp failed: {}".format(e))
@@ -171,7 +167,7 @@ def connectionTest(bridgeIP):
     b = qhue.qhue.Resource("http://{}/api".format(bridgeIP), requests.session())
     try:
         apiversion = b.config()['apiversion']
-    except (requests.exceptions.ConnectionError, qhue.QhueException, requests.exceptions.ReadTimeout) as error:
+    except (requests.exceptions.ConnectionError, qhue.QhueException, requests.exceptions.ReadTimeout, requests.Timeout) as error:
         xbmc.log("[script.service.hue] Connection test failed.  {}".format(error))
         return False
     except KeyError as error:
