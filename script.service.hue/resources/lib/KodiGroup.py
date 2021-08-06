@@ -60,7 +60,7 @@ class KodiGroup(xbmc.Player):
         try:
             self.groupResource.action(alert="select")
         except QhueException as exc:
-            xbmc.log("[script.service.hue] Hue Error: {}".format(exc))
+            xbmc.log("[script.service.hue] Hue call fail: {}: {}".format(exc.type_id, exc.message))
             reporting.process_exception(exc)
         except Timeout as exc:
             xbmc.log("[script.service.hue] Connect Timeout: {}".format(exc))
@@ -136,8 +136,8 @@ class KodiGroup(xbmc.Player):
     def run_play(self):
         try:
             self.groupResource.action(scene=self.startScene)
-        except QhueException as e:
-            xbmc.log("[script.service.hue] onAVStarted: Hue call fail: {}".format(e))
+        except QhueException as exc:
+            xbmc.log("[script.service.hue] onAVStarted: Hue call fail: {}: {}".format(exc.type_id, exc.message))
             if e.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
@@ -149,8 +149,8 @@ class KodiGroup(xbmc.Player):
             xbmc.sleep(500)  # sleep for any left over ambilight calls to complete first.
             self.groupResource.action(scene=self.pauseScene)
             xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackPaused() Pause scene activated")
-        except QhueException as e:
-            xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}".format(e))
+        except QhueException as exc:
+            xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}: {}".format(exc.type_id, exc.message))
             if e.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
@@ -162,8 +162,8 @@ class KodiGroup(xbmc.Player):
             xbmc.sleep(100)  # sleep for any left over ambilight calls to complete first.
             self.groupResource.action(scene=self.stopScene)
             xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackStop() Stop scene activated")
-        except QhueException as e:
-            xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}".format(e))
+        except QhueException as exc:
+            xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}: {}".format(exc.type_id, exc.message))
             if e.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
@@ -272,8 +272,8 @@ class KodiGroup(xbmc.Player):
                         xbmc.log("[script.service.hue] Check if scene light already active: True")
                         return True
                 xbmc.log("[script.service.hue] Check if scene light already active: False")
-            except QhueException as e:
-                xbmc.log("[script.service.hue] checkAlreadyActive: Hue call fail: {}".format(e))
+            except QhueException as exc:
+                xbmc.log("[script.service.hue] checkAlreadyActive: Hue call fail: {}: {}".format(exc.type_id, exc.message))
 
         return False
 
@@ -291,7 +291,7 @@ class KodiGroup(xbmc.Player):
                         xbmc.log("[script.service.hue] Check if lights should stay off: True")
                         return False
                 xbmc.log("[script.service.hue] Check if lights should stay off: False")
-            except QhueException as e:
-                xbmc.log("[script.service.hue] checkKeepLightsOffRule: Hue call fail: {}".format(e))
+            except QhueException as exc:
+                xbmc.log("[script.service.hue] checkKeepLightsOffRule: Hue call fail: {}: {}".format(exc.type_id, exc.message))
 
         return True

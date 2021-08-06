@@ -56,8 +56,8 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 if not saved_light_states[L]['state']['on']:
                     xbmc.log("[script.service.hue] Forcing lights on".format(saved_light_states))
                     bridge.lights[L].state(on=True, bri=1)
-            except QhueException as e:
-                xbmc.log("[script.service.hue] Force On Hue call fail: {}".format(e))
+            except QhueException as exc:
+                xbmc.log("[script.service.hue] Force On Hue call fail: {}: {}".format(exc.type_id, exc.message))
                 reporting.process_exception(e)
 
     def onPlayBackStopped(self):
@@ -85,7 +85,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
             try:
                 self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
             except QhueException as exc:
-                xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}".format(exc))
+                xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}: {}".format(exc.type_id, exc.message))
                 reporting.process_exception(exc)
 
     def loadSettings(self):
