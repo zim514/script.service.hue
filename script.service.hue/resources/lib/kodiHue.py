@@ -140,13 +140,12 @@ def bridgeDiscover(monitor):
                 progressBar.close()
                 xbmc.log("[script.service.hue] Bridge discovery complete")
                 return True
-            else:
-                xbmc.log("[script.service.hue] User not created, received: {}".format(bridgeUser))
-                progressBar.update(percent=100, message=_("User not found[CR]Check your bridge and network."))
-                monitor.waitForAbort(5)
-                complete = True
 
-                progressBar.close()
+            xbmc.log("[script.service.hue] User not created, received: {}".format(bridgeUser))
+            progressBar.update(percent=100, message=_("User not found[CR]Check your bridge and network."))
+            monitor.waitForAbort(5)
+            complete = True
+            progressBar.close()
 
         else:
             progressBar.update(percent=100, message=_("Bridge not found[CR]Check your bridge and network."))
@@ -369,7 +368,6 @@ def activate(bridge, kgroups, ambiGroup = None):
 
     if ADDON.getSettingBool("group3_enabled") and ambiGroup is not None:
         ambiGroup.activate()
-    return
 
 
 def connectBridge(monitor, silent=False):
@@ -459,8 +457,8 @@ def _get_light_states(lights, bridge):
     for L in lights:
         try:
             states[L] = (bridge.lights[L]())
-        except QhueException as e:
-            xbmc.log("[script.service.hue] Hue call fail: {}".format(e))
+        except QhueException as exc:
+            xbmc.log("[script.service.hue] Hue call fail: {}: {}".format(exc.type_id, exc.message))
 
     return states
 
