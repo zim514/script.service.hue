@@ -595,3 +595,7 @@ msgstr ""
 msgctxt "#30073"
 msgid "Do not show again"
 msgstr ""
+
+msgctxt "#30074"
+msgid "Disable Hue Labs during playback"
+msgstr ""
