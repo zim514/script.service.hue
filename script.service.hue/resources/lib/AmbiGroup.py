@@ -41,7 +41,8 @@ class AmbiGroup(KodiGroup.KodiGroup):
         if self.isPlayingVideo():
             if self.enabled and self.checkActiveTime() and self.checkVideoActivation(self.videoInfoTag):
 
-                self._stopEffects()
+                if self.disableLabs:
+                    self._stopEffects()
 
                 if self.forceOn:
                     self._force_on(self.ambiLights, self.bridge, self.savedLightStates)
@@ -66,6 +67,9 @@ class AmbiGroup(KodiGroup.KodiGroup):
         xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
         self.state = STATE_STOPPED
         self.ambiRunning.clear()
+
+        if self.disableLabs:
+            self._resumeEffects()
 
         if self.resume_state:
             self.resumeLightState()
@@ -93,7 +97,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     xbmc.log("[script.service.hue] resumeLightState: Hue call fail: {}: {}".format(exc.type_id, exc.message))
                     reporting.process_exception(exc)
 
-        self._resumeEffects()
+
 
     def loadSettings(self):
         xbmc.log("[script.service.hue] AmbiGroup Load settings")
@@ -103,6 +107,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         self.transitionTime = int(
             ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroupID)) / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
         self.forceOn = ADDON.getSettingBool("group{}_forceOn".format(self.kgroupID))
+        self.disableLabs = ADDON.getSettingBool("group{}_disableLabs".format(self.kgroupID))
 
         self.minBri = ADDON.getSettingInt("group{}_MinBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
         self.maxBri = ADDON.getSettingInt("group{}_MaxBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
@@ -278,12 +283,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         allSensors = self.bridge.sensors()
         effects = [id
             for id, sensor in allSensors.items()
-            if (
-                sensor['modelid'] == 'HUELABSVTOGGLE' or
-                sensor['modelid'] == 'HUELABSENUM'
-            )
-            and 'status' in sensor['state']
-            and sensor['state']['status'] == 1
+            if sensor['modelid'] == 'HUELABSVTOGGLE' and 'status' in sensor['state'] and sensor['state']['status'] == 1
         ]
 
         # For each effect, find the linked lights or groups

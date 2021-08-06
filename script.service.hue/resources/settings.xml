@@ -537,6 +537,20 @@
 					</dependencies>
 					<control type="toggle"/>
 				</setting>
+
+				<setting id="group3_disableLabs" type="boolean" label="30074" help="30521">
+					<level>2</level>
+					<default>false</default>
+					<dependencies>
+						<dependency type="visible">
+							<condition operator="is" setting="group3_enabled">true</condition>
+						</dependency>
+					</dependencies>
+					<control type="toggle"/>
+				</setting>
+
+
+
 				<setting id="group3_MinBrightness" type="integer" label="30810" help="30521">
 					<level>2</level>
 					<default>10</default>
