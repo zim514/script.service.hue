@@ -87,8 +87,11 @@ class AmbiGroup(KodiGroup.KodiGroup):
             try:
                 self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
             except QhueException as exc:
-                xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}: {}".format(exc.type_id, exc.message))
-                reporting.process_exception(exc)
+                if exc.type_id == 201:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
+                    pass
+                else:
+                    xbmc.log("[script.service.hue] resumeLightState: Hue call fail: {}: {}".format(exc.type_id, exc.message))
+                    reporting.process_exception(exc)
 
         self._resumeEffects()
 
