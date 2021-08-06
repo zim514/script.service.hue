@@ -41,6 +41,9 @@ class AmbiGroup(KodiGroup.KodiGroup):
         if self.isPlayingVideo():
             if self.enabled and self.checkActiveTime() and self.checkVideoActivation(self.videoInfoTag):
 
+                if self.disableLabs:
+                    self._stopEffects()
+
                 if self.forceOn:
                     self._force_on(self.ambiLights, self.bridge, self.savedLightStates)
 
@@ -65,6 +68,9 @@ class AmbiGroup(KodiGroup.KodiGroup):
         self.state = STATE_STOPPED
         self.ambiRunning.clear()
 
+        if self.disableLabs:
+            self._resumeEffects()
+
         if self.resume_state:
             self.resumeLightState()
 
@@ -85,8 +91,13 @@ class AmbiGroup(KodiGroup.KodiGroup):
             try:
                 self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
             except QhueException as exc:
-                xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}: {}".format(exc.type_id, exc.message))
-                reporting.process_exception(exc)
+                if exc.type_id == 201:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
+                    pass
+                else:
+                    xbmc.log("[script.service.hue] resumeLightState: Hue call fail: {}: {}".format(exc.type_id, exc.message))
+                    reporting.process_exception(exc)
+
+
 
     def loadSettings(self):
         xbmc.log("[script.service.hue] AmbiGroup Load settings")
@@ -96,6 +107,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         self.transitionTime = int(
             ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroupID)) / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
         self.forceOn = ADDON.getSettingBool("group{}_forceOn".format(self.kgroupID))
+        self.disableLabs = ADDON.getSettingBool("group{}_disableLabs".format(self.kgroupID))
 
         self.minBri = ADDON.getSettingInt("group{}_MinBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
         self.maxBri = ADDON.getSettingInt("group{}_MaxBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
@@ -244,3 +256,72 @@ class AmbiGroup(KodiGroup.KodiGroup):
             if stopShowingError:
                 ADDON.setSettingBool("show500Error", False)
             self.bridgeError500 = 0
+
+    def _stopEffects(self):
+        self.savedEffectSensors = self._getEffectSensors()
+
+        for sensor in self.savedEffectSensors:
+            xbmc.log("[script.service.hue] Stopping effect sensor {}".format(sensor))
+            self.bridge.sensors[sensor].state(status=0)
+
+    def _resumeEffects(self):
+        if not self.savedEffectSensors:
+            return
+
+        for sensor in self.savedEffectSensors:
+            xbmc.log("[script.service.hue] Resuming effect sensor {}".format(sensor))
+            self.bridge.sensors[sensor].state(status=1)
+
+        self.savedEffectSensors = None
+
+    def _getEffectSensors(self):
+        # Map light/group IDs to associated effect sensor IDs
+        lights = {}
+        groups = {}
+
+        # Find all sensor IDs for active Hue Labs effects
+        allSensors = self.bridge.sensors()
+        effects = [id
+            for id, sensor in allSensors.items()
+            if sensor['modelid'] == 'HUELABSVTOGGLE' and 'status' in sensor['state'] and sensor['state']['status'] == 1
+        ]
+
+        # For each effect, find the linked lights or groups
+        allLinks = self.bridge.resourcelinks()
+        for sensor in effects:
+            sensorLinks = [sensorLink
+                for link in allLinks.values()
+                for sensorLink in link['links']
+                if '/sensors/' + sensor in link['links']
+            ]
+
+            for link in sensorLinks:
+                id = link.split('/')[-1]
+                if link.startswith('/lights/'):
+                    lights.setdefault(id, set())
+                    lights[id].add(sensor)
+                elif link.startswith('/groups/'):
+                    groups.setdefault(id, set())
+                    groups[id].add(sensor)
+
+        # For linked groups, find their associated lights
+        allGroups = self.bridge.groups()
+        for g, sensors in groups.items():
+            for id in allGroups[g]['lights']:
+                lights.setdefault(id, set())
+                lights[id] |= sensors
+
+        if not lights:
+            return []
+
+        # Find all effect sensors that use the selected Ambilights.
+        #
+        # Only consider lights that are turned on, because enabling
+        # an effect will also power on its lights.
+        return set([sensor
+            for id in self.ambiLights.keys()
+            for sensor in lights[id]
+            if id in lights
+            and id in self.savedLightStates
+            and self.savedLightStates[id]['state']['on']
+        ])
