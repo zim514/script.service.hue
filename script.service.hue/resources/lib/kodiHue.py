@@ -460,7 +460,6 @@ class HueMonitor(xbmc.Monitor):
 
     def onSettingsChanged(self):
         xbmc.log("[script.service.hue] Settings changed")
-        # self.waitForAbort(1)
         read_settings()
         SETTINGS_CHANGED.set()
 
