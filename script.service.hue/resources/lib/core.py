@@ -22,6 +22,7 @@ def core():
         command = ""
 
     monitor = kodiHue.HueMonitor()
+
     if command:
         commands(monitor, command)
     else:
@@ -91,10 +92,9 @@ def service(monitor):
     service_enabled = cache.get("script.service.hue.service_enabled")
 
     if bridge is not None:
-        kgroups = [KodiGroup.KodiGroup(0, bridge, KodiGroup.VIDEO, settings_storage['reloadFlash']), KodiGroup.KodiGroup(1, bridge, KodiGroup.AUDIO, settings_storage['reloadFlash'])]
+        kgroups = [KodiGroup.KodiGroup(0, bridge, KodiGroup.VIDEO, settings_storage['initialFlash']), KodiGroup.KodiGroup(1, bridge, KodiGroup.AUDIO, settings_storage['initialFlash'])]
         if settings_storage['ambiEnabled']:
             ambi_group = AmbiGroup.AmbiGroup(3, bridge, monitor, settings_storage['initialFlash'])
-
 
         connection_retries = 0
         timer = 60
@@ -123,7 +123,6 @@ def service(monitor):
             # reload if settings changed
             if SETTINGS_CHANGED.is_set():
                 kgroups = [KodiGroup.KodiGroup(0, bridge, KodiGroup.VIDEO, settings_storage['reloadFlash']), KodiGroup.KodiGroup(1, bridge, KodiGroup.AUDIO, settings_storage['reloadFlash'])]
-                #kgroups = kodiHue.setupGroups(bridge, settings_storage['reloadFlash'])
                 if settings_storage['ambiEnabled']:
                     ambi_group = AmbiGroup.AmbiGroup(3, bridge, monitor, settings_storage['reloadFlash'])
                 SETTINGS_CHANGED.clear()
@@ -131,7 +130,7 @@ def service(monitor):
             # check for sunset & connection every minute
             if timer > 59:
                 timer = 0
-
+                # check connection to Hue bridge
                 try:
                     if connection_retries > 0:
                         bridge = kodiHue.connectBridge(monitor, silent=True)
