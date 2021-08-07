@@ -124,6 +124,10 @@ class AmbiGroup(KodiGroup.KodiGroup):
         xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
         self.state = STATE_PAUSED
         self.ambiRunning.clear()
+
+        if self.disableLabs:
+            self._resumeEffects()
+
         if self.resume_state:
             self.resumeLightState()
 
