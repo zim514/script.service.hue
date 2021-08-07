@@ -22,6 +22,7 @@ class SSDPResponse(object):
     class _FakeSocket(io.BytesIO):
         def makefile(self, *args, **kw):
             return self
+
     def __init__(self, response):
         r = http.client.HTTPResponse(self._FakeSocket(response))
         r.begin()
@@ -30,8 +31,10 @@ class SSDPResponse(object):
         self.st = r.getheader("st")
         self.cache = r.getheader("cache-control").split("=")[1]
         self.server = r.getheader("server")
+
     def __repr__(self):
         return "<SSDPResponse({location}, {st}, {usn}, {server})>".format(**self.__dict__)
+
 
 def discover(service, timeout=5, retries=1, mx=3):
     group = ("239.255.255.250", 1900)
@@ -39,7 +42,7 @@ def discover(service, timeout=5, retries=1, mx=3):
         'M-SEARCH * HTTP/1.1',
         'HOST: {0}:{1}',
         'MAN: "ssdp:discover"',
-        'ST: {st}','MX: {mx}','',''])
+        'ST: {st}', 'MX: {mx}', '', ''])
     socket.setdefaulttimeout(timeout)
     responses = {}
     for _ in range(retries):
@@ -49,26 +52,24 @@ def discover(service, timeout=5, retries=1, mx=3):
         message_bytes = message.format(*group, st=service, mx=mx).encode('utf-8')
         sock.sendto(message_bytes, group)
 
-
         # see https://stackoverflow.com/questions/32682969
-        #if sys.platform == "win32":
+        # if sys.platform == "win32":
         #    hosts = socket.gethostbyname_ex(socket.gethostname())[2]
         #    for host in hosts:
         #        sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
         #        sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP,
         #                        socket.inet_aton(group[0]) + socket.inet_aton(host))
-                #xbmc.log('M-SEARCH on %s', host)
+        # xbmc.log('M-SEARCH on %s', host)
         #        sock.sendto(message_bytes, group)
-        #else:
-            #xbmc.log('M-SEARCH')
+        # else:
+        # xbmc.log('M-SEARCH')
         #    sock.sendto(message_bytes, group)
-
 
         while True:
             try:
                 response = SSDPResponse(sock.recv(1024))
                 responses[response.location] = response
-                #xbmc.log('Response from %s',urlsplit(response.location).netloc)
+                # xbmc.log('Response from %s',urlsplit(response.location).netloc)
             except socket.timeout:
                 break
     return list(responses.values())

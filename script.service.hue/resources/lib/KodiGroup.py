@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import datetime
 
 import xbmc
@@ -22,12 +21,10 @@ ALL_MEDIA = 3
 
 
 class KodiGroup(xbmc.Player):
-    def __init__(self):
-
-        super(xbmc.Player, self).__init__()
-
-    def loadSettings(self):
-        xbmc.log("[script.service.hue] KodiGroup Load settings for group: {}".format(self.kgroupID))
+    def __init__(self, kgroupID, bridge, mediaType, flash=False):
+        xbmc.log("[script.service.hue] KodiGroup Load settings for group: {}".format(kgroupID))
+        self.kgroupID = kgroupID
+        self.bridge = bridge
         self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))
 
         self.startBehavior = ADDON.getSettingBool("group{}_startBehavior".format(self.kgroupID))
@@ -39,21 +36,17 @@ class KodiGroup(xbmc.Player):
         self.stopBehavior = ADDON.getSettingBool("group{}_stopBehavior".format(self.kgroupID))
         self.stopScene = ADDON.getSettingString("group{}_stopSceneID".format(self.kgroupID))
 
-    def setup(self, bridge, kgroupID, flash=False, mediaType=VIDEO):
         if not hasattr(self, "state"):
             self.state = STATE_STOPPED
-        self.bridge = bridge
+
         self.mediaType = mediaType
-
-        self.lights = bridge.lights
-        self.kgroupID = kgroupID
-
-        self.loadSettings()
-
-        self.groupResource = bridge.groups[0]
+        self.lights = self.bridge.lights
+        self.groupResource = self.bridge.groups[0]
 
         if flash:
             self.flash()
+
+        super(xbmc.Player, self).__init__()
 
     def flash(self):
         xbmc.log("[script.service.hue] in KodiGroup Flash")
@@ -138,11 +131,11 @@ class KodiGroup(xbmc.Player):
             self.groupResource.action(scene=self.startScene)
         except QhueException as exc:
             xbmc.log("[script.service.hue] onAVStarted: Hue call fail: {}: {}".format(exc.type_id, exc.message))
-            if e.type_id == 7:
+            if exc.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
-                reporting.process_exception(e)
+                reporting.process_exception(exc)
 
     def run_pause(self):
         try:
@@ -151,11 +144,11 @@ class KodiGroup(xbmc.Player):
             xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackPaused() Pause scene activated")
         except QhueException as exc:
             xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}: {}".format(exc.type_id, exc.message))
-            if e.type_id == 7:
+            if exc.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
-                reporting.process_exception(e)
+                reporting.process_exception(exc)
 
     def run_stop(self):
         try:
@@ -164,11 +157,11 @@ class KodiGroup(xbmc.Player):
             xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackStop() Stop scene activated")
         except QhueException as exc:
             xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}: {}".format(exc.type_id, exc.message))
-            if e.type_id == 7:
+            if exc.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
                 xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
-                reporting.process_exception(e)
+                reporting.process_exception(exc)
 
     def activate(self):
         xbmc.log("[script.service.hue] Activate group [{}]. State: {}".format(self.kgroupID, self.state))

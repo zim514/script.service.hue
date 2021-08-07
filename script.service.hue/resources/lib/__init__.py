@@ -9,7 +9,6 @@ import simplecache
 
 NUM_GROUPS = 2  # group0= video, group1=audio
 STRDEBUG = False  # Show string ID in UI
-DEBUG = False  # Enable python remote debug
 REMOTE_DBG_SUSPEND = False  # Auto suspend thread when debugger attached
 QHUE_TIMEOUT = 1  # passed to requests, in seconds.
 MINIMUM_COLOR_DISTANCE = 0.005
@@ -19,12 +18,13 @@ ROLLBAR_API_KEY = "b871c6292a454fb490344f77da186e10"
 
 ADDON = xbmcaddon.Addon()
 ADDONID = ADDON.getAddonInfo('id')
-ADDONDIR = xbmc.translatePath(ADDON.getAddonInfo('profile'))  # .decode('utf-8'))
+ADDONDIR = xbmc.translatePath(ADDON.getAddonInfo('profile'))
 ADDONPATH = xbmc.translatePath(ADDON.getAddonInfo("path"))
 ADDONVERSION = ADDON.getAddonInfo('version')
 KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
 
 cache = simplecache.SimpleCache()
+
 
 def timer(func):
     """Logs the runtime of the decorated function"""

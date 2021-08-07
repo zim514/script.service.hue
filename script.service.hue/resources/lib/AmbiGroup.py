@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from threading import Thread, Event
 
 import xbmc
@@ -20,15 +19,73 @@ from .rgbxy import Converter, ColorHelper  # https://github.com/benknight/hue-py
 from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
 
+def _force_on(ambi_lights, bridge, saved_light_states):
+    for L in ambi_lights:
+        try:
+            # xbmc.log("[script.service.hue] ###### forcing on: {}".format(saved_light_states))
+            if not saved_light_states[L]['state']['on']:
+                xbmc.log("[script.service.hue] Forcing lights on".format(saved_light_states))
+                bridge.lights[L].state(on=True, bri=1)
+        except QhueException as exc:
+            xbmc.log("[script.service.hue] Force On Hue call fail: {}: {}".format(exc.type_id, exc.message))
+            reporting.process_exception(e)
+
+
 class AmbiGroup(KodiGroup.KodiGroup):
-    def __init__(self):
-        super(AmbiGroup, self).__init__()
+    def __init__(self, kgroupID, bridge, monitor, flash):
+        self.kgroupID = kgroupID
+        self.bridge = bridge
+        self.monitor = monitor
+
+        self.bridgeError500 = 0
+
+        self.imageProcess = ImageProcess.ImageProcess()
+
+        self.converterA = Converter(GamutA)
+        self.converterB = Converter(GamutB)
+        self.converterC = Converter(GamutC)
+        self.helper = ColorHelper(GamutC)
+
+        self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))
+
+        self.transitionTime = int(ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroupID)) / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
+        self.forceOn = ADDON.getSettingBool("group{}_forceOn".format(self.kgroupID))
+        self.disableLabs = ADDON.getSettingBool("group{}_disableLabs".format(self.kgroupID))
+        self.minBri = ADDON.getSettingInt("group{}_MinBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
+        self.maxBri = ADDON.getSettingInt("group{}_MaxBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
+        self.saturation = ADDON.getSettingNumber("group{}_Saturation".format(self.kgroupID))
+        self.captureSize = ADDON.getSettingInt("group{}_CaptureSize".format(self.kgroupID))
+        self.resume_state = ADDON.getSettingBool("group{}_ResumeState".format(self.kgroupID))
+        self.resume_transition = ADDON.getSettingInt("group{}_ResumeTransition".format(self.kgroupID)) * 10  # convert seconds to multiple of 100ms
+
+        self.updateInterval = ADDON.getSettingInt("group{}_Interval".format(self.kgroupID)) / 1000  # convert MS to seconds
+        if self.updateInterval == 0:
+            self.updateInterval = 0.002
+
+        self.ambiLights = {}
+        lightIDs = ADDON.getSetting("group{}_Lights".format(self.kgroupID)).split(",")
+        index = 0
+        for L in lightIDs:
+            gamut = kodiHue.getLightGamut(self.bridge, L)
+            light = {L: {'gamut': gamut, 'prevxy': (0, 0), "index": index}}
+            self.ambiLights.update(light)
+            index = index + 1
+
+        try:
+            self.ambiRunning
+        except AttributeError:
+            self.ambiRunning = Event()
+
+        if flash:
+            self.flash()
+
+        super(xbmc.Player, self).__init__()
 
     def onAVStarted(self):
 
         xbmc.log(
-            "Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(
-                self.enabled, self.isPlayingVideo(), self.isPlayingAudio(), self.mediaType, self.playbackType()))
+            "Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.playbackType(): {}".format(
+                self.enabled, self.isPlayingVideo(), self.isPlayingAudio(), self.playbackType()))
         xbmc.log(
             "Ambilight Settings: Interval: {}, transitionTime: {}".format(self.updateInterval, self.transitionTime))
 
@@ -45,23 +102,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     self._stopEffects()
 
                 if self.forceOn:
-                    self._force_on(self.ambiLights, self.bridge, self.savedLightStates)
+                    _force_on(self.ambiLights, self.bridge, self.savedLightStates)
 
                 self.ambiRunning.set()
                 ambiLoopThread = Thread(target=self._ambiLoop, name="_ambiLoop")
                 ambiLoopThread.daemon = True
                 ambiLoopThread.start()
-
-    def _force_on(self, ambi_lights, bridge, saved_light_states):
-        for L in ambi_lights:
-            try:
-                # xbmc.log("[script.service.hue] ###### forcing on: {}".format(saved_light_states))
-                if not saved_light_states[L]['state']['on']:
-                    xbmc.log("[script.service.hue] Forcing lights on".format(saved_light_states))
-                    bridge.lights[L].state(on=True, bri=1)
-            except QhueException as exc:
-                xbmc.log("[script.service.hue] Force On Hue call fail: {}: {}".format(exc.type_id, exc.message))
-                reporting.process_exception(e)
 
     def onPlayBackStopped(self):
         xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
@@ -96,58 +142,6 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 else:
                     xbmc.log("[script.service.hue] resumeLightState: Hue call fail: {}: {}".format(exc.type_id, exc.message))
                     reporting.process_exception(exc)
-
-
-
-    def loadSettings(self):
-        xbmc.log("[script.service.hue] AmbiGroup Load settings")
-
-        self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))
-
-        self.transitionTime = int(
-            ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroupID)) / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
-        self.forceOn = ADDON.getSettingBool("group{}_forceOn".format(self.kgroupID))
-        self.disableLabs = ADDON.getSettingBool("group{}_disableLabs".format(self.kgroupID))
-
-        self.minBri = ADDON.getSettingInt("group{}_MinBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
-        self.maxBri = ADDON.getSettingInt("group{}_MaxBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
-
-        self.saturation = ADDON.getSettingNumber("group{}_Saturation".format(self.kgroupID))
-        self.captureSize = ADDON.getSettingInt("group{}_CaptureSize".format(self.kgroupID))
-
-        self.resume_state = ADDON.getSettingBool("group{}_ResumeState".format(self.kgroupID))
-        self.resume_transition = ADDON.getSettingInt("group{}_ResumeTransition".format(self.kgroupID)) * 10  # convert seconds to multiple of 100ms
-
-        self.updateInterval = ADDON.getSettingInt("group{}_Interval".format(self.kgroupID)) / 1000  # convert MS to seconds
-        if self.updateInterval == 0:
-            self.updateInterval = 0.002
-
-        self.ambiLights = {}
-        lightIDs = ADDON.getSetting("group{}_Lights".format(self.kgroupID)).split(",")
-        index = 0
-        for L in lightIDs:
-            gamut = kodiHue.getLightGamut(self.bridge, L)
-            light = {L: {'gamut': gamut, 'prevxy': (0, 0), "index": index}}
-            self.ambiLights.update(light)
-            index = index + 1
-
-    def setup(self, monitor, bridge, kgroupID, flash=False):
-        try:
-            self.ambiRunning
-        except AttributeError:
-            self.ambiRunning = Event()
-
-        super(AmbiGroup, self).setup(bridge, kgroupID, flash, VIDEO)
-        self.monitor = monitor
-
-        self.bridgeError500 = 0
-
-        self.imageProcess = ImageProcess.ImageProcess()
-
-        self.converterA = Converter(GamutA)
-        self.converterB = Converter(GamutB)
-        self.converterC = Converter(GamutC)
-        self.helper = ColorHelper(GamutC)
 
     def _ambiLoop(self):
 
@@ -282,34 +276,34 @@ class AmbiGroup(KodiGroup.KodiGroup):
         # Find all sensor IDs for active Hue Labs effects
         allSensors = self.bridge.sensors()
         effects = [id
-            for id, sensor in allSensors.items()
-            if sensor['modelid'] == 'HUELABSVTOGGLE' and 'status' in sensor['state'] and sensor['state']['status'] == 1
-        ]
+                   for id, sensor in list(allSensors.items())
+                   if sensor['modelid'] == 'HUELABSVTOGGLE' and 'status' in sensor['state'] and sensor['state']['status'] == 1
+                   ]
 
         # For each effect, find the linked lights or groups
         allLinks = self.bridge.resourcelinks()
         for sensor in effects:
             sensorLinks = [sensorLink
-                for link in allLinks.values()
-                for sensorLink in link['links']
-                if '/sensors/' + sensor in link['links']
-            ]
+                           for link in list(allLinks.values())
+                           for sensorLink in link['links']
+                           if '/sensors/' + sensor in link['links']
+                           ]
 
             for link in sensorLinks:
-                id = link.split('/')[-1]
+                i = link.split('/')[-1]
                 if link.startswith('/lights/'):
-                    lights.setdefault(id, set())
-                    lights[id].add(sensor)
+                    lights.setdefault(i, set())
+                    lights[i].add(sensor)
                 elif link.startswith('/groups/'):
-                    groups.setdefault(id, set())
-                    groups[id].add(sensor)
+                    groups.setdefault(i, set())
+                    groups[i].add(sensor)
 
         # For linked groups, find their associated lights
         allGroups = self.bridge.groups()
-        for g, sensors in groups.items():
-            for id in allGroups[g]['lights']:
-                lights.setdefault(id, set())
-                lights[id] |= sensors
+        for g, sensors in list(groups.items()):
+            for i in allGroups[g]['lights']:
+                lights.setdefault(i, set())
+                lights[i] |= sensors
 
         if not lights:
             return []
@@ -319,9 +313,9 @@ class AmbiGroup(KodiGroup.KodiGroup):
         # Only consider lights that are turned on, because enabling
         # an effect will also power on its lights.
         return set([sensor
-            for id in self.ambiLights.keys()
-            for sensor in lights[id]
-            if id in lights
-            and id in self.savedLightStates
-            and self.savedLightStates[id]['state']['on']
-        ])
+                    for i in list(self.ambiLights.keys())
+                    for sensor in lights[i]
+                    if i in lights
+                    and i in self.savedLightStates
+                    and self.savedLightStates[i]['state']['on']
+                    ])

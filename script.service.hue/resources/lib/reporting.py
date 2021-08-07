@@ -1,29 +1,18 @@
-import json
 import platform
 import sys
 
-import xbmc
+import rollbar
 import xbmcgui
 
-import rollbar
-from . import ADDON, ADDONVERSION, ROLLBAR_API_KEY, ADDONID,KODIVERSION, ADDONPATH
-
-def _kodi_version():
-    query = dict(jsonrpc='2.0',
-                 method='Application.GetProperties',
-                 params=dict(properties=['version', 'name']),
-                 id=1)
-    response = json.loads(xbmc.executeJSONRPC(json.dumps(query)))
-    return response['result']['version']
+from resources.lib.language import get_string as _
+from . import ADDONVERSION, ROLLBAR_API_KEY, ADDONID, KODIVERSION, ADDONPATH
 
 
 def error_report_requested(exc):
-    return xbmcgui.Dialog().yesno(
-        heading="{} {}".format(ADDONID, ADDON.getLocalizedString(30043)),
-        message=ADDON.getLocalizedString(30080) +
-        "\n[COLOR=red]{}[/COLOR]\n".format(exc) +
-        ADDON.getLocalizedString(30081)
-    )
+    return xbmcgui.Dialog().yesno(heading="{} {}".format(ADDONID, _("Error")), message=_("The following error occurred:") +
+                                                                                       "\n[COLOR=red]{}[/COLOR]\n".format(exc) +
+                                                                                       _("Automatically report this error?")
+                                  )
 
 
 def report_error(url=None):

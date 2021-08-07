@@ -21,7 +21,6 @@ def menu():
     command = sys.argv[2][1:]
     parsed = parse_qs(command)
 
-
     if route == "plugin://script.service.hue/":
         if not command:
 
@@ -84,7 +83,7 @@ def get_status():
     enabled = cache.get("script.service.hue.service_enabled")
     daylight = cache.get("script.service.hue.daylight")
     daylight_disable = cache.get("script.service.hue.daylightDisable")
-    #xbmc.log("[script.service.hue] Current status: {}".format(daylight_disable))
+    # xbmc.log("[script.service.hue] Current status: {}".format(daylight_disable))
     if daylight and daylight_disable:
         return _("Disabled by daylight")
     elif enabled:
@@ -93,4 +92,4 @@ def get_status():
 
 
 def get_icon_path(icon_name):
-    return os.path.join(ADDONPATH, 'resources', 'icons', icon_name+".png")
+    return os.path.join(ADDONPATH, 'resources', 'icons', icon_name + ".png")

@@ -4,7 +4,7 @@ import xbmc
 import xbmcgui
 from requests.exceptions import ConnectionError, ReadTimeout, ConnectTimeout
 
-from resources.lib import AmbiGroup
+from resources.lib import AmbiGroup, KodiGroup
 from resources.lib import kodiHue
 from resources.lib import kodisettings
 from resources.lib import reporting
@@ -14,8 +14,6 @@ from . import ADDON, cache, SETTINGS_CHANGED
 
 
 def core():
-    
-    #xbmc.log("[script.service.hue] Args: {}".format(sys.argv))
     kodisettings.read_settings()
 
     if len(sys.argv) > 1:
@@ -24,6 +22,7 @@ def core():
         command = ""
 
     monitor = kodiHue.HueMonitor()
+
     if command:
         commands(monitor, command)
     else:
@@ -89,16 +88,13 @@ def commands(monitor, command):
 
 
 def service(monitor):
-    kodisettings.read_settings()
     bridge = kodiHue.connectBridge(monitor, silent=settings_storage['disable_connection_message'])
     service_enabled = cache.get("script.service.hue.service_enabled")
 
     if bridge is not None:
-        kgroups = kodiHue.setupGroups(bridge, settings_storage['initialFlash'])
+        kgroups = [KodiGroup.KodiGroup(0, bridge, KodiGroup.VIDEO, settings_storage['initialFlash']), KodiGroup.KodiGroup(1, bridge, KodiGroup.AUDIO, settings_storage['initialFlash'])]
         if settings_storage['ambiEnabled']:
-            ambi_group = AmbiGroup.AmbiGroup()
-            ambi_group.setup(monitor, bridge, kgroupID=3, flash=settings_storage['initialFlash'])
-            #ambi_group = AmbiGroup.AmbiGroup(monitor, bridge, kgroupID=3, flash=settings_storage['reloadFlash'])
+            ambi_group = AmbiGroup.AmbiGroup(3, bridge, monitor, settings_storage['initialFlash'])
 
         connection_retries = 0
         timer = 60
@@ -116,31 +112,25 @@ def service(monitor):
                 try:
                     kodiHue.activate(bridge, kgroups, ambi_group)
                 except UnboundLocalError:
-                    ambi_group = AmbiGroup.AmbiGroup()
-                    ambi_group.setup(monitor, bridge, kgroupID=3, flash=settings_storage['reloadFlash'])
+                    ambi_group = AmbiGroup.AmbiGroup(3, bridge, monitor, settings_storage['reloadFlash'])
                     kodiHue.activate(bridge, kgroups, ambi_group)
 
-
-            #process cached waiting commands
+            # process cached waiting commands
             action = cache.get("script.service.hue.action")
             if action:
                 process_actions(action, kgroups)
 
-            #reload if settings changed
+            # reload if settings changed
             if SETTINGS_CHANGED.is_set():
-                kgroups = kodiHue.setupGroups(bridge, settings_storage['reloadFlash'])
+                kgroups = [KodiGroup.KodiGroup(0, bridge, KodiGroup.VIDEO, settings_storage['reloadFlash']), KodiGroup.KodiGroup(1, bridge, KodiGroup.AUDIO, settings_storage['reloadFlash'])]
                 if settings_storage['ambiEnabled']:
-                    try:
-                        ambi_group.setup(monitor, bridge, kgroupID=3, flash=settings_storage['reloadFlash'])
-                    except UnboundLocalError:
-                        ambi_group = AmbiGroup.AmbiGroup()
-                        ambi_group.setup(monitor, bridge, kgroupID=3, flash=settings_storage['reloadFlash'])
+                    ambi_group = AmbiGroup.AmbiGroup(3, bridge, monitor, settings_storage['reloadFlash'])
                 SETTINGS_CHANGED.clear()
 
-            #check for sunset & connection every minute
+            # check for sunset & connection every minute
             if timer > 59:
                 timer = 0
-
+                # check connection to Hue bridge
                 try:
                     if connection_retries > 0:
                         bridge = kodiHue.connectBridge(monitor, silent=True)
@@ -165,7 +155,6 @@ def service(monitor):
                 except Exception as exc:
                     xbmc.log("[script.service.hue] Get daylight exception")
                     reporting.process_exception(exc)
-
 
                 # check if sunset took place
                 if new_daylight != daylight:

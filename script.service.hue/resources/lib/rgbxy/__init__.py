@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Library for RGB / CIE1931 "x, y" coversion.
 Based on Philips implementation guidance:
