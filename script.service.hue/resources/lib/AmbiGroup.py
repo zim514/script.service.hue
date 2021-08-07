@@ -263,7 +263,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
             self.bridge.sensors[sensor].state(status=0)
 
     def _resumeEffects(self):
-        if not self.savedEffectSensors:
+        if not hasattr(self, 'savedEffectSensors'):
             return
 
         for sensor in self.savedEffectSensors:
@@ -309,7 +309,11 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 lights.setdefault(i, set())
                 lights[i] |= sensors
 
-        if not lights:
+
+        if lights:
+            xbmc.log('[script.service.hue] Found active Hue Labs effects on lights: {}'.format(lights))
+        else:
+            xbmc.log('[script.service.hue] No active Hue Labs effects found')
             return []
 
         # Find all effect sensors that use the selected Ambilights.
@@ -318,8 +322,8 @@ class AmbiGroup(KodiGroup.KodiGroup):
         # an effect will also power on its lights.
         return set([sensor
                     for i in list(self.ambiLights.keys())
-                    for sensor in lights[i]
                     if i in lights
                     and i in self.savedLightStates
                     and self.savedLightStates[i]['state']['on']
+                    for sensor in lights[i]
                     ])
