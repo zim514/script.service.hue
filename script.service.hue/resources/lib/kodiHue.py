@@ -15,15 +15,6 @@ from .kodisettings import settings_storage
 from .language import get_string as _
 
 
-def setupGroups(bridge, flash=False):
-    xbmc.log("[script.service.hue] in setupGroups()")
-    kgroups = [KodiGroup.KodiGroup(), KodiGroup.KodiGroup()]
-
-    kgroups[0].setup(bridge, 0, flash, KodiGroup.VIDEO)
-    kgroups[1].setup(bridge, 1, flash, KodiGroup.AUDIO)
-
-    return kgroups
-
 
 def createHueScene(bridge):
     xbmc.log("[script.service.hue] In kodiHue createHueScene")
@@ -43,7 +34,7 @@ def createHueScene(bridge):
                              transitionTime) * 10)  # Hue API transition time is in 100msec. *10 to convert to seconds.
             xbmc.log("[script.service.hue] In kodiHue createHueScene. Res: {}".format(res))
             if res[0]["success"]:
-                xbmcgui.Dialog().ok(heading=_("Create New Scene"),message=_("Scene successfully created![CR]You may now assign your Scene to player actions."))
+                xbmcgui.Dialog().ok(heading=_("Create New Scene"), message=_("Scene successfully created![CR]You may now assign your Scene to player actions."))
             #   xbmcgui.Dialog().notification(_("Hue Service"), _("Scene Created"))
             else:
                 xbmcgui.Dialog().ok(_("Error"), _("Error: Scene not created."))
@@ -162,7 +153,7 @@ def bridgeDiscover(monitor):
 
 
 def connectionTest(bridgeIP):
-    #xbmc.log("[script.service.hue] Connection Test IP: {}".format(bridgeIP))
+    # xbmc.log("[script.service.hue] Connection Test IP: {}".format(bridgeIP))
     b = qhue.qhue.Resource("http://{}/api".format(bridgeIP), requests.session())
     try:
         apiversion = b.config()['apiversion']
@@ -175,7 +166,7 @@ def connectionTest(bridgeIP):
         return False
 
     api_split = apiversion.split(".")
-    if apiversion and int(api_split[0]) >= 1 and int(api_split[1]) >= 38: # minimum bridge version 1.38
+    if apiversion and int(api_split[0]) >= 1 and int(api_split[1]) >= 38:  # minimum bridge version 1.38
         xbmc.log("[script.service.hue] Bridge Found! Hue API version: {}".format(apiversion))
         return True
 
@@ -351,7 +342,7 @@ def getDaylight(bridge):
     return bridge.sensors['1']()['state']['daylight']
 
 
-def activate(bridge, kgroups, ambiGroup = None):
+def activate(bridge, kgroups, ambiGroup=None):
     """
     Activates play action as appropriate for all groups. Used at sunset and when service is renabled via Actions.
     """
@@ -473,7 +464,6 @@ class HueMonitor(xbmc.Monitor):
         read_settings()
         SETTINGS_CHANGED.set()
 
-
     def onNotification(self, sender, method, data):
         if sender == ADDONID:
             xbmc.log("[script.service.hue] Notification received: method: {}, data: {}".format(method, data))
@@ -493,4 +483,3 @@ class HueMonitor(xbmc.Monitor):
                 action = json_loads['command']
                 xbmc.log("[script.service.hue] Action Notification: group: {}, command: {}".format(kgroupid, action))
                 cache.set("script.service.hue.action", (action, kgroupid), expiration=(timedelta(seconds=5)))
-                

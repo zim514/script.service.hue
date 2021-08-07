@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import xbmc
 
 from resources.lib import menu, reporting

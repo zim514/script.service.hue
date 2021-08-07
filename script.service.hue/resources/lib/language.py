@@ -77,6 +77,8 @@ if __name__ == "__main__":
             if m.msgctxt.startswith("#"):
                 line = "_strings['{0}'] = {1}\n".format(m.msgid.lower().replace("'", "\\'"), m.msgctxt.replace("#", "").strip())
                 f.write(line)
+
+
 else:
     from . import STRDEBUG, ADDON, xbmc
 
@@ -87,7 +89,7 @@ else:
             return t
 
         if STRDEBUG is True:
-            return  "STR:{} {}".format(string_id,ADDON.getLocalizedString(string_id))
+            return "STR:{} {}".format(string_id, ADDON.getLocalizedString(string_id))
         return ADDON.getLocalizedString(string_id)
 
 
