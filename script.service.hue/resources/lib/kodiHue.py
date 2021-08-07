@@ -7,7 +7,7 @@ import xbmc
 import xbmcgui
 
 from resources.lib.qhue.qhue import QhueException
-from . import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED
+from . import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED, reporting
 from . import KodiGroup
 from . import qhue, ADDONID, cache
 from .kodisettings import read_settings
@@ -153,7 +153,6 @@ def bridgeDiscover(monitor):
 
 
 def connectionTest(bridgeIP):
-    # xbmc.log("[script.service.hue] Connection Test IP: {}".format(bridgeIP))
     b = qhue.qhue.Resource("http://{}/api".format(bridgeIP), requests.session())
     try:
         apiversion = b.config()['apiversion']
@@ -339,7 +338,12 @@ def selectHueScene(bridge):
 
 
 def getDaylight(bridge):
-    return bridge.sensors['1']()['state']['daylight']
+    try:
+        daylight = bridge.sensors['1']()['state']['daylight']
+    except QhueException as exc:
+        xbmc.log("[script.service.hue]: Get Daylight Qhue Exception: {}: {}".format(exc.type_id, exc.message))
+        reporting.process_exception(exc)
+    return daylight
 
 
 def activate(bridge, kgroups, ambiGroup=None):

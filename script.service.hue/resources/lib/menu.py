@@ -89,7 +89,3 @@ def get_status():
     elif enabled:
         return _("Enabled")
     return _("Disabled")
-
-
-def get_icon_path(icon_name):
-    return os.path.join(ADDONPATH, 'resources', 'icons', icon_name + ".png")
