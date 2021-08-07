@@ -156,7 +156,7 @@ def connectionTest(bridgeIP):
     b = qhue.qhue.Resource("http://{}/api".format(bridgeIP), requests.session())
     try:
         apiversion = b.config()['apiversion']
-    except (requests.exceptions.ConnectionError, qhue.QhueException, requests.exceptions.ReadTimeout, requests.Timeout) as error:
+    except (qhue.QhueException, requests.exceptions.RequestException) as error:
         xbmc.log("[script.service.hue] Connection test failed.  {}".format(error))
         return False
     except KeyError as error:
@@ -221,7 +221,16 @@ def createUser(monitor, bridgeIP, progressBar=False):
         if progressBar:
             progressBar.update(percent=progress, message=_("Press link button on bridge"))  # press link button on bridge
 
-        req = requests.post('http://{}/api'.format(bridgeIP), data=data)
+        try:
+            req = requests.post('http://{}/api'.format(bridgeIP), data=data)
+        except requests.exceptions.RequestException as exc:
+            xbmc.log("[script.service.hue] requests exception: {}".format(exc))
+            return False
+        except Exception as exc:
+            xbmc.log("[script.service.hue] requests exception: {}".format(exc))
+            reporting.process_exception(exc)
+            return False
+
         res = req.text
         monitor.waitForAbort(1)
         timeout = timeout + 1
@@ -233,8 +242,8 @@ def createUser(monitor, bridgeIP, progressBar=False):
     try:
         username = res[0]['success']['username']
         return username
-    except Exception:
-        xbmc.log("[script.service.hue] Username exception")
+    except Exception as exc:
+        xbmc.log("[script.service.hue] Username exception: {}".format(exc))
         return False
 
 
