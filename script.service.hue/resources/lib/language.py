@@ -21,7 +21,7 @@ if __name__ == "__main__":
     foldername = os.path.basename(dirpath)
     print("Directory name is : " + foldername)
 
-    string_file = "..\\language\\resource.language.en_GB\\strings.po"
+    string_file = "../language/resource.language.en_gb\\strings.po"
     print("input file: " + string_file)
 
     po = polib.pofile(string_file)
