@@ -15,8 +15,7 @@ from .kodisettings import settings_storage
 from .language import get_string as _
 
 
-
-def createHueScene(bridge):
+def create_hue_scene(bridge):
     xbmc.log("[script.service.hue] In kodiHue createHueScene")
     scenes = bridge.scenes
 
@@ -26,7 +25,7 @@ def createHueScene(bridge):
 
     if sceneName:
         transitionTime = xbmcgui.Dialog().numeric(0, _("Fade Time (Seconds)"), defaultt="10")
-        selected = selectHueLights(bridge)
+        selected = select_hue_lights(bridge)
 
         if selected:
             res = scenes(lights=selected, name=sceneName, recycle=False, type='LightScene', http_method='post',
@@ -40,9 +39,9 @@ def createHueScene(bridge):
                 xbmcgui.Dialog().ok(_("Error"), _("Error: Scene not created."))
 
 
-def deleteHueScene(bridge):
+def delete_hue_scene(bridge):
     xbmc.log("[script.service.hue] In kodiHue deleteHueScene")
-    scene = selectHueScene(bridge)
+    scene = select_hue_scene(bridge)
     if scene is not None:
         confirm = xbmcgui.Dialog().yesno(heading=_("Delete Hue Scene"), message=_("Are you sure you want to delete this scene:[CR]" + str(scene[1])))
     if scene and confirm:
@@ -55,7 +54,7 @@ def deleteHueScene(bridge):
             xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not created"))
 
 
-def _discoverNupnp():
+def _discover_nupnp():
     xbmc.log("[script.service.hue] In kodiHue discover_nupnp()")
     try:
         req = requests.get('https://discovery.meethue.com/')
@@ -70,7 +69,7 @@ def _discoverNupnp():
     return bridge_ip
 
 
-def _discoverSsdp():
+def _discover_ssdp():
     from . import ssdp
     from urllib.parse import urlsplit
 
@@ -91,7 +90,7 @@ def _discoverSsdp():
     return None
 
 
-def bridgeDiscover(monitor):
+def discover_bridge(monitor):
     xbmc.log("[script.service.hue] Start bridgeDiscover")
     # Create new config if none exists. Returns success or fail as bool
     ADDON.setSettingString("bridgeIP", "")
@@ -106,17 +105,17 @@ def bridgeDiscover(monitor):
     while not progressBar.iscanceled() and not complete and not monitor.abortRequested():
 
         progressBar.update(percent=10, message=_("N-UPnP discovery..."))
-        bridgeIP = _discoverNupnp()
+        bridgeIP = _discover_nupnp()
 
         if not bridgeIP:
             progressBar.update(percent=20, message=_("UPnP discovery..."))
-            bridgeIP = _discoverSsdp()
+            bridgeIP = _discover_ssdp()
 
-        if connectionTest(bridgeIP):
+        if connection_test(bridgeIP):
             progressBar.update(percent=100, message=_("Found bridge: ") + bridgeIP)
             monitor.waitForAbort(1)
 
-            bridgeUser = createUser(monitor, bridgeIP, progressBar)
+            bridgeUser = create_user(monitor, bridgeIP, progressBar)
 
             if bridgeUser:
                 xbmc.log("[script.service.hue] User created: {}".format(bridgeUser))
@@ -152,11 +151,11 @@ def bridgeDiscover(monitor):
         progressBar.close()
 
 
-def connectionTest(bridgeIP):
+def connection_test(bridgeIP):
     b = qhue.qhue.Resource("http://{}/api".format(bridgeIP), requests.session())
     try:
         apiversion = b.config()['apiversion']
-    except (requests.exceptions.ConnectionError, qhue.QhueException, requests.exceptions.ReadTimeout, requests.Timeout) as error:
+    except (qhue.QhueException, requests.exceptions.RequestException) as error:
         xbmc.log("[script.service.hue] Connection test failed.  {}".format(error))
         return False
     except KeyError as error:
@@ -174,7 +173,7 @@ def connectionTest(bridgeIP):
     return False
 
 
-def userTest(bridgeIP, bridgeUser):
+def user_test(bridgeIP, bridgeUser):
     xbmc.log("[script.service.hue] in ConnectionTest() Attempt initial connection")
     b = qhue.Bridge(bridgeIP, bridgeUser, timeout=QHUE_TIMEOUT)
     try:
@@ -188,21 +187,21 @@ def userTest(bridgeIP, bridgeUser):
     return False
 
 
-def discoverBridgeIP(monitor):
+def discover_bridge_ip(monitor):
     # discover hue bridge IP silently for non-interactive discovery / bridge IP change.
     xbmc.log("[script.service.hue] In discoverBridgeIP")
-    bridgeIP = _discoverNupnp()
-    if connectionTest(bridgeIP):
+    bridgeIP = _discover_nupnp()
+    if connection_test(bridgeIP):
         return bridgeIP
 
-    bridgeIP = _discoverSsdp()
-    if connectionTest(bridgeIP):
+    bridgeIP = _discover_ssdp()
+    if connection_test(bridgeIP):
         return bridgeIP
 
     return False
 
 
-def createUser(monitor, bridgeIP, progressBar=False):
+def create_user(monitor, bridgeIP, progressBar=False):
     xbmc.log("[script.service.hue] In createUser")
     # device = 'kodi#'+getfqdn()
     data = '{{"devicetype": "kodi#{}"}}'.format(
@@ -221,7 +220,16 @@ def createUser(monitor, bridgeIP, progressBar=False):
         if progressBar:
             progressBar.update(percent=progress, message=_("Press link button on bridge"))  # press link button on bridge
 
-        req = requests.post('http://{}/api'.format(bridgeIP), data=data)
+        try:
+            req = requests.post('http://{}/api'.format(bridgeIP), data=data)
+        except requests.exceptions.RequestException as exc:
+            xbmc.log("[script.service.hue] requests exception: {}".format(exc))
+            return False
+        except Exception as exc:
+            xbmc.log("[script.service.hue] requests exception: {}".format(exc))
+            reporting.process_exception(exc)
+            return False
+
         res = req.text
         monitor.waitForAbort(1)
         timeout = timeout + 1
@@ -233,13 +241,13 @@ def createUser(monitor, bridgeIP, progressBar=False):
     try:
         username = res[0]['success']['username']
         return username
-    except Exception:
-        xbmc.log("[script.service.hue] Username exception")
+    except Exception as exc:
+        xbmc.log("[script.service.hue] Username exception: {}".format(exc))
         return False
 
 
-def configureScene(bridge, kGroupID, action):
-    scene = selectHueScene(bridge)
+def configure_scene(bridge, kGroupID, action):
+    scene = select_hue_scene(bridge)
     if scene is not None:
         # group0_startSceneID
         ADDON.setSettingString("group{}_{}SceneID".format(kGroupID, action), scene[0])
@@ -247,15 +255,15 @@ def configureScene(bridge, kGroupID, action):
         ADDON.openSettings()
 
 
-def configureAmbiLights(bridge, kGroupID):
-    lights = selectHueLights(bridge)
+def configure_ambilights(bridge, kGroupID):
+    lights = select_hue_lights(bridge)
     lightNames = []
     colorLights = []
     if lights is not None:
         for L in lights:
             # gamut = getLightGamut(bridge, L)
             # if gamut == "A" or gamut== "B" or gamut == "C": #defaults to C if unknown model
-            lightNames.append(_getLightName(bridge, L))
+            lightNames.append(get_light_name(bridge, L))
             colorLights.append(L)
 
         ADDON.setSettingString("group{}_Lights".format(kGroupID), ','.join(colorLights))
@@ -264,7 +272,7 @@ def configureAmbiLights(bridge, kGroupID):
         ADDON.openSettings()
 
 
-def _getLightName(bridge, L):
+def get_light_name(bridge, L):
     try:
         name = bridge.lights()[L]['name']
     except Exception:
@@ -276,7 +284,7 @@ def _getLightName(bridge, L):
     return name
 
 
-def selectHueLights(bridge):
+def select_hue_lights(bridge):
     xbmc.log("[script.service.hue] In selectHueLights{}")
     hueLights = bridge.lights()
 
@@ -307,7 +315,7 @@ def selectHueLights(bridge):
     return None
 
 
-def selectHueScene(bridge):
+def select_hue_scene(bridge):
     xbmc.log("[script.service.hue] In selectHueScene{}")
     hueScenes = bridge.scenes()
 
@@ -337,7 +345,7 @@ def selectHueScene(bridge):
     return None
 
 
-def getDaylight(bridge):
+def get_daylight(bridge):
     try:
         daylight = bridge.sensors['1']()['state']['daylight']
     except QhueException as exc:
@@ -365,24 +373,24 @@ def activate(bridge, kgroups, ambiGroup=None):
         ambiGroup.activate()
 
 
-def connectBridge(monitor, silent=False):
+def connect_bridge(monitor, silent=False):
     bridgeIP = ADDON.getSettingString("bridgeIP")
     bridgeUser = ADDON.getSettingString("bridgeUser")
     xbmc.log("[script.service.hue] in Connect() with settings: bridgeIP: {}, bridgeUser: {}".format(bridgeIP, bridgeUser))
 
     if bridgeIP and bridgeUser:
-        if connectionTest(bridgeIP):
+        if connection_test(bridgeIP):
             xbmc.log("[script.service.hue] in Connect(): Bridge responding to connection test.")
         else:
             xbmc.log("[script.service.hue] in Connect(): Bridge not responding to connection test, attempt finding a new bridge IP.")
-            bridgeIP = discoverBridgeIP(monitor)
+            bridgeIP = discover_bridge_ip(monitor)
             if bridgeIP:
                 xbmc.log("[script.service.hue] in Connect(): New IP found: {}. Saving".format(bridgeIP))
                 ADDON.setSettingString("bridgeIP", bridgeIP)
 
         if bridgeIP:
             xbmc.log("[script.service.hue] in Connect(): Checking User")
-            if userTest(bridgeIP, bridgeUser):
+            if user_test(bridgeIP, bridgeUser):
                 bridge = qhue.Bridge(bridgeIP, bridgeUser, timeout=QHUE_TIMEOUT)
                 settings_storage['connected'] = True
                 xbmc.log("[script.service.hue] Successfully connected to Hue Bridge: {}".format(bridgeIP))
@@ -402,19 +410,19 @@ def connectBridge(monitor, silent=False):
         return None
 
 
-def getLightGamut(bridge, L):
+def _get_light_gamut(bridge, l):
     try:
-        gamut = bridge.lights()[L]['capabilities']['control']['colorgamuttype']
-        xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(L, gamut))
+        gamut = bridge.lights()[l]['capabilities']['control']['colorgamuttype']
+        xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(l, gamut))
     except Exception:
-        xbmc.log("[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {}".format(L))
+        xbmc.log("[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {}".format(l))
         return "C"
     if gamut == "A" or gamut == "B" or gamut == "C":
         return gamut
     return "C"  # default to C if unknown gamut type
 
 
-def checkBridgeModel(bridge):
+def check_bridge_model(bridge):
     try:
         bridge_config = bridge.config()
         model = bridge_config["modelid"]
@@ -434,7 +442,7 @@ def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), so
     xbmcgui.Dialog().notification(header, message, icon, time, sound)
 
 
-def perfAverage(process_times):
+def _perf_average(process_times):
     process_times = list(process_times)  # deque is mutating during iteration for some reason, so copy to list.
     size = len(process_times)
     total = 0

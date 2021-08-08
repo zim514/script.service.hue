@@ -32,10 +32,12 @@ def _force_on(ambi_lights, bridge, saved_light_states):
 
 
 class AmbiGroup(KodiGroup.KodiGroup):
-    def __init__(self, kgroupID, bridge, monitor, flash):
+    def __init__(self, kgroupID, bridge, monitor, flash=False):
+
         self.kgroupID = kgroupID
         self.bridge = bridge
         self.monitor = monitor
+
 
         self.bridgeError500 = 0
 
@@ -48,7 +50,8 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))
 
-        self.transitionTime = int(ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroupID)) / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
+        self.transitionTime = int(
+            ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroupID)) / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
         self.forceOn = ADDON.getSettingBool("group{}_forceOn".format(self.kgroupID))
         self.disableLabs = ADDON.getSettingBool("group{}_disableLabs".format(self.kgroupID))
         self.minBri = ADDON.getSettingInt("group{}_MinBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
@@ -66,7 +69,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         lightIDs = ADDON.getSetting("group{}_Lights".format(self.kgroupID)).split(",")
         index = 0
         for L in lightIDs:
-            gamut = kodiHue.getLightGamut(self.bridge, L)
+            gamut = kodiHue._get_light_gamut(self.bridge, L)
             light = {L: {'gamut': gamut, 'prevxy': (0, 0), "index": index}}
             self.ambiLights.update(light)
             index = index + 1
@@ -79,13 +82,13 @@ class AmbiGroup(KodiGroup.KodiGroup):
         if flash:
             self.flash()
 
-        super(xbmc.Player, self).__init__()
+        super(xbmc.Player).__init__()
 
     def onAVStarted(self):
 
         xbmc.log(
             "Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.playbackType(): {}".format(
-                self.enabled, self.isPlayingVideo(), self.isPlayingAudio(), self.playbackType()))
+                self.enabled, self.isPlayingVideo(), self.isPlayingAudio(), self.playback_type()))
         xbmc.log(
             "Ambilight Settings: Interval: {}, transitionTime: {}".format(self.updateInterval, self.transitionTime))
 
@@ -96,16 +99,16 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         self.videoInfoTag = self.getVideoInfoTag()
         if self.isPlayingVideo():
-            if self.enabled and self.checkActiveTime() and self.checkVideoActivation(self.videoInfoTag):
+            if self.enabled and self.check_active_time() and self.check_video_activation(self.videoInfoTag):
 
                 if self.disableLabs:
-                    self._stopEffects()
+                    self._stop_effects()
 
                 if self.forceOn:
                     _force_on(self.ambiLights, self.bridge, self.savedLightStates)
 
                 self.ambiRunning.set()
-                ambiLoopThread = Thread(target=self._ambiLoop, name="_ambiLoop")
+                ambiLoopThread = Thread(target=self._ambi_loop, name="_ambiLoop")
                 ambiLoopThread.daemon = True
                 ambiLoopThread.start()
 
@@ -115,10 +118,10 @@ class AmbiGroup(KodiGroup.KodiGroup):
         self.ambiRunning.clear()
 
         if self.disableLabs:
-            self._resumeEffects()
+            self._resume_effects()
 
         if self.resume_state:
-            self.resumeLightState()
+            self._resume_light_state()
 
     def onPlayBackPaused(self):
         xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
@@ -126,12 +129,12 @@ class AmbiGroup(KodiGroup.KodiGroup):
         self.ambiRunning.clear()
 
         if self.disableLabs:
-            self._resumeEffects()
+            self._resume_effects()
 
         if self.resume_state:
-            self.resumeLightState()
+            self._resume_light_state()
 
-    def resumeLightState(self):
+    def _resume_light_state(self):
         xbmc.log("[script.service.hue] Resuming light state")
         for L in self.savedLightStates:
             xy = self.savedLightStates[L]['state']['xy']
@@ -147,7 +150,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     xbmc.log("[script.service.hue] resumeLightState: Hue call fail: {}: {}".format(exc.type_id, exc.message))
                     reporting.process_exception(exc)
 
-    def _ambiLoop(self):
+    def _ambi_loop(self):
 
         cap = xbmc.RenderCapture()
         xbmc.log("[script.service.hue] _ambiLoop started")
@@ -189,7 +192,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
                 colors = self.imageProcess.img_avg(image, self.minBri, self.maxBri, self.saturation)
                 for L in self.ambiLights:
-                    x = Thread(target=self._updateHueRGB, name="updateHue", args=(
+                    x = Thread(target=self._update_hue_rgb, name="updateHue", args=(
                         colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, self.transitionTime, colors['bri']))
                     x.daemon = True
                     x.start()
@@ -199,7 +202,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     self.ambiRunning.clear()
                 self.monitor.waitForAbort(self.updateInterval)  # seconds
 
-            average_process_time = kodiHue.perfAverage(PROCESS_TIMES)
+            average_process_time = kodiHue._perf_average(PROCESS_TIMES)
             xbmc.log("[script.service.hue] Average process time: {}".format(average_process_time))
             self.captureSize = ADDON.setSetting("average_process_time", str(average_process_time))
 
@@ -208,7 +211,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
             reporting.process_exception(exc)
         xbmc.log("[script.service.hue] _ambiLoop stopped")
 
-    def _updateHueRGB(self, r, g, b, light, transitionTime, bri):
+    def _update_hue_rgb(self, r, g, b, light, transitionTime, bri):
         gamut = self.ambiLights[light].get('gamut')
         prevxy = self.ambiLights[light].get('prevxy')
 
@@ -234,18 +237,18 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     pass
                 elif exc.type_id == 500 or exc.type_id == 901:  # or exc == 500:  # bridge internal error
                     xbmc.log("[script.service.hue] Bridge internal error: {}".format(exc))
-                    self._bridgeError500()
+                    self._bridge_error500()
                 else:
                     xbmc.log("[script.service.hue] Ambi: QhueException Hue call fail: {}".format(exc))
                     reporting.process_exception(exc)
 
             except (ConnectionError, ReadTimeout) as exc:
                 xbmc.log("[script.service.hue] Ambi: ConnectionError Hue call fail")
-                self._bridgeError500()
+                self._bridge_error500()
             except KeyError:
                 xbmc.log("[script.service.hue] Ambi: KeyError, light not found")
 
-    def _bridgeError500(self):
+    def _bridge_error500(self):
 
         self.bridgeError500 = self.bridgeError500 + 1  # increment counter
         if self.bridgeError500 > 100 and settings_storage['show500Error']:
@@ -255,14 +258,14 @@ class AmbiGroup(KodiGroup.KodiGroup):
                 ADDON.setSettingBool("show500Error", False)
             self.bridgeError500 = 0
 
-    def _stopEffects(self):
-        self.savedEffectSensors = self._getEffectSensors()
+    def _stop_effects(self):
+        self.savedEffectSensors = self._get_effect_sensors()
 
         for sensor in self.savedEffectSensors:
             xbmc.log("[script.service.hue] Stopping effect sensor {}".format(sensor))
             self.bridge.sensors[sensor].state(status=0)
 
-    def _resumeEffects(self):
+    def _resume_effects(self):
         if not hasattr(self, 'savedEffectSensors'):
             return
 
@@ -272,7 +275,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
 
         self.savedEffectSensors = None
 
-    def _getEffectSensors(self):
+    def _get_effect_sensors(self):
         # Map light/group IDs to associated effect sensor IDs
         lights = {}
         groups = {}
@@ -308,7 +311,6 @@ class AmbiGroup(KodiGroup.KodiGroup):
             for i in allGroups[g]['lights']:
                 lights.setdefault(i, set())
                 lights[i] |= sensors
-
 
         if lights:
             xbmc.log('[script.service.hue] Found active Hue Labs effects on lights: {}'.format(lights))

@@ -16,13 +16,17 @@ def error_report_requested(exc):
 
 
 def report_error(url=None):
+    if "dev" in ADDONVERSION:
+        env = "dev"
+    env = "production"
+
     data = {
         'machine': platform.machine(),
         'platform': platform.system(),
         'kodi': KODIVERSION,
         'url': url,
     }
-    rollbar.init(ROLLBAR_API_KEY, capture_ip="anonymize", code_version=ADDONVERSION, root=ADDONPATH, scrub_fields='bridgeUser')
+    rollbar.init(ROLLBAR_API_KEY, capture_ip="anonymize", code_version=ADDONVERSION, root=ADDONPATH, scrub_fields='bridgeUser', environment=env)
     rollbar.report_exc_info(sys.exc_info(), extra_data=data)
 
 
