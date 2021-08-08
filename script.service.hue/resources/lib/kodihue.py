@@ -8,7 +8,7 @@ import xbmcgui
 
 from resources.lib.qhue.qhue import QhueException
 from . import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED, reporting
-from . import KodiGroup
+from . import kodigroup
 from . import qhue, ADDONID, cache
 from .kodisettings import read_settings
 from .kodisettings import settings_storage

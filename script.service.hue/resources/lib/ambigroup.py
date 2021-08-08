@@ -5,14 +5,14 @@ import xbmcgui
 from PIL import Image
 from requests import ReadTimeout, ConnectionError
 
-from resources.lib import kodiHue, PROCESS_TIMES, cache, reporting
+from resources.lib import kodihue, PROCESS_TIMES, cache, reporting
 from resources.lib.language import get_string as _
 from . import ADDON
-from . import ImageProcess
-from . import KodiGroup
+from . import imageprocess
+from . import kodigroup
 from . import MINIMUM_COLOR_DISTANCE
 
-from .KodiGroup import VIDEO, STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
+from .kodigroup import STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
 from .kodisettings import settings_storage
 from .qhue import QhueException
 from .rgbxy import Converter, ColorHelper  # https://github.com/benknight/hue-python-rgb-converter
@@ -22,26 +22,24 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 def _force_on(ambi_lights, bridge, saved_light_states):
     for L in ambi_lights:
         try:
-            # xbmc.log("[script.service.hue] ###### forcing on: {}".format(saved_light_states))
             if not saved_light_states[L]['state']['on']:
                 xbmc.log("[script.service.hue] Forcing lights on".format(saved_light_states))
                 bridge.lights[L].state(on=True, bri=1)
         except QhueException as exc:
             xbmc.log("[script.service.hue] Force On Hue call fail: {}: {}".format(exc.type_id, exc.message))
-            reporting.process_exception(e)
+            reporting.process_exception(exc.type_id, exc.message)
 
 
-class AmbiGroup(KodiGroup.KodiGroup):
+class AmbiGroup(kodigroup.KodiGroup):
     def __init__(self, kgroupID, bridge, monitor, flash=False):
 
         self.kgroupID = kgroupID
         self.bridge = bridge
         self.monitor = monitor
 
-
         self.bridgeError500 = 0
 
-        self.imageProcess = ImageProcess.ImageProcess()
+        self.imageProcess = imageprocess.ImageProcess()
 
         self.converterA = Converter(GamutA)
         self.converterB = Converter(GamutB)
@@ -69,7 +67,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         lightIDs = ADDON.getSetting("group{}_Lights".format(self.kgroupID)).split(",")
         index = 0
         for L in lightIDs:
-            gamut = kodiHue._get_light_gamut(self.bridge, L)
+            gamut = kodihue._get_light_gamut(self.bridge, L)
             light = {L: {'gamut': gamut, 'prevxy': (0, 0), "index": index}}
             self.ambiLights.update(light)
             index = index + 1
@@ -95,7 +93,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
         self.state = STATE_PLAYING
 
         # save light state
-        self.savedLightStates = kodiHue._get_light_states(self.ambiLights, self.bridge)
+        self.savedLightStates = kodihue._get_light_states(self.ambiLights, self.bridge)
 
         self.videoInfoTag = self.getVideoInfoTag()
         if self.isPlayingVideo():
@@ -202,7 +200,7 @@ class AmbiGroup(KodiGroup.KodiGroup):
                     self.ambiRunning.clear()
                 self.monitor.waitForAbort(self.updateInterval)  # seconds
 
-            average_process_time = kodiHue._perf_average(PROCESS_TIMES)
+            average_process_time = kodihue._perf_average(PROCESS_TIMES)
             xbmc.log("[script.service.hue] Average process time: {}".format(average_process_time))
             self.captureSize = ADDON.setSetting("average_process_time", str(average_process_time))
 
