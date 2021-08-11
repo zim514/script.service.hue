@@ -1,9 +1,9 @@
 from threading import Thread, Event
 
+import requests
 import xbmc
 import xbmcgui
 from PIL import Image
-from requests import ReadTimeout, ConnectionError
 
 from resources.lib import kodihue, PROCESS_TIMES, cache, reporting
 from resources.lib.language import get_string as _
@@ -36,7 +36,7 @@ class AmbiGroup(kodigroup.KodiGroup):
         self.kgroupID = kgroupID
         self.bridge = bridge
         self.monitor = monitor
-        self.groupResource = self.bridge.groups[0]
+        self.group0 = self.bridge.groups[0]
 
         self.bridgeError500 = 0
 
@@ -241,8 +241,8 @@ class AmbiGroup(kodigroup.KodiGroup):
                     xbmc.log("[script.service.hue] Ambi: QhueException Hue call fail: {}".format(exc))
                     reporting.process_exception(exc)
 
-            except (ConnectionError, ReadTimeout) as exc:
-                xbmc.log("[script.service.hue] Ambi: ConnectionError Hue call fail")
+            except requests.RequestException as exc:
+                xbmc.log("[script.service.hue] Ambi: RequestException Hue call fail: {}".format(exc))
                 self._bridge_error500()
             except KeyError:
                 xbmc.log("[script.service.hue] Ambi: KeyError, light not found")

@@ -236,3 +236,4 @@ _strings['adjust lights to desired state in the hue app to save as new scene.[cr
 _strings['user not found[cr]check your bridge and network.'] = 30086
 _strings['scene successfully created![cr]you may now assign your scene to player actions.'] = 30087
 _strings['do not show again'] = 30073
+_strings['disable hue labs during playback'] = 30074

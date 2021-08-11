@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.0.14">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.0.15">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0" />
 		<import addon="script.module.requests" version="2.25.1" />
@@ -20,25 +20,17 @@
 		</assets>
 		<source>https://github.com/zim514/script.service.hue</source>
 		<forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-		<news>v1.0.9
+		<news>v1.1
 Fix error on playback stop when lights are off
 Add toggle to disable Hue Labs when Ambilight is activated (Thanks @toupeira!)
-
-v1.0.7
 Maintenance/code clean-up
-
-v1.0.6
-Fix Qhue exception handling
-Fix ambilight crash when lights are off
-
-v1.0.4
-Add Czech localisation
-
-v1.0.3
-Refactor logging system
-Update localisation system and translations
 Crash fixes
-Update settings system</news>
+Update Qhue lib
+Improve exception handling
+Add Czech localisation
+Refactor logging system
+Update to new localisation system
+Update to new settings system</news>
 		<summary lang="cs_CZ">Automatizace Hue světel s přehráváním Kodi</summary>
 		<summary lang="da_DK">Automatiser Hue-lys sammen med afspilning i Kodi</summary>
 		<summary lang="en_GB">Automate Hue lights with Kodi playback</summary>
