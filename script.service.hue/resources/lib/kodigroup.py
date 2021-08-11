@@ -41,17 +41,20 @@ class KodiGroup(xbmc.Player):
 
         self.mediaType = mediaType
         self.lights = self.bridge.lights
-        self.groupResource = self.bridge.groups[0]
+        self.group0 = self.bridge.groups[0]
 
         if flash:
             self.flash()
 
         super().__init__()
 
+    def __repr__(self):
+        return "kgroupID: {}, enabled: {}, startBehavior: {}, startScene: {}, pauseBehavior: {}, pauseScene:{}, stopBehavior: {}, stopScene:{}, state: {}, mediaType: {}".format(self.kgroupID, self.enabled, self.startBehavior, self.startScene, self.pauseScene, self.pauseScene, self.stopBehavior, self.stopScene, self.state, self.mediaType)
+
     def flash(self):
         xbmc.log("[script.service.hue] in KodiGroup Flash")
         try:
-            self.groupResource.action(alert="select")
+            self.group0.action(alert="select")
         except QhueException as exc:
             xbmc.log("[script.service.hue] Hue call fail: {}: {}".format(exc.type_id, exc.message))
             reporting.process_exception(exc)
@@ -128,7 +131,7 @@ class KodiGroup(xbmc.Player):
 
     def run_play(self):
         try:
-            self.groupResource.action(scene=self.startScene)
+            self.group0.action(scene=self.startScene)
         except QhueException as exc:
             xbmc.log("[script.service.hue] onAVStarted: Hue call fail: {}: {}".format(exc.type_id, exc.message))
             if exc.type_id == 7:
@@ -140,7 +143,7 @@ class KodiGroup(xbmc.Player):
     def run_pause(self):
         try:
             xbmc.sleep(500)  # sleep for any left over ambilight calls to complete first.
-            self.groupResource.action(scene=self.pauseScene)
+            self.group0.action(scene=self.pauseScene)
             xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackPaused() Pause scene activated")
         except QhueException as exc:
             xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}: {}".format(exc.type_id, exc.message))
@@ -153,7 +156,7 @@ class KodiGroup(xbmc.Player):
     def run_stop(self):
         try:
             xbmc.sleep(100)  # sleep for any left over ambilight calls to complete first.
-            self.groupResource.action(scene=self.stopScene)
+            self.group0.action(scene=self.stopScene)
             xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackStop() Stop scene activated")
         except QhueException as exc:
             xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}: {}".format(exc.type_id, exc.message))
@@ -183,7 +186,8 @@ class KodiGroup(xbmc.Player):
             mediaType = None
         return mediaType
 
-    def check_active_time(self):
+    @staticmethod
+    def check_active_time():
         service_enabled = cache.get("script.service.hue.service_enabled")
         daylight = cache.get("script.service.hue.daylight")
         xbmc.log(

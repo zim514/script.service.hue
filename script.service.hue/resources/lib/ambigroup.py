@@ -36,7 +36,7 @@ class AmbiGroup(kodigroup.KodiGroup):
         self.kgroupID = kgroupID
         self.bridge = bridge
         self.monitor = monitor
-        self.groupResource = self.bridge.groups[0]
+        self.group0 = self.bridge.groups[0]
 
         self.bridgeError500 = 0
 
