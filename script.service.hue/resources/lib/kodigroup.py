@@ -1,8 +1,8 @@
 import datetime
 
+import requests
 import xbmc
 import xbmcgui
-from requests import Timeout
 
 from resources.lib import cache, reporting
 from resources.lib.kodisettings import convert_time
@@ -55,8 +55,8 @@ class KodiGroup(xbmc.Player):
         except QhueException as exc:
             xbmc.log("[script.service.hue] Hue call fail: {}: {}".format(exc.type_id, exc.message))
             reporting.process_exception(exc)
-        except Timeout as exc:
-            xbmc.log("[script.service.hue] Connect Timeout: {}".format(exc))
+        except requests.RequestException as exc:
+            xbmc.log("[script.service.hue] RequestException: {}".format(exc))
 
     def onAVStarted(self):
         if self.enabled:

@@ -1,8 +1,9 @@
 import sys
 
+import requests
 import xbmc
 import xbmcgui
-from requests.exceptions import ConnectionError, ReadTimeout, ConnectTimeout
+
 
 from resources.lib import ambigroup, kodigroup
 from resources.lib import kodihue
@@ -140,7 +141,7 @@ def service(monitor):
                     else:
                         new_daylight = kodihue.get_daylight(bridge)
 
-                except (ConnectionError, ReadTimeout, ConnectTimeout) as error:
+                except requests.RequestException as error:
                     connection_retries = connection_retries + 1
                     if connection_retries <= 10:
                         xbmc.log("[script.service.hue] Bridge Connection Error. Attempt: {}/10 : {}".format(connection_retries, error))

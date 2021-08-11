@@ -58,8 +58,8 @@ def _discover_nupnp():
     xbmc.log("[script.service.hue] In kodiHue discover_nupnp()")
     try:
         req = requests.get('https://discovery.meethue.com/')
-    except requests.exceptions.ConnectionError as e:
-        xbmc.log("[script.service.hue] Nupnp failed: {}".format(e))
+    except requests.RequestException as exc:
+        xbmc.log("[script.service.hue] Nupnp failed: {}".format(exc))
         return None
 
     res = req.json()
@@ -178,7 +178,7 @@ def user_test(bridgeIP, bridgeUser):
     b = qhue.Bridge(bridgeIP, bridgeUser, timeout=QHUE_TIMEOUT)
     try:
         zigbeechan = b.config()['zigbeechannel']
-    except (requests.exceptions.ConnectionError, qhue.QhueException, KeyError):
+    except (requests.RequestException, qhue.QhueException, KeyError):
         return False
 
     if zigbeechan:
