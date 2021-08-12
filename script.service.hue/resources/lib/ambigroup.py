@@ -19,17 +19,6 @@ from .rgbxy import Converter, ColorHelper  # https://github.com/benknight/hue-py
 from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
 
-def _force_on(ambi_lights, bridge, saved_light_states):
-    for L in ambi_lights:
-        try:
-            if not saved_light_states[L]['state']['on']:
-                xbmc.log("[script.service.hue] Forcing lights on".format(saved_light_states))
-                bridge.lights[L].state(on=True, bri=1)
-        except QhueException as exc:
-            xbmc.log("[script.service.hue] Force On Hue call fail: {}: {}".format(exc.type_id, exc.message))
-            reporting.process_exception(exc.type_id, exc.message)
-
-
 class AmbiGroup(kodigroup.KodiGroup):
     def __init__(self, kgroupID, bridge, monitor, flash=False):
 
@@ -37,9 +26,9 @@ class AmbiGroup(kodigroup.KodiGroup):
         self.bridge = bridge
         self.monitor = monitor
         self.group0 = self.bridge.groups[0]
-
         self.bridgeError500 = 0
 
+        self.ambiRunning = Event()
         self.imageProcess = imageprocess.ImageProcess()
 
         self.converterA = Converter(GamutA)
@@ -68,20 +57,26 @@ class AmbiGroup(kodigroup.KodiGroup):
         lightIDs = ADDON.getSetting("group{}_Lights".format(self.kgroupID)).split(",")
         index = 0
         for L in lightIDs:
-            gamut = kodihue._get_light_gamut(self.bridge, L)
+            gamut = kodihue.get_light_gamut(self.bridge, L)
             light = {L: {'gamut': gamut, 'prevxy': (0, 0), "index": index}}
             self.ambiLights.update(light)
             index = index + 1
-
-        try:
-            self.ambiRunning
-        except AttributeError:
-            self.ambiRunning = Event()
 
         if flash:
             self.flash()
 
         super(xbmc.Player).__init__()
+
+    @staticmethod
+    def _force_on(ambi_lights, bridge, saved_light_states):
+        for L in ambi_lights:
+            try:
+                if not saved_light_states[L]['state']['on']:
+                    xbmc.log("[script.service.hue] Forcing lights on".format(saved_light_states))
+                    bridge.lights[L].state(on=True, bri=1)
+            except QhueException as exc:
+                xbmc.log("[script.service.hue] Force On Hue call fail: {}: {}".format(exc.type_id, exc.message))
+                reporting.process_exception(exc.type_id, exc.message)
 
     def onAVStarted(self):
 
@@ -104,7 +99,7 @@ class AmbiGroup(kodigroup.KodiGroup):
                     self._stop_effects()
 
                 if self.forceOn:
-                    _force_on(self.ambiLights, self.bridge, self.savedLightStates)
+                    self._force_on(self.ambiLights, self.bridge, self.savedLightStates)
 
                 self.ambiRunning.set()
                 ambiLoopThread = Thread(target=self._ambi_loop, name="_ambiLoop")
@@ -190,7 +185,7 @@ class AmbiGroup(kodigroup.KodiGroup):
                     continue
 
                 colors = self.imageProcess.img_avg(image, self.minBri, self.maxBri, self.saturation)
-                for L in self.ambiLights:
+                for L in list(self.ambiLights):
                     x = Thread(target=self._update_hue_rgb, name="updateHue", args=(
                         colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, self.transitionTime, colors['bri']))
                     x.daemon = True
@@ -230,19 +225,17 @@ class AmbiGroup(kodigroup.KodiGroup):
                 self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=int(transitionTime))
                 self.ambiLights[light].update(prevxy=xy)
             except QhueException as exc:
-                # xbmc.log("[script.service.hue] ***** Zexception: \n{} \n {}".format(exc, exc.type_id))
-
                 if exc.type_id == 201:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                     pass
                 elif exc.type_id == 500 or exc.type_id == 901:  # or exc == 500:  # bridge internal error
                     xbmc.log("[script.service.hue] Bridge internal error: {}".format(exc))
                     self._bridge_error500()
                 else:
-                    xbmc.log("[script.service.hue] Ambi: QhueException Hue call fail: {}".format(exc))
+                    xbmc.log("[script.service.hue] Ambi: QhueException Hue call fail: {}: {}".format(exc.type_id, exc.message))
                     reporting.process_exception(exc)
 
             except requests.RequestException as exc:
-                xbmc.log("[script.service.hue] Ambi: RequestException Hue call fail: {}".format(exc))
+                xbmc.log("[script.service.hue] Ambi: RequestException: {}".format(exc))
                 self._bridge_error500()
             except KeyError:
                 xbmc.log("[script.service.hue] Ambi: KeyError, light not found")
