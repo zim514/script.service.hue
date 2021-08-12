@@ -54,7 +54,7 @@ class KodiGroup(xbmc.Player):
                                                                                                                                                                                  self.stopBehavior, self.stopScene, self.state, self.mediaType)
 
     def flash(self):
-        #xbmc.log("[script.service.hue] in KodiGroup Flash")
+        # xbmc.log("[script.service.hue] in KodiGroup Flash")
         try:
             self.group0.action(alert="select")
         except QhueException as exc:
@@ -254,9 +254,9 @@ class KodiGroup(xbmc.Player):
                 for light in sceneData["lights"]:
                     l = self.bridge.lights[light]()
                     if l["state"]["on"]:  # one light is on, the scene can be applied
-                        #xbmc.log("[script.service.hue] Check if scene light already active: True")
+                        # xbmc.log("[script.service.hue] Check if scene light already active: True")
                         return True
-                #xbmc.log("[script.service.hue] Check if scene light already active: False")
+                # xbmc.log("[script.service.hue] Check if scene light already active: False")
             except QhueException as exc:
                 xbmc.log("[script.service.hue] checkAlreadyActive: Hue call fail: {}: {}".format(exc.type_id, exc.message))
 

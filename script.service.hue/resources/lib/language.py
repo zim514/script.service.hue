@@ -1,7 +1,5 @@
-#! /usr/bin/python
-
-######### Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
-######### https://forum.kodi.tv/showthread.php?tid=268081&highlight=generate+.po+python+gettext
+# Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
+# https://forum.kodi.tv/showthread.php?tid=268081&highlight=generate+.po+python+gettext
 import traceback
 
 _strings = {}
@@ -40,11 +38,11 @@ if __name__ == "__main__":
         translated = [m.msgid.lower().replace("'", "\\'") for m in po]
         missing = set([s for s in strings if s.lower() not in translated])
 
-        print("Missing:"+ str(missing))
+        print("Missing:" + str(missing))
 
         if missing:
             ids_range = list(range(30000, 35000))
-            #ids_reserved = [int(m.msgctxt[1:]) for m in po]
+            # ids_reserved = [int(m.msgctxt[1:]) for m in po]
             ids_reserved = []
             for m in po:
                 print("msgctxt: {0}".format(m.msgctxt))
@@ -52,11 +50,10 @@ if __name__ == "__main__":
                     ids_reserved.append(int(m.msgctxt[1:]))
 
             ids_available = [x for x in ids_range if x not in ids_reserved]
-            #print("IDs Reserved:")
-            #print(ids_reserved)
-            #print("IDs Available:")
-            #print(ids_available)
-
+            # print("IDs Reserved:")
+            # print(ids_reserved)
+            # print("IDs Available:")
+            # print(ids_available)
 
             print("WARNING: adding missing translation for '%s'" % missing)
             for text in missing:
@@ -82,18 +79,18 @@ if __name__ == "__main__":
 else:
     from . import STRDEBUG, ADDON, xbmc
 
+
     def get_string(t):
         string_id = _strings.get(t.lower())
         if not string_id:
-            xbmc.log("[script.service.hue] LANGUAGE: missing translation for '%s'" % t.lower())
+            xbmc.log("[script.service.hue] LANGUAGE: missing translation for {}}".format(t.lower()))
             return t
 
         if STRDEBUG is True:
             return "STR:{} {}".format(string_id, ADDON.getLocalizedString(string_id))
         return ADDON.getLocalizedString(string_id)
 
-
-#GENERATED
+# GENERATED
 _strings['video actions'] = 32100
 _strings['audio actions'] = 32102
 _strings['start/resume'] = 32201

@@ -2,9 +2,8 @@
 # but distributed under the GPL v2.
 # It expects Python v3.
 
-import re
 import json
-
+import re
 # for hostname retrieval for registering with the bridge
 from socket import getfqdn
 
@@ -26,6 +25,7 @@ class Resource(object):
     When you call a Resource, you are making a request to that URL with some
     parameters.
     """
+
     def __init__(self, url, session, timeout=_DEFAULT_TIMEOUT, object_pairs_hook=None):
         self.url = url
         self.session = session
@@ -71,7 +71,7 @@ class Resource(object):
                 # exception, to keep the exception type simple.
                 raise QhueException(
                     message="\n".join(e["description"] for e in errors),
-                    type_id=errors[0]['type'], 
+                    type_id=errors[0]['type'],
                     address=errors[0]['address']
                 )
         return resp
@@ -125,6 +125,7 @@ class Bridge(Resource):
     It is the basis for building other Resources that represent the things
     managed by that Bridge.
     """
+
     def __init__(self, ip, username, timeout=_DEFAULT_TIMEOUT, object_pairs_hook=None):
         """
         Create a new connection to a hue bridge.

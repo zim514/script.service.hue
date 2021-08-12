@@ -4,7 +4,6 @@ import requests
 import xbmc
 import xbmcgui
 
-
 from resources.lib import ambigroup, kodigroup
 from resources.lib import kodihue
 from resources.lib import kodisettings
