@@ -1,8 +1,7 @@
-"""
-Based on ScreenBloom by Tyler Kershner
-https://github.com/kershner/screenBloom
-http://www.screenbloom.com/
-"""
+# Based on ScreenBloom by Tyler Kershner
+# https://github.com/kershner/screenBloom
+# http://www.screenbloom.com/
+
 from PIL import ImageEnhance
 from resources.lib import timer
 
@@ -10,7 +9,6 @@ from resources.lib import timer
 class ImageProcess(object):
 
     def __init__(self):
-
         self.LOW_THRESHOLD = 10
         self.MID_THRESHOLD = 30
         self.HIGH_THRESHOLD = 240
@@ -66,11 +64,7 @@ class ImageProcess(object):
 
         rgb = (rgb[0], rgb[1], rgb[2])
 
-        data = {
-            'rgb': rgb,
-            # 'dark_ratio': float(dark_pixels) / float(total_pixels) * 100,
-            'bri': self.get_brightness(minBri, maxBri, float(dark_pixels) / float(total_pixels) * 100)
-        }
+        data = {'rgb': rgb, 'bri': self.get_brightness(minBri, maxBri, float(dark_pixels) / float(total_pixels) * 100)}
         return data
 
         # Return modified Hue brightness value from ratio of dark pixels

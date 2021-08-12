@@ -454,7 +454,7 @@ def _perf_average(process_times):
     return _("Unknown")
 
 
-def _get_light_states(lights, bridge):
+def get_light_states(lights, bridge):
     states = {}
 
     for L in lights:

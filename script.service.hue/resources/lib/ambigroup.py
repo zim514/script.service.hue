@@ -89,7 +89,7 @@ class AmbiGroup(kodigroup.KodiGroup):
         self.state = STATE_PLAYING
 
         # save light state
-        self.savedLightStates = kodihue._get_light_states(self.ambiLights, self.bridge)
+        self.savedLightStates = kodihue.get_light_states(self.ambiLights, self.bridge)
 
         self.videoInfoTag = self.getVideoInfoTag()
         if self.isPlayingVideo():
@@ -153,10 +153,7 @@ class AmbiGroup(kodigroup.KodiGroup):
 
         self.captureSizeY = int(self.captureSize / aspect_ratio)
         expected_capture_size = self.captureSize * self.captureSizeY * 4  # size * 4 bytes I guess
-        xbmc.log(
-            "aspect_ratio: {}, Capture Size: ({},{}), expected_capture_size: {}".format(aspect_ratio, self.captureSize,
-                                                                                        self.captureSizeY,
-                                                                                        expected_capture_size))
+        xbmc.log("[script.service.hue] aspect_ratio: {}, Capture Size: ({},{}), expected_capture_size: {}".format(aspect_ratio, self.captureSize, self.captureSizeY, expected_capture_size))
 
         for L in list(self.ambiLights):
             self.ambiLights[L].update(prevxy=(0.0001, 0.0001))
@@ -179,15 +176,14 @@ class AmbiGroup(kodigroup.KodiGroup):
                     self.monitor.waitForAbort(0.25)
                     continue  # returned capture is  smaller than expected when player stopping. give up this loop.
                 except Exception as exc:
-                    xbmc.log("[script.service.hue] Capture exception", exc_info=1)
+                    xbmc.log("[script.service.hue] Capture exception")
                     reporting.process_exception(exc)
                     self.monitor.waitForAbort(0.25)
                     continue
 
                 colors = self.imageProcess.img_avg(image, self.minBri, self.maxBri, self.saturation)
                 for L in list(self.ambiLights):
-                    x = Thread(target=self._update_hue_rgb, name="updateHue", args=(
-                        colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, self.transitionTime, colors['bri']))
+                    x = Thread(target=self._update_hue_rgb, name="updateHue", args=(colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, self.transitionTime, colors['bri']))
                     x.daemon = True
                     x.start()
 
