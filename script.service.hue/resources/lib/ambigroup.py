@@ -163,7 +163,7 @@ class AmbiGroup(kodigroup.KodiGroup):
                                                                                         self.captureSizeY,
                                                                                         expected_capture_size))
 
-        for L in self.ambiLights:
+        for L in list(self.ambiLights):
             self.ambiLights[L].update(prevxy=(0.0001, 0.0001))
 
         try:
