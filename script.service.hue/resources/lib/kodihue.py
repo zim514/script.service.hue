@@ -410,12 +410,12 @@ def connect_bridge(monitor, silent=False):
         return None
 
 
-def _get_light_gamut(bridge, l):
+def get_light_gamut(bridge, light):
     try:
-        gamut = bridge.lights()[l]['capabilities']['control']['colorgamuttype']
-        xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(l, gamut))
-    except Exception:
-        xbmc.log("[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {}".format(l))
+        gamut = bridge.lights()[light]['capabilities']['control']['colorgamuttype']
+        #xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(l, gamut))
+    except QhueException:
+        xbmc.log("[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {}".format(light))
         return "C"
     if gamut == "A" or gamut == "B" or gamut == "C":
         return gamut
@@ -454,7 +454,7 @@ def _perf_average(process_times):
     return _("Unknown")
 
 
-def _get_light_states(lights, bridge):
+def get_light_states(lights, bridge):
     states = {}
 
     for L in lights:
