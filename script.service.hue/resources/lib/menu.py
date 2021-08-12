@@ -1,3 +1,4 @@
+import os
 import sys
 from datetime import timedelta
 from urllib.parse import parse_qs
@@ -7,7 +8,7 @@ import xbmc
 import xbmcplugin
 from xbmcgui import ListItem
 
-from resources.lib import ADDON
+from resources.lib import ADDON, ADDONPATH
 from .language import get_string as _
 
 cache = simplecache.SimpleCache()

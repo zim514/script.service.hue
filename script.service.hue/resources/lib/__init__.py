@@ -3,9 +3,9 @@ import time
 from collections import deque
 from threading import Event
 
-import simplecache
 import xbmc
 import xbmcaddon
+import simplecache
 
 NUM_GROUPS = 2  # group0= video, group1=audio
 STRDEBUG = False  # Show string ID in UI

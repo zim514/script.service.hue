@@ -8,6 +8,7 @@ import xbmcgui
 
 from resources.lib.qhue.qhue import QhueException
 from . import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED, reporting
+from . import kodigroup
 from . import qhue, ADDONID, cache
 from .kodisettings import read_settings
 from .kodisettings import settings_storage
@@ -412,7 +413,7 @@ def connect_bridge(monitor, silent=False):
 def get_light_gamut(bridge, light):
     try:
         gamut = bridge.lights()[light]['capabilities']['control']['colorgamuttype']
-        # xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(l, gamut))
+        #xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(l, gamut))
     except QhueException:
         xbmc.log("[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {}".format(light))
         return "C"

@@ -8,9 +8,10 @@ from PIL import Image
 from resources.lib import kodihue, PROCESS_TIMES, cache, reporting
 from resources.lib.language import get_string as _
 from . import ADDON
-from . import MINIMUM_COLOR_DISTANCE
 from . import imageprocess
 from . import kodigroup
+from . import MINIMUM_COLOR_DISTANCE
+
 from .kodigroup import STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
 from .kodisettings import settings_storage
 from .qhue import QhueException
