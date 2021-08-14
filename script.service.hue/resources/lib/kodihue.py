@@ -151,19 +151,25 @@ def discover_bridge(monitor):
         progressBar.close()
 
 
-def connection_test(bridgeIP):
-    b = qhue.qhue.Resource("http://{}/api".format(bridgeIP), requests.session())
+def connection_test(bridge_ip):
+    b = qhue.qhue.Resource("http://{}/api".format(bridge_ip), requests.session())
     try:
         apiversion = b.config()['apiversion']
-    except (qhue.QhueException, requests.exceptions.RequestException) as error:
+    except qhue.QhueException as error:
+        xbmc.log("[script.service.hue] Connection test failed.  {}: {}".format(error.type_id, error.message))
+        reporting.process_exception(error.type_id, error.message)
+        return False
+    except requests.RequestException as error:
         xbmc.log("[script.service.hue] Connection test failed.  {}".format(error))
+        reporting.process_exception(error)
         return False
     except KeyError as error:
         notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)), icon=xbmcgui.NOTIFICATION_ERROR)
-        xbmc.log("[script.service.hue] in ConnectionTest():  Connected! Bridge too old: {}".format(apiversion))
+        xbmc.log("[script.service.hue] in ConnectionTest():  Connected! Bridge too old: {}, error: {}".format(apiversion, error))
         return False
 
     api_split = apiversion.split(".")
+
     if apiversion and int(api_split[0]) >= 1 and int(api_split[1]) >= 38:  # minimum bridge version 1.38
         xbmc.log("[script.service.hue] Bridge Found! Hue API version: {}".format(apiversion))
         return True
