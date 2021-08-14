@@ -351,6 +351,7 @@ def get_daylight(bridge):
     except QhueException as exc:
         xbmc.log("[script.service.hue]: Get Daylight Qhue Exception: {}: {}".format(exc.type_id, exc.message))
         reporting.process_exception(exc)
+        return
     return daylight
 
 
@@ -433,8 +434,7 @@ def check_bridge_model(bridge):
         xbmc.log("[script.service.hue] Bridge model OK: {}".format(model))
         return True
     xbmc.log("[script.service.hue] Unsupported bridge model: {}".format(model))
-    xbmcgui.Dialog().ok(_("Unsupported Hue Bridge"), _(
-        "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."))
+    xbmcgui.Dialog().ok(_("Unsupported Hue Bridge"), _("Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."))
     return None
 
 
@@ -468,7 +468,7 @@ def get_light_states(lights, bridge):
 
 class HueMonitor(xbmc.Monitor):
     def __init__(self):
-        super(xbmc.Monitor, self).__init__()
+        super().__init__()
 
     def onSettingsChanged(self):
         xbmc.log("[script.service.hue] Settings changed")
