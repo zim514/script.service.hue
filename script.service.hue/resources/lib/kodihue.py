@@ -24,7 +24,7 @@ def create_hue_scene(bridge):
     scene_name = xbmcgui.Dialog().input(_("Scene Name"))
 
     if scene_name:
-        transition_time = int(xbmcgui.Dialog().numeric(0, _("Fade Time (Seconds)"), defaultt="10")) * 10  # yes, default with two ts. *10 to convert to msecs
+        transition_time = int(xbmcgui.Dialog().numeric(0, _("Fade Time (Seconds)"), defaultt="10")) * 10  # yes, default with two ts. *10 to convert secs to msecs
         if transition_time > 65534:  # hue uses uint16 for transition time.
             transition_time = 65534
         selected = select_hue_lights(bridge)
@@ -47,12 +47,14 @@ def delete_hue_scene(bridge):
         confirm = xbmcgui.Dialog().yesno(heading=_("Delete Hue Scene"), message=_("Are you sure you want to delete this scene:[CR]" + str(scene[1])))
     if scene and confirm:
         scenes = bridge.scenes
-        res = scenes[scene[0]](http_method='delete')
-        xbmc.log("[script.service.hue] In kodiHue createHueGroup. Res: {}".format(res))
-        if res[0]["success"]:
+        result = scenes[scene[0]](http_method='delete')
+        xbmc.log("[script.service.hue] In kodiHue createHueGroup. Res: {}".format(result))
+        if result[0]["success"]:
             notification(_("Hue Service"), _("Scene deleted"))
         else:
-            notification(_("Hue Service"), _("ERROR: Scene not created"))
+            xbmc.log("[script.service.hue] Scene not deleted: {}".format(result))
+            notification(_("Hue Service"), _("ERROR: Scene not deleted"))
+
 
 
 def _discover_nupnp():

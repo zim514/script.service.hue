@@ -199,14 +199,6 @@ msgctxt "#30000"
 msgid "Hue Service"
 msgstr "Hue Service"
 
-msgctxt "#30001"
-msgid "ERROR: Group not created"
-msgstr "ERROR: Group not created"
-
-msgctxt "#30003"
-msgid "Group deleted"
-msgstr "Group deleted"
-
 msgctxt "#30004"
 msgid "Check your bridge and network"
 msgstr "Check your bridge and network"
@@ -288,8 +280,8 @@ msgid "Check Hue Bridge configuration"
 msgstr "Check Hue Bridge configuration"
 
 msgctxt "#30025"
-msgid "ERROR: Scene not created"
-msgstr "ERROR: Scene not created"
+msgid "ERROR: Scene not deleted"
+msgstr "ERROR: Scene not deleted"
 
 msgctxt "#30026"
 msgid "Scene Created"
