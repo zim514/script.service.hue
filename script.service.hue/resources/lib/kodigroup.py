@@ -4,7 +4,7 @@ import requests
 import xbmc
 import xbmcgui
 
-from resources.lib import cache, reporting
+from resources.lib import cache, reporting, kodihue
 from resources.lib.kodisettings import convert_time
 from resources.lib.qhue import QhueException
 from . import ADDON
@@ -134,7 +134,7 @@ class KodiGroup(xbmc.Player):
             xbmc.log("[script.service.hue] onAVStarted: Hue call fail: {}: {}".format(exc.type_id, exc.message))
             if exc.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
-                xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+                kodihue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
                 reporting.process_exception(exc)
 
@@ -147,7 +147,7 @@ class KodiGroup(xbmc.Player):
             xbmc.log("[script.service.hue] run_pause Hue call fail: {}: {}".format(exc.type_id, exc.message))
             if exc.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
-                xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+                kodihue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
                 reporting.process_exception(exc)
 
@@ -160,7 +160,7 @@ class KodiGroup(xbmc.Player):
             xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}: {}".format(exc.type_id, exc.message))
             if exc.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
-                xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+                kodihue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
                 reporting.process_exception(exc)
 

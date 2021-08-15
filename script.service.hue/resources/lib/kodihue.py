@@ -34,7 +34,7 @@ def create_hue_scene(bridge):
             xbmc.log("[script.service.hue] In kodiHue createHueScene. Res: {}".format(res))
             if res[0]["success"]:
                 xbmcgui.Dialog().ok(heading=_("Create New Scene"), message=_("Scene successfully created![CR]You may now assign your Scene to player actions."))
-            #   xbmcgui.Dialog().notification(_("Hue Service"), _("Scene Created"))
+            #   kodihue.notification(_("Hue Service"), _("Scene Created"))
             else:
                 xbmcgui.Dialog().ok(_("Error"), _("Error: Scene not created."))
 
@@ -49,9 +49,9 @@ def delete_hue_scene(bridge):
         res = scenes[scene[0]](http_method='delete')
         xbmc.log("[script.service.hue] In kodiHue createHueGroup. Res: {}".format(res))
         if res[0]["success"]:
-            xbmcgui.Dialog().notification(_("Hue Service"), _("Scene deleted"))
+            notification(_("Hue Service"), _("Scene deleted"))
         else:
-            xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not created"))
+            notification(_("Hue Service"), _("ERROR: Scene not created"))
 
 
 def _discover_nupnp():
@@ -77,7 +77,7 @@ def _discover_ssdp():
         ssdp_list = ssdp.discover("upnp:rootdevice", timeout=10, mx=5)
     except Exception as exc:
         xbmc.log("[script.service.hue] SSDP error: {}".format(exc.args))
-        xbmcgui.Dialog().notification(_("Hue Service"), _("Network not ready"), xbmcgui.NOTIFICATION_ERROR)
+        notification(_("Hue Service"), _("Network not ready"), xbmcgui.NOTIFICATION_ERROR)
         return None
 
     xbmc.log("[script.service.hue] ssdp_list: {}".format(ssdp_list))
@@ -444,7 +444,7 @@ def check_bridge_model(bridge):
     return None
 
 
-def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), sound=True):
+def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), sound=False):
     xbmcgui.Dialog().notification(header, message, icon, time, sound)
 
 
