@@ -165,7 +165,6 @@ _strings['delete hue scene'] = 30028
 _strings['create a hue scene from current light state'] = 30029
 _strings['enter scene name'] = 30030
 _strings['transition time:'] = 30031
-_strings['fade time must be saved as part of the scene.'] = 30032
 _strings['{} secs.'] = 30033
 _strings['cancel'] = 30034
 _strings['lights:'] = 30035

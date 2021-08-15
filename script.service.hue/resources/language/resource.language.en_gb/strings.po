@@ -307,10 +307,6 @@ msgctxt "#30031"
 msgid "Transition Time:"
 msgstr "Transition Time:"
 
-msgctxt "#30032"
-msgid "Fade time must be saved as part of the scene."
-msgstr "Fade time must be saved as part of the scene."
-
 msgctxt "#30033"
 msgid "{} secs."
 msgstr "{} secs."
