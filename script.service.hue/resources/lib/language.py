@@ -1,7 +1,7 @@
 #! /usr/bin/python
+# Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
+# https://forum.kodi.tv/showthread.php?tid=268081&highlight=generate+.po+python+gettext
 
-######### Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
-######### https://forum.kodi.tv/showthread.php?tid=268081&highlight=generate+.po+python+gettext
 import traceback
 
 _strings = {}
@@ -40,11 +40,11 @@ if __name__ == "__main__":
         translated = [m.msgid.lower().replace("'", "\\'") for m in po]
         missing = set([s for s in strings if s.lower() not in translated])
 
-        print("Missing:"+ str(missing))
+        print("Missing:" + str(missing))
 
         if missing:
             ids_range = list(range(30000, 35000))
-            #ids_reserved = [int(m.msgctxt[1:]) for m in po]
+            # ids_reserved = [int(m.msgctxt[1:]) for m in po]
             ids_reserved = []
             for m in po:
                 print("msgctxt: {0}".format(m.msgctxt))
@@ -52,11 +52,10 @@ if __name__ == "__main__":
                     ids_reserved.append(int(m.msgctxt[1:]))
 
             ids_available = [x for x in ids_range if x not in ids_reserved]
-            #print("IDs Reserved:")
-            #print(ids_reserved)
-            #print("IDs Available:")
-            #print(ids_available)
-
+            # print("IDs Reserved:")
+            # print(ids_reserved)
+            # print("IDs Available:")
+            # print(ids_available)
 
             print("WARNING: adding missing translation for '%s'" % missing)
             for text in missing:
@@ -82,6 +81,7 @@ if __name__ == "__main__":
 else:
     from . import STRDEBUG, ADDON, xbmc
 
+
     def get_string(t):
         string_id = _strings.get(t.lower())
         if not string_id:
@@ -92,8 +92,7 @@ else:
             return "STR:{} {}".format(string_id, ADDON.getLocalizedString(string_id))
         return ADDON.getLocalizedString(string_id)
 
-
-#GENERATED
+# GENERATED
 _strings['video actions'] = 32100
 _strings['audio actions'] = 32102
 _strings['start/resume'] = 32201
@@ -130,15 +129,11 @@ _strings['initial flash'] = 5110
 _strings['flash on settings reload'] = 5111
 _strings['light selection'] = 6100
 _strings['select lights'] = 6101
-_strings['select hue group'] = 6102
-_strings['group behavior'] = 6200
 _strings['enabled'] = 30520
 _strings['press connect button on hue bridge'] = 9001
 _strings['create scene'] = 9007
 _strings['delete scene'] = 9008
 _strings['hue service'] = 30000
-_strings['error: group not created'] = 30001
-_strings['group deleted'] = 30003
 _strings['check your bridge and network'] = 30004
 _strings['hue connected'] = 30006
 _strings['press link button on bridge'] = 30007
@@ -146,34 +141,30 @@ _strings['bridge not found'] = 30008
 _strings['waiting for 90 seconds...'] = 30009
 _strings['user not found'] = 30010
 _strings['complete!'] = 30011
-_strings['group created'] = 30012
 _strings['cancelled'] = 30013
 _strings['saving settings'] = 30014
 _strings['select hue lights...'] = 30015
-_strings['are you sure you want to delete this group: '] = 30016
 _strings['found bridge: '] = 30017
 _strings['discover bridge...'] = 30018
 _strings['user found!'] = 30019
-_strings['delete hue group'] = 30020
 _strings['bridge connection failed'] = 30021
 _strings['discovery started'] = 30022
 _strings['bridge not configured'] = 30023
 _strings['check hue bridge configuration'] = 30024
-_strings['error: scene not created'] = 30025
+_strings['error: scene not deleted'] = 30025
 _strings['scene created'] = 30026
 _strings['are you sure you want to delete this scene: '] = 30027
 _strings['delete hue scene'] = 30028
 _strings['create a hue scene from current light state'] = 30029
 _strings['enter scene name'] = 30030
 _strings['transition time:'] = 30031
-_strings['fade time must be saved as part of the scene.'] = 30032
 _strings['{} secs.'] = 30033
 _strings['cancel'] = 30034
 _strings['lights:'] = 30035
 _strings['scene name:'] = 30036
 _strings['save'] = 30037
 _strings['create hue scene'] = 30038
-_strings['error: scene not created.'] = 30002
+_strings['scene not created.'] = 30002
 _strings['set a fade time in seconds, or set to 0 seconds for an instant transition.'] = 30039
 _strings['scene deleted'] = 30040
 _strings['you may now assign your scene to player actions.'] = 30041

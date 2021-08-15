@@ -49,7 +49,7 @@ def commands(monitor, command):
             kodihue.create_hue_scene(bridge)
         else:
             xbmc.log("[script.service.hue] No bridge found. createHueScene cancelled.")
-            xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+            kodihue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif command == "deleteHueScene":
         xbmc.log("[script.service.hue] Started with {}".format(command))
@@ -59,7 +59,7 @@ def commands(monitor, command):
             kodihue.delete_hue_scene(bridge)
         else:
             xbmc.log("[script.service.hue] No bridge found. deleteHueScene cancelled.")
-            xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+            kodihue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif command == "sceneSelect":  # sceneSelect=kgroup,action  / sceneSelect=0,play
         kgroup = sys.argv[2]
@@ -71,7 +71,7 @@ def commands(monitor, command):
             kodihue.configure_scene(bridge, kgroup, action)
         else:
             xbmc.log("[script.service.hue] No bridge found. sceneSelect cancelled.")
-            xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+            kodihue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif command == "ambiLightSelect":  # ambiLightSelect=kgroupID
         kgroup = sys.argv[2]
@@ -82,7 +82,7 @@ def commands(monitor, command):
             kodihue.configure_ambilights(bridge, kgroup)
         else:
             xbmc.log("[script.service.hue] No bridge found. scene ambi lights cancelled.")
-            xbmcgui.Dialog().notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+            kodihue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
     else:
         xbmc.log("[script.service.hue] Unknown command")
         return
@@ -145,12 +145,12 @@ def service(monitor):
                     connection_retries = connection_retries + 1
                     if connection_retries <= 10:
                         xbmc.log("[script.service.hue] Bridge Connection Error. Attempt: {}/10 : {}".format(connection_retries, error))
-                        xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
+                        kodihue.notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
                         timer = -60
 
                     else:
                         xbmc.log("[script.service.hue] Bridge Connection Error. Attempt: {}/5. Shutting down : {}".format(connection_retries, error))
-                        xbmcgui.Dialog().notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
+                        kodihue.notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
                         settings_storage['connected'] = False
 
                 except Exception as exc:

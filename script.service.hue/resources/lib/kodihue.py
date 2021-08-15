@@ -21,22 +21,23 @@ def create_hue_scene(bridge):
 
     xbmcgui.Dialog().ok(heading=_("Create New Scene"), message=_("Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or set to 0 seconds for an instant transition."))
 
-    sceneName = xbmcgui.Dialog().input(_("Scene Name"))
+    scene_name = xbmcgui.Dialog().input(_("Scene Name"))
 
-    if sceneName:
-        transitionTime = xbmcgui.Dialog().numeric(0, _("Fade Time (Seconds)"), defaultt="10")
+    if scene_name:
+        transition_time = int(xbmcgui.Dialog().numeric(0, _("Fade Time (Seconds)"), defaultt="10")) * 10  # yes, default with two ts. *10 to convert secs to msecs
+        if transition_time > 65534:  # hue uses uint16 for transition time.
+            transition_time = 65534
         selected = select_hue_lights(bridge)
 
         if selected:
-            res = scenes(lights=selected, name=sceneName, recycle=False, type='LightScene', http_method='post',
-                         transitiontime=int(
-                             transitionTime) * 10)  # Hue API transition time is in 100msec. *10 to convert to seconds.
-            xbmc.log("[script.service.hue] In kodiHue createHueScene. Res: {}".format(res))
-            if res[0]["success"]:
+            result = scenes(lights=selected, name=scene_name, recycle=False, type='LightScene', http_method='post', transitiontime=transition_time)
+            # xbmc.log("[script.service.hue] In kodiHue createHueScene. Res: {}".format(res))
+            if result[0]["success"]:
                 xbmcgui.Dialog().ok(heading=_("Create New Scene"), message=_("Scene successfully created![CR]You may now assign your Scene to player actions."))
-            #   xbmcgui.Dialog().notification(_("Hue Service"), _("Scene Created"))
             else:
-                xbmcgui.Dialog().ok(_("Error"), _("Error: Scene not created."))
+                xbmcgui.Dialog().ok(_("Error"), _("Scene not created."))
+    else:
+        xbmcgui.Dialog().ok(_("Error"), _("Scene not created."))
 
 
 def delete_hue_scene(bridge):
@@ -46,12 +47,14 @@ def delete_hue_scene(bridge):
         confirm = xbmcgui.Dialog().yesno(heading=_("Delete Hue Scene"), message=_("Are you sure you want to delete this scene:[CR]" + str(scene[1])))
     if scene and confirm:
         scenes = bridge.scenes
-        res = scenes[scene[0]](http_method='delete')
-        xbmc.log("[script.service.hue] In kodiHue createHueGroup. Res: {}".format(res))
-        if res[0]["success"]:
-            xbmcgui.Dialog().notification(_("Hue Service"), _("Scene deleted"))
+        result = scenes[scene[0]](http_method='delete')
+        xbmc.log("[script.service.hue] In kodiHue createHueGroup. Res: {}".format(result))
+        if result[0]["success"]:
+            notification(_("Hue Service"), _("Scene deleted"))
         else:
-            xbmcgui.Dialog().notification(_("Hue Service"), _("ERROR: Scene not created"))
+            xbmc.log("[script.service.hue] Scene not deleted: {}".format(result))
+            notification(_("Hue Service"), _("ERROR: Scene not deleted"))
+
 
 
 def _discover_nupnp():
@@ -77,7 +80,7 @@ def _discover_ssdp():
         ssdp_list = ssdp.discover("upnp:rootdevice", timeout=10, mx=5)
     except Exception as exc:
         xbmc.log("[script.service.hue] SSDP error: {}".format(exc.args))
-        xbmcgui.Dialog().notification(_("Hue Service"), _("Network not ready"), xbmcgui.NOTIFICATION_ERROR)
+        notification(_("Hue Service"), _("Network not ready"), xbmcgui.NOTIFICATION_ERROR)
         return None
 
     xbmc.log("[script.service.hue] ssdp_list: {}".format(ssdp_list))
@@ -420,7 +423,7 @@ def connect_bridge(monitor, silent=False):
 def get_light_gamut(bridge, light):
     try:
         gamut = bridge.lights()[light]['capabilities']['control']['colorgamuttype']
-        #xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(l, gamut))
+        # xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(l, gamut))
     except QhueException:
         xbmc.log("[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {}".format(light))
         return "C"
@@ -444,7 +447,7 @@ def check_bridge_model(bridge):
     return None
 
 
-def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), sound=True):
+def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), sound=False):
     xbmcgui.Dialog().notification(header, message, icon, time, sound)
 
 

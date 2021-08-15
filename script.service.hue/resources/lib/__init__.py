@@ -36,7 +36,5 @@ def timer(func):
         endTime = time.time()  # 2
         runTime = endTime - startTime  # 3
         PROCESS_TIMES.append(runTime)
-
         return value
-
     return wrapper_timer

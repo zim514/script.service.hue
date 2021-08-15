@@ -9,10 +9,7 @@ from . import ADDONVERSION, ROLLBAR_API_KEY, ADDONID, KODIVERSION, ADDONPATH
 
 
 def error_report_requested(exc):
-    return xbmcgui.Dialog().yesno(heading="{} {}".format(ADDONID, _("Error")), message=_("The following error occurred:") +
-                                                                                       "\n[COLOR=red]{}[/COLOR]\n".format(exc) +
-                                                                                       _("Automatically report this error?")
-                                  )
+    return xbmcgui.Dialog().yesno(heading="{} {}".format(ADDONID, _("Error")), message=_("The following error occurred:") + "\n[COLOR=red]{}[/COLOR]\n".format(exc) + _("Automatically report this error?"))
 
 
 def report_error():
