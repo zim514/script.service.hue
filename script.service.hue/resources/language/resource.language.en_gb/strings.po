@@ -528,9 +528,7 @@ msgid "Network not ready"
 msgstr ""
 
 msgctxt "#30077"
-msgid ""
-"The Hue Bridge is over capacity. Increase refresh rate or reduce the number "
-"of Ambilights."
+msgid "The Hue Bridge is over capacity. Increase refresh rate or reduce the number of Ambilights."
 msgstr ""
 
 msgctxt "#30078"

@@ -4,7 +4,7 @@ import requests
 import xbmc
 import xbmcgui
 
-from resources.lib import cache, reporting, kodihue
+from resources.lib import CACHE, reporting, kodihue
 from resources.lib.kodisettings import convert_time
 from resources.lib.qhue import QhueException
 from . import ADDON
@@ -186,8 +186,8 @@ class KodiGroup(xbmc.Player):
 
     @staticmethod
     def check_active_time():
-        service_enabled = cache.get("script.service.hue.service_enabled")
-        daylight = cache.get("script.service.hue.daylight")
+        service_enabled = CACHE.get("script.service.hue.service_enabled")
+        daylight = CACHE.get("script.service.hue.daylight")
         # xbmc.log("[script.service.hue] Schedule: {}, daylightDisable: {}, daylight: {}, startTime: {}, endTime: {}".format(settings_storage['enableSchedule'], settings_storage['daylightDisable'], daylight, settings_storage['startTime'],
         #         settings_storage['endTime']))
 

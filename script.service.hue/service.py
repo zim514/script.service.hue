@@ -1,7 +1,7 @@
 import xbmc
 
-from resources.lib import core
-from resources.lib import reporting
+from resources.lib import core, reporting
+
 
 try:
     core.core()

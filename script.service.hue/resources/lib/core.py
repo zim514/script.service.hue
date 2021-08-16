@@ -2,8 +2,6 @@ import sys
 
 import requests
 import xbmc
-import xbmcgui
-
 
 from resources.lib import ambigroup, kodigroup
 from resources.lib import kodihue
@@ -11,7 +9,7 @@ from resources.lib import kodisettings
 from resources.lib import reporting
 from resources.lib.kodisettings import settings_storage
 from resources.lib.language import get_string as _
-from . import ADDON, cache, SETTINGS_CHANGED
+from . import ADDON, CACHE, SETTINGS_CHANGED
 
 
 def core():
@@ -35,7 +33,7 @@ def commands(monitor, command):
         xbmc.log("[script.service.hue] Started with Discovery")
         bridge_discovered = kodihue.discover_bridge(monitor)
         if bridge_discovered:
-            bridge = kodihue.connect_bridge(monitor, silent=True)
+            bridge = kodihue.connect_bridge(silent=True)
             if bridge:
                 xbmc.log("[script.service.hue] Found bridge. Running model check & starting service.")
                 kodihue.check_bridge_model(bridge)
@@ -44,7 +42,7 @@ def commands(monitor, command):
 
     elif command == "createHueScene":
         xbmc.log("[script.service.hue] Started with {}".format(command))
-        bridge = kodihue.connect_bridge(monitor, silent=True)  # don't rediscover, proceed silently
+        bridge = kodihue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
             kodihue.create_hue_scene(bridge)
         else:
@@ -54,7 +52,7 @@ def commands(monitor, command):
     elif command == "deleteHueScene":
         xbmc.log("[script.service.hue] Started with {}".format(command))
 
-        bridge = kodihue.connect_bridge(monitor, silent=True)  # don't rediscover, proceed silently
+        bridge = kodihue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
             kodihue.delete_hue_scene(bridge)
         else:
@@ -66,7 +64,7 @@ def commands(monitor, command):
         action = sys.argv[3]
         xbmc.log("[script.service.hue] Started with {}, kgroup: {}, kaction: {}".format(command, kgroup, action))
 
-        bridge = kodihue.connect_bridge(monitor, silent=True)  # don't rediscover, proceed silently
+        bridge = kodihue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
             kodihue.configure_scene(bridge, kgroup, action)
         else:
@@ -77,7 +75,7 @@ def commands(monitor, command):
         kgroup = sys.argv[2]
         xbmc.log("[script.service.hue] Started with {}, kgroupID: {}".format(command, kgroup))
 
-        bridge = kodihue.connect_bridge(monitor, silent=True)  # don't rediscover, proceed silently
+        bridge = kodihue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
             kodihue.configure_ambilights(bridge, kgroup)
         else:
@@ -89,8 +87,8 @@ def commands(monitor, command):
 
 
 def service(monitor):
-    bridge = kodihue.connect_bridge(monitor, silent=settings_storage['disable_connection_message'])
-    service_enabled = cache.get("script.service.hue.service_enabled")
+    bridge = kodihue.connect_bridge(silent=settings_storage['disable_connection_message'])
+    service_enabled = CACHE.get("script.service.hue.service_enabled")
 
     if bridge is not None:
         kgroups = [kodigroup.KodiGroup(0, bridge, kodigroup.VIDEO, settings_storage['initialFlash']), kodigroup.KodiGroup(1, bridge, kodigroup.AUDIO, settings_storage['initialFlash'])]
@@ -100,15 +98,15 @@ def service(monitor):
         connection_retries = 0
         timer = 60
         daylight = kodihue.get_daylight(bridge)
-        cache.set("script.service.hue.daylight", daylight)
-        cache.set("script.service.hue.service_enabled", True)
+        CACHE.set("script.service.hue.daylight", daylight)
+        CACHE.set("script.service.hue.service_enabled", True)
         xbmc.log("[script.service.hue] Core service starting")
 
         while settings_storage['connected'] and not monitor.abortRequested():
 
-            # check if service was just renabled and if so restart groups
+            # check if service was just re-enabled and if so restart groups
             prev_service_enabled = service_enabled
-            service_enabled = cache.get("script.service.hue.service_enabled")
+            service_enabled = CACHE.get("script.service.hue.service_enabled")
             if service_enabled and not prev_service_enabled:
                 try:
                     kodihue.activate(bridge, kgroups, ambi_group)
@@ -117,7 +115,7 @@ def service(monitor):
                     kodihue.activate(bridge, kgroups, ambi_group)
 
             # process cached waiting commands
-            action = cache.get("script.service.hue.action")
+            action = CACHE.get("script.service.hue.action")
             if action:
                 process_actions(action, kgroups)
 
@@ -134,7 +132,7 @@ def service(monitor):
                 # check connection to Hue bridge
                 try:
                     if connection_retries > 0:
-                        bridge = kodihue.connect_bridge(monitor, silent=True)
+                        bridge = kodihue.connect_bridge(silent=True)
                         if bridge is not None:
                             new_daylight = kodihue.get_daylight(bridge)
                             connection_retries = 0
@@ -161,7 +159,7 @@ def service(monitor):
                 if new_daylight != daylight:
                     xbmc.log("[script.service.hue] Daylight change. current: {}, new: {}".format(daylight, new_daylight))
                     daylight = new_daylight
-                    cache.set("script.service.hue.daylight", daylight)
+                    CACHE.set("script.service.hue.daylight", daylight)
                     if not daylight and service_enabled:
                         xbmc.log("[script.service.hue] Sunset activate")
                         try:
@@ -190,4 +188,4 @@ def process_actions(action, kgroups):
         kgroups[action_kgroupid].run_pause()
     if action_action == "stop":
         kgroups[action_kgroupid].run_stop()
-    cache.set("script.service.hue.action", None)
+    CACHE.set("script.service.hue.action", None)
