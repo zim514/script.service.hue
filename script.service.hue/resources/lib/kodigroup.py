@@ -22,7 +22,6 @@ ALL_MEDIA = 3
 
 class KodiGroup(xbmc.Player):
     def __init__(self, kgroupID, bridge, mediaType, flash=False):
-        # xbmc.log("[script.service.hue] KodiGroup Load settings for group: {}".format(kgroupID))
         self.kgroupID = kgroupID
         self.bridge = bridge
         self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))

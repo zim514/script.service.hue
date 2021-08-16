@@ -7,7 +7,6 @@ import xbmc
 import xbmcaddon
 import simplecache
 
-NUM_GROUPS = 2  # group0= video, group1=audio
 STRDEBUG = False  # Show string ID in UI
 QHUE_TIMEOUT = 1  # passed to requests, in seconds.
 MINIMUM_COLOR_DISTANCE = 0.005
