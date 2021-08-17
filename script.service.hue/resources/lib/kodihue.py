@@ -13,6 +13,7 @@ from .kodisettings import read_settings
 from .language import get_string as _
 from resources.lib import globals
 
+
 def create_hue_scene(bridge):
     xbmc.log("[script.service.hue] In kodiHue createHueScene")
     scenes = bridge.scenes
@@ -91,7 +92,6 @@ def _discover_ssdp():
 
 
 def discover_bridge(monitor):
-
     xbmc.log("[script.service.hue] Start bridgeDiscover")
     # Create new config if none exists. Returns success or fail as bool
     ADDON.setSettingString("bridgeIP", "")
@@ -401,7 +401,7 @@ def connect_bridge(silent=False):
                 globals.CONNECTED = True
                 xbmc.log("[script.service.hue] Successfully connected to Hue Bridge: {}".format(bridgeIP))
                 if not silent:
-                    notification(_("Hue Service"), _("Hue connected"), icon=xbmcgui.NOTIFICATION_INFO, sound=False)
+                    notification(_("Hue Service"), _("Hue connected"), sound=False)
                 return bridge
         else:
             xbmc.log("[script.service.hue] Bridge not responding")
