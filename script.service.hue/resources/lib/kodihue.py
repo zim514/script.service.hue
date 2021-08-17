@@ -480,7 +480,7 @@ class HueMonitor(xbmc.Monitor):
         super().__init__()
 
     def onSettingsChanged(self):
-        xbmc.log("[script.service.hue] Settings changed")
+        # xbmc.log("[script.service.hue] Settings changed")
         validate_settings()
         SETTINGS_CHANGED.set()
 

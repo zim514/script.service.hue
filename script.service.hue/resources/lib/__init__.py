@@ -31,10 +31,10 @@ def timer(func):
 
     @functools.wraps(func)
     def wrapper_timer(*args, **kwargs):
-        startTime = time.time()  # 1
+        start_time = time.time()  # 1
         value = func(*args, **kwargs)
-        endTime = time.time()  # 2
-        runTime = endTime - startTime  # 3
-        PROCESS_TIMES.append(runTime)
+        end_time = time.time()  # 2
+        run_time = end_time - start_time  # 3
+        PROCESS_TIMES.append(run_time)
         return value
     return wrapper_timer
