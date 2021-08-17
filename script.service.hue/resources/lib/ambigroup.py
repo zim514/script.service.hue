@@ -27,6 +27,7 @@ class AmbiGroup(kodigroup.KodiGroup):
         self.monitor = monitor
         self.group0 = self.bridge.groups[0]
         self.bridgeError500 = 0
+        self.state = STATE_STOPPED
 
         self.ambiRunning = Event()
         self.imageProcess = imageprocess.ImageProcess()
