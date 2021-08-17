@@ -7,8 +7,6 @@ from resources.lib import ADDON, kodihue, CACHE
 from resources.lib.language import get_string as _
 
 
-
-
 def read_settings():
     CACHE.set("script.service.hue.daylightDisable", ADDON.getSettingBool("daylightDisable"))
 
