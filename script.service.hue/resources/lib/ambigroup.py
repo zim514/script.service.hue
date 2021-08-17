@@ -39,8 +39,7 @@ class AmbiGroup(kodigroup.KodiGroup):
 
         self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))
 
-        self.transitionTime = int(
-            ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroupID)) / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). For example, setting transitiontime:10 will make the transition last 1 second.
+        self.transitionTime = int(ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroupID)) / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). transitiontime:10 will make the transition last 1 second.
         self.forceOn = ADDON.getSettingBool("group{}_forceOn".format(self.kgroupID))
         self.disableLabs = ADDON.getSettingBool("group{}_disableLabs".format(self.kgroupID))
         self.minBri = ADDON.getSettingInt("group{}_MinBrightness".format(self.kgroupID)) * 255 / 100  # convert percentage to value 1-254
@@ -77,7 +76,7 @@ class AmbiGroup(kodigroup.KodiGroup):
                     bridge.lights[L].state(on=True, bri=1)
             except QhueException as exc:
                 xbmc.log("[script.service.hue] Force On Hue call fail: {}: {}".format(exc.type_id, exc.message))
-                reporting.process_exception(exc.type_id, exc.message)
+                reporting.process_exception(exc)
 
     def onAVStarted(self):
 
@@ -103,9 +102,9 @@ class AmbiGroup(kodigroup.KodiGroup):
                     self._force_on(self.ambiLights, self.bridge, self.savedLightStates)
 
                 self.ambiRunning.set()
-                ambiLoopThread = Thread(target=self._ambi_loop, name="_ambiLoop")
-                ambiLoopThread.daemon = True
-                ambiLoopThread.start()
+                ambi_loop_thread = Thread(target=self._ambi_loop, name="_ambi_loop")
+                ambi_loop_thread.daemon = True
+                ambi_loop_thread.start()
 
     def onPlayBackStopped(self):
         xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
@@ -192,7 +191,7 @@ class AmbiGroup(kodigroup.KodiGroup):
                     self.ambiRunning.clear()
                 self.monitor.waitForAbort(self.updateInterval)  # seconds
 
-            average_process_time = kodihue._perf_average(PROCESS_TIMES)
+            average_process_time = kodihue.perf_average(PROCESS_TIMES)
             xbmc.log("[script.service.hue] Average process time: {}".format(average_process_time))
             self.captureSize = ADDON.setSetting("average_process_time", str(average_process_time))
 

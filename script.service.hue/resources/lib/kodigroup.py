@@ -176,12 +176,12 @@ class KodiGroup(xbmc.Player):
 
     def playback_type(self):
         if self.isPlayingVideo():
-            mediaType = VIDEO
+            media_type = VIDEO
         elif self.isPlayingAudio():
-            mediaType = AUDIO
+            media_type = AUDIO
         else:
-            mediaType = None
-        return mediaType
+            media_type = None
+        return media_type
 
     @staticmethod
     def check_active_time():
@@ -215,8 +215,8 @@ class KodiGroup(xbmc.Player):
             duration = infoTag.getDuration() / 60  # returns seconds, convert to minutes
             mediaType = infoTag.getMediaType()
             fileName = infoTag.getFile()
-            # if not fileName and self.isPlayingVideo():
-            #     fileName = self.getPlayingFile()
+            if not fileName and self.isPlayingVideo():
+                fileName = self.getPlayingFile()
             #
             # if not fileName and previousFileName:
             #     fileName = previousFileName

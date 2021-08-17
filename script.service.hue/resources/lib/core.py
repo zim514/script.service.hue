@@ -12,7 +12,7 @@ from . import ADDON, CACHE, SETTINGS_CHANGED
 from resources.lib import globals
 
 def core():
-    kodisettings.read_settings()
+    kodisettings.validate_settings()
 
     if len(sys.argv) > 1:
         command = sys.argv[1]

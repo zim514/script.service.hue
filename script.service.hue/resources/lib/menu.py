@@ -77,7 +77,7 @@ def build_menu(base_url, addon_handle):
 def get_status():
     enabled = CACHE.get("script.service.hue.service_enabled")
     daylight = CACHE.get("script.service.hue.daylight")
-    daylight_disable = CACHE.get("script.service.hue.daylightDisable")
+    daylight_disable = ADDON.getSettingBool("daylightDisable")
     # xbmc.log("[script.service.hue] Current status: {}".format(daylight_disable))
     if daylight and daylight_disable:
         return _("Disabled by daylight")

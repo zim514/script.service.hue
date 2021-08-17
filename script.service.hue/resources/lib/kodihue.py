@@ -9,7 +9,7 @@ import xbmcgui
 from resources.lib.qhue.qhue import QhueException
 from . import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED, reporting
 from . import qhue, ADDONID, CACHE
-from .kodisettings import read_settings
+from .kodisettings import validate_settings
 from .language import get_string as _
 from resources.lib import globals
 
@@ -158,7 +158,7 @@ def connection_test(bridge_ip):
         apiversion = b.config()['apiversion']
     except qhue.QhueException as error:
         xbmc.log("[script.service.hue] Connection test failed.  {}: {}".format(error.type_id, error.message))
-        reporting.process_exception(error.type_id, error.message)
+        reporting.process_exception(error)
         return False
     except requests.RequestException as error:
         xbmc.log("[script.service.hue] Connection test failed.  {}".format(error))
@@ -447,8 +447,8 @@ def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), so
     xbmcgui.Dialog().notification(header, message, icon, time, sound)
 
 
-def _perf_average(process_times):
-    process_times = list(process_times)  # deque is mutating during iteration for some reason, so copy to list.
+def perf_average(process_times):
+    process_times = list(process_times)
     size = len(process_times)
     total = 0
     if size > 0:
@@ -477,7 +477,7 @@ class HueMonitor(xbmc.Monitor):
 
     def onSettingsChanged(self):
         xbmc.log("[script.service.hue] Settings changed")
-        read_settings()
+        validate_settings()
         SETTINGS_CHANGED.set()
 
     def onNotification(self, sender, method, data):
