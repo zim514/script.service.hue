@@ -23,7 +23,11 @@ def create_hue_scene(bridge):
     scene_name = xbmcgui.Dialog().input(_("Scene Name"))
 
     if scene_name:
-        transition_time = int(xbmcgui.Dialog().numeric(0, _("Fade Time (Seconds)"), defaultt="10")) * 10  # yes, default with two ts. *10 to convert secs to msecs
+        try:
+            transition_time = int(xbmcgui.Dialog().numeric(0, _("Fade Time (Seconds)"), defaultt="10")) * 10  # yes, default with two ts. *10 to convert secs to msecs
+        except ValueError:
+            transition_time = 0
+
         if transition_time > 65534:  # hue uses uint16 for transition time.
             transition_time = 65534
         selected = select_hue_lights(bridge)
