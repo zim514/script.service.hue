@@ -6,6 +6,7 @@ from threading import Event
 import xbmc
 import xbmcaddon
 import simplecache
+import xbmcvfs
 
 STRDEBUG = False  # Show string ID in UI
 QHUE_TIMEOUT = 1  # passed to requests, in seconds.
@@ -17,8 +18,8 @@ ROLLBAR_API_KEY = "b871c6292a454fb490344f77da186e10"
 
 ADDON = xbmcaddon.Addon()
 ADDONID = ADDON.getAddonInfo('id')
-ADDONDIR = xbmc.translatePath(ADDON.getAddonInfo('profile'))
-ADDONPATH = xbmc.translatePath(ADDON.getAddonInfo("path"))
+ADDONDIR = xbmcvfs.translatePath(ADDON.getAddonInfo('profile'))
+ADDONPATH = xbmcvfs.translatePath(ADDON.getAddonInfo("path"))
 ADDONVERSION = ADDON.getAddonInfo('version')
 KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
 
