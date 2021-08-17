@@ -6,24 +6,24 @@ from threading import Event
 import xbmc
 import xbmcaddon
 import simplecache
+import xbmcvfs
 
-NUM_GROUPS = 2  # group0= video, group1=audio
 STRDEBUG = False  # Show string ID in UI
-REMOTE_DBG_SUSPEND = False  # Auto suspend thread when debugger attached
 QHUE_TIMEOUT = 1  # passed to requests, in seconds.
 MINIMUM_COLOR_DISTANCE = 0.005
 SETTINGS_CHANGED = Event()
 PROCESS_TIMES = deque(maxlen=100)
 ROLLBAR_API_KEY = "b871c6292a454fb490344f77da186e10"
 
+
 ADDON = xbmcaddon.Addon()
 ADDONID = ADDON.getAddonInfo('id')
-ADDONDIR = xbmc.translatePath(ADDON.getAddonInfo('profile'))
-ADDONPATH = xbmc.translatePath(ADDON.getAddonInfo("path"))
+# ADDONDIR = xbmcvfs.translatePath(ADDON.getAddonInfo('profile'))
+ADDONPATH = xbmcvfs.translatePath(ADDON.getAddonInfo("path"))
 ADDONVERSION = ADDON.getAddonInfo('version')
 KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
 
-cache = simplecache.SimpleCache()
+CACHE = simplecache.SimpleCache()
 
 
 def timer(func):

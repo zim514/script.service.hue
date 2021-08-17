@@ -5,7 +5,7 @@ import xbmc
 import xbmcgui
 from PIL import Image
 
-from resources.lib import kodihue, PROCESS_TIMES, cache, reporting
+from resources.lib import kodihue, PROCESS_TIMES, CACHE, reporting
 from resources.lib.language import get_string as _
 from . import ADDON
 from . import imageprocess
@@ -13,7 +13,7 @@ from . import kodigroup
 from . import MINIMUM_COLOR_DISTANCE
 
 from .kodigroup import STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
-from .kodisettings import settings_storage
+
 from .qhue import QhueException
 from .rgbxy import Converter, ColorHelper  # https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA, GamutB, GamutC
@@ -27,6 +27,7 @@ class AmbiGroup(kodigroup.KodiGroup):
         self.monitor = monitor
         self.group0 = self.bridge.groups[0]
         self.bridgeError500 = 0
+        self.state = STATE_STOPPED
 
         self.ambiRunning = Event()
         self.imageProcess = imageprocess.ImageProcess()
@@ -148,7 +149,6 @@ class AmbiGroup(kodigroup.KodiGroup):
 
         cap = xbmc.RenderCapture()
         xbmc.log("[script.service.hue] _ambiLoop started")
-        service_enabled = cache.get("script.service.hue.service_enabled")
         aspect_ratio = cap.getAspectRatio()
 
         self.captureSizeY = int(self.captureSize / aspect_ratio)
@@ -187,7 +187,7 @@ class AmbiGroup(kodigroup.KodiGroup):
                     x.daemon = True
                     x.start()
 
-                if not cache.get("script.service.hue.service_enabled"):
+                if not CACHE.get("script.service.hue.service_enabled"):
                     xbmc.log("[script.service.hue] Service disabled, stopping Ambilight")
                     self.ambiRunning.clear()
                 self.monitor.waitForAbort(self.updateInterval)  # seconds
@@ -239,7 +239,7 @@ class AmbiGroup(kodigroup.KodiGroup):
     def _bridge_error500(self):
 
         self.bridgeError500 = self.bridgeError500 + 1  # increment counter
-        if self.bridgeError500 > 100 and settings_storage['show500Error']:
+        if self.bridgeError500 > 100 and ADDON.getSettingBool("show500Error"):
             stopShowingError = xbmcgui.Dialog().yesno(_("Hue Bridge over capacity"), _("The Hue Bridge is over capacity. Increase refresh rate or reduce the number of Ambilights."), yeslabel=_("Do not show again"), nolabel=_("Ok"))
 
             if stopShowingError:

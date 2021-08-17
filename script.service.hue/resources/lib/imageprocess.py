@@ -28,7 +28,7 @@ class ImageProcess(object):
 
         # =======================================================================
         # clock = time.localtime()
-        # savepath = os.path.join(xbmc.translatePath("special://userdata/addon_data/script.service.hue/capture/"), str(clock) + ".png")
+        # savepath = os.path.join(xbmcvfs.translatePath("special://userdata/addon_data/script.service.hue/capture/"), str(clock) + ".png")
         # img.save(savepath)
         # =======================================================================
 
