@@ -13,7 +13,7 @@ from . import kodigroup
 from . import MINIMUM_COLOR_DISTANCE
 
 from .kodigroup import STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
-from .kodisettings import settings_storage
+
 from .qhue import QhueException
 from .rgbxy import Converter, ColorHelper  # https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA, GamutB, GamutC
@@ -239,7 +239,7 @@ class AmbiGroup(kodigroup.KodiGroup):
     def _bridge_error500(self):
 
         self.bridgeError500 = self.bridgeError500 + 1  # increment counter
-        if self.bridgeError500 > 100 and settings_storage['show500Error']:
+        if self.bridgeError500 > 100 and ADDON.getSettingBool("show500Error"):
             stopShowingError = xbmcgui.Dialog().yesno(_("Hue Bridge over capacity"), _("The Hue Bridge is over capacity. Increase refresh rate or reduce the number of Ambilights."), yeslabel=_("Do not show again"), nolabel=_("Ok"))
 
             if stopShowingError:

@@ -14,6 +14,7 @@ SETTINGS_CHANGED = Event()
 PROCESS_TIMES = deque(maxlen=100)
 ROLLBAR_API_KEY = "b871c6292a454fb490344f77da186e10"
 
+
 ADDON = xbmcaddon.Addon()
 ADDONID = ADDON.getAddonInfo('id')
 ADDONDIR = xbmc.translatePath(ADDON.getAddonInfo('profile'))

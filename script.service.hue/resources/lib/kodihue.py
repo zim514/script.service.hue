@@ -10,9 +10,8 @@ from resources.lib.qhue.qhue import QhueException
 from . import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED, reporting
 from . import qhue, ADDONID, CACHE
 from .kodisettings import read_settings
-from .kodisettings import settings_storage
 from .language import get_string as _
-
+from resources.lib import globals
 
 def create_hue_scene(bridge):
     xbmc.log("[script.service.hue] In kodiHue createHueScene")
@@ -92,11 +91,12 @@ def _discover_ssdp():
 
 
 def discover_bridge(monitor):
+
     xbmc.log("[script.service.hue] Start bridgeDiscover")
     # Create new config if none exists. Returns success or fail as bool
     ADDON.setSettingString("bridgeIP", "")
     ADDON.setSettingString("bridgeUser", "")
-    settings_storage['connected'] = False
+    globals.CONNECTED = False
 
     progress_bar = xbmcgui.DialogProgress()
     progress_bar.create(_('Searching for bridge...'))
@@ -125,7 +125,7 @@ def discover_bridge(monitor):
                 ADDON.setSettingString("bridgeIP", bridge_ip)
                 ADDON.setSettingString("bridgeUser", bridge_user)
                 complete = True
-                settings_storage['connected'] = True
+                globals.CONNECTED = True
                 progress_bar.update(percent=100, message=_("Complete!"))
                 monitor.waitForAbort(5)
                 progress_bar.close()
@@ -360,7 +360,7 @@ def get_daylight(bridge):
     return daylight
 
 
-def activate(bridge, kgroups, ambiGroup=None):
+def activate(kgroups, ambiGroup=None):
     """
     Activates play action as appropriate for all groups. Used at sunset and when service is renabled via Actions.
     """
@@ -398,7 +398,7 @@ def connect_bridge(silent=False):
             xbmc.log("[script.service.hue] in Connect(): Checking User")
             if user_test(bridgeIP, bridgeUser):
                 bridge = qhue.Bridge(bridgeIP, bridgeUser, timeout=QHUE_TIMEOUT)
-                settings_storage['connected'] = True
+                globals.CONNECTED = True
                 xbmc.log("[script.service.hue] Successfully connected to Hue Bridge: {}".format(bridgeIP))
                 if not silent:
                     notification(_("Hue Service"), _("Hue connected"), icon=xbmcgui.NOTIFICATION_INFO, sound=False)
@@ -406,13 +406,13 @@ def connect_bridge(silent=False):
         else:
             xbmc.log("[script.service.hue] Bridge not responding")
             notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
-            settings_storage['connected'] = False
+            globals.CONNECTED = False
             return None
 
     else:
         xbmc.log("[script.service.hue] Bridge not configured")
         notification(_("Hue Service"), _("Bridge not configured"), icon=xbmcgui.NOTIFICATION_ERROR)
-        settings_storage['connected'] = False
+        globals.CONNECTED = False
         return None
 
 
