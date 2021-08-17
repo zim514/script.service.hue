@@ -108,12 +108,19 @@ def service(monitor):
             # check if service was just re-enabled and if so restart groups
             prev_service_enabled = service_enabled
             service_enabled = CACHE.get("script.service.hue.service_enabled")
+           # xbmc.log("[script.service.hue] Activating ... 1")
             if service_enabled and not prev_service_enabled:
                 try:
+                    xbmc.log("[script.service.hue] Activating ... 2")
                     kodihue.activate(kgroups, ambi_group)
                 except UnboundLocalError:
+                    xbmc.log("[script.service.hue] Activating ... 3")
                     ambi_group = ambigroup.AmbiGroup(3, bridge, monitor)
                     kodihue.activate(kgroups, ambi_group)
+
+            # if service disabled, stop ambilight thread
+            if not service_enabled:
+                globals.AMBI_RUNNING.clear()
 
             # process cached waiting commands
             action = CACHE.get("script.service.hue.action")
@@ -122,9 +129,9 @@ def service(monitor):
 
             # reload if settings changed
             if SETTINGS_CHANGED.is_set():
-                kgroups = [kodigroup.KodiGroup(0, bridge, kodigroup.VIDEO), kodigroup.KodiGroup(1, bridge, kodigroup.AUDIO)]
+                kgroups = [kodigroup.KodiGroup(0, bridge, kodigroup.VIDEO, initial_state=kgroups[0].state), kodigroup.KodiGroup(1, bridge, kodigroup.AUDIO, initial_state=kgroups[1].state)]
                 if ADDON.getSettingBool("group3_enabled"):
-                    ambi_group = ambigroup.AmbiGroup(3, bridge, monitor)
+                    ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, initial_state=ambi_group.state)
                 SETTINGS_CHANGED.clear()
 
             # check for sunset & connection every minute

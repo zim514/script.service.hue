@@ -368,12 +368,12 @@ def activate(kgroups, ambiGroup=None):
     """
     Activates play action as appropriate for all groups. Used at sunset and when service is renabled via Actions.
     """
-    xbmc.log("[script.service.hue] Activating scenes")
+    xbmc.log("[script.service.hue] Activating scenes: {} {}".format(kgroups, ambiGroup))
 
     for g in kgroups:
         try:
             if hasattr(g, 'kgroupID'):
-                xbmc.log("[script.service.hue] in sunset() g: {}, kgroupID: {}".format(g, g.kgroupID))
+                xbmc.log("[script.service.hue] in activate g: {}, kgroupID: {}".format(g, g.kgroupID))
                 if ADDON.getSettingBool("group{}_enabled".format(g.kgroupID)):
                     g.activate()
         except AttributeError:

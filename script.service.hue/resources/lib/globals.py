@@ -1,2 +1,4 @@
+from threading import Event
+
 CONNECTED = False
-# DAYLIGHT = False
+AMBI_RUNNING = Event()

@@ -1,11 +1,11 @@
-from threading import Thread, Event
+from threading import Thread
 
 import requests
 import xbmc
 import xbmcgui
 from PIL import Image
 
-from resources.lib import kodihue, PROCESS_TIMES, CACHE, reporting
+from resources.lib import kodihue, PROCESS_TIMES, reporting, globals
 from resources.lib.language import get_string as _
 from . import ADDON
 from . import imageprocess
@@ -20,16 +20,15 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
 
 class AmbiGroup(kodigroup.KodiGroup):
-    def __init__(self, kgroupID, bridge, monitor, flash=False):
+    def __init__(self, kgroupID, bridge, monitor, flash=False, initial_state=STATE_STOPPED):
 
         self.kgroupID = kgroupID
         self.bridge = bridge
         self.monitor = monitor
         self.group0 = self.bridge.groups[0]
         self.bridgeError500 = 0
-        self.state = STATE_STOPPED
+        self.state = initial_state
 
-        self.ambiRunning = Event()
         self.imageProcess = imageprocess.ImageProcess()
 
         self.converterA = Converter(GamutA)
@@ -80,11 +79,8 @@ class AmbiGroup(kodigroup.KodiGroup):
 
     def onAVStarted(self):
 
-        xbmc.log(
-            "Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.playbackType(): {}".format(
-                self.enabled, self.isPlayingVideo(), self.isPlayingAudio(), self.playback_type()))
-        xbmc.log(
-            "Ambilight Settings: Interval: {}, transitionTime: {}".format(self.updateInterval, self.transitionTime))
+        xbmc.log("Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.playbackType(): {}".format(self.enabled, self.isPlayingVideo(), self.isPlayingAudio(), self.playback_type()))
+        xbmc.log("Ambilight Settings: Interval: {}, transitionTime: {}".format(self.updateInterval, self.transitionTime))
 
         self.state = STATE_PLAYING
 
@@ -101,7 +97,7 @@ class AmbiGroup(kodigroup.KodiGroup):
                 if self.forceOn:
                     self._force_on(self.ambiLights, self.bridge, self.savedLightStates)
 
-                self.ambiRunning.set()
+                globals.AMBI_RUNNING.set()
                 ambi_loop_thread = Thread(target=self._ambi_loop, name="_ambi_loop")
                 ambi_loop_thread.daemon = True
                 ambi_loop_thread.start()
@@ -109,7 +105,7 @@ class AmbiGroup(kodigroup.KodiGroup):
     def onPlayBackStopped(self):
         xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackStopped()".format(self.kgroupID))
         self.state = STATE_STOPPED
-        self.ambiRunning.clear()
+        globals.AMBI_RUNNING.clear()
 
         if self.disableLabs:
             self._resume_effects()
@@ -120,7 +116,7 @@ class AmbiGroup(kodigroup.KodiGroup):
     def onPlayBackPaused(self):
         xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackPaused()".format(self.kgroupID))
         self.state = STATE_PAUSED
-        self.ambiRunning.clear()
+        globals.AMBI_RUNNING.clear()
 
         if self.disableLabs:
             self._resume_effects()
@@ -158,7 +154,7 @@ class AmbiGroup(kodigroup.KodiGroup):
             self.ambiLights[L].update(prevxy=(0.0001, 0.0001))
 
         try:
-            while not self.monitor.abortRequested() and self.ambiRunning.is_set():  # loop until kodi tells add-on to stop or video playing flag is unset.
+            while not self.monitor.abortRequested() and globals.AMBI_RUNNING.is_set():  # loop until kodi tells add-on to stop or video playing flag is unset.
                 try:
                     cap.capture(self.captureSize, self.captureSizeY)  # async capture request to underlying OS
                     capImage = cap.getImage()  # timeout to wait for OS in ms, default 1000
@@ -186,9 +182,9 @@ class AmbiGroup(kodigroup.KodiGroup):
                     x.daemon = True
                     x.start()
 
-                if not CACHE.get("script.service.hue.service_enabled"):
-                    xbmc.log("[script.service.hue] Service disabled, stopping Ambilight")
-                    self.ambiRunning.clear()
+                # if not CACHE.get("script.service.hue.service_enabled"):
+                #     xbmc.log("[script.service.hue] Service disabled, stopping Ambilight")
+                #     globals.AMBI_RUNNING.clear()
                 self.monitor.waitForAbort(self.updateInterval)  # seconds
 
             average_process_time = kodihue.perf_average(PROCESS_TIMES)
