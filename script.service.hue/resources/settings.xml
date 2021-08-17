@@ -785,16 +785,7 @@
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
-				<setting id="reloadFlash" type="boolean" label="5111" help="">
-					<level>4</level>
-					<default>False</default>
-					<dependencies>
-						<dependency type="visible">
-							<condition on="property" name="InfoBool">False</condition>
-						</dependency>
-					</dependencies>
-					<control type="toggle"/>
-				</setting>
+
 				<setting id="disableConnectionMessage" type="boolean" label="30812" help="">
 					<level>3</level>
 					<default>False</default>

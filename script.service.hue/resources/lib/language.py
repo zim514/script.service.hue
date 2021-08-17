@@ -88,7 +88,7 @@ else:
             xbmc.log("[script.service.hue] LANGUAGE: missing translation for '%s'" % t.lower())
             return t
 
-        if STRDEBUG is True:
+        if STRDEBUG:
             return "STR:{} {}".format(string_id, ADDON.getLocalizedString(string_id))
         return ADDON.getLocalizedString(string_id)
 
@@ -126,7 +126,6 @@ _strings['advanced'] = 32101
 _strings['separate debug log'] = 32105
 _strings['video activation'] = 32106
 _strings['initial flash'] = 5110
-_strings['flash on settings reload'] = 5111
 _strings['light selection'] = 6100
 _strings['select lights'] = 6101
 _strings['enabled'] = 30520

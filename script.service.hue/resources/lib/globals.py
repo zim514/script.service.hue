@@ -1,1 +1,2 @@
 CONNECTED = False
+# DAYLIGHT = False

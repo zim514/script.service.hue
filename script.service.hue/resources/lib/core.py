@@ -11,6 +11,7 @@ from resources.lib.language import get_string as _
 from . import ADDON, CACHE, SETTINGS_CHANGED
 from resources.lib import globals
 
+
 def core():
     kodisettings.validate_settings()
 
@@ -97,6 +98,7 @@ def service(monitor):
         connection_retries = 0
         timer = 60
         daylight = kodihue.get_daylight(bridge)
+        #globals.DAYLIGHT = daylight
         CACHE.set("script.service.hue.daylight", daylight)
         CACHE.set("script.service.hue.service_enabled", True)
         xbmc.log("[script.service.hue] Core service starting. Connected: {}".format(globals.CONNECTED))
@@ -110,7 +112,7 @@ def service(monitor):
                 try:
                     kodihue.activate(kgroups, ambi_group)
                 except UnboundLocalError:
-                    ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, ADDON.getSettingBool("reloadFlash"))
+                    ambi_group = ambigroup.AmbiGroup(3, bridge, monitor)
                     kodihue.activate(kgroups, ambi_group)
 
             # process cached waiting commands
@@ -120,9 +122,9 @@ def service(monitor):
 
             # reload if settings changed
             if SETTINGS_CHANGED.is_set():
-                kgroups = [kodigroup.KodiGroup(0, bridge, kodigroup.VIDEO, ADDON.getSettingBool("reloadFlash")), kodigroup.KodiGroup(1, bridge, kodigroup.AUDIO, ADDON.getSettingBool("reloadFlash"))]
+                kgroups = [kodigroup.KodiGroup(0, bridge, kodigroup.VIDEO), kodigroup.KodiGroup(1, bridge, kodigroup.AUDIO)]
                 if ADDON.getSettingBool("group3_enabled"):
-                    ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, ADDON.getSettingBool("reloadFlash"))
+                    ambi_group = ambigroup.AmbiGroup(3, bridge, monitor)
                 SETTINGS_CHANGED.clear()
 
             # check for sunset & connection every minute
@@ -158,6 +160,7 @@ def service(monitor):
                 if new_daylight != daylight:
                     xbmc.log("[script.service.hue] Daylight change. current: {}, new: {}".format(daylight, new_daylight))
                     daylight = new_daylight
+                    #globals.DAYLIGHT = daylight
                     CACHE.set("script.service.hue.daylight", daylight)
                     if not daylight and service_enabled:
                         xbmc.log("[script.service.hue] Sunset activate")

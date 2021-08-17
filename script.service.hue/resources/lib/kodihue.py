@@ -284,8 +284,8 @@ def configure_ambilights(bridge, kGroupID):
 def get_light_name(bridge, L):
     try:
         name = bridge.lights()[L]['name']
-    except Exception:
-        xbmc.log("[script.service.hue] getLightName Exception")
+    except (qhue.QhueException, requests.RequestException) as exc:
+        xbmc.log("[script.service.hue] getLightName Qhue Exception: {}".format(exc))
         return None
 
     if name is None:
