@@ -148,7 +148,6 @@ class AmbiGroup(kodigroup.KodiGroup):
 
         cap = xbmc.RenderCapture()
         xbmc.log("[script.service.hue] _ambiLoop started")
-        service_enabled = CACHE.get("script.service.hue.service_enabled")
         aspect_ratio = cap.getAspectRatio()
 
         self.captureSizeY = int(self.captureSize / aspect_ratio)
