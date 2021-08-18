@@ -9,9 +9,10 @@ import xbmcgui
 from resources.lib.qhue.qhue import QhueException
 from . import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED, reporting
 from . import qhue, ADDONID, CACHE
-from .kodisettings import read_settings
+from .kodisettings import validate_settings
 from .language import get_string as _
 from resources.lib import globals
+
 
 def create_hue_scene(bridge):
     xbmc.log("[script.service.hue] In kodiHue createHueScene")
@@ -22,7 +23,11 @@ def create_hue_scene(bridge):
     scene_name = xbmcgui.Dialog().input(_("Scene Name"))
 
     if scene_name:
-        transition_time = int(xbmcgui.Dialog().numeric(0, _("Fade Time (Seconds)"), defaultt="10")) * 10  # yes, default with two ts. *10 to convert secs to msecs
+        try:
+            transition_time = int(xbmcgui.Dialog().numeric(0, _("Fade Time (Seconds)"), defaultt="10")) * 10  # yes, default with two ts. *10 to convert secs to msecs
+        except ValueError:
+            transition_time = 0
+
         if transition_time > 65534:  # hue uses uint16 for transition time.
             transition_time = 65534
         selected = select_hue_lights(bridge)
@@ -91,7 +96,6 @@ def _discover_ssdp():
 
 
 def discover_bridge(monitor):
-
     xbmc.log("[script.service.hue] Start bridgeDiscover")
     # Create new config if none exists. Returns success or fail as bool
     ADDON.setSettingString("bridgeIP", "")
@@ -158,7 +162,7 @@ def connection_test(bridge_ip):
         apiversion = b.config()['apiversion']
     except qhue.QhueException as error:
         xbmc.log("[script.service.hue] Connection test failed.  {}: {}".format(error.type_id, error.message))
-        reporting.process_exception(error.type_id, error.message)
+        reporting.process_exception(error)
         return False
     except requests.RequestException as error:
         xbmc.log("[script.service.hue] Connection test failed.  {}".format(error))
@@ -280,8 +284,8 @@ def configure_ambilights(bridge, kGroupID):
 def get_light_name(bridge, L):
     try:
         name = bridge.lights()[L]['name']
-    except Exception:
-        xbmc.log("[script.service.hue] getLightName Exception")
+    except (qhue.QhueException, requests.RequestException) as exc:
+        xbmc.log("[script.service.hue] getLightName Qhue Exception: {}".format(exc))
         return None
 
     if name is None:
@@ -364,12 +368,12 @@ def activate(kgroups, ambiGroup=None):
     """
     Activates play action as appropriate for all groups. Used at sunset and when service is renabled via Actions.
     """
-    xbmc.log("[script.service.hue] Activating scenes")
+    xbmc.log("[script.service.hue] Activating scenes: {} {}".format(kgroups, ambiGroup))
 
     for g in kgroups:
         try:
             if hasattr(g, 'kgroupID'):
-                xbmc.log("[script.service.hue] in sunset() g: {}, kgroupID: {}".format(g, g.kgroupID))
+                xbmc.log("[script.service.hue] in activate g: {}, kgroupID: {}".format(g, g.kgroupID))
                 if ADDON.getSettingBool("group{}_enabled".format(g.kgroupID)):
                     g.activate()
         except AttributeError:
@@ -401,7 +405,7 @@ def connect_bridge(silent=False):
                 globals.CONNECTED = True
                 xbmc.log("[script.service.hue] Successfully connected to Hue Bridge: {}".format(bridgeIP))
                 if not silent:
-                    notification(_("Hue Service"), _("Hue connected"), icon=xbmcgui.NOTIFICATION_INFO, sound=False)
+                    notification(_("Hue Service"), _("Hue connected"), sound=False)
                 return bridge
         else:
             xbmc.log("[script.service.hue] Bridge not responding")
@@ -447,8 +451,8 @@ def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), so
     xbmcgui.Dialog().notification(header, message, icon, time, sound)
 
 
-def _perf_average(process_times):
-    process_times = list(process_times)  # deque is mutating during iteration for some reason, so copy to list.
+def perf_average(process_times):
+    process_times = list(process_times)
     size = len(process_times)
     total = 0
     if size > 0:
@@ -476,8 +480,8 @@ class HueMonitor(xbmc.Monitor):
         super().__init__()
 
     def onSettingsChanged(self):
-        xbmc.log("[script.service.hue] Settings changed")
-        read_settings()
+        # xbmc.log("[script.service.hue] Settings changed")
+        validate_settings()
         SETTINGS_CHANGED.set()
 
     def onNotification(self, sender, method, data):

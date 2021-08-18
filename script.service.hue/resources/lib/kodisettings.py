@@ -3,15 +3,11 @@ import datetime
 import xbmc
 import xbmcgui
 
-from resources.lib import ADDON, kodihue, CACHE
+from resources.lib import ADDON, kodihue
 from resources.lib.language import get_string as _
 
 
-
-
-def read_settings():
-    CACHE.set("script.service.hue.daylightDisable", ADDON.getSettingBool("daylightDisable"))
-
+def validate_settings():
     _validate_schedule()
     _validate_ambilight()
 

@@ -11,8 +11,9 @@ from resources.lib.language import get_string as _
 from . import ADDON, CACHE, SETTINGS_CHANGED
 from resources.lib import globals
 
+
 def core():
-    kodisettings.read_settings()
+    kodisettings.validate_settings()
 
     if len(sys.argv) > 1:
         command = sys.argv[1]
@@ -97,6 +98,7 @@ def service(monitor):
         connection_retries = 0
         timer = 60
         daylight = kodihue.get_daylight(bridge)
+        #globals.DAYLIGHT = daylight
         CACHE.set("script.service.hue.daylight", daylight)
         CACHE.set("script.service.hue.service_enabled", True)
         xbmc.log("[script.service.hue] Core service starting. Connected: {}".format(globals.CONNECTED))
@@ -106,12 +108,19 @@ def service(monitor):
             # check if service was just re-enabled and if so restart groups
             prev_service_enabled = service_enabled
             service_enabled = CACHE.get("script.service.hue.service_enabled")
+           # xbmc.log("[script.service.hue] Activating ... 1")
             if service_enabled and not prev_service_enabled:
                 try:
+                    xbmc.log("[script.service.hue] Activating ... 2")
                     kodihue.activate(kgroups, ambi_group)
                 except UnboundLocalError:
-                    ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, ADDON.getSettingBool("reloadFlash"))
+                    xbmc.log("[script.service.hue] Activating ... 3")
+                    ambi_group = ambigroup.AmbiGroup(3, bridge, monitor)
                     kodihue.activate(kgroups, ambi_group)
+
+            # if service disabled, stop ambilight thread
+            if not service_enabled:
+                globals.AMBI_RUNNING.clear()
 
             # process cached waiting commands
             action = CACHE.get("script.service.hue.action")
@@ -120,9 +129,9 @@ def service(monitor):
 
             # reload if settings changed
             if SETTINGS_CHANGED.is_set():
-                kgroups = [kodigroup.KodiGroup(0, bridge, kodigroup.VIDEO, ADDON.getSettingBool("reloadFlash")), kodigroup.KodiGroup(1, bridge, kodigroup.AUDIO, ADDON.getSettingBool("reloadFlash"))]
+                kgroups = [kodigroup.KodiGroup(0, bridge, kodigroup.VIDEO, initial_state=kgroups[0].state), kodigroup.KodiGroup(1, bridge, kodigroup.AUDIO, initial_state=kgroups[1].state)]
                 if ADDON.getSettingBool("group3_enabled"):
-                    ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, ADDON.getSettingBool("reloadFlash"))
+                    ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, initial_state=ambi_group.state)
                 SETTINGS_CHANGED.clear()
 
             # check for sunset & connection every minute
@@ -158,6 +167,7 @@ def service(monitor):
                 if new_daylight != daylight:
                     xbmc.log("[script.service.hue] Daylight change. current: {}, new: {}".format(daylight, new_daylight))
                     daylight = new_daylight
+                    #globals.DAYLIGHT = daylight
                     CACHE.set("script.service.hue.daylight", daylight)
                     if not daylight and service_enabled:
                         xbmc.log("[script.service.hue] Sunset activate")

@@ -21,7 +21,7 @@ ALL_MEDIA = 3
 
 
 class KodiGroup(xbmc.Player):
-    def __init__(self, kgroupID, bridge, mediaType, flash=False):
+    def __init__(self, kgroupID, bridge, mediaType, flash=False, initial_state=STATE_STOPPED):
         self.kgroupID = kgroupID
         self.bridge = bridge
         self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.kgroupID))
@@ -35,7 +35,7 @@ class KodiGroup(xbmc.Player):
         self.stopBehavior = ADDON.getSettingBool("group{}_stopBehavior".format(self.kgroupID))
         self.stopScene = ADDON.getSettingString("group{}_stopSceneID".format(self.kgroupID))
 
-        self.state = STATE_STOPPED
+        self.state = initial_state
 
         self.mediaType = mediaType
         self.lights = self.bridge.lights
@@ -47,9 +47,7 @@ class KodiGroup(xbmc.Player):
         super().__init__()
 
     def __repr__(self):
-        return "kgroupID: {}, enabled: {}, startBehavior: {}, startScene: {}, pauseBehavior: {}, pauseScene:{}, stopBehavior: {}, stopScene:{}, state: {}, mediaType: {}".format(self.kgroupID, self.enabled, self.startBehavior,
-                                                                                                                                                                                 self.startScene, self.pauseScene, self.pauseScene,
-                                                                                                                                                                                 self.stopBehavior, self.stopScene, self.state, self.mediaType)
+        return "kgroupID: {}, enabled: {}, state: {}".format(self.kgroupID, self.enabled, self.state)
 
     def flash(self):
         # xbmc.log("[script.service.hue] in KodiGroup Flash")
@@ -176,12 +174,12 @@ class KodiGroup(xbmc.Player):
 
     def playback_type(self):
         if self.isPlayingVideo():
-            mediaType = VIDEO
+            media_type = VIDEO
         elif self.isPlayingAudio():
-            mediaType = AUDIO
+            media_type = AUDIO
         else:
-            mediaType = None
-        return mediaType
+            media_type = None
+        return media_type
 
     @staticmethod
     def check_active_time():
@@ -215,8 +213,8 @@ class KodiGroup(xbmc.Player):
             duration = infoTag.getDuration() / 60  # returns seconds, convert to minutes
             mediaType = infoTag.getMediaType()
             fileName = infoTag.getFile()
-            # if not fileName and self.isPlayingVideo():
-            #     fileName = self.getPlayingFile()
+            if not fileName and self.isPlayingVideo():
+                fileName = self.getPlayingFile()
             #
             # if not fileName and previousFileName:
             #     fileName = previousFileName

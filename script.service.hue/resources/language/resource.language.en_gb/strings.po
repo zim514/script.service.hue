@@ -159,10 +159,6 @@ msgctxt "#5110"
 msgid "Initial flash"
 msgstr "Initial flash"
 
-msgctxt "#5111"
-msgid "Flash on settings reload"
-msgstr "Flash on settings reload"
-
 msgctxt "#6100"
 msgid "Light Selection"
 msgstr "Light Selection"
