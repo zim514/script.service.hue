@@ -373,8 +373,8 @@ def activate(kgroups, ambiGroup=None):
     for g in kgroups:
         try:
             if hasattr(g, 'kgroupID'):
-                xbmc.log("[script.service.hue] in activate g: {}, kgroupID: {}".format(g, g.kgroupID))
-                if ADDON.getSettingBool("group{}_enabled".format(g.kgroupID)):
+                xbmc.log("[script.service.hue] in activate g: {}, kgroupID: {}".format(g, g.kgroup_id))
+                if ADDON.getSettingBool("group{}_enabled".format(g.kgroup_id)):
                     g.activate()
         except AttributeError:
             pass
