@@ -14,7 +14,7 @@ class ImageProcess(object):
         self.HIGH_THRESHOLD = 240
 
     @timer
-    def img_avg(self, img, minBri, maxBri, saturation):
+    def img_avg(self, img, min_bri, max_bri, saturation):
         dark_pixels = 1
         mid_range_pixels = 1
         total_pixels = 1
@@ -64,26 +64,26 @@ class ImageProcess(object):
 
         rgb = (rgb[0], rgb[1], rgb[2])
 
-        data = {'rgb': rgb, 'bri': self.get_brightness(minBri, maxBri, float(dark_pixels) / float(total_pixels) * 100)}
+        data = {'rgb': rgb, 'bri': self.get_brightness(min_bri, max_bri, float(dark_pixels) / float(total_pixels) * 100)}
         return data
 
         # Return modified Hue brightness value from ratio of dark pixels
 
     @staticmethod
-    def get_brightness(minBri, maxBri, dark_pixel_ratio):
+    def get_brightness(min_bri, max_bri, dark_pixel_ratio):
         # max_bri = int(maxBri)
         # min_bri = int(minBri)
 
-        normal_range = max(1, maxBri - 1)
-        new_range = maxBri - minBri
+        normal_range = max(1, max_bri - 1)
+        new_range = max_bri - min_bri
 
-        brightness = maxBri - (dark_pixel_ratio * maxBri) / 100
-        scaled_brightness = (((brightness - 1) * new_range) / normal_range) + float(minBri) + 1
+        brightness = max_bri - (dark_pixel_ratio * max_bri) / 100
+        scaled_brightness = (((brightness - 1) * new_range) / normal_range) + float(min_bri) + 1
 
         # Global brightness check
-        if int(scaled_brightness) < int(minBri):
-            scaled_brightness = int(minBri)
-        elif int(scaled_brightness) > int(maxBri):
-            scaled_brightness = int(maxBri)
+        if int(scaled_brightness) < int(min_bri):
+            scaled_brightness = int(min_bri)
+        elif int(scaled_brightness) > int(max_bri):
+            scaled_brightness = int(max_bri)
 
         return int(scaled_brightness)
