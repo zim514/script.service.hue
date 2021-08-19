@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.0.21">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.0.22">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0" />
 		<import addon="script.module.requests" version="2.25.1" />
@@ -28,7 +28,7 @@ Crash fixes
 Update Qhue lib
 Improve exception handling
 Add Czech localisation
-Refactor logging system
+Refactor logging system and settings system
 Update to new localisation system
 Update to new settings system</news>
 		<summary lang="cs_CZ">Automatizace Hue světel s přehráváním Kodi</summary>

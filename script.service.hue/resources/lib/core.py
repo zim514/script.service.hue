@@ -4,12 +4,12 @@ import requests
 import xbmc
 
 from resources.lib import ambigroup, kodigroup
+from resources.lib import globals
 from resources.lib import kodihue
 from resources.lib import kodisettings
 from resources.lib import reporting
 from resources.lib.language import get_string as _
 from . import ADDON, CACHE, SETTINGS_CHANGED
-from resources.lib import globals
 
 
 def core():
@@ -108,17 +108,15 @@ def service(monitor):
             # check if service was just re-enabled and if so restart groups
             prev_service_enabled = service_enabled
             service_enabled = CACHE.get("script.service.hue.service_enabled")
-           # xbmc.log("[script.service.hue] Activating ... 1")
+
             if service_enabled and not prev_service_enabled:
                 try:
-                    xbmc.log("[script.service.hue] Activating ... 2")
                     kodihue.activate(kgroups, ambi_group)
                 except UnboundLocalError:
-                    xbmc.log("[script.service.hue] Activating ... 3")
                     ambi_group = ambigroup.AmbiGroup(3, bridge, monitor)
                     kodihue.activate(kgroups, ambi_group)
 
-            # if service disabled, stop ambilight thread
+            # if service disabled, stop ambilight._ambi_loop thread
             if not service_enabled:
                 globals.AMBI_RUNNING.clear()
 
