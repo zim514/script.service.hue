@@ -21,23 +21,23 @@ ALL_MEDIA = 3
 
 
 class KodiGroup(xbmc.Player):
-    def __init__(self, kgroupID, bridge, mediaType, flash=False, initial_state=STATE_STOPPED):
-        self.kgroup_id = kgroupID
+    def __init__(self, kgroup_id, bridge, media_type, flash=False, initial_state=STATE_STOPPED):
+        self.kgroup_id = kgroup_id
         self.bridge = bridge
         self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.kgroup_id))
 
-        self.startBehavior = ADDON.getSettingBool("group{}_startBehavior".format(self.kgroup_id))
-        self.startScene = ADDON.getSettingString("group{}_startSceneID".format(self.kgroup_id))
+        self.start_behavior = ADDON.getSettingBool("group{}_startBehavior".format(self.kgroup_id))
+        self.start_scene = ADDON.getSettingString("group{}_startSceneID".format(self.kgroup_id))
 
-        self.pauseBehavior = ADDON.getSettingBool("group{}_pauseBehavior".format(self.kgroup_id))
-        self.pauseScene = ADDON.getSettingString("group{}_pauseSceneID".format(self.kgroup_id))
+        self.pause_behavior = ADDON.getSettingBool("group{}_pauseBehavior".format(self.kgroup_id))
+        self.pause_scene = ADDON.getSettingString("group{}_pauseSceneID".format(self.kgroup_id))
 
-        self.stopBehavior = ADDON.getSettingBool("group{}_stopBehavior".format(self.kgroup_id))
-        self.stopScene = ADDON.getSettingString("group{}_stopSceneID".format(self.kgroup_id))
+        self.stop_behavior = ADDON.getSettingBool("group{}_stopBehavior".format(self.kgroup_id))
+        self.stop_scene = ADDON.getSettingString("group{}_stopSceneID".format(self.kgroup_id))
 
         self.state = initial_state
 
-        self.mediaType = mediaType
+        self.media_type = media_type
         self.lights = self.bridge.lights
         self.group0 = self.bridge.groups[0]
 
@@ -63,12 +63,12 @@ class KodiGroup(xbmc.Player):
         if self.enabled:
             xbmc.log(
                 "In KodiGroup[{}], onPlaybackStarted. Group enabled: {},startBehavior: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(
-                    self.kgroup_id, self.enabled, self.startBehavior, self.isPlayingVideo(), self.isPlayingAudio(),
-                    self.mediaType, self.playback_type()))
+                    self.kgroup_id, self.enabled, self.start_behavior, self.isPlayingVideo(), self.isPlayingAudio(),
+                    self.media_type, self.playback_type()))
             self.state = STATE_PLAYING
-            self.lastMediaType = self.playback_type()
+            self.last_media_type = self.playback_type()
 
-            if self.isPlayingVideo() and self.mediaType == VIDEO:  # If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
+            if self.isPlayingVideo() and self.media_type == VIDEO:  # If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
                 try:
                     self.video_info_tag = self.getVideoInfoTag()
                 except Exception as exc:
@@ -81,22 +81,22 @@ class KodiGroup(xbmc.Player):
             else:
                 self.video_info_tag = None
 
-            if (self.check_active_time() or self.check_already_active(self.startScene)) and self.check_keep_lights_off_rule(self.startScene) and self.startBehavior and self.mediaType == self.playback_type():
+            if (self.check_active_time() or self.check_already_active(self.start_scene)) and self.check_keep_lights_off_rule(self.start_scene) and self.start_behavior and self.media_type == self.playback_type():
                 self.run_play()
 
     def onPlayBackStopped(self):
         if self.enabled:
-            xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroup_id, self.mediaType, self.lastMediaType))
+            xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.kgroup_id, self.media_type, self.last_media_type))
             self.state = STATE_STOPPED
 
             try:
-                if self.mediaType == VIDEO and not self.check_video_activation(
+                if self.media_type == VIDEO and not self.check_video_activation(
                         self.video_info_tag):  # If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
                     return
             except AttributeError:
                 xbmc.log("[script.service.hue] No videoInfoTag")
 
-            if (self.check_active_time() or self.check_already_active(self.stopScene)) and self.check_keep_lights_off_rule(self.stopScene) and self.stopBehavior and self.mediaType == self.lastMediaType:
+            if (self.check_active_time() or self.check_already_active(self.stop_scene)) and self.check_keep_lights_off_rule(self.stop_scene) and self.stop_behavior and self.media_type == self.last_media_type:
                 self.run_stop()
 
     def onPlayBackPaused(self):
@@ -104,12 +104,12 @@ class KodiGroup(xbmc.Player):
             xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackPaused() , isPlayingVideo: {}, isPlayingAudio: {}".format(self.kgroup_id, self.isPlayingVideo(), self.isPlayingAudio()))
             self.state = STATE_PAUSED
 
-            if self.mediaType == VIDEO and not self.check_video_activation(
+            if self.media_type == VIDEO and not self.check_video_activation(
                     self.video_info_tag):  # If video group, check video activation. Otherwise it's audio so we ignore this and continue
                 return
 
-            if (self.check_active_time() or self.check_already_active(self.pauseScene)) and self.check_keep_lights_off_rule(self.pauseScene) and self.pauseBehavior and self.mediaType == self.playback_type():
-                self.lastMediaType = self.playback_type()
+            if (self.check_active_time() or self.check_already_active(self.pause_scene)) and self.check_keep_lights_off_rule(self.pause_scene) and self.pause_behavior and self.media_type == self.playback_type():
+                self.last_media_type = self.playback_type()
                 self.run_pause()
 
     def onPlayBackResumed(self):
@@ -126,7 +126,7 @@ class KodiGroup(xbmc.Player):
 
     def run_play(self):
         try:
-            self.group0.action(scene=self.startScene)
+            self.group0.action(scene=self.start_scene)
         except QhueException as exc:
             xbmc.log("[script.service.hue] onAVStarted: Hue call fail: {}: {}".format(exc.type_id, exc.message))
             if exc.type_id == 7:
@@ -138,7 +138,7 @@ class KodiGroup(xbmc.Player):
     def run_pause(self):
         try:
             xbmc.sleep(500)  # sleep for any left over ambilight calls to complete first.
-            self.group0.action(scene=self.pauseScene)
+            self.group0.action(scene=self.pause_scene)
             # xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackPaused() Pause scene activated")
         except QhueException as exc:
             xbmc.log("[script.service.hue] run_pause Hue call fail: {}: {}".format(exc.type_id, exc.message))
@@ -151,7 +151,7 @@ class KodiGroup(xbmc.Player):
     def run_stop(self):
         try:
             xbmc.sleep(100)  # sleep for any left over ambilight calls to complete first.
-            self.group0.action(scene=self.stopScene)
+            self.group0.action(scene=self.stop_scene)
             xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackStop() Stop scene activated")
         except QhueException as exc:
             xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}: {}".format(exc.type_id, exc.message))
@@ -208,13 +208,13 @@ class KodiGroup(xbmc.Player):
         # xbmc.log("[script.service.hue] Service disabled")
         return False
 
-    def check_video_activation(self, infoTag):
+    def check_video_activation(self, info_tag):
         try:
-            duration = infoTag.getDuration() / 60  # returns seconds, convert to minutes
-            mediaType = infoTag.getMediaType()
-            fileName = infoTag.getFile()
-            if not fileName and self.isPlayingVideo():
-                fileName = self.getPlayingFile()
+            duration = info_tag.getDuration() / 60  # returns seconds, convert to minutes
+            media_type = info_tag.getMediaType()
+            file_name = info_tag.getFile()
+            if not file_name and self.isPlayingVideo():
+                file_name = self.getPlayingFile()
             #
             # if not fileName and previousFileName:
             #     fileName = previousFileName
@@ -228,12 +228,12 @@ class KodiGroup(xbmc.Player):
         # xbmc.log("Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, PVR : {}, Other: {}".format(self.kgroupID, settings_storage['videoMinimumDuration'], settings_storage['video_enableMovie'],
         #                settings_storage['video_enableEpisode'], settings_storage['video_enableMusicVideo'], settings_storage['video_enablePVR'], settings_storage['video_enableOther']))
         # xbmc.log("[script.service.hue] Video Activation ({}): Duration: {}, mediaType: {}, ispvr: {}".format(self.kgroupID, duration, mediaType, fileName[0:3] == "pvr"))
-        if ((duration >= ADDON.getSettingInt("video_MinimumDuration") or fileName[0:3] == "pvr") and
-                ((ADDON.getSettingBool("video_Movie") and mediaType == "movie") or
-                 (ADDON.getSettingBool("video_Episode") and mediaType == "episode") or
-                 (ADDON.getSettingBool("video_MusicVideo") and mediaType == "MusicVideo") or
-                 (ADDON.getSettingBool("video_PVR") and fileName[0:3] == "pvr") or
-                 (ADDON.getSettingBool("video_Other") and mediaType != "movie" and mediaType != "episode" and mediaType != "MusicVideo" and fileName[0:3] != "pvr"))):
+        if ((duration >= ADDON.getSettingInt("video_MinimumDuration") or file_name[0:3] == "pvr") and
+                ((ADDON.getSettingBool("video_Movie") and media_type == "movie") or
+                 (ADDON.getSettingBool("video_Episode") and media_type == "episode") or
+                 (ADDON.getSettingBool("video_MusicVideo") and media_type == "MusicVideo") or
+                 (ADDON.getSettingBool("video_PVR") and file_name[0:3] == "pvr") or
+                 (ADDON.getSettingBool("video_Other") and media_type != "movie" and media_type != "episode" and media_type != "MusicVideo" and file_name[0:3] != "pvr"))):
             xbmc.log("[script.service.hue] Video activation: True")
             return True
         xbmc.log("[script.service.hue] Video activation: False")
@@ -246,8 +246,8 @@ class KodiGroup(xbmc.Player):
         xbmc.log("[script.service.hue] Check if scene light already active, settings: enable {}".format(ADDON.getSettingBool("enable_if_already_active")))
         if ADDON.getSettingBool("enable_if_already_active"):
             try:
-                sceneData = self.bridge.scenes[scene]()
-                for light in sceneData["lights"]:
+                scene_data = self.bridge.scenes[scene]()
+                for light in scene_data["lights"]:
                     l = self.bridge.lights[light]()
                     if l["state"]["on"]:  # one light is on, the scene can be applied
                         # xbmc.log("[script.service.hue] Check if scene light already active: True")
@@ -265,8 +265,8 @@ class KodiGroup(xbmc.Player):
         xbmc.log("[script.service.hue] Check if lights should stay off, settings: enable {}".format(ADDON.getSettingBool("keep_lights_off")))
         if ADDON.getSettingBool("keep_lights_off"):
             try:
-                sceneData = self.bridge.scenes[scene]()
-                for light in sceneData["lights"]:
+                scene_data = self.bridge.scenes[scene]()
+                for light in scene_data["lights"]:
                     l = self.bridge.lights[light]()
                     if l["state"]["on"] is False:  # one light is off, the scene should not be applied
                         xbmc.log("[script.service.hue] Check if lights should stay off: True")

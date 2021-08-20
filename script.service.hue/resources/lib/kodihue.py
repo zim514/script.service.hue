@@ -326,31 +326,31 @@ def select_hue_lights(bridge):
 
 def select_hue_scene(bridge):
     xbmc.log("[script.service.hue] In selectHueScene{}")
-    hueScenes = bridge.scenes()
+    hue_scenes = bridge.scenes()
 
     xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
     items = []
     index = []
-    selectedId = -1
+    selected_id = -1
 
-    for scene in hueScenes:
+    for scene in hue_scenes:
 
-        hScene = hueScenes[scene]
-        hSceneName = hScene['name']
+        h_scene = hue_scenes[scene]
+        h_scene_name = h_scene['name']
 
-        if hScene['version'] == 2 and hScene["recycle"] is False and hScene["type"] == "LightScene":
+        if h_scene['version'] == 2 and h_scene["recycle"] is False and h_scene["type"] == "LightScene":
             index.append(scene)
-            items.append(xbmcgui.ListItem(label=hSceneName))
+            items.append(xbmcgui.ListItem(label=h_scene_name))
 
     xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
     selected = xbmcgui.Dialog().select("Select Hue scene...", items)
     if selected > -1:
-        selectedId = index[selected]
-        hSceneName = hueScenes[selectedId]['name']
+        selected_id = index[selected]
+        h_scene_name = hue_scenes[selected_id]['name']
         xbmc.log("[script.service.hue] In selectHueScene: selected: {}".format(selected))
 
     if selected > -1:
-        return selectedId, hSceneName
+        return selected_id, h_scene_name
     return None
 
 
@@ -364,11 +364,11 @@ def get_daylight(bridge):
     return daylight
 
 
-def activate(kgroups, ambiGroup=None):
+def activate(kgroups, ambi_group=None):
     """
     Activates play action as appropriate for all groups. Used at sunset and when service is renabled via Actions.
     """
-    xbmc.log("[script.service.hue] Activating scenes: {} {}".format(kgroups, ambiGroup))
+    xbmc.log("[script.service.hue] Activating scenes: {} {}".format(kgroups, ambi_group))
 
     for g in kgroups:
         try:
@@ -379,31 +379,31 @@ def activate(kgroups, ambiGroup=None):
         except AttributeError:
             pass
 
-    if ADDON.getSettingBool("group3_enabled") and ambiGroup is not None:
-        ambiGroup.activate()
+    if ADDON.getSettingBool("group3_enabled") and ambi_group is not None:
+        ambi_group.activate()
 
 
 def connect_bridge(silent=False):
-    bridgeIP = ADDON.getSettingString("bridgeIP")
-    bridgeUser = ADDON.getSettingString("bridgeUser")
-    xbmc.log("[script.service.hue] in Connect() with settings: bridgeIP: {}, bridgeUser: {}".format(bridgeIP, bridgeUser))
+    bridge_ip = ADDON.getSettingString("bridgeIP")
+    bridge_user = ADDON.getSettingString("bridgeUser")
+    xbmc.log("[script.service.hue] in Connect() with settings: bridgeIP: {}, bridgeUser: {}".format(bridge_ip, bridge_user))
 
-    if bridgeIP and bridgeUser:
-        if connection_test(bridgeIP):
+    if bridge_ip and bridge_user:
+        if connection_test(bridge_ip):
             xbmc.log("[script.service.hue] in Connect(): Bridge responding to connection test.")
         else:
             xbmc.log("[script.service.hue] in Connect(): Bridge not responding to connection test, attempt finding a new bridge IP.")
-            bridgeIP = discover_bridge_ip()
-            if bridgeIP:
-                xbmc.log("[script.service.hue] in Connect(): New IP found: {}. Saving".format(bridgeIP))
-                ADDON.setSettingString("bridgeIP", bridgeIP)
+            bridge_ip = discover_bridge_ip()
+            if bridge_ip:
+                xbmc.log("[script.service.hue] in Connect(): New IP found: {}. Saving".format(bridge_ip))
+                ADDON.setSettingString("bridgeIP", bridge_ip)
 
-        if bridgeIP:
+        if bridge_ip:
             xbmc.log("[script.service.hue] in Connect(): Checking User")
-            if user_test(bridgeIP, bridgeUser):
-                bridge = qhue.Bridge(bridgeIP, bridgeUser, timeout=QHUE_TIMEOUT)
+            if user_test(bridge_ip, bridge_user):
+                bridge = qhue.Bridge(bridge_ip, bridge_user, timeout=QHUE_TIMEOUT)
                 globals.CONNECTED = True
-                xbmc.log("[script.service.hue] Successfully connected to Hue Bridge: {}".format(bridgeIP))
+                xbmc.log("[script.service.hue] Successfully connected to Hue Bridge: {}".format(bridge_ip))
                 if not silent:
                     notification(_("Hue Service"), _("Hue connected"), sound=False)
                 return bridge
