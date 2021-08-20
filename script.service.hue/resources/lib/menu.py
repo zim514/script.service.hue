@@ -22,7 +22,7 @@ def menu():
             build_menu(base_url, addon_handle)
 
         elif command == "settings":
-            #xbmc.log("[script.service.hue] Opening settings")
+            # xbmc.log("[script.service.hue] Opening settings")
             ADDON.openSettings()
 
         elif command == "toggle":
@@ -46,7 +46,7 @@ def menu():
             items = [
                 (base_url + "?action=play&kgroupid=" + kgroupid, ListItem(_("Play"))),
                 (base_url + "?action=pause&kgroupid=" + kgroupid, ListItem(_("Pause"))),
-                (base_url + "?action=stop&kgroupid=" + kgroupid, ListItem(_("Stop"))),
+                (base_url + "?action=stop&kgroupid=" + kgroupid, ListItem(_("Stop")))
             ]
 
             xbmcplugin.addDirectoryItems(addon_handle, items, len(items))

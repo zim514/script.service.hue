@@ -26,10 +26,10 @@ class AmbiGroup(kodigroup.KodiGroup):
         self.bridge = bridge
         self.monitor = monitor
         self.group0 = self.bridge.groups[0]
-        self.bridgeError500 = 0
+        self.bridge_error500 = 0
         self.state = initial_state
 
-        self.imageProcess = imageprocess.ImageProcess()
+        self.image_process = imageprocess.ImageProcess()
 
         self.converterA = Converter(GamutA)
         self.converterB = Converter(GamutB)
@@ -176,7 +176,7 @@ class AmbiGroup(kodigroup.KodiGroup):
                     self.monitor.waitForAbort(0.25)
                     continue
 
-                colors = self.imageProcess.img_avg(image, self.min_bri, self.max_bri, self.saturation)
+                colors = self.image_process.img_avg(image, self.min_bri, self.max_bri, self.saturation)
                 for L in list(self.ambiLights):
                     x = Thread(target=self._update_hue_rgb, name="updateHue", args=(colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, self.transition_time, colors['bri']))
                     x.daemon = True
@@ -198,7 +198,7 @@ class AmbiGroup(kodigroup.KodiGroup):
 
     def _update_hue_rgb(self, r, g, b, light, transitionTime, bri):
         gamut = self.ambiLights[light].get('gamut')
-        prevxy = self.ambiLights[light].get('prevxy')
+        prev_xy = self.ambiLights[light].get('prev_xy')
 
         if gamut == "A":
             converter = self.converterA
@@ -209,7 +209,7 @@ class AmbiGroup(kodigroup.KodiGroup):
 
         xy = converter.rgb_to_xy(r, g, b)
         xy = round(xy[0], 3), round(xy[1], 3)  # Hue has a max precision of 4 decimal points, but three is enough
-        distance = self.helper.get_distance_between_two_points(XYPoint(xy[0], xy[1]), XYPoint(prevxy[0], prevxy[1]))  # only update hue if XY changed enough
+        distance = self.helper.get_distance_between_two_points(XYPoint(xy[0], xy[1]), XYPoint(prev_xy[0], prev_xy[1]))  # only update hue if XY changed enough
 
         if distance > MINIMUM_COLOR_DISTANCE:
             try:
@@ -233,13 +233,13 @@ class AmbiGroup(kodigroup.KodiGroup):
 
     def _bridge_error500(self):
 
-        self.bridgeError500 = self.bridgeError500 + 1  # increment counter
-        if self.bridgeError500 > 100 and ADDON.getSettingBool("show500Error"):
+        self.bridge_error500 = self.bridge_error500 + 1  # increment counter
+        if self.bridge_error500 > 100 and ADDON.getSettingBool("show500Error"):
             stop_showing_error = xbmcgui.Dialog().yesno(_("Hue Bridge over capacity"), _("The Hue Bridge is over capacity. Increase refresh rate or reduce the number of Ambilights."), yeslabel=_("Do not show again"), nolabel=_("Ok"))
 
             if stop_showing_error:
                 ADDON.setSettingBool("show500Error", False)
-            self.bridgeError500 = 0
+            self.bridge_error500 = 0
 
     def _stop_effects(self):
         self.savedEffectSensors = self._get_effect_sensors()
