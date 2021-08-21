@@ -5,21 +5,21 @@ import xbmc
 import xbmcgui
 from PIL import Image
 
-from resources.lib import kodihue, PROCESS_TIMES, reporting, globals
+from resources.lib import PROCESS_TIMES, reporting, globals
 from resources.lib.language import get_string as _
 from . import ADDON
 from . import imageprocess
-from . import kodigroup
+from . import lightgroup
 from . import MINIMUM_COLOR_DISTANCE
 
-from .kodigroup import STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
+from .lightgroup import STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
 
 from .qhue import QhueException
 from .rgbxy import Converter, ColorHelper  # https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
 
-class AmbiGroup(kodigroup.KodiGroup):
+class AmbiGroup(lightgroup.LightGroup):
     def __init__(self, kgroup_id, bridge, monitor, flash=False, initial_state=STATE_STOPPED):
 
         self.kgroup_id = kgroup_id
@@ -52,13 +52,13 @@ class AmbiGroup(kodigroup.KodiGroup):
         if self.update_interval == 0:
             self.update_interval = 0.002
 
-        self.ambiLights = {}
+        self.ambi_lights = {}
         light_ids = ADDON.getSetting("group{}_Lights".format(self.kgroup_id)).split(",")
         index = 0
         for L in light_ids:
-            gamut = kodihue.get_light_gamut(self.bridge, L)
-            light = {L: {'gamut': gamut, 'prevxy': (0, 0), "index": index}}
-            self.ambiLights.update(light)
+            gamut = _get_light_gamut(self.bridge, L)
+            light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
+            self.ambi_lights.update(light)
             index = index + 1
 
         if flash:
@@ -85,7 +85,7 @@ class AmbiGroup(kodigroup.KodiGroup):
         self.state = STATE_PLAYING
 
         # save light state
-        self.saved_light_states = kodihue.get_light_states(self.ambiLights, self.bridge)
+        self.saved_light_states = _get_light_states(self.ambi_lights, self.bridge)
 
         self.video_info_tag = self.getVideoInfoTag()
         if self.isPlayingVideo():
@@ -95,7 +95,7 @@ class AmbiGroup(kodigroup.KodiGroup):
                     self._stop_effects()
 
                 if self.force_on:
-                    self._force_on(self.ambiLights, self.bridge, self.saved_light_states)
+                    self._force_on(self.ambi_lights, self.bridge, self.saved_light_states)
 
                 globals.AMBI_RUNNING.set()
                 ambi_loop_thread = Thread(target=self._ambi_loop, name="_ambi_loop")
@@ -150,8 +150,8 @@ class AmbiGroup(kodigroup.KodiGroup):
         expected_capture_size = self.capture_size_x * self.capture_size_y * 4  # size * 4 bytes - RGBA
         xbmc.log("[script.service.hue] aspect_ratio: {}, Capture Size: ({},{}), expected_capture_size: {}".format(aspect_ratio, self.capture_size_x, self.capture_size_y, expected_capture_size))
 
-        for L in list(self.ambiLights):
-            self.ambiLights[L].update(prevxy=(0.0001, 0.0001))
+        for L in list(self.ambi_lights):
+            self.ambi_lights[L].update(prev_xy=(0.0001, 0.0001))
 
         try:
             while not self.monitor.abortRequested() and globals.AMBI_RUNNING.is_set():  # loop until kodi tells add-on to stop or video playing flag is unset.
@@ -163,7 +163,7 @@ class AmbiGroup(kodigroup.KodiGroup):
                         # xbmc.log("[script.service.hue] capImage is none or < expected. captured: {}, expected: {}".format(len(capImage), expected_capture_size))
                         xbmc.sleep(250)  # pause before trying again
                         continue  # no image captured, try again next iteration
-                    image = Image.frombytes("RGBA", (self.capture_size_x, self.capture_size_y), bytes(cap_image), "raw", "BGRA", 0, 1) #Kodi always returns a BGRA image.
+                    image = Image.frombytes("RGBA", (self.capture_size_x, self.capture_size_y), bytes(cap_image), "raw", "BGRA", 0, 1)  # Kodi always returns a BGRA image.
 
                 except ValueError:
                     xbmc.log("[script.service.hue] capImage: {}".format(len(cap_image)))
@@ -177,7 +177,7 @@ class AmbiGroup(kodigroup.KodiGroup):
                     continue
 
                 colors = self.image_process.img_avg(image, self.min_bri, self.max_bri, self.saturation)
-                for L in list(self.ambiLights):
+                for L in list(self.ambi_lights):
                     x = Thread(target=self._update_hue_rgb, name="updateHue", args=(colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, self.transition_time, colors['bri']))
                     x.daemon = True
                     x.start()
@@ -187,7 +187,7 @@ class AmbiGroup(kodigroup.KodiGroup):
                 #     globals.AMBI_RUNNING.clear()
                 self.monitor.waitForAbort(self.update_interval)  # seconds
 
-            average_process_time = kodihue.perf_average(PROCESS_TIMES)
+            average_process_time = _perf_average(PROCESS_TIMES)
             xbmc.log("[script.service.hue] Average process time: {}".format(average_process_time))
             self.capture_size_x = ADDON.setSetting("average_process_time", str(average_process_time))
 
@@ -196,25 +196,24 @@ class AmbiGroup(kodigroup.KodiGroup):
             reporting.process_exception(exc)
         xbmc.log("[script.service.hue] _ambiLoop stopped")
 
-    def _update_hue_rgb(self, r, g, b, light, transitionTime, bri):
-        gamut = self.ambiLights[light].get('gamut')
-        prev_xy = self.ambiLights[light].get('prev_xy')
+    def _update_hue_rgb(self, r, g, b, light, transition_time, bri):
+        gamut = self.ambi_lights[light].get('gamut')
+        prev_xy = self.ambi_lights[light].get('prev_xy')
 
         if gamut == "A":
-            converter = self.converterA
+            xy = self.converterA.rgb_to_xy(r, g, b)
         elif gamut == "B":
-            converter = self.converterB
+            xy = self.converterB.rgb_to_xy(r, g, b)
         elif gamut == "C":
-            converter = self.converterC
+            xy = self.converterC.rgb_to_xy(r, g, b)
 
-        xy = converter.rgb_to_xy(r, g, b)
         xy = round(xy[0], 3), round(xy[1], 3)  # Hue has a max precision of 4 decimal points, but three is enough
         distance = self.helper.get_distance_between_two_points(XYPoint(xy[0], xy[1]), XYPoint(prev_xy[0], prev_xy[1]))  # only update hue if XY changed enough
 
         if distance > MINIMUM_COLOR_DISTANCE:
             try:
-                self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=int(transitionTime))
-                self.ambiLights[light].update(prevxy=xy)
+                self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=int(transition_time))
+                self.ambi_lights[light].update(prev_xy=xy)
             except QhueException as exc:
                 if exc.type_id == 201:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                     pass
@@ -274,10 +273,10 @@ class AmbiGroup(kodigroup.KodiGroup):
         all_links = self.bridge.resourcelinks()
         for sensor in effects:
             sensor_links = [sensorLink
-                           for link in list(all_links.values())
-                           for sensorLink in link['links']
-                           if '/sensors/' + sensor in link['links']
-                           ]
+                            for link in list(all_links.values())
+                            for sensorLink in link['links']
+                            if '/sensors/' + sensor in link['links']
+                            ]
 
             for link in sensor_links:
                 i = link.split('/')[-1]
@@ -306,9 +305,45 @@ class AmbiGroup(kodigroup.KodiGroup):
         # Only consider lights that are turned on, because enabling
         # an effect will also power on its lights.
         return set([sensor
-                    for i in list(self.ambiLights.keys())
+                    for i in list(self.ambi_lights.keys())
                     if i in lights
                     and i in self.saved_light_states
                     and self.saved_light_states[i]['state']['on']
                     for sensor in lights[i]
                     ])
+
+
+def _get_light_gamut(bridge, light):
+    try:
+        gamut = bridge.lights()[light]['capabilities']['control']['colorgamuttype']
+        # xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(l, gamut))
+    except QhueException as error:
+        xbmc.log("[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {}, error: {}".format(light, error))
+        return "C"
+    if gamut == "A" or gamut == "B" or gamut == "C":
+        return gamut
+    return "C"  # default to C if unknown gamut type
+
+
+def _perf_average(process_times):
+    process_times = list(process_times)
+    size = len(process_times)
+    total = 0
+    if size > 0:
+        for x in process_times:
+            total += x
+        average_process_time = int(total / size * 1000)
+        return "{} ms".format(average_process_time)
+    return _("Unknown")
+
+
+def _get_light_states(lights, bridge):
+    states = {}
+
+    for L in lights:
+        try:
+            states[L] = (bridge.lights[L]())
+        except QhueException as exc:
+            xbmc.log("[script.service.hue] Hue call fail: {}: {}".format(exc.type_id, exc.message))
+
+    return states

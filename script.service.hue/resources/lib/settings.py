@@ -3,7 +3,7 @@ import datetime
 import xbmc
 import xbmcgui
 
-from resources.lib import ADDON, kodihue
+from resources.lib import ADDON, hue
 from resources.lib.language import get_string as _
 
 
@@ -18,7 +18,7 @@ def _validate_ambilight():
         light_ids = ADDON.getSetting("group3_Lights")
         if light_ids == "-1":
             xbmc.log("[script.service.hue] No ambilights selected")
-            kodihue.notification(_("Hue Service"), _("No lights selected for Ambilight."), icon=xbmcgui.NOTIFICATION_ERROR)
+            hue.notification(_("Hue Service"), _("No lights selected for Ambilight."), icon=xbmcgui.NOTIFICATION_ERROR)
             ADDON.setSettingBool("group3_enabled", False)
 
 
@@ -32,7 +32,7 @@ def _validate_schedule():
         except ValueError as e:
             xbmc.log("[script.service.hue] Invalid time settings: {}".format(e))
 
-            kodihue.notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"), icon=xbmcgui.NOTIFICATION_ERROR)
+            hue.notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"), icon=xbmcgui.NOTIFICATION_ERROR)
             ADDON.setSettingBool("EnableSchedule", False)
 
 

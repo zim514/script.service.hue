@@ -3,24 +3,24 @@ import sys
 import requests
 import xbmc
 
-from resources.lib import ambigroup, kodigroup
+from resources.lib import ambigroup, lightgroup
 from resources.lib import globals
-from resources.lib import kodihue
-from resources.lib import kodisettings
+from resources.lib import hue
+from resources.lib import settings
 from resources.lib import reporting
 from resources.lib.language import get_string as _
 from . import ADDON, CACHE, SETTINGS_CHANGED
 
 
 def core():
-    kodisettings.validate_settings()
+    settings.validate_settings()
 
     if len(sys.argv) > 1:
         command = sys.argv[1]
     else:
         command = ""
 
-    monitor = kodihue.HueMonitor()
+    monitor = hue.HueMonitor()
 
     if command:
         commands(monitor, command)
@@ -31,73 +31,73 @@ def core():
 def commands(monitor, command):
     if command == "discover":
         xbmc.log("[script.service.hue] Started with Discovery")
-        bridge_discovered = kodihue.discover_bridge(monitor)
+        bridge_discovered = hue.discover_bridge(monitor)
         if bridge_discovered:
-            bridge = kodihue.connect_bridge(silent=True)
+            bridge = hue.connect_bridge(silent=True)
             if bridge:
                 xbmc.log("[script.service.hue] Found bridge. Running model check & starting service.")
-                kodihue.check_bridge_model(bridge)
+                hue.check_bridge_model(bridge)
                 ADDON.openSettings()
                 service(monitor)
 
     elif command == "createHueScene":
         xbmc.log("[script.service.hue] Started with {}".format(command))
-        bridge = kodihue.connect_bridge(silent=True)  # don't rediscover, proceed silently
+        bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
-            kodihue.create_hue_scene(bridge)
+            hue.create_hue_scene(bridge)
         else:
             xbmc.log("[script.service.hue] No bridge found. createHueScene cancelled.")
-            kodihue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+            hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif command == "deleteHueScene":
         xbmc.log("[script.service.hue] Started with {}".format(command))
 
-        bridge = kodihue.connect_bridge(silent=True)  # don't rediscover, proceed silently
+        bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
-            kodihue.delete_hue_scene(bridge)
+            hue.delete_hue_scene(bridge)
         else:
             xbmc.log("[script.service.hue] No bridge found. deleteHueScene cancelled.")
-            kodihue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+            hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif command == "sceneSelect":  # sceneSelect=kgroup,action  / sceneSelect=0,play
         kgroup = sys.argv[2]
         action = sys.argv[3]
         xbmc.log("[script.service.hue] Started with {}, kgroup: {}, kaction: {}".format(command, kgroup, action))
 
-        bridge = kodihue.connect_bridge(silent=True)  # don't rediscover, proceed silently
+        bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
-            kodihue.configure_scene(bridge, kgroup, action)
+            hue.configure_scene(bridge, kgroup, action)
         else:
             xbmc.log("[script.service.hue] No bridge found. sceneSelect cancelled.")
-            kodihue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+            hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif command == "ambiLightSelect":  # ambiLightSelect=kgroupID
         kgroup = sys.argv[2]
         xbmc.log("[script.service.hue] Started with {}, kgroupID: {}".format(command, kgroup))
 
-        bridge = kodihue.connect_bridge(silent=True)  # don't rediscover, proceed silently
+        bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
-            kodihue.configure_ambilights(bridge, kgroup)
+            hue.configure_ambilights(bridge, kgroup)
         else:
             xbmc.log("[script.service.hue] No bridge found. scene ambi lights cancelled.")
-            kodihue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+            hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
     else:
         xbmc.log("[script.service.hue] Unknown command")
         return
 
 
 def service(monitor):
-    bridge = kodihue.connect_bridge(silent=ADDON.getSettingBool("disableConnectionMessage"))
+    bridge = hue.connect_bridge(silent=ADDON.getSettingBool("disableConnectionMessage"))
     service_enabled = CACHE.get("script.service.hue.service_enabled")
 
     if bridge is not None:
-        kgroups = [kodigroup.KodiGroup(0, bridge, kodigroup.VIDEO, ADDON.getSettingBool("initialFlash")), kodigroup.KodiGroup(1, bridge, kodigroup.AUDIO, ADDON.getSettingBool("initialFlash"))]
+        kgroups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, ADDON.getSettingBool("initialFlash")), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, ADDON.getSettingBool("initialFlash"))]
         if ADDON.getSettingBool("group3_enabled"):
             ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, ADDON.getSettingBool("initialFlash"))
 
         connection_retries = 0
         timer = 60
-        daylight = kodihue.get_daylight(bridge)
+        daylight = hue.get_daylight(bridge)
         #globals.DAYLIGHT = daylight
         CACHE.set("script.service.hue.daylight", daylight)
         CACHE.set("script.service.hue.service_enabled", True)
@@ -111,10 +111,10 @@ def service(monitor):
 
             if service_enabled and not prev_service_enabled:
                 try:
-                    kodihue.activate(kgroups, ambi_group)
+                    hue.activate(kgroups, ambi_group)
                 except UnboundLocalError:
                     ambi_group = ambigroup.AmbiGroup(3, bridge, monitor)
-                    kodihue.activate(kgroups, ambi_group)
+                    hue.activate(kgroups, ambi_group)
 
             # if service disabled, stop ambilight._ambi_loop thread
             if not service_enabled:
@@ -127,7 +127,7 @@ def service(monitor):
 
             # reload if settings changed
             if SETTINGS_CHANGED.is_set():
-                kgroups = [kodigroup.KodiGroup(0, bridge, kodigroup.VIDEO, initial_state=kgroups[0].state), kodigroup.KodiGroup(1, bridge, kodigroup.AUDIO, initial_state=kgroups[1].state)]
+                kgroups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, initial_state=kgroups[0].state), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, initial_state=kgroups[1].state)]
                 if ADDON.getSettingBool("group3_enabled"):
                     ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, initial_state=ambi_group.state)
                 SETTINGS_CHANGED.clear()
@@ -138,23 +138,23 @@ def service(monitor):
                 # check connection to Hue bridge
                 try:
                     if connection_retries > 0:
-                        bridge = kodihue.connect_bridge(silent=True)
+                        bridge = hue.connect_bridge(silent=True)
                         if bridge is not None:
-                            new_daylight = kodihue.get_daylight(bridge)
+                            new_daylight = hue.get_daylight(bridge)
                             connection_retries = 0
                     else:
-                        new_daylight = kodihue.get_daylight(bridge)
+                        new_daylight = hue.get_daylight(bridge)
 
                 except requests.RequestException as error:
                     connection_retries = connection_retries + 1
                     if connection_retries <= 10:
                         xbmc.log("[script.service.hue] Bridge Connection Error. Attempt: {}/10 : {}".format(connection_retries, error))
-                        kodihue.notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
+                        hue.notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
                         timer = -60
 
                     else:
                         xbmc.log("[script.service.hue] Bridge Connection Error. Attempt: {}/5. Shutting down : {}".format(connection_retries, error))
-                        kodihue.notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
+                        hue.notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
                         globals.CONNECTED = False
 
                 except Exception as exc:
@@ -170,9 +170,9 @@ def service(monitor):
                     if not daylight and service_enabled:
                         xbmc.log("[script.service.hue] Sunset activate")
                         try:
-                            kodihue.activate(kgroups, ambi_group)
+                            hue.activate(kgroups, ambi_group)
                         except UnboundLocalError as exc:
-                            kodihue.activate(kgroups)
+                            hue.activate(kgroups)
                         except Exception as exc:
                             xbmc.log("[script.service.hue] Get daylight exception")
                             reporting.process_exception(exc)
