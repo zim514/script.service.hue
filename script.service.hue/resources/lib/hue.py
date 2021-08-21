@@ -116,11 +116,11 @@ def discover_bridge(monitor):
             progress_bar.update(percent=20, message=_("UPnP discovery..."))
             bridge_ip = _discover_ssdp()
 
-        if connection_test(bridge_ip):
+        if _connection_test(bridge_ip):
             progress_bar.update(percent=100, message=_("Found bridge: ") + bridge_ip)
             monitor.waitForAbort(1)
 
-            bridge_user = create_user(monitor, bridge_ip, progress_bar)
+            bridge_user = _create_user(monitor, bridge_ip, progress_bar)
 
             if bridge_user:
                 xbmc.log("[script.service.hue] User created: {}".format(bridge_user))
@@ -156,10 +156,10 @@ def discover_bridge(monitor):
         progress_bar.close()
 
 
-def connection_test(bridge_ip):
+def _connection_test(bridge_ip):
     b = qhue.qhue.Resource("http://{}/api".format(bridge_ip), requests.session())
     try:
-        apiversion = b.config()['apiversion']
+        api_version = b.config()['apiversion']
     except qhue.QhueException as error:
         xbmc.log("[script.service.hue] Connection test failed.  {}: {}".format(error.type_id, error.message))
         reporting.process_exception(error)
@@ -169,50 +169,50 @@ def connection_test(bridge_ip):
         reporting.process_exception(error)
         return False
     except KeyError as error:
-        notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)), icon=xbmcgui.NOTIFICATION_ERROR)
-        xbmc.log("[script.service.hue] in ConnectionTest():  Connected! Bridge too old: {}, error: {}".format(apiversion, error))
+        notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(api_version)), icon=xbmcgui.NOTIFICATION_ERROR)
+        xbmc.log("[script.service.hue] in ConnectionTest():  Connected! Bridge too old: {}, error: {}".format(api_version, error))
         return False
 
-    api_split = apiversion.split(".")
+    api_split = api_version.split(".")
 
-    if apiversion and int(api_split[0]) >= 1 and int(api_split[1]) >= 38:  # minimum bridge version 1.38
-        xbmc.log("[script.service.hue] Bridge Found! Hue API version: {}".format(apiversion))
+    if api_version and int(api_split[0]) >= 1 and int(api_split[1]) >= 38:  # minimum bridge version 1.38
+        xbmc.log("[script.service.hue] Bridge Found! Hue API version: {}".format(api_version))
         return True
 
-    notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(apiversion)), icon=xbmcgui.NOTIFICATION_ERROR)
-    xbmc.log("[script.service.hue] in ConnectionTest():  Connected! Bridge too old: {}".format(apiversion))
+    notification(_("Hue Service"), _("Bridge API: {}, update your bridge".format(api_version)), icon=xbmcgui.NOTIFICATION_ERROR)
+    xbmc.log("[script.service.hue] in ConnectionTest():  Connected! Bridge too old: {}".format(api_version))
     return False
 
 
-def user_test(bridge_ip, bridge_user):
+def _user_test(bridge_ip, bridge_user):
     xbmc.log("[script.service.hue] in ConnectionTest() Attempt initial connection")
     b = qhue.Bridge(bridge_ip, bridge_user, timeout=QHUE_TIMEOUT)
     try:
-        zigbeechan = b.config()['zigbeechannel']
+        zigbee = b.config()['zigbeechannel']
     except (requests.RequestException, qhue.QhueException, KeyError):
         return False
 
-    if zigbeechan:
-        xbmc.log("[script.service.hue] Hue User Authorized. Bridge Zigbee Channel: {}".format(zigbeechan))
+    if zigbee:
+        xbmc.log("[script.service.hue] Hue User Authorized. Bridge Zigbee Channel: {}".format(zigbee))
         return True
     return False
 
 
-def discover_bridge_ip():
+def _discover_bridge_ip():
     # discover hue bridge IP silently for non-interactive discovery / bridge IP change.
     xbmc.log("[script.service.hue] In discoverBridgeIP")
     bridge_ip = _discover_nupnp()
-    if connection_test(bridge_ip):
+    if _connection_test(bridge_ip):
         return bridge_ip
 
     bridge_ip = _discover_ssdp()
-    if connection_test(bridge_ip):
+    if _connection_test(bridge_ip):
         return bridge_ip
 
     return False
 
 
-def create_user(monitor, bridge_ip, progress_bar=False):
+def _create_user(monitor, bridge_ip, progress_bar=False):
     xbmc.log("[script.service.hue] In createUser")
     # device = 'kodi#'+getfqdn()
     data = '{{"devicetype": "kodi#{}"}}'.format(
@@ -257,31 +257,31 @@ def create_user(monitor, bridge_ip, progress_bar=False):
         return False
 
 
-def configure_scene(bridge, kGroupID, action):
+def configure_scene(bridge, group_id, action):
     scene = select_hue_scene(bridge)
     if scene is not None:
         # group0_startSceneID
-        ADDON.setSettingString("group{}_{}SceneID".format(kGroupID, action), scene[0])
-        ADDON.setSettingString("group{}_{}SceneName".format(kGroupID, action), scene[1])
+        ADDON.setSettingString("group{}_{}SceneID".format(group_id, action), scene[0])
+        ADDON.setSettingString("group{}_{}SceneName".format(group_id, action), scene[1])
         ADDON.openSettings()
 
 
-def configure_ambilights(bridge, kGroupID):
+def configure_ambilights(bridge, group_id):
     lights = select_hue_lights(bridge)
-    lightNames = []
-    colorLights = []
+    light_names = []
+    color_lights = []
     if lights is not None:
         for L in lights:
-            lightNames.append(get_light_name(bridge, L))
-            colorLights.append(L)
+            light_names.append(_get_light_name(bridge, L))
+            color_lights.append(L)
 
-        ADDON.setSettingString("group{}_Lights".format(kGroupID), ','.join(colorLights))
-        ADDON.setSettingString("group{}_LightNames".format(kGroupID), ','.join(lightNames))
-        ADDON.setSettingBool("group{}_enabled".format(kGroupID), True)
+        ADDON.setSettingString("group{}_Lights".format(group_id), ','.join(color_lights))
+        ADDON.setSettingString("group{}_LightNames".format(group_id), ', '.join(light_names))
+        ADDON.setSettingBool("group{}_enabled".format(group_id), True)
         ADDON.openSettings()
 
 
-def get_light_name(bridge, L):
+def _get_light_name(bridge, L):
     try:
         name = bridge.lights()[L]['name']
     except (qhue.QhueException, requests.RequestException) as exc:
@@ -295,32 +295,32 @@ def get_light_name(bridge, L):
 
 def select_hue_lights(bridge):
     xbmc.log("[script.service.hue] In selectHueLights{}")
-    hueLights = bridge.lights()
+    hue_lights = bridge.lights()
 
     xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
     items = []
     index = []
-    lightIDs = []
+    light_ids = []
 
-    for light in hueLights:
-        hLight = hueLights[light]
-        hLightName = hLight['name']
+    for light in hue_lights:
+        h_light = hue_lights[light]
+        h_light_name = h_light['name']
 
         # xbmc.log("[script.service.hue] In selectHueGroup: {}, {}".format(hgroup,name))
         index.append(light)
-        items.append(xbmcgui.ListItem(label=hLightName))
+        items.append(xbmcgui.ListItem(label=h_light_name))
 
     xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
     selected = xbmcgui.Dialog().multiselect(_("Select Hue Lights..."), items)
     if selected:
         # id = index[selected]
         for s in selected:
-            lightIDs.append(index[s])
+            light_ids.append(index[s])
 
-    xbmc.log("[script.service.hue] lightIDs: {}".format(lightIDs))
+    xbmc.log("[script.service.hue] light_ids: {}".format(light_ids))
 
-    if lightIDs:
-        return lightIDs
+    if light_ids:
+        return light_ids
     return None
 
 
@@ -389,18 +389,18 @@ def connect_bridge(silent=False):
     xbmc.log("[script.service.hue] in Connect() with settings: bridgeIP: {}, bridgeUser: {}".format(bridge_ip, bridge_user))
 
     if bridge_ip and bridge_user:
-        if connection_test(bridge_ip):
+        if _connection_test(bridge_ip):
             xbmc.log("[script.service.hue] in Connect(): Bridge responding to connection test.")
         else:
             xbmc.log("[script.service.hue] in Connect(): Bridge not responding to connection test, attempt finding a new bridge IP.")
-            bridge_ip = discover_bridge_ip()
+            bridge_ip = _discover_bridge_ip()
             if bridge_ip:
                 xbmc.log("[script.service.hue] in Connect(): New IP found: {}. Saving".format(bridge_ip))
                 ADDON.setSettingString("bridgeIP", bridge_ip)
 
         if bridge_ip:
             xbmc.log("[script.service.hue] in Connect(): Checking User")
-            if user_test(bridge_ip, bridge_user):
+            if _user_test(bridge_ip, bridge_user):
                 bridge = qhue.Bridge(bridge_ip, bridge_user, timeout=QHUE_TIMEOUT)
                 globals.CONNECTED = True
                 xbmc.log("[script.service.hue] Successfully connected to Hue Bridge: {}".format(bridge_ip))

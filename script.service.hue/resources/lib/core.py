@@ -91,7 +91,7 @@ def service(monitor):
     service_enabled = CACHE.get("script.service.hue.service_enabled")
 
     if bridge is not None:
-        kgroups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, ADDON.getSettingBool("initialFlash")), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, ADDON.getSettingBool("initialFlash"))]
+        light_groups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, ADDON.getSettingBool("initialFlash")), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, ADDON.getSettingBool("initialFlash"))]
         if ADDON.getSettingBool("group3_enabled"):
             ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, ADDON.getSettingBool("initialFlash"))
 
@@ -111,10 +111,10 @@ def service(monitor):
 
             if service_enabled and not prev_service_enabled:
                 try:
-                    hue.activate(kgroups, ambi_group)
+                    hue.activate(light_groups, ambi_group)
                 except UnboundLocalError:
                     ambi_group = ambigroup.AmbiGroup(3, bridge, monitor)
-                    hue.activate(kgroups, ambi_group)
+                    hue.activate(light_groups, ambi_group)
 
             # if service disabled, stop ambilight._ambi_loop thread
             if not service_enabled:
@@ -123,11 +123,11 @@ def service(monitor):
             # process cached waiting commands
             action = CACHE.get("script.service.hue.action")
             if action:
-                process_actions(action, kgroups)
+                _process_actions(action, light_groups)
 
             # reload if settings changed
             if SETTINGS_CHANGED.is_set():
-                kgroups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, initial_state=kgroups[0].state), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, initial_state=kgroups[1].state)]
+                light_groups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, initial_state=light_groups[0].state), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, initial_state=light_groups[1].state)]
                 if ADDON.getSettingBool("group3_enabled"):
                     ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, initial_state=ambi_group.state)
                 SETTINGS_CHANGED.clear()
@@ -165,14 +165,14 @@ def service(monitor):
                 if new_daylight != daylight:
                     xbmc.log("[script.service.hue] Daylight change. current: {}, new: {}".format(daylight, new_daylight))
                     daylight = new_daylight
-                    #globals.DAYLIGHT = daylight
+
                     CACHE.set("script.service.hue.daylight", daylight)
                     if not daylight and service_enabled:
                         xbmc.log("[script.service.hue] Sunset activate")
                         try:
-                            hue.activate(kgroups, ambi_group)
+                            hue.activate(light_groups, ambi_group)
                         except UnboundLocalError as exc:
-                            hue.activate(kgroups)
+                            hue.activate(light_groups)
                         except Exception as exc:
                             xbmc.log("[script.service.hue] Get daylight exception")
                             reporting.process_exception(exc)
@@ -184,7 +184,7 @@ def service(monitor):
     return
 
 
-def process_actions(action, kgroups):
+def _process_actions(action, kgroups):
     # process an action command stored in the cache.
     action_action = action[0]
     action_kgroupid = int(action[1]) - 1
