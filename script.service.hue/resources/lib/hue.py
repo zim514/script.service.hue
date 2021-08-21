@@ -9,7 +9,7 @@ import xbmcgui
 from resources.lib.qhue.qhue import QhueException
 from . import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED, reporting
 from . import qhue, ADDONID, CACHE
-from .kodisettings import validate_settings
+from .settings import validate_settings
 from .language import get_string as _
 from resources.lib import globals
 
@@ -420,18 +420,6 @@ def connect_bridge(silent=False):
         return None
 
 
-def get_light_gamut(bridge, light):
-    try:
-        gamut = bridge.lights()[light]['capabilities']['control']['colorgamuttype']
-        # xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(l, gamut))
-    except QhueException as error:
-        xbmc.log("[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {}, error: {}".format(light, error))
-        return "C"
-    if gamut == "A" or gamut == "B" or gamut == "C":
-        return gamut
-    return "C"  # default to C if unknown gamut type
-
-
 def check_bridge_model(bridge):
     try:
         bridge_config = bridge.config()
@@ -449,30 +437,6 @@ def check_bridge_model(bridge):
 
 def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), sound=False):
     xbmcgui.Dialog().notification(header, message, icon, time, sound)
-
-
-def perf_average(process_times):
-    process_times = list(process_times)
-    size = len(process_times)
-    total = 0
-    if size > 0:
-        for x in process_times:
-            total += x
-        average_process_time = int(total / size * 1000)
-        return "{} ms".format(average_process_time)
-    return _("Unknown")
-
-
-def get_light_states(lights, bridge):
-    states = {}
-
-    for L in lights:
-        try:
-            states[L] = (bridge.lights[L]())
-        except QhueException as exc:
-            xbmc.log("[script.service.hue] Hue call fail: {}: {}".format(exc.type_id, exc.message))
-
-    return states
 
 
 class HueMonitor(xbmc.Monitor):

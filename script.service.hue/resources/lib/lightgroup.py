@@ -4,8 +4,8 @@ import requests
 import xbmc
 import xbmcgui
 
-from resources.lib import CACHE, reporting, kodihue
-from resources.lib.kodisettings import convert_time
+from resources.lib import CACHE, reporting, hue
+from resources.lib.settings import convert_time
 from resources.lib.qhue import QhueException
 from . import ADDON
  
@@ -20,7 +20,7 @@ AUDIO = 2
 ALL_MEDIA = 3
 
 
-class KodiGroup(xbmc.Player):
+class LightGroup(xbmc.Player):
     def __init__(self, kgroup_id, bridge, media_type, flash=False, initial_state=STATE_STOPPED):
         self.kgroup_id = kgroup_id
         self.bridge = bridge
@@ -131,7 +131,7 @@ class KodiGroup(xbmc.Player):
             xbmc.log("[script.service.hue] onAVStarted: Hue call fail: {}: {}".format(exc.type_id, exc.message))
             if exc.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
-                kodihue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+                hue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
                 reporting.process_exception(exc)
 
@@ -144,7 +144,7 @@ class KodiGroup(xbmc.Player):
             xbmc.log("[script.service.hue] run_pause Hue call fail: {}: {}".format(exc.type_id, exc.message))
             if exc.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
-                kodihue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+                hue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
                 reporting.process_exception(exc)
 
@@ -157,7 +157,7 @@ class KodiGroup(xbmc.Player):
             xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}: {}".format(exc.type_id, exc.message))
             if exc.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
-                kodihue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+                hue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
                 reporting.process_exception(exc)
 
