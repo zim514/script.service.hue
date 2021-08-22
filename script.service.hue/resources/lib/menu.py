@@ -40,27 +40,27 @@ def menu():
 
     elif route == "plugin://script.service.hue/actions":
         action = parsed['action'][0]
-        kgroupid = parsed['kgroupid'][0]
-        xbmc.log("[script.service.hue] Actions: {}, kgroupid: {}".format(action, kgroupid))
+        light_group_id = parsed['light_group_id'][0]
+        xbmc.log("[script.service.hue] Actions: {}, light_group_id: {}".format(action, light_group_id))
         if action == "menu":
             items = [
-                (base_url + "?action=play&kgroupid=" + kgroupid, ListItem(_("Play"))),
-                (base_url + "?action=pause&kgroupid=" + kgroupid, ListItem(_("Pause"))),
-                (base_url + "?action=stop&kgroupid=" + kgroupid, ListItem(_("Stop")))
+                (base_url + "?action=play&light_group_id=" + light_group_id, ListItem(_("Play"))),
+                (base_url + "?action=pause&light_group_id=" + light_group_id, ListItem(_("Pause"))),
+                (base_url + "?action=stop&light_group_id=" + light_group_id, ListItem(_("Stop")))
             ]
 
             xbmcplugin.addDirectoryItems(addon_handle, items, len(items))
             xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=True)
         else:
-            CACHE.set("script.service.hue.action", (action, kgroupid), expiration=(timedelta(seconds=5)))
+            CACHE.set("script.service.hue.action", (action, light_group_id), expiration=(timedelta(seconds=5)))
     else:
         xbmc.log("[script.service.hue] Unknown command. Handle: {}, route: {}, Arguments: {}".format(addon_handle, route, sys.argv))
 
 
 def build_menu(base_url, addon_handle):
     items = [
-        (base_url + "/actions?kgroupid=1&action=menu", ListItem(_("Video Actions")), True),
-        (base_url + "/actions?kgroupid=2&action=menu", ListItem(_("Audio Actions")), True),
+        (base_url + "/actions?light_group_id=1&action=menu", ListItem(_("Video Actions")), True),
+        (base_url + "/actions?light_group_id=2&action=menu", ListItem(_("Audio Actions")), True),
         (base_url + "?toggle", ListItem(_("Hue Status: ") + get_status())),
         (base_url + "?settings", ListItem(_("Settings")))
     ]

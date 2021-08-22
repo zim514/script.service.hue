@@ -59,25 +59,25 @@ def commands(monitor, command):
             xbmc.log("[script.service.hue] No bridge found. deleteHueScene cancelled.")
             hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
-    elif command == "sceneSelect":  # sceneSelect=kgroup,action  / sceneSelect=0,play
-        kgroup = sys.argv[2]
+    elif command == "sceneSelect":  # sceneSelect=light_group,action  / sceneSelect=0,play
+        light_group = sys.argv[2]
         action = sys.argv[3]
-        xbmc.log("[script.service.hue] Started with {}, kgroup: {}, kaction: {}".format(command, kgroup, action))
+        xbmc.log("[script.service.hue] Started with {}, light_group: {}, kaction: {}".format(command, light_group, action))
 
         bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
-            hue.configure_scene(bridge, kgroup, action)
+            hue.configure_scene(bridge, light_group, action)
         else:
             xbmc.log("[script.service.hue] No bridge found. sceneSelect cancelled.")
             hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
-    elif command == "ambiLightSelect":  # ambiLightSelect=kgroupID
-        kgroup = sys.argv[2]
-        xbmc.log("[script.service.hue] Started with {}, kgroupID: {}".format(command, kgroup))
+    elif command == "ambiLightSelect":  # ambiLightSelect=light_group_id
+        light_group = sys.argv[2]
+        xbmc.log("[script.service.hue] Started with {}, light_group_id: {}".format(command, light_group))
 
         bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
-            hue.configure_ambilights(bridge, kgroup)
+            hue.configure_ambilights(bridge, light_group)
         else:
             xbmc.log("[script.service.hue] No bridge found. scene ambi lights cancelled.")
             hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
@@ -91,17 +91,17 @@ def service(monitor):
     service_enabled = CACHE.get("script.service.hue.service_enabled")
 
     if bridge is not None:
-        kgroups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, ADDON.getSettingBool("initialFlash")), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, ADDON.getSettingBool("initialFlash"))]
+        light_groups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, ADDON.getSettingBool("initialFlash")), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, ADDON.getSettingBool("initialFlash"))]
         if ADDON.getSettingBool("group3_enabled"):
             ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, ADDON.getSettingBool("initialFlash"))
 
         connection_retries = 0
         timer = 60
         daylight = hue.get_daylight(bridge)
-        #globals.DAYLIGHT = daylight
+
         CACHE.set("script.service.hue.daylight", daylight)
         CACHE.set("script.service.hue.service_enabled", True)
-        xbmc.log("[script.service.hue] Core service starting. Connected: {}".format(globals.CONNECTED))
+        # xbmc.log("[script.service.hue] Core service starting. Connected: {}".format(globals.CONNECTED))
 
         while globals.CONNECTED and not monitor.abortRequested():
 
@@ -111,10 +111,10 @@ def service(monitor):
 
             if service_enabled and not prev_service_enabled:
                 try:
-                    hue.activate(kgroups, ambi_group)
+                    hue.activate(light_groups, ambi_group)
                 except UnboundLocalError:
                     ambi_group = ambigroup.AmbiGroup(3, bridge, monitor)
-                    hue.activate(kgroups, ambi_group)
+                    hue.activate(light_groups, ambi_group)
 
             # if service disabled, stop ambilight._ambi_loop thread
             if not service_enabled:
@@ -123,11 +123,11 @@ def service(monitor):
             # process cached waiting commands
             action = CACHE.get("script.service.hue.action")
             if action:
-                process_actions(action, kgroups)
+                _process_actions(action, light_groups)
 
             # reload if settings changed
             if SETTINGS_CHANGED.is_set():
-                kgroups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, initial_state=kgroups[0].state), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, initial_state=kgroups[1].state)]
+                light_groups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, initial_state=light_groups[0].state), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, initial_state=light_groups[1].state)]
                 if ADDON.getSettingBool("group3_enabled"):
                     ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, initial_state=ambi_group.state)
                 SETTINGS_CHANGED.clear()
@@ -165,14 +165,14 @@ def service(monitor):
                 if new_daylight != daylight:
                     xbmc.log("[script.service.hue] Daylight change. current: {}, new: {}".format(daylight, new_daylight))
                     daylight = new_daylight
-                    #globals.DAYLIGHT = daylight
+
                     CACHE.set("script.service.hue.daylight", daylight)
                     if not daylight and service_enabled:
                         xbmc.log("[script.service.hue] Sunset activate")
                         try:
-                            hue.activate(kgroups, ambi_group)
-                        except UnboundLocalError as exc:
-                            hue.activate(kgroups)
+                            hue.activate(light_groups, ambi_group)
+                        except UnboundLocalError:
+                            hue.activate(light_groups) #if no ambi_group, activate light_groups
                         except Exception as exc:
                             xbmc.log("[script.service.hue] Get daylight exception")
                             reporting.process_exception(exc)
@@ -184,15 +184,15 @@ def service(monitor):
     return
 
 
-def process_actions(action, kgroups):
+def _process_actions(action, light_groups):
     # process an action command stored in the cache.
     action_action = action[0]
-    action_kgroupid = int(action[1]) - 1
-    xbmc.log("[script.service.hue] Action command: {}, action_action: {}, action_kgroupid: {}".format(action, action_action, action_kgroupid))
+    action_light_group_id = int(action[1]) - 1
+    xbmc.log("[script.service.hue] Action command: {}, action_action: {}, action_light_group_id: {}".format(action, action_action, action_light_group_id))
     if action_action == "play":
-        kgroups[action_kgroupid].run_play()
+        light_groups[action_light_group_id].run_play()
     if action_action == "pause":
-        kgroups[action_kgroupid].run_pause()
+        light_groups[action_light_group_id].run_pause()
     if action_action == "stop":
-        kgroups[action_kgroupid].run_stop()
+        light_groups[action_light_group_id].run_stop()
     CACHE.set("script.service.hue.action", None)
