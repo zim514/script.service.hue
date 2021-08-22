@@ -364,17 +364,17 @@ def get_daylight(bridge):
     return daylight
 
 
-def activate(kgroups, ambi_group=None):
+def activate(light_groups, ambi_group=None):
     """
     Activates play action as appropriate for all groups. Used at sunset and when service is renabled via Actions.
     """
-    xbmc.log("[script.service.hue] Activating scenes: {} {}".format(kgroups, ambi_group))
+    xbmc.log("[script.service.hue] Activating scenes: {} {}".format(light_groups, ambi_group))
 
-    for g in kgroups:
+    for g in light_groups:
         try:
-            if hasattr(g, 'kgroupID'):
-                xbmc.log("[script.service.hue] in activate g: {}, kgroupID: {}".format(g, g.kgroup_id))
-                if ADDON.getSettingBool("group{}_enabled".format(g.kgroup_id)):
+            if hasattr(g, 'light_group_id'):
+                xbmc.log("[script.service.hue] in activate g: {}, light_group_id: {}".format(g, g.light_group_id))
+                if ADDON.getSettingBool("group{}_enabled".format(g.light_group_id)):
                     g.activate()
         except AttributeError:
             pass
@@ -463,7 +463,7 @@ class HueMonitor(xbmc.Monitor):
             if method == "Other.actions":
                 json_loads = json.loads(data)
 
-                kgroupid = json_loads['group']
+                light_group_id = json_loads['group']
                 action = json_loads['command']
-                xbmc.log("[script.service.hue] Action Notification: group: {}, command: {}".format(kgroupid, action))
-                CACHE.set("script.service.hue.action", (action, kgroupid), expiration=(timedelta(seconds=5)))
+                xbmc.log("[script.service.hue] Action Notification: group: {}, command: {}".format(light_group_id, action))
+                CACHE.set("script.service.hue.action", (action, light_group_id), expiration=(timedelta(seconds=5)))

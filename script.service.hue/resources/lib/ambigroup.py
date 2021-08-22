@@ -20,9 +20,9 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
 
 class AmbiGroup(lightgroup.LightGroup):
-    def __init__(self, kgroup_id, bridge, monitor, flash=False, initial_state=STATE_STOPPED):
+    def __init__(self, light_group_id, bridge, monitor, flash=False, initial_state=STATE_STOPPED):
 
-        self.kgroup_id = kgroup_id
+        self.light_group_id = light_group_id
         self.bridge = bridge
         self.monitor = monitor
         self.group0 = self.bridge.groups[0]
@@ -36,24 +36,24 @@ class AmbiGroup(lightgroup.LightGroup):
         self.converterC = Converter(GamutC)
         self.helper = ColorHelper(GamutC)
 
-        self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.kgroup_id))
+        self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.light_group_id))
 
-        self.transition_time = int(ADDON.getSettingInt("group{}_TransitionTime".format(self.kgroup_id)) / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). transitiontime:10 will make the transition last 1 second.
-        self.force_on = ADDON.getSettingBool("group{}_forceOn".format(self.kgroup_id))
-        self.disable_labs = ADDON.getSettingBool("group{}_disableLabs".format(self.kgroup_id))
-        self.min_bri = ADDON.getSettingInt("group{}_MinBrightness".format(self.kgroup_id)) * 255 / 100  # convert percentage to value 1-254
-        self.max_bri = ADDON.getSettingInt("group{}_MaxBrightness".format(self.kgroup_id)) * 255 / 100  # convert percentage to value 1-254
-        self.saturation = ADDON.getSettingNumber("group{}_Saturation".format(self.kgroup_id))
-        self.capture_size_x = ADDON.getSettingInt("group{}_CaptureSize".format(self.kgroup_id))
-        self.resume_state = ADDON.getSettingBool("group{}_ResumeState".format(self.kgroup_id))
-        self.resume_transition = ADDON.getSettingInt("group{}_ResumeTransition".format(self.kgroup_id)) * 10  # convert seconds to multiple of 100ms
+        self.transition_time = int(ADDON.getSettingInt("group{}_TransitionTime".format(self.light_group_id)) / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). transitiontime:10 will make the transition last 1 second.
+        self.force_on = ADDON.getSettingBool("group{}_forceOn".format(self.light_group_id))
+        self.disable_labs = ADDON.getSettingBool("group{}_disableLabs".format(self.light_group_id))
+        self.min_bri = ADDON.getSettingInt("group{}_MinBrightness".format(self.light_group_id)) * 255 / 100  # convert percentage to value 1-254
+        self.max_bri = ADDON.getSettingInt("group{}_MaxBrightness".format(self.light_group_id)) * 255 / 100  # convert percentage to value 1-254
+        self.saturation = ADDON.getSettingNumber("group{}_Saturation".format(self.light_group_id))
+        self.capture_size_x = ADDON.getSettingInt("group{}_CaptureSize".format(self.light_group_id))
+        self.resume_state = ADDON.getSettingBool("group{}_ResumeState".format(self.light_group_id))
+        self.resume_transition = ADDON.getSettingInt("group{}_ResumeTransition".format(self.light_group_id)) * 10  # convert seconds to multiple of 100ms
 
-        self.update_interval = ADDON.getSettingInt("group{}_Interval".format(self.kgroup_id)) / 1000  # convert MS to seconds
+        self.update_interval = ADDON.getSettingInt("group{}_Interval".format(self.light_group_id)) / 1000  # convert MS to seconds
         if self.update_interval == 0:
             self.update_interval = 0.002
 
         self.ambi_lights = {}
-        light_ids = ADDON.getSetting("group{}_Lights".format(self.kgroup_id)).split(",")
+        light_ids = ADDON.getSetting("group{}_Lights".format(self.light_group_id)).split(",")
         index = 0
         for L in light_ids:
             gamut = _get_light_gamut(self.bridge, L)
@@ -103,7 +103,7 @@ class AmbiGroup(lightgroup.LightGroup):
                 ambi_loop_thread.start()
 
     def onPlayBackStopped(self):
-        xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackStopped()".format(self.kgroup_id))
+        xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackStopped()".format(self.light_group_id))
         self.state = STATE_STOPPED
         globals.AMBI_RUNNING.clear()
 
@@ -114,7 +114,7 @@ class AmbiGroup(lightgroup.LightGroup):
             self._resume_light_state()
 
     def onPlayBackPaused(self):
-        xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackPaused()".format(self.kgroup_id))
+        xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackPaused()".format(self.light_group_id))
         self.state = STATE_PAUSED
         globals.AMBI_RUNNING.clear()
 
