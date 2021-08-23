@@ -41,7 +41,7 @@ def commands(monitor, command):
                 service(monitor)
 
     elif command == "createHueScene":
-        xbmc.log("[script.service.hue] Started with {}".format(command))
+        xbmc.log(f"[script.service.hue] Started with {command}")
         bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
             hue.create_hue_scene(bridge)
@@ -50,7 +50,7 @@ def commands(monitor, command):
             hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif command == "deleteHueScene":
-        xbmc.log("[script.service.hue] Started with {}".format(command))
+        xbmc.log(f"[script.service.hue] Started with {command}")
 
         bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
@@ -62,7 +62,7 @@ def commands(monitor, command):
     elif command == "sceneSelect":  # sceneSelect=light_group,action  / sceneSelect=0,play
         light_group = sys.argv[2]
         action = sys.argv[3]
-        xbmc.log("[script.service.hue] Started with {}, light_group: {}, kaction: {}".format(command, light_group, action))
+        xbmc.log(f"[script.service.hue] Started with {command}, light_group: {light_group}, kaction: {action}")
 
         bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
@@ -73,7 +73,7 @@ def commands(monitor, command):
 
     elif command == "ambiLightSelect":  # ambiLightSelect=light_group_id
         light_group = sys.argv[2]
-        xbmc.log("[script.service.hue] Started with {}, light_group_id: {}".format(command, light_group))
+        xbmc.log(f"[script.service.hue] Started with {command}, light_group_id: {light_group}")
 
         bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
@@ -148,12 +148,12 @@ def service(monitor):
                 except requests.RequestException as error:
                     connection_retries = connection_retries + 1
                     if connection_retries <= 10:
-                        xbmc.log("[script.service.hue] Bridge Connection Error. Attempt: {}/10 : {}".format(connection_retries, error))
+                        xbmc.log(f"[script.service.hue] Bridge Connection Error. Attempt: {connection_retries}/10 : {error}")
                         hue.notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
                         timer = -60
 
                     else:
-                        xbmc.log("[script.service.hue] Bridge Connection Error. Attempt: {}/5. Shutting down : {}".format(connection_retries, error))
+                        xbmc.log(f"[script.service.hue] Bridge Connection Error. Attempt: {connection_retries}/5. Shutting down : {error}")
                         hue.notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
                         globals.CONNECTED = False
 
@@ -163,7 +163,7 @@ def service(monitor):
 
                 # check if sunset took place
                 if new_daylight != daylight:
-                    xbmc.log("[script.service.hue] Daylight change. current: {}, new: {}".format(daylight, new_daylight))
+                    xbmc.log(f"[script.service.hue] Daylight change. current: {daylight}, new: {new_daylight}")
                     daylight = new_daylight
 
                     CACHE.set("script.service.hue.daylight", daylight)
@@ -188,7 +188,7 @@ def _process_actions(action, light_groups):
     # process an action command stored in the cache.
     action_action = action[0]
     action_light_group_id = int(action[1]) - 1
-    xbmc.log("[script.service.hue] Action command: {}, action_action: {}, action_light_group_id: {}".format(action, action_action, action_light_group_id))
+    xbmc.log(f"[script.service.hue] Action command: {action}, action_action: {action_action}, action_light_group_id: {action_light_group_id}")
     if action_action == "play":
         light_groups[action_light_group_id].run_play()
     if action_action == "pause":
