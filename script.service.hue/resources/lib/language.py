@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/python
 # Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
 # https://forum.kodi.tv/showthread.php?tid=268081&highlight=generate+.po+python+gettext
 
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     foldername = os.path.basename(dirpath)
     print(("Directory name is : " + foldername))
 
-    string_file = "../language/resource.language.en_gb\\strings.po"
+    string_file = "../language/resource.language.en_gb/strings.po"
     print(("input file: " + string_file))
 
     po = polib.pofile(string_file, wrapwidth=500)
