@@ -562,3 +562,7 @@ msgstr ""
 msgctxt "#30074"
 msgid "Disable Hue Labs during playback"
 msgstr ""
+
+msgctxt "#30001"
+msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."
+msgstr ""

@@ -13,24 +13,24 @@ if __name__ == "__main__":
 
     import polib
 
-    print("PATH: {}".format(sys.path))
-    print("executable: " + sys.executable)
+    print(f"PATH: {sys.path}")
+    print(("executable: " + sys.executable))
 
     dirpath = os.getcwd()
-    print("current directory is : " + dirpath)
+    print(("current directory is : " + dirpath))
     foldername = os.path.basename(dirpath)
-    print("Directory name is : " + foldername)
+    print(("Directory name is : " + foldername))
 
     string_file = "../language/resource.language.en_gb\\strings.po"
-    print("input file: " + string_file)
+    print(("input file: " + string_file))
 
-    po = polib.pofile(string_file)
+    po = polib.pofile(string_file, wrapwidth=500)
 
     try:
         import re, subprocess
 
         command = ["grep", "-hnr", "_([\'\"]", "..\\.."]
-        print("grep command: {}".format(command))
+        print(f"grep command: {command}")
         r = subprocess.check_output(command, text=True)
 
         print(r)
@@ -40,14 +40,14 @@ if __name__ == "__main__":
         translated = [m.msgid.lower().replace("'", "\\'") for m in po]
         missing = set([s for s in strings if s.lower() not in translated])
 
-        print("Missing:" + str(missing))
+        print(("Missing:" + str(missing)))
 
         if missing:
             ids_range = list(range(30000, 35000))
             # ids_reserved = [int(m.msgctxt[1:]) for m in po]
             ids_reserved = []
             for m in po:
-                print("msgctxt: {0}".format(m.msgctxt))
+                # print(f"msgctxt: {m.msgctxt}")
                 if str(m.msgctxt).startswith("#"):
                     ids_reserved.append(int(m.msgctxt[1:]))
 
@@ -57,10 +57,10 @@ if __name__ == "__main__":
             # print("IDs Available:")
             # print(ids_available)
 
-            print("WARNING: adding missing translation for '%s'" % missing)
+            print(f"WARNING: adding missing translation for '{missing}'")
             for text in missing:
                 id = ids_available.pop(0)
-                entry = polib.POEntry(msgid=text, msgstr=u'', msgctxt="#{0}".format(id))
+                entry = polib.POEntry(msgid=text, msgstr='', msgctxt=f"#{id}")
                 po.append(entry)
             po.save(string_file)
     except Exception as e:
@@ -69,7 +69,7 @@ if __name__ == "__main__":
         content = []
     with open(__file__, "r") as me:
         content = me.readlines()
-        content = content[:content.index("#GENERATED\n") + 1]
+        content = content[:content.index("# GENERATED\n") + 1]
     with open(__file__, "w") as f:
         f.writelines(content)
         for m in po:
@@ -85,11 +85,11 @@ else:
     def get_string(t):
         string_id = _strings.get(t.lower())
         if not string_id:
-            xbmc.log("[script.service.hue] LANGUAGE: missing translation for '%s'" % t.lower())
+            xbmc.log(f"[script.service.hue] LANGUAGE: missing translation for '{t.lower()}'")
             return t
 
         if STRDEBUG:
-            return "STR:{} {}".format(string_id, ADDON.getLocalizedString(string_id))
+            return f"STR:{string_id} {ADDON.getLocalizedString(string_id)}"
         return ADDON.getLocalizedString(string_id)
 
 # GENERATED
@@ -227,3 +227,4 @@ _strings['user not found[cr]check your bridge and network.'] = 30086
 _strings['scene successfully created![cr]you may now assign your scene to player actions.'] = 30087
 _strings['do not show again'] = 30073
 _strings['disable hue labs during playback'] = 30074
+_strings['hue bridge v1 (round) is unsupported. hue bridge v2 (square) is required.'] = 30001
