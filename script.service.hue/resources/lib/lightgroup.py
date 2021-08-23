@@ -24,16 +24,16 @@ class LightGroup(xbmc.Player):
     def __init__(self, light_group_id, bridge, media_type, flash=False, initial_state=STATE_STOPPED):
         self.light_group_id = light_group_id
         self.bridge = bridge
-        self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.light_group_id))
+        self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
 
-        self.start_behavior = ADDON.getSettingBool("group{}_startBehavior".format(self.light_group_id))
-        self.start_scene = ADDON.getSettingString("group{}_startSceneID".format(self.light_group_id))
+        self.start_behavior = ADDON.getSettingBool(f"group{self.light_group_id}_startBehavior")
+        self.start_scene = ADDON.getSettingString(f"group{self.light_group_id}_startSceneID")
 
-        self.pause_behavior = ADDON.getSettingBool("group{}_pauseBehavior".format(self.light_group_id))
-        self.pause_scene = ADDON.getSettingString("group{}_pauseSceneID".format(self.light_group_id))
+        self.pause_behavior = ADDON.getSettingBool(f"group{self.light_group_id}_pauseBehavior")
+        self.pause_scene = ADDON.getSettingString(f"group{self.light_group_id}_pauseSceneID")
 
-        self.stop_behavior = ADDON.getSettingBool("group{}_stopBehavior".format(self.light_group_id))
-        self.stop_scene = ADDON.getSettingString("group{}_stopSceneID".format(self.light_group_id))
+        self.stop_behavior = ADDON.getSettingBool(f"group{self.light_group_id}_stopBehavior")
+        self.stop_scene = ADDON.getSettingString(f"group{self.light_group_id}_stopSceneID")
 
         self.state = initial_state
 
@@ -47,17 +47,17 @@ class LightGroup(xbmc.Player):
         super().__init__()
 
     def __repr__(self):
-        return "light_group_id: {}, enabled: {}, state: {}".format(self.light_group_id, self.enabled, self.state)
+        return f"light_group_id: {self.light_group_id}, enabled: {self.enabled}, state: {self.state}"
 
     def flash(self):
         # xbmc.log("[script.service.hue] in KodiGroup Flash")
         try:
             self.group0.action(alert="select")
         except QhueException as exc:
-            xbmc.log("[script.service.hue] Hue call fail: {}: {}".format(exc.type_id, exc.message))
+            xbmc.log(f"[script.service.hue] Hue call fail: {exc.type_id}: {exc.message}")
             reporting.process_exception(exc)
         except requests.RequestException as exc:
-            xbmc.log("[script.service.hue] RequestException: {}".format(exc))
+            xbmc.log(f"[script.service.hue] RequestException: {exc}")
 
     def onAVStarted(self):
         if self.enabled:
@@ -72,7 +72,7 @@ class LightGroup(xbmc.Player):
                 try:
                     self.video_info_tag = self.getVideoInfoTag()
                 except Exception as exc:
-                    xbmc.log("[script.service.hue] Get InfoTag Exception: {}".format(exc))
+                    xbmc.log(f"[script.service.hue] Get InfoTag Exception: {exc}")
                     reporting.process_exception(exc)
                     return
                 # xbmc.log("[script.service.hue] InfoTag: {}".format(self.videoInfoTag))
@@ -86,7 +86,7 @@ class LightGroup(xbmc.Player):
 
     def onPlayBackStopped(self):
         if self.enabled:
-            xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackStopped() , mediaType: {}, lastMediaType: {} ".format(self.light_group_id, self.media_type, self.last_media_type))
+            xbmc.log(f"[script.service.hue] In KodiGroup[{self.light_group_id}], onPlaybackStopped() , mediaType: {self.media_type}, lastMediaType: {self.last_media_type} ")
             self.state = STATE_STOPPED
 
             try:
@@ -101,7 +101,7 @@ class LightGroup(xbmc.Player):
 
     def onPlayBackPaused(self):
         if self.enabled:
-            xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackPaused() , isPlayingVideo: {}, isPlayingAudio: {}".format(self.light_group_id, self.isPlayingVideo(), self.isPlayingAudio()))
+            xbmc.log(f"[script.service.hue] In KodiGroup[{self.light_group_id}], onPlaybackPaused() , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}")
             self.state = STATE_PAUSED
 
             if self.media_type == VIDEO and not self.check_video_activation(
@@ -128,7 +128,7 @@ class LightGroup(xbmc.Player):
         try:
             self.group0.action(scene=self.start_scene)
         except QhueException as exc:
-            xbmc.log("[script.service.hue] onAVStarted: Hue call fail: {}: {}".format(exc.type_id, exc.message))
+            xbmc.log(f"[script.service.hue] onAVStarted: Hue call fail: {exc.type_id}: {exc.message}")
             if exc.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
                 hue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
@@ -141,7 +141,7 @@ class LightGroup(xbmc.Player):
             self.group0.action(scene=self.pause_scene)
             # xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackPaused() Pause scene activated")
         except QhueException as exc:
-            xbmc.log("[script.service.hue] run_pause Hue call fail: {}: {}".format(exc.type_id, exc.message))
+            xbmc.log(f"[script.service.hue] run_pause Hue call fail: {exc.type_id}: {exc.message}")
             if exc.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
                 hue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
@@ -154,7 +154,7 @@ class LightGroup(xbmc.Player):
             self.group0.action(scene=self.stop_scene)
             xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackStop() Stop scene activated")
         except QhueException as exc:
-            xbmc.log("[script.service.hue] onPlaybackStopped: Hue call fail: {}: {}".format(exc.type_id, exc.message))
+            xbmc.log(f"[script.service.hue] onPlaybackStopped: Hue call fail: {exc.type_id}: {exc.message}")
             if exc.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
                 hue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
@@ -162,7 +162,7 @@ class LightGroup(xbmc.Player):
                 reporting.process_exception(exc)
 
     def activate(self):
-        xbmc.log("[script.service.hue] Activate group [{}]. State: {}".format(self.light_group_id, self.state))
+        xbmc.log(f"[script.service.hue] Activate group [{self.light_group_id}]. State: {self.state}")
         xbmc.sleep(200)
         if self.state == STATE_PAUSED:
             self.onPlayBackPaused()
@@ -170,7 +170,7 @@ class LightGroup(xbmc.Player):
             self.onAVStarted()
         else:
             # if not playing and activate is called, probably should do nothing.
-            xbmc.log("[script.service.hue] Activate group [{}]. playback stopped, doing nothing. ".format(self.light_group_id))
+            xbmc.log(f"[script.service.hue] Activate group [{self.light_group_id}]. playback stopped, doing nothing. ")
 
     def playback_type(self):
         if self.isPlayingVideo():
@@ -243,7 +243,7 @@ class LightGroup(xbmc.Player):
         if not scene:
             return False
 
-        xbmc.log("[script.service.hue] Check if scene light already active, settings: enable {}".format(ADDON.getSettingBool("enable_if_already_active")))
+        xbmc.log(f"[script.service.hue] Check if scene light already active, settings: enable {ADDON.getSettingBool('enable_if_already_active')}")
         if ADDON.getSettingBool("enable_if_already_active"):
             try:
                 scene_data = self.bridge.scenes[scene]()
@@ -254,7 +254,7 @@ class LightGroup(xbmc.Player):
                         return True
                 # xbmc.log("[script.service.hue] Check if scene light already active: False")
             except QhueException as exc:
-                xbmc.log("[script.service.hue] checkAlreadyActive: Hue call fail: {}: {}".format(exc.type_id, exc.message))
+                xbmc.log(f"[script.service.hue] checkAlreadyActive: Hue call fail: {exc.type_id}: {exc.message}")
 
         return False
 
@@ -262,7 +262,7 @@ class LightGroup(xbmc.Player):
         if not scene:
             return True
 
-        xbmc.log("[script.service.hue] Check if lights should stay off, settings: enable {}".format(ADDON.getSettingBool("keep_lights_off")))
+        xbmc.log(f"[script.service.hue] Check if lights should stay off, settings: enable {ADDON.getSettingBool('keep_lights_off')}")
         if ADDON.getSettingBool("keep_lights_off"):
             try:
                 scene_data = self.bridge.scenes[scene]()
@@ -273,6 +273,6 @@ class LightGroup(xbmc.Player):
                         return False
                 xbmc.log("[script.service.hue] Check if lights should stay off: False")
             except QhueException as exc:
-                xbmc.log("[script.service.hue] checkKeepLightsOffRule: Hue call fail: {}: {}".format(exc.type_id, exc.message))
+                xbmc.log(f"[script.service.hue] checkKeepLightsOffRule: Hue call fail: {exc.type_id}: {exc.message}")
 
         return True

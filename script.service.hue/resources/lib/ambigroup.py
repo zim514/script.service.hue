@@ -36,24 +36,24 @@ class AmbiGroup(lightgroup.LightGroup):
         self.converterC = Converter(GamutC)
         self.helper = ColorHelper(GamutC)
 
-        self.enabled = ADDON.getSettingBool("group{}_enabled".format(self.light_group_id))
+        self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
 
-        self.transition_time = int(ADDON.getSettingInt("group{}_TransitionTime".format(self.light_group_id)) / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). transitiontime:10 will make the transition last 1 second.
-        self.force_on = ADDON.getSettingBool("group{}_forceOn".format(self.light_group_id))
-        self.disable_labs = ADDON.getSettingBool("group{}_disableLabs".format(self.light_group_id))
-        self.min_bri = ADDON.getSettingInt("group{}_MinBrightness".format(self.light_group_id)) * 255 / 100  # convert percentage to value 1-254
-        self.max_bri = ADDON.getSettingInt("group{}_MaxBrightness".format(self.light_group_id)) * 255 / 100  # convert percentage to value 1-254
-        self.saturation = ADDON.getSettingNumber("group{}_Saturation".format(self.light_group_id))
-        self.capture_size_x = ADDON.getSettingInt("group{}_CaptureSize".format(self.light_group_id))
-        self.resume_state = ADDON.getSettingBool("group{}_ResumeState".format(self.light_group_id))
-        self.resume_transition = ADDON.getSettingInt("group{}_ResumeTransition".format(self.light_group_id)) * 10  # convert seconds to multiple of 100ms
+        self.transition_time = int(ADDON.getSettingInt(f"group{self.light_group_id}_TransitionTime") / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). transitiontime:10 will make the transition last 1 second.
+        self.force_on = ADDON.getSettingBool(f"group{self.light_group_id}_forceOn")
+        self.disable_labs = ADDON.getSettingBool(f"group{self.light_group_id}_disableLabs")
+        self.min_bri = ADDON.getSettingInt(f"group{self.light_group_id}_MinBrightness") * 255 / 100  # convert percentage to value 1-254
+        self.max_bri = ADDON.getSettingInt(f"group{self.light_group_id}_MaxBrightness") * 255 / 100  # convert percentage to value 1-254
+        self.saturation = ADDON.getSettingNumber(f"group{self.light_group_id}_Saturation")
+        self.capture_size_x = ADDON.getSettingInt(f"group{self.light_group_id}_CaptureSize")
+        self.resume_state = ADDON.getSettingBool(f"group{self.light_group_id}_ResumeState")
+        self.resume_transition = ADDON.getSettingInt(f"group{self.light_group_id}_ResumeTransition") * 10  # convert seconds to multiple of 100ms
 
-        self.update_interval = ADDON.getSettingInt("group{}_Interval".format(self.light_group_id)) / 1000  # convert MS to seconds
+        self.update_interval = ADDON.getSettingInt(f"group{self.light_group_id}_Interval") / 1000  # convert MS to seconds
         if self.update_interval == 0:
             self.update_interval = 0.002
 
         self.ambi_lights = {}
-        light_ids = ADDON.getSetting("group{}_Lights".format(self.light_group_id)).split(",")
+        light_ids = ADDON.getSetting(f"group{self.light_group_id}_Lights").split(",")
         index = 0
         for L in light_ids:
             gamut = _get_light_gamut(self.bridge, L)
@@ -74,13 +74,13 @@ class AmbiGroup(lightgroup.LightGroup):
                     xbmc.log("[script.service.hue] Forcing lights on".format(saved_light_states))
                     bridge.lights[L].state(on=True, bri=1)
             except QhueException as exc:
-                xbmc.log("[script.service.hue] Force On Hue call fail: {}: {}".format(exc.type_id, exc.message))
+                xbmc.log(f"[script.service.hue] Force On Hue call fail: {exc.type_id}: {exc.message}")
                 reporting.process_exception(exc)
 
     def onAVStarted(self):
 
-        xbmc.log("Ambilight AV Started. Group enabled: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.playbackType(): {}".format(self.enabled, self.isPlayingVideo(), self.isPlayingAudio(), self.playback_type()))
-        xbmc.log("Ambilight Settings: Interval: {}, transitionTime: {}".format(self.update_interval, self.transition_time))
+        xbmc.log(f"Ambilight AV Started. Group enabled: {self.enabled} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.playbackType(): {self.playback_type()}")
+        xbmc.log(f"Ambilight Settings: Interval: {self.update_interval}, transitionTime: {self.transition_time}")
 
         self.state = STATE_PLAYING
 
@@ -103,7 +103,7 @@ class AmbiGroup(lightgroup.LightGroup):
                 ambi_loop_thread.start()
 
     def onPlayBackStopped(self):
-        xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackStopped()".format(self.light_group_id))
+        xbmc.log(f"[script.service.hue] In ambiGroup[{self.light_group_id}], onPlaybackStopped()")
         self.state = STATE_STOPPED
         globals.AMBI_RUNNING.clear()
 
@@ -114,7 +114,7 @@ class AmbiGroup(lightgroup.LightGroup):
             self._resume_light_state()
 
     def onPlayBackPaused(self):
-        xbmc.log("[script.service.hue] In ambiGroup[{}], onPlaybackPaused()".format(self.light_group_id))
+        xbmc.log(f"[script.service.hue] In ambiGroup[{self.light_group_id}], onPlaybackPaused()")
         self.state = STATE_PAUSED
         globals.AMBI_RUNNING.clear()
 
@@ -130,14 +130,14 @@ class AmbiGroup(lightgroup.LightGroup):
             xy = self.saved_light_states[L]['state']['xy']
             bri = self.saved_light_states[L]['state']['bri']
             on = self.saved_light_states[L]['state']['on']
-            xbmc.log("[script.service.hue] Resume state: Light: {}, xy: {}, bri: {}, on: {},transition time: {}".format(L, xy, bri, on, self.resume_transition))
+            xbmc.log(f"[script.service.hue] Resume state: Light: {L}, xy: {xy}, bri: {bri}, on: {on},transition time: {self.resume_transition}")
             try:
                 self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
             except QhueException as exc:
                 if exc.type_id == 201:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                     pass
                 else:
-                    xbmc.log("[script.service.hue] resumeLightState: Hue call fail: {}: {}".format(exc.type_id, exc.message))
+                    xbmc.log(f"[script.service.hue] resumeLightState: Hue call fail: {exc.type_id}: {exc.message}")
                     reporting.process_exception(exc)
 
     def _ambi_loop(self):
@@ -148,7 +148,7 @@ class AmbiGroup(lightgroup.LightGroup):
 
         self.capture_size_y = int(self.capture_size_x / aspect_ratio)
         expected_capture_size = self.capture_size_x * self.capture_size_y * 4  # size * 4 bytes - RGBA
-        xbmc.log("[script.service.hue] aspect_ratio: {}, Capture Size: ({},{}), expected_capture_size: {}".format(aspect_ratio, self.capture_size_x, self.capture_size_y, expected_capture_size))
+        xbmc.log(f"[script.service.hue] aspect_ratio: {aspect_ratio}, Capture Size: ({self.capture_size_x},{self.capture_size_y}), expected_capture_size: {expected_capture_size}")
 
         for L in list(self.ambi_lights):
             self.ambi_lights[L].update(prev_xy=(0.0001, 0.0001))
@@ -166,7 +166,7 @@ class AmbiGroup(lightgroup.LightGroup):
                     image = Image.frombytes("RGBA", (self.capture_size_x, self.capture_size_y), bytes(cap_image), "raw", "BGRA", 0, 1)  # Kodi always returns a BGRA image.
 
                 except ValueError:
-                    xbmc.log("[script.service.hue] capImage: {}".format(len(cap_image)))
+                    xbmc.log(f"[script.service.hue] capImage: {len(cap_image)}")
                     xbmc.log("[script.service.hue] Value Error")
                     self.monitor.waitForAbort(0.25)
                     continue  # returned capture is  smaller than expected, but this happens when player is stopping so fail silently. give up this loop.
@@ -188,7 +188,7 @@ class AmbiGroup(lightgroup.LightGroup):
                 self.monitor.waitForAbort(self.update_interval)  # seconds
 
             average_process_time = _perf_average(PROCESS_TIMES)
-            xbmc.log("[script.service.hue] Average process time: {}".format(average_process_time))
+            xbmc.log(f"[script.service.hue] Average process time: {average_process_time}")
             self.capture_size_x = ADDON.setSetting("average_process_time", str(average_process_time))
 
         except Exception as exc:
@@ -218,14 +218,14 @@ class AmbiGroup(lightgroup.LightGroup):
                 if exc.type_id == 201:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                     pass
                 elif exc.type_id == 500 or exc.type_id == 901:  # or exc == 500:  # bridge internal error
-                    xbmc.log("[script.service.hue] Bridge internal error: {}".format(exc))
+                    xbmc.log(f"[script.service.hue] Bridge internal error: {exc}")
                     self._bridge_error500()
                 else:
-                    xbmc.log("[script.service.hue] Ambi: QhueException Hue call fail: {}: {}".format(exc.type_id, exc.message))
+                    xbmc.log(f"[script.service.hue] Ambi: QhueException Hue call fail: {exc.type_id}: {exc.message}")
                     reporting.process_exception(exc)
 
             except requests.RequestException as exc:
-                xbmc.log("[script.service.hue] Ambi: RequestException: {}".format(exc))
+                xbmc.log(f"[script.service.hue] Ambi: RequestException: {exc}")
                 self._bridge_error500()
             except KeyError:
                 xbmc.log("[script.service.hue] Ambi: KeyError, light not found")
@@ -244,7 +244,7 @@ class AmbiGroup(lightgroup.LightGroup):
         self.savedEffectSensors = self._get_effect_sensors()
 
         for sensor in self.savedEffectSensors:
-            xbmc.log("[script.service.hue] Stopping effect sensor {}".format(sensor))
+            xbmc.log(f"[script.service.hue] Stopping effect sensor {sensor}")
             self.bridge.sensors[sensor].state(status=0)
 
     def _resume_effects(self):
@@ -252,7 +252,7 @@ class AmbiGroup(lightgroup.LightGroup):
             return
 
         for sensor in self.savedEffectSensors:
-            xbmc.log("[script.service.hue] Resuming effect sensor {}".format(sensor))
+            xbmc.log(f"[script.service.hue] Resuming effect sensor {sensor}")
             self.bridge.sensors[sensor].state(status=1)
 
         self.savedEffectSensors = None
@@ -295,7 +295,7 @@ class AmbiGroup(lightgroup.LightGroup):
                 lights[i] |= sensors
 
         if lights:
-            xbmc.log('[script.service.hue] Found active Hue Labs effects on lights: {}'.format(lights))
+            xbmc.log(f'[script.service.hue] Found active Hue Labs effects on lights: {lights}')
         else:
             xbmc.log('[script.service.hue] No active Hue Labs effects found')
             return []
@@ -318,7 +318,7 @@ def _get_light_gamut(bridge, light):
         gamut = bridge.lights()[light]['capabilities']['control']['colorgamuttype']
         # xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(l, gamut))
     except QhueException as error:
-        xbmc.log("[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {}, error: {}".format(light, error))
+        xbmc.log(f"[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {light}, error: {error}")
         return "C"
     if gamut == "A" or gamut == "B" or gamut == "C":
         return gamut
@@ -333,7 +333,7 @@ def _perf_average(process_times):
         for x in process_times:
             total += x
         average_process_time = int(total / size * 1000)
-        return "{} ms".format(average_process_time)
+        return f"{average_process_time} ms"
     return _("Unknown")
 
 
@@ -344,6 +344,6 @@ def _get_light_states(lights, bridge):
         try:
             states[L] = (bridge.lights[L]())
         except QhueException as exc:
-            xbmc.log("[script.service.hue] Hue call fail: {}: {}".format(exc.type_id, exc.message))
+            xbmc.log(f"[script.service.hue] Hue call fail: {exc.type_id}: {exc.message}")
 
     return states

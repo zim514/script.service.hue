@@ -41,7 +41,7 @@ def menu():
     elif route == "plugin://script.service.hue/actions":
         action = parsed['action'][0]
         light_group_id = parsed['light_group_id'][0]
-        xbmc.log("[script.service.hue] Actions: {}, light_group_id: {}".format(action, light_group_id))
+        xbmc.log(f"[script.service.hue] Actions: {action}, light_group_id: {light_group_id}")
         if action == "menu":
             items = [
                 (base_url + "?action=play&light_group_id=" + light_group_id, ListItem(_("Play"))),
@@ -54,7 +54,7 @@ def menu():
         else:
             CACHE.set("script.service.hue.action", (action, light_group_id), expiration=(timedelta(seconds=5)))
     else:
-        xbmc.log("[script.service.hue] Unknown command. Handle: {}, route: {}, Arguments: {}".format(addon_handle, route, sys.argv))
+        xbmc.log(f"[script.service.hue] Unknown command. Handle: {addon_handle}, route: {route}, Arguments: {sys.argv}")
 
 
 def build_menu(base_url, addon_handle):

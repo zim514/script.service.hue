@@ -5,5 +5,5 @@ from resources.lib import menu, reporting
 try:
     menu.menu()
 except Exception as exc:
-    xbmc.log("[script.service.hue][EXCEPTION] Command exception: {}".format(exc))
+    xbmc.log(f"[script.service.hue][EXCEPTION] Command exception: {exc}")
     reporting.process_exception(exc)
