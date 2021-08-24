@@ -129,7 +129,10 @@ def service(monitor):
             if SETTINGS_CHANGED.is_set():
                 light_groups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, initial_state=light_groups[0].state), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, initial_state=light_groups[1].state)]
                 if ADDON.getSettingBool("group3_enabled"):
-                    ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, initial_state=ambi_group.state)
+                    try:
+                        ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, initial_state=ambi_group.state)
+                    except UnboundLocalError:
+                        ambi_group = ambigroup.AmbiGroup(3, bridge, monitor) # if ambi_group is constructed for the first time.
                 SETTINGS_CHANGED.clear()
 
             # check for sunset & connection every minute
