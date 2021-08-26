@@ -366,7 +366,7 @@ def get_daylight(bridge):
 
 def activate(light_groups, ambi_group=None):
     """
-    Activates play action as appropriate for all groups. Used at sunset and when service is renabled via Actions.
+    Activates play action as appropriate for all groups. Used at sunset and when service is re-nabled via Actions.
     """
     xbmc.log(f"[script.service.hue] Activating scenes: {light_groups} {ambi_group}")
 

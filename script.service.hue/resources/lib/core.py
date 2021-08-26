@@ -98,6 +98,7 @@ def service(monitor):
         connection_retries = 0
         timer = 60
         daylight = hue.get_daylight(bridge)
+        new_daylight = daylight
 
         CACHE.set("script.service.hue.daylight", daylight)
         CACHE.set("script.service.hue.service_enabled", True)
@@ -132,7 +133,7 @@ def service(monitor):
                     try:
                         ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, initial_state=ambi_group.state)
                     except UnboundLocalError:
-                        ambi_group = ambigroup.AmbiGroup(3, bridge, monitor) # if ambi_group is constructed for the first time.
+                        ambi_group = ambigroup.AmbiGroup(3, bridge, monitor)  # if ambi_group is constructed for the first time.
                 SETTINGS_CHANGED.clear()
 
             # check for sunset & connection every minute
@@ -175,7 +176,7 @@ def service(monitor):
                         try:
                             hue.activate(light_groups, ambi_group)
                         except UnboundLocalError:
-                            hue.activate(light_groups) #if no ambi_group, activate light_groups
+                            hue.activate(light_groups)  # if no ambi_group, activate light_groups
                         except Exception as exc:
                             xbmc.log("[script.service.hue] Get daylight exception")
                             reporting.process_exception(exc)
