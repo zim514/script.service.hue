@@ -160,10 +160,6 @@ msgctxt "#5110"
 msgid "Initial flash"
 msgstr "Probliknutí světel při spuštění"
 
-msgctxt "#5111"
-msgid "Flash on settings reload"
-msgstr "Probliknutí světel při změně nastavení"
-
 msgctxt "#6100"
 msgid "Light Selection"
 msgstr "Výběr světel"
@@ -171,14 +167,6 @@ msgstr "Výběr světel"
 msgctxt "#6101"
 msgid "Select Lights"
 msgstr "Vyberte světla"
-
-msgctxt "#6102"
-msgid "Select Hue Group"
-msgstr "Zvolte skupinu Hue"
-
-msgctxt "#6200"
-msgid "Group Behavior"
-msgstr "Chování skupiny"
 
 msgctxt "#30520"
 msgid "Enabled"
@@ -199,14 +187,6 @@ msgstr "Smazat scénu"
 msgctxt "#30000"
 msgid "Hue Service"
 msgstr "Služba Hue"
-
-msgctxt "#30001"
-msgid "ERROR: Group not created"
-msgstr "Chyba: Skupina nebyla vytvořena"
-
-msgctxt "#30003"
-msgid "Group deleted"
-msgstr "Skupina smazána"
 
 msgctxt "#30004"
 msgid "Check your bridge and network"
@@ -236,10 +216,6 @@ msgctxt "#30011"
 msgid "Complete!"
 msgstr "Hotovo!"
 
-msgctxt "#30012"
-msgid "Group Created"
-msgstr "Skupina vytvořena"
-
 msgctxt "#30013"
 msgid "Cancelled"
 msgstr "Ukončeno"
@@ -252,10 +228,6 @@ msgctxt "#30015"
 msgid "Select Hue Lights..."
 msgstr "Vyberte Hue světla..."
 
-msgctxt "#30016"
-msgid "Are you sure you want to delete this group: "
-msgstr "Opravdu chcete tuto skupinu smazat: "
-
 msgctxt "#30017"
 msgid "Found bridge: "
 msgstr "Bridge nalezen: "
@@ -267,10 +239,6 @@ msgstr "Hledat Bridge..."
 msgctxt "#30019"
 msgid "User Found!"
 msgstr "Uživatel nalezen!"
-
-msgctxt "#30020"
-msgid "Delete Hue Group"
-msgstr "Smazat Hue skupinu"
 
 msgctxt "#30021"
 msgid "Bridge connection failed"
@@ -289,8 +257,8 @@ msgid "Check Hue Bridge configuration"
 msgstr "Zkontrolujte konfiguraci Hue Bridge"
 
 msgctxt "#30025"
-msgid "ERROR: Scene not created"
-msgstr "Chyba: Scéna nebyla vytvořena"
+msgid "ERROR: Scene not deleted"
+msgstr "ERROR: Scene not deleted"
 
 msgctxt "#30026"
 msgid "Scene Created"
@@ -315,10 +283,6 @@ msgstr "Vložte název scény"
 msgctxt "#30031"
 msgid "Transition Time:"
 msgstr "Čas přechodu:"
-
-msgctxt "#30032"
-msgid "Fade time must be saved as part of the scene."
-msgstr "Čas slábnutí musí být uložen jako součást scény."
 
 msgctxt "#30033"
 msgid "{} secs."
@@ -345,8 +309,8 @@ msgid "Create Hue Scene"
 msgstr "Vytvořit Hue scénu"
 
 msgctxt "#30002"
-msgid "Error: Scene not created."
-msgstr "Chyba: Scéna nebyla vytvořena."
+msgid "Scene not created."
+msgstr "Scene not created."
 
 msgctxt "#30039"
 msgid "Set a fade time in seconds, or set to 0 seconds for an instant transition."
@@ -599,6 +563,54 @@ msgstr "Nezobrazovat znovu"
 msgctxt "#30074"
 msgid "Disable Hue Labs during playback"
 msgstr ""
+
+msgctxt "#30001"
+msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."
+msgstr ""
+
+#~ msgctxt "#5111"
+#~ msgid "Flash on settings reload"
+#~ msgstr "Probliknutí světel při změně nastavení"
+
+#~ msgctxt "#6102"
+#~ msgid "Select Hue Group"
+#~ msgstr "Zvolte skupinu Hue"
+
+#~ msgctxt "#6200"
+#~ msgid "Group Behavior"
+#~ msgstr "Chování skupiny"
+
+#~ msgctxt "#30001"
+#~ msgid "ERROR: Group not created"
+#~ msgstr "Chyba: Skupina nebyla vytvořena"
+
+#~ msgctxt "#30003"
+#~ msgid "Group deleted"
+#~ msgstr "Skupina smazána"
+
+#~ msgctxt "#30012"
+#~ msgid "Group Created"
+#~ msgstr "Skupina vytvořena"
+
+#~ msgctxt "#30016"
+#~ msgid "Are you sure you want to delete this group: "
+#~ msgstr "Opravdu chcete tuto skupinu smazat: "
+
+#~ msgctxt "#30020"
+#~ msgid "Delete Hue Group"
+#~ msgstr "Smazat Hue skupinu"
+
+#~ msgctxt "#30025"
+#~ msgid "ERROR: Scene not created"
+#~ msgstr "Chyba: Scéna nebyla vytvořena"
+
+#~ msgctxt "#30032"
+#~ msgid "Fade time must be saved as part of the scene."
+#~ msgstr "Čas slábnutí musí být uložen jako součást scény."
+
+#~ msgctxt "#30002"
+#~ msgid "Error: Scene not created."
+#~ msgstr "Chyba: Scéna nebyla vytvořena."
 
 #~ msgctxt "#32102"
 #~ msgid "Debug Logs"
