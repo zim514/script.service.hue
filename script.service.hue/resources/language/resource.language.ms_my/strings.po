@@ -160,24 +160,12 @@ msgctxt "#5110"
 msgid "Initial flash"
 msgstr ""
 
-msgctxt "#5111"
-msgid "Flash on settings reload"
-msgstr ""
-
 msgctxt "#6100"
 msgid "Light Selection"
 msgstr ""
 
 msgctxt "#6101"
 msgid "Select Lights"
-msgstr ""
-
-msgctxt "#6102"
-msgid "Select Hue Group"
-msgstr ""
-
-msgctxt "#6200"
-msgid "Group Behavior"
 msgstr ""
 
 msgctxt "#30520"
@@ -198,14 +186,6 @@ msgstr ""
 
 msgctxt "#30000"
 msgid "Hue Service"
-msgstr ""
-
-msgctxt "#30001"
-msgid "ERROR: Group not created"
-msgstr ""
-
-msgctxt "#30003"
-msgid "Group deleted"
 msgstr ""
 
 msgctxt "#30004"
@@ -236,10 +216,6 @@ msgctxt "#30011"
 msgid "Complete!"
 msgstr ""
 
-msgctxt "#30012"
-msgid "Group Created"
-msgstr ""
-
 msgctxt "#30013"
 msgid "Cancelled"
 msgstr ""
@@ -252,10 +228,6 @@ msgctxt "#30015"
 msgid "Select Hue Lights..."
 msgstr ""
 
-msgctxt "#30016"
-msgid "Are you sure you want to delete this group: "
-msgstr ""
-
 msgctxt "#30017"
 msgid "Found bridge: "
 msgstr ""
@@ -266,10 +238,6 @@ msgstr ""
 
 msgctxt "#30019"
 msgid "User Found!"
-msgstr ""
-
-msgctxt "#30020"
-msgid "Delete Hue Group"
 msgstr ""
 
 msgctxt "#30021"
@@ -289,8 +257,8 @@ msgid "Check Hue Bridge configuration"
 msgstr ""
 
 msgctxt "#30025"
-msgid "ERROR: Scene not created"
-msgstr ""
+msgid "ERROR: Scene not deleted"
+msgstr "ERROR: Scene not deleted"
 
 msgctxt "#30026"
 msgid "Scene Created"
@@ -314,10 +282,6 @@ msgstr ""
 
 msgctxt "#30031"
 msgid "Transition Time:"
-msgstr ""
-
-msgctxt "#30032"
-msgid "Fade time must be saved as part of the scene."
 msgstr ""
 
 msgctxt "#30033"
@@ -345,8 +309,8 @@ msgid "Create Hue Scene"
 msgstr ""
 
 msgctxt "#30002"
-msgid "Error: Scene not created."
-msgstr ""
+msgid "Scene not created."
+msgstr "Scene not created."
 
 msgctxt "#30039"
 msgid "Set a fade time in seconds, or set to 0 seconds for an instant transition."
@@ -598,4 +562,8 @@ msgstr ""
 
 msgctxt "#30074"
 msgid "Disable Hue Labs during playback"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."
 msgstr ""

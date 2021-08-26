@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.0.27">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.0.28">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0" />
 		<import addon="script.module.requests" version="2.25.1" />
@@ -38,6 +38,7 @@ Update to new settings system</news>
 		<description lang="cs_CZ">Ovládejte Hue světla automaticky pomocí Kodi. Vytvořte scény pro začátek, přestávku i ukončení přehrávání a nechte Kodi reagovat automaticky na Vaše akce. Je možné využít východ i západ slunce. Obsahuje podporu pro Ambilight.</description>
 		<description lang="en_GB">Automate your Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support.</description>
 		<disclaimer lang="cs_CZ">Vyžaduje Hue Bridge V2 (čtvercový). Ambilight není podporován na všech zařízeních.</disclaimer>
+		<disclaimer lang="da_DK">Kræver en Hue Bridge V2 (firkant). Ambilight er ikke tilgængelig på al hardware.</disclaimer>
 		<disclaimer lang="en_GB">Requires a Hue Bridge V2 (Square). Ambilight not available on all hardware.</disclaimer>
 	</extension>
 </addon>

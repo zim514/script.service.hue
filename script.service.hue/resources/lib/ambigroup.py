@@ -171,7 +171,7 @@ class AmbiGroup(lightgroup.LightGroup):
                     self.monitor.waitForAbort(0.25)
                     continue  # returned capture is  smaller than expected, but this happens when player is stopping so fail silently. give up this loop.
                 except Exception as exc:
-                    xbmc.log("[script.service.hue] Capture exception")
+                    xbmc.log(f"[script.service.hue] Capture exception: {exc}")
                     reporting.process_exception(exc)
                     self.monitor.waitForAbort(0.25)
                     continue
