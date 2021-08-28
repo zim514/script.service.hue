@@ -62,7 +62,7 @@ def commands(monitor, command):
     elif command == "sceneSelect":  # sceneSelect=light_group,action  / sceneSelect=0,play
         light_group = sys.argv[2]
         action = sys.argv[3]
-        xbmc.log(f"[script.service.hue] Started with {command}, light_group: {light_group}, kaction: {action}")
+        xbmc.log(f"[script.service.hue] Started with {command}, light_group: {light_group}, action: {action}")
 
         bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
@@ -89,11 +89,12 @@ def commands(monitor, command):
 def service(monitor):
     bridge = hue.connect_bridge(silent=ADDON.getSettingBool("disableConnectionMessage"))
     service_enabled = CACHE.get("script.service.hue.service_enabled")
+    initial_flash = ADDON.getSettingBool("initialFlash")
 
     if bridge is not None:
-        light_groups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, ADDON.getSettingBool("initialFlash")), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, ADDON.getSettingBool("initialFlash"))]
+        light_groups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, initial_flash), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, initial_flash)]
         if ADDON.getSettingBool("group3_enabled"):
-            ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, ADDON.getSettingBool("initialFlash"))
+            ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, initial_flash)
 
         connection_retries = 0
         timer = 60

@@ -36,7 +36,7 @@ if __name__ == "__main__":
         print(r)
         print("End grep")
 
-        strings = re.compile("_\([\"'](.*?)[\"']\)", re.IGNORECASE).findall(r)
+        strings = re.compile('_\(f?["\'](.*?)["\']\)', re.IGNORECASE).findall(r)
         translated = [m.msgid.lower().replace("'", "\\'") for m in po]
         missing = set([s for s in strings if s.lower() not in translated])
 
@@ -228,3 +228,5 @@ _strings['scene successfully created![cr]you may now assign your scene to player
 _strings['do not show again'] = 30073
 _strings['disable hue labs during playback'] = 30074
 _strings['hue bridge v1 (round) is unsupported. hue bridge v2 (square) is required.'] = 30001
+_strings['bridge api: {api_version}, update your bridge'] = 30003
+_strings['unknown colour gamut for light {light}'] = 30012

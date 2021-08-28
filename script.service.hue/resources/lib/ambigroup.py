@@ -5,7 +5,7 @@ import xbmc
 import xbmcgui
 from PIL import Image
 
-from resources.lib import PROCESS_TIMES, reporting, globals
+from resources.lib import PROCESS_TIMES, reporting, globals, hue
 from resources.lib.language import get_string as _
 from . import ADDON
 from . import imageprocess
@@ -320,6 +320,11 @@ def _get_light_gamut(bridge, light):
     except QhueException as error:
         xbmc.log(f"[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {light}, error: {error}")
         return "C"
+    except KeyError:
+        xbmc.log(f"[script.service.hue] Unknown gamut type, unsupported light: {light}")
+        hue.notification(_("Hue Service"), _(f"Unknown colour gamut for light {light}"))
+        return "C"
+
     if gamut == "A" or gamut == "B" or gamut == "C":
         return gamut
     return "C"  # default to C if unknown gamut type
