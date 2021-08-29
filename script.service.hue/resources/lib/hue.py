@@ -6,10 +6,10 @@ import requests
 import xbmc
 import xbmcgui
 
-from resources.lib.qhue.qhue import QhueException
-from . import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED, reporting, CONNECTED
-from . import qhue, ADDONID, CACHE
+from resources.lib import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED, reporting, CONNECTED
+from resources.lib import qhue, ADDONID, CACHE
 from .language import get_string as _
+from .qhue import QhueException
 from .settings import validate_settings
 
 
