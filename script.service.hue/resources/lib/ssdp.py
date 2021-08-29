@@ -33,7 +33,7 @@ class SSDPResponse(object):
         self.server = r.getheader("server")
 
     def __repr__(self):
-        return "<SSDPResponse({location}, {st}, {usn}, {server})>".format(**self.__dict__)
+        return f"<SSDPResponse({self.location}, {self.st}, {self.usn}, {self.server})>"
 
 
 def discover(service, timeout=5, retries=1, mx=3):
