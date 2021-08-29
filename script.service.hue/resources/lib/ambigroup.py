@@ -125,7 +125,7 @@ class AmbiGroup(lightgroup.LightGroup):
             xy = self.saved_light_states[L]['state']['xy']
             bri = self.saved_light_states[L]['state']['bri']
             on = self.saved_light_states[L]['state']['on']
-            xbmc.log(f"[script.service.hue] Resume state: Light: {L}, xy: {xy}, bri: {bri}, on: {on},transition time: {self.resume_transition}")
+            # xbmc.log(f"[script.service.hue] Resume state: Light: {L}, xy: {xy}, bri: {bri}, on: {on},transition time: {self.resume_transition}")
             try:
                 self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
             except QhueException as exc:

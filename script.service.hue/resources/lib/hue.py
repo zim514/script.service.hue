@@ -213,9 +213,8 @@ def _discover_bridge_ip():
 
 def _create_user(monitor, bridge_ip, progress_bar=False):
     xbmc.log("[script.service.hue] In createUser")
-    # device = 'kodi#'+getfqdn()
-    data = '{{"devicetype": "kodi#{}"}}'.format(
-        getfqdn())  # Create a devicetype named kodi#localhostname. Eg: kodi#LibreELEC
+    # devicetype = 'kodi#'+getfqdn()
+    data = '{{"devicetype": "kodi#{}"}}'.format(getfqdn())  # Create a devicetype named kodi#localhostname. Eg: kodi#LibreELEC
 
     req = requests
     res = 'link button not pressed'
