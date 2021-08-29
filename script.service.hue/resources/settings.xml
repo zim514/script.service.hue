@@ -791,6 +791,11 @@
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="error_reporting" type="boolean" label="30016" help="">
+					<level>3</level>
+					<default>True</default>
+					<control type="toggle"/>
+				</setting>
 				<setting id="performanceLogging" type="boolean" label="30068" help="">
 					<level>4</level>
 					<default>False</default>
@@ -801,6 +806,9 @@
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
+
+
+
 				<!-- TO DO
 				<setting id="daylight" type="boolean" label="30068" help="">
 					<level>4</level>

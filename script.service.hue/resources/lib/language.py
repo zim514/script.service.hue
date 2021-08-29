@@ -38,21 +38,21 @@ if __name__ == "__main__":
         translated = [m.msgid.lower().replace("'", "\\'") for m in po]
         missing = set([s for s in strings if s.lower() not in translated])
 
+        ids_range = list(range(30000, 35000))
+        # ids_reserved = [int(m.msgctxt[1:]) for m in po]
+        ids_reserved = []
+        for m in po:
+            # print(f"msgctxt: {m.msgctxt}")
+            if str(m.msgctxt).startswith("#"):
+                ids_reserved.append(int(m.msgctxt[1:]))
+
+        ids_available = [x for x in ids_range if x not in ids_reserved]
+        # print(f"IDs Reserved: {ids_reserved}")
+        print(f"IDs Available: {ids_available}")
+
         print(f"Missing: {missing}")
 
         if missing:
-            ids_range = list(range(30000, 35000))
-            # ids_reserved = [int(m.msgctxt[1:]) for m in po]
-            ids_reserved = []
-            for m in po:
-                # print(f"msgctxt: {m.msgctxt}")
-                if str(m.msgctxt).startswith("#"):
-                    ids_reserved.append(int(m.msgctxt[1:]))
-
-            ids_available = [x for x in ids_range if x not in ids_reserved]
-            # print(f"IDs Reserved: {ids_reserved}")
-            # print(f"IDs Available: {ids_available}")
-
 
             print(f"WARNING: adding missing translation for '{missing}'")
             for text in missing:
@@ -226,3 +226,6 @@ _strings['disable hue labs during playback'] = 30074
 _strings['hue bridge v1 (round) is unsupported. hue bridge v2 (square) is required.'] = 30001
 _strings['bridge api: {api_version}, update your bridge'] = 30003
 _strings['unknown colour gamut for light {light}'] = 30012
+_strings['report errors'] = 30016
+_strings['never report errors'] = 30020
+_strings['hue service error'] = 30032

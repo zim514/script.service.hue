@@ -2,19 +2,26 @@ import platform
 import sys
 
 import rollbar
+import xbmc
 import xbmcgui
 
-from resources.lib import ADDONVERSION, ROLLBAR_API_KEY, ADDONID, KODIVERSION, ADDONPATH
+from resources.lib import ADDONVERSION, ROLLBAR_API_KEY, KODIVERSION, ADDONPATH, ADDON
 from resources.lib.language import get_string as _
 
 
 def process_exception(exc, level="critical"):
-    if _error_report_requested(exc):
-        _report_error(level)
+    if ADDON.getSettingBool("error_reporting"):
+        if _error_report_requested(exc):
+            _report_error(level)
 
 
 def _error_report_requested(exc):
-    return xbmcgui.Dialog().yesno(heading=f"{ADDONID} Error", message=_("The following error occurred:") + f"\n[COLOR=red]{exc}[/COLOR]\n" + _("Automatically report this error?"))
+    response = xbmcgui.Dialog().yesnocustom(heading=_("Hue Service Error"), message=_("The following error occurred:") + f"\n[COLOR=red]{exc}[/COLOR]\n" + _("Automatically report this error?"), customlabel=_("Never report errors"))
+    if response == 2:
+        xbmc.log("[script.service.hue] Error Reporting disabled")
+        ADDON.setSettingBool("error_reporting", False)
+        return False
+    return response
 
 
 def _report_error(level="critical"):

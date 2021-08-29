@@ -1,3 +1,4 @@
+import traceback
 from threading import Thread
 
 import requests
@@ -23,7 +24,7 @@ class AmbiGroup(lightgroup.LightGroup):
         self.bridge_error500 = 0
         self.state = initial_state
 
-        self.saved_light_states = None
+        self.saved_light_states = {}
         self.video_info_tag = xbmc.InfoTagVideo
 
         self.image_process = imageprocess.ImageProcess()
@@ -207,13 +208,14 @@ class AmbiGroup(lightgroup.LightGroup):
                 self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=int(transition_time))
                 self.ambi_lights[light].update(prev_xy=xy)
             except QhueException as exc:
-                if exc.type_id == 201:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
-                    pass
-                elif exc.type_id == 500 or exc.type_id == 901:  # or exc == 500:  # bridge internal error
-                    xbmc.log(f"[script.service.hue] Bridge internal error: {exc}")
+                #if exc.type_id == 201:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
+                #    pass
+                if exc.type_id == 500 or exc.type_id == 901:  # or exc == 500:  # bridge internal error
+                    xbmc.log(f"[script.service.hue] Bridge internal error: {exc.type_id}: {exc.message} {traceback.format_exc()}")
                     self._bridge_error500()
                 else:
-                    xbmc.log(f"[script.service.hue] Ambi: QhueException Hue call fail: {exc.type_id}: {exc.message}")
+                    xbmc.log(f"[script.service.hue] Ambi: QhueException Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
+                    AMBI_RUNNING.clear() # shut it down
                     reporting.process_exception(exc)
 
             except requests.RequestException as exc:
