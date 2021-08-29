@@ -1,4 +1,5 @@
 import json
+import traceback
 from datetime import timedelta
 from socket import getfqdn
 
@@ -160,7 +161,7 @@ def _connection_test(bridge_ip):
     try:
         api_version = b.config()['apiversion']
     except qhue.QhueException as error:
-        xbmc.log(f"[script.service.hue] Connection test failed.  {error.type_id}: {error.message}")
+        xbmc.log(f"[script.service.hue] Connection test failed.  {error.type_id}: {error.message} {traceback.format_exc()}")
         reporting.process_exception(error)
         return False
     except requests.RequestException as error:
@@ -283,7 +284,7 @@ def _get_light_name(bridge, L):
     try:
         name = bridge.lights()[L]['name']
     except (qhue.QhueException, requests.RequestException) as exc:
-        xbmc.log(f"[script.service.hue] getLightName Qhue Exception: {exc}")
+        xbmc.log(f"[script.service.hue] getLightName Qhue Exception: {exc} {traceback.format_exc()}")
         return None
 
     if name is None:
@@ -306,7 +307,6 @@ def select_hue_lights(bridge):
         # xbmc.log("[script.service.hue] In selectHueGroup: {}, {}".format(hgroup,name))
         index.append(light)
         items.append(xbmcgui.ListItem(label=h_light_name))
-
 
     selected = xbmcgui.Dialog().multiselect(_("Select Hue Lights..."), items)
     if selected:
@@ -353,7 +353,7 @@ def get_daylight(bridge):
     try:
         daylight = bridge.sensors['1']()['state']['daylight']
     except QhueException as exc:
-        xbmc.log(f"[script.service.hue]: Get Daylight Qhue Exception: {exc.type_id}: {exc.message}")
+        xbmc.log(f"[script.service.hue]: Get Daylight Qhue Exception: {exc.type_id}: {exc.message} {traceback.format_exc()}")
         reporting.process_exception(exc)
         return
     return daylight
