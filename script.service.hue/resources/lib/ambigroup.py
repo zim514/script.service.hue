@@ -24,6 +24,9 @@ class AmbiGroup(lightgroup.LightGroup):
         self.bridge_error500 = 0
         self.state = initial_state
 
+        self.saved_light_states = None
+        self.video_info_tag = xbmc.InfoTagVideo
+
         self.image_process = imageprocess.ImageProcess()
 
         self.converterA = Converter(GamutA)
@@ -73,9 +76,8 @@ class AmbiGroup(lightgroup.LightGroup):
                 reporting.process_exception(exc)
 
     def onAVStarted(self):
-
         xbmc.log(f"Ambilight AV Started. Group enabled: {self.enabled} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.playbackType(): {self.playback_type()}")
-        xbmc.log(f"Ambilight Settings: Interval: {self.update_interval}, transitionTime: {self.transition_time}")
+        # xbmc.log(f"Ambilight Settings: Interval: {self.update_interval}, transitionTime: {self.transition_time}")
 
         self.state = STATE_PLAYING
 
