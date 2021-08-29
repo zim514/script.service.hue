@@ -5,15 +5,10 @@ import xbmc
 import xbmcgui
 from PIL import Image
 
-from resources.lib import PROCESS_TIMES, reporting, globals, hue
+from resources.lib import ADDON, MINIMUM_COLOR_DISTANCE, imageprocess, lightgroup
+from resources.lib import PROCESS_TIMES, reporting, hue, AMBI_RUNNING
 from resources.lib.language import get_string as _
-from . import ADDON
-from . import imageprocess
-from . import lightgroup
-from . import MINIMUM_COLOR_DISTANCE
-
 from .lightgroup import STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
-
 from .qhue import QhueException
 from .rgbxy import Converter, ColorHelper  # https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA, GamutB, GamutC
@@ -97,7 +92,7 @@ class AmbiGroup(lightgroup.LightGroup):
                 if self.force_on:
                     self._force_on(self.ambi_lights, self.bridge, self.saved_light_states)
 
-                globals.AMBI_RUNNING.set()
+                AMBI_RUNNING.set()
                 ambi_loop_thread = Thread(target=self._ambi_loop, name="_ambi_loop")
                 ambi_loop_thread.daemon = True
                 ambi_loop_thread.start()
@@ -105,7 +100,7 @@ class AmbiGroup(lightgroup.LightGroup):
     def onPlayBackStopped(self):
         xbmc.log(f"[script.service.hue] In ambiGroup[{self.light_group_id}], onPlaybackStopped()")
         self.state = STATE_STOPPED
-        globals.AMBI_RUNNING.clear()
+        AMBI_RUNNING.clear()
 
         if self.disable_labs:
             self._resume_effects()
@@ -116,7 +111,7 @@ class AmbiGroup(lightgroup.LightGroup):
     def onPlayBackPaused(self):
         xbmc.log(f"[script.service.hue] In ambiGroup[{self.light_group_id}], onPlaybackPaused()")
         self.state = STATE_PAUSED
-        globals.AMBI_RUNNING.clear()
+        AMBI_RUNNING.clear()
 
         if self.disable_labs:
             self._resume_effects()
@@ -130,7 +125,7 @@ class AmbiGroup(lightgroup.LightGroup):
             xy = self.saved_light_states[L]['state']['xy']
             bri = self.saved_light_states[L]['state']['bri']
             on = self.saved_light_states[L]['state']['on']
-            xbmc.log(f"[script.service.hue] Resume state: Light: {L}, xy: {xy}, bri: {bri}, on: {on},transition time: {self.resume_transition}")
+            # xbmc.log(f"[script.service.hue] Resume state: Light: {L}, xy: {xy}, bri: {bri}, on: {on},transition time: {self.resume_transition}")
             try:
                 self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
             except QhueException as exc:
@@ -154,7 +149,7 @@ class AmbiGroup(lightgroup.LightGroup):
             self.ambi_lights[L].update(prev_xy=(0.0001, 0.0001))
 
         try:
-            while not self.monitor.abortRequested() and globals.AMBI_RUNNING.is_set():  # loop until kodi tells add-on to stop or video playing flag is unset.
+            while not self.monitor.abortRequested() and AMBI_RUNNING.is_set():  # loop until kodi tells add-on to stop or video playing flag is unset.
                 try:
                     cap.capture(self.capture_size_x, self.capture_size_y)  # async capture request to underlying OS
                     cap_image = cap.getImage()  # timeout to wait for OS in ms, default 1000
@@ -184,7 +179,7 @@ class AmbiGroup(lightgroup.LightGroup):
 
                 # if not CACHE.get("script.service.hue.service_enabled"):
                 #     xbmc.log("[script.service.hue] Service disabled, stopping Ambilight")
-                #     globals.AMBI_RUNNING.clear()
+                #     AMBI_RUNNING.clear()
                 self.monitor.waitForAbort(self.update_interval)  # seconds
 
             average_process_time = _perf_average(PROCESS_TIMES)

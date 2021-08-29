@@ -7,11 +7,10 @@ import xbmc
 import xbmcgui
 
 from resources.lib.qhue.qhue import QhueException
-from . import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED, reporting
+from . import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED, reporting, CONNECTED
 from . import qhue, ADDONID, CACHE
-from .settings import validate_settings
 from .language import get_string as _
-from resources.lib import globals
+from .settings import validate_settings
 
 
 def create_hue_scene(bridge):
@@ -28,7 +27,7 @@ def create_hue_scene(bridge):
         except ValueError:
             transition_time = 0
 
-        if transition_time > 65534:  # hue uses uint16 for transition time.
+        if transition_time > 65534:  # hue uses uint16 for transition time, so set a max
             transition_time = 65534
         selected = select_hue_lights(bridge)
 
@@ -100,7 +99,7 @@ def discover_bridge(monitor):
     # Create new config if none exists. Returns success or fail as bool
     ADDON.setSettingString("bridgeIP", "")
     ADDON.setSettingString("bridgeUser", "")
-    globals.CONNECTED = False
+    CONNECTED.clear()
 
     progress_bar = xbmcgui.DialogProgress()
     progress_bar.create(_('Searching for bridge...'))
@@ -129,7 +128,7 @@ def discover_bridge(monitor):
                 ADDON.setSettingString("bridgeIP", bridge_ip)
                 ADDON.setSettingString("bridgeUser", bridge_user)
                 complete = True
-                globals.CONNECTED = True
+                CONNECTED.set()
                 progress_bar.update(percent=100, message=_("Complete!"))
                 monitor.waitForAbort(5)
                 progress_bar.close()
@@ -214,9 +213,8 @@ def _discover_bridge_ip():
 
 def _create_user(monitor, bridge_ip, progress_bar=False):
     xbmc.log("[script.service.hue] In createUser")
-    # device = 'kodi#'+getfqdn()
-    data = '{{"devicetype": "kodi#{}"}}'.format(
-        getfqdn())  # Create a devicetype named kodi#localhostname. Eg: kodi#LibreELEC
+    # devicetype = 'kodi#'+getfqdn()
+    data = '{{"devicetype": "kodi#{}"}}'.format(getfqdn())  # Create a devicetype named kodi#localhostname. Eg: kodi#LibreELEC
 
     req = requests
     res = 'link button not pressed'
@@ -297,7 +295,6 @@ def select_hue_lights(bridge):
     xbmc.log("[script.service.hue] In selectHueLights{}")
     hue_lights = bridge.lights()
 
-    xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
     items = []
     index = []
     light_ids = []
@@ -310,7 +307,7 @@ def select_hue_lights(bridge):
         index.append(light)
         items.append(xbmcgui.ListItem(label=h_light_name))
 
-    xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
+
     selected = xbmcgui.Dialog().multiselect(_("Select Hue Lights..."), items)
     if selected:
         # id = index[selected]
@@ -328,7 +325,6 @@ def select_hue_scene(bridge):
     xbmc.log("[script.service.hue] In selectHueScene{}")
     hue_scenes = bridge.scenes()
 
-    xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
     items = []
     index = []
     selected_id = -1
@@ -342,7 +338,6 @@ def select_hue_scene(bridge):
             index.append(scene)
             items.append(xbmcgui.ListItem(label=h_scene_name))
 
-    xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
     selected = xbmcgui.Dialog().select("Select Hue scene...", items)
     if selected > -1:
         selected_id = index[selected]
@@ -368,7 +363,7 @@ def activate(light_groups, ambi_group=None):
     """
     Activates play action as appropriate for all groups. Used at sunset and when service is re-nabled via Actions.
     """
-    xbmc.log(f"[script.service.hue] Activating scenes: {light_groups} {ambi_group}")
+    xbmc.log(f"[script.service.hue] Activating scenes: light_groups: {light_groups} ambigroup: {ambi_group}")
 
     for g in light_groups:
         try:
@@ -402,7 +397,7 @@ def connect_bridge(silent=False):
             xbmc.log("[script.service.hue] in Connect(): Checking User")
             if _user_test(bridge_ip, bridge_user):
                 bridge = qhue.Bridge(bridge_ip, bridge_user, timeout=QHUE_TIMEOUT)
-                globals.CONNECTED = True
+                CONNECTED.set()
                 xbmc.log(f"[script.service.hue] Successfully connected to Hue Bridge: {bridge_ip}")
                 if not silent:
                     notification(_("Hue Service"), _("Hue connected"), sound=False)
@@ -410,13 +405,13 @@ def connect_bridge(silent=False):
         else:
             xbmc.log("[script.service.hue] Bridge not responding")
             notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
-            globals.CONNECTED = False
+            CONNECTED.clear()
             return None
 
     else:
         xbmc.log("[script.service.hue] Bridge not configured")
         notification(_("Hue Service"), _("Bridge not configured"), icon=xbmcgui.NOTIFICATION_ERROR)
-        globals.CONNECTED = False
+        CONNECTED.clear()
         return None
 
 

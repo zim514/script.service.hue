@@ -2,8 +2,6 @@
 # Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
 # https://forum.kodi.tv/showthread.php?tid=268081&highlight=generate+.po+python+gettext
 
-import traceback
-
 _strings = {}
 
 if __name__ == "__main__":
@@ -64,8 +62,7 @@ if __name__ == "__main__":
                 po.append(entry)
             po.save(string_file)
     except Exception as e:
-        print("Exception:")
-        traceback.print_exc()
+        print(f"Exception: {e}")
         content = []
     with open(__file__, "r") as me:
         content = me.readlines()
