@@ -66,7 +66,7 @@ class AmbiGroup(lightgroup.LightGroup):
         for L in ambi_lights:
             try:
                 if not saved_light_states[L]['state']['on']:
-                    xbmc.log("[script.service.hue] Forcing lights on".format(saved_light_states))
+                    xbmc.log("[script.service.hue] Forcing lights on")
                     bridge.lights[L].state(on=True, bri=1)
             except QhueException as exc:
                 xbmc.log(f"[script.service.hue] Force On Hue call fail: {exc.type_id}: {exc.message}")
