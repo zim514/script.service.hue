@@ -568,6 +568,14 @@ msgctxt "#30001"
 msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."
 msgstr ""
 
+msgctxt "#30003"
+msgid "Bridge API: {api_version}, update your bridge"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Unknown colour gamut for light {light}"
+msgstr ""
+
 #~ msgctxt "#5111"
 #~ msgid "Flash on settings reload"
 #~ msgstr "Probliknutí světel při změně nastavení"
