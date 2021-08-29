@@ -3,8 +3,7 @@ import sys
 import requests
 import xbmc
 
-from resources.lib import ambigroup, lightgroup, AMBI_RUNNING
-from resources.lib import globals
+from resources.lib import ambigroup, lightgroup, AMBI_RUNNING, CONNECTED
 from resources.lib import hue
 from resources.lib import settings
 from resources.lib import reporting
@@ -103,9 +102,9 @@ def service(monitor):
 
         CACHE.set("script.service.hue.daylight", daylight)
         CACHE.set("script.service.hue.service_enabled", True)
-        # xbmc.log("[script.service.hue] Core service starting. Connected: {}".format(globals.CONNECTED))
+        # xbmc.log("[script.service.hue] Core service starting. Connected: {}".format(CONNECTED))
 
-        while globals.CONNECTED and not monitor.abortRequested():
+        while CONNECTED.is_set() and not monitor.abortRequested():
 
             # check if service was just re-enabled and if so restart groups
             prev_service_enabled = service_enabled
@@ -160,7 +159,7 @@ def service(monitor):
                     else:
                         xbmc.log(f"[script.service.hue] Bridge Connection Error. Attempt: {connection_retries}/5. Shutting down : {error}")
                         hue.notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
-                        globals.CONNECTED = False
+                        CONNECTED.clear()
 
                 except Exception as exc:
                     xbmc.log("[script.service.hue] Get daylight exception")

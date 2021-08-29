@@ -5,7 +5,7 @@ import xbmc
 import xbmcgui
 from PIL import Image
 
-from resources.lib import PROCESS_TIMES, reporting, globals, hue, AMBI_RUNNING
+from resources.lib import PROCESS_TIMES, reporting, hue, AMBI_RUNNING
 from resources.lib.language import get_string as _
 from . import ADDON
 from . import imageprocess

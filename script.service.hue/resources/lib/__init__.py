@@ -13,6 +13,7 @@ QHUE_TIMEOUT = 1  # passed to requests, in seconds.
 MINIMUM_COLOR_DISTANCE = 0.005
 SETTINGS_CHANGED = Event()
 AMBI_RUNNING = Event()
+CONNECTED = Event()
 PROCESS_TIMES = deque(maxlen=100)
 ROLLBAR_API_KEY = "b871c6292a454fb490344f77da186e10"
 
@@ -29,7 +30,7 @@ CACHE = simplecache.SimpleCache()
 
 
 def timer(func):
-    """Logs the runtime of the decorated function"""
+    # Logs the runtime of the decorated function
 
     @functools.wraps(func)
     def wrapper_timer(*args, **kwargs):
