@@ -28,7 +28,7 @@ def create_hue_scene(bridge):
         except ValueError:
             transition_time = 0
 
-        if transition_time > 65534:  # hue uses uint16 for transition time.
+        if transition_time > 65534:  # hue uses uint16 for transition time, so set a max
             transition_time = 65534
         selected = select_hue_lights(bridge)
 
@@ -297,7 +297,6 @@ def select_hue_lights(bridge):
     xbmc.log("[script.service.hue] In selectHueLights{}")
     hue_lights = bridge.lights()
 
-    xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
     items = []
     index = []
     light_ids = []
@@ -310,7 +309,7 @@ def select_hue_lights(bridge):
         index.append(light)
         items.append(xbmcgui.ListItem(label=h_light_name))
 
-    xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
+
     selected = xbmcgui.Dialog().multiselect(_("Select Hue Lights..."), items)
     if selected:
         # id = index[selected]
@@ -328,7 +327,6 @@ def select_hue_scene(bridge):
     xbmc.log("[script.service.hue] In selectHueScene{}")
     hue_scenes = bridge.scenes()
 
-    xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
     items = []
     index = []
     selected_id = -1
@@ -342,7 +340,6 @@ def select_hue_scene(bridge):
             index.append(scene)
             items.append(xbmcgui.ListItem(label=h_scene_name))
 
-    xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
     selected = xbmcgui.Dialog().select("Select Hue scene...", items)
     if selected > -1:
         selected_id = index[selected]
@@ -368,7 +365,7 @@ def activate(light_groups, ambi_group=None):
     """
     Activates play action as appropriate for all groups. Used at sunset and when service is re-nabled via Actions.
     """
-    xbmc.log(f"[script.service.hue] Activating scenes: {light_groups} {ambi_group}")
+    xbmc.log(f"[script.service.hue] Activating scenes: light_groups: {light_groups} ambigroup: {ambi_group}")
 
     for g in light_groups:
         try:

@@ -3,7 +3,7 @@ import sys
 import requests
 import xbmc
 
-from resources.lib import ambigroup, lightgroup
+from resources.lib import ambigroup, lightgroup, AMBI_RUNNING
 from resources.lib import globals
 from resources.lib import hue
 from resources.lib import settings
@@ -120,7 +120,7 @@ def service(monitor):
 
             # if service disabled, stop ambilight._ambi_loop thread
             if not service_enabled:
-                globals.AMBI_RUNNING.clear()
+                AMBI_RUNNING.clear()
 
             # process cached waiting commands
             action = CACHE.get("script.service.hue.action")

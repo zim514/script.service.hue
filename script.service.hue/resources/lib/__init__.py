@@ -12,6 +12,7 @@ STRDEBUG = False  # Show string ID in UI
 QHUE_TIMEOUT = 1  # passed to requests, in seconds.
 MINIMUM_COLOR_DISTANCE = 0.005
 SETTINGS_CHANGED = Event()
+AMBI_RUNNING = Event()
 PROCESS_TIMES = deque(maxlen=100)
 ROLLBAR_API_KEY = "b871c6292a454fb490344f77da186e10"
 
@@ -22,6 +23,7 @@ ADDONID = ADDON.getAddonInfo('id')
 ADDONPATH = xbmcvfs.translatePath(ADDON.getAddonInfo("path"))
 ADDONVERSION = ADDON.getAddonInfo('version')
 KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
+
 
 CACHE = simplecache.SimpleCache()
 
