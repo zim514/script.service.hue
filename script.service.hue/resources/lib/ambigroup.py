@@ -5,15 +5,10 @@ import xbmc
 import xbmcgui
 from PIL import Image
 
+from resources.lib import ADDON, MINIMUM_COLOR_DISTANCE, imageprocess, lightgroup
 from resources.lib import PROCESS_TIMES, reporting, hue, AMBI_RUNNING
 from resources.lib.language import get_string as _
-from . import ADDON
-from . import imageprocess
-from . import lightgroup
-from . import MINIMUM_COLOR_DISTANCE
-
 from .lightgroup import STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
-
 from .qhue import QhueException
 from .rgbxy import Converter, ColorHelper  # https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA, GamutB, GamutC

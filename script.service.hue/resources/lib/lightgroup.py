@@ -4,11 +4,9 @@ import requests
 import xbmc
 import xbmcgui
 
-from resources.lib import CACHE, reporting, hue
-from resources.lib.settings import convert_time
+from resources.lib import CACHE, ADDON, reporting, hue
 from resources.lib.qhue import QhueException
-from . import ADDON
- 
+from resources.lib.settings import convert_time
 from .language import get_string as _
 
 STATE_STOPPED = 0

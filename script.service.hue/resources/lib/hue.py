@@ -9,9 +9,8 @@ import xbmcgui
 from resources.lib.qhue.qhue import QhueException
 from . import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED, reporting, CONNECTED
 from . import qhue, ADDONID, CACHE
-from .settings import validate_settings
 from .language import get_string as _
-
+from .settings import validate_settings
 
 
 def create_hue_scene(bridge):

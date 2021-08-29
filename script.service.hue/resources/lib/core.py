@@ -3,12 +3,10 @@ import sys
 import requests
 import xbmc
 
+from resources.lib import ADDON, CACHE, SETTINGS_CHANGED
 from resources.lib import ambigroup, lightgroup, AMBI_RUNNING, CONNECTED
-from resources.lib import hue
-from resources.lib import settings
-from resources.lib import reporting
+from resources.lib import hue, reporting, settings
 from resources.lib.language import get_string as _
-from . import ADDON, CACHE, SETTINGS_CHANGED
 
 
 def core():

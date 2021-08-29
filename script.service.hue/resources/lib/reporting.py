@@ -4,8 +4,8 @@ import sys
 import rollbar
 import xbmcgui
 
+from resources.lib import ADDONVERSION, ROLLBAR_API_KEY, ADDONID, KODIVERSION, ADDONPATH
 from resources.lib.language import get_string as _
-from . import ADDONVERSION, ROLLBAR_API_KEY, ADDONID, KODIVERSION, ADDONPATH
 
 
 def process_exception(exc, level="critical"):
