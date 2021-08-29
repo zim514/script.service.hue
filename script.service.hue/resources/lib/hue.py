@@ -308,7 +308,6 @@ def select_hue_lights(bridge):
         index.append(light)
         items.append(xbmcgui.ListItem(label=h_light_name))
 
-
     selected = xbmcgui.Dialog().multiselect(_("Select Hue Lights..."), items)
     if selected:
         # id = index[selected]
