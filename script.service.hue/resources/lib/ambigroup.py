@@ -72,7 +72,7 @@ class AmbiGroup(lightgroup.LightGroup):
                     xbmc.log("[script.service.hue] Forcing lights on")
                     bridge.lights[L].state(on=True, bri=1)
             except QhueException as exc:
-                xbmc.log(f"[script.service.hue] Force On Hue call fail: {exc.type_id}: {exc.message}")
+                xbmc.log(f"[script.service.hue] Force On Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
                 reporting.process_exception(exc)
 
     def onAVStarted(self):
@@ -134,7 +134,7 @@ class AmbiGroup(lightgroup.LightGroup):
                 if exc.type_id == 201:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                     pass
                 else:
-                    xbmc.log(f"[script.service.hue] resumeLightState: Hue call fail: {exc.type_id}: {exc.message}")
+                    xbmc.log(f"[script.service.hue] resumeLightState: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
                     reporting.process_exception(exc)
 
     def _ambi_loop(self):
@@ -341,5 +341,5 @@ def _get_light_states(lights, bridge):
         try:
             states[L] = (bridge.lights[L]())
         except QhueException as exc:
-            xbmc.log(f"[script.service.hue] Hue call fail: {exc.type_id}: {exc.message}")
+            xbmc.log(f"[script.service.hue] Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
     return states
