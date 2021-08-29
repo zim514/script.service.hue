@@ -567,3 +567,11 @@ msgstr ""
 msgctxt "#30001"
 msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."
 msgstr ""
+
+msgctxt "#30003"
+msgid "Bridge API: {api_version}, update your bridge"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Unknown colour gamut for light {light}"
+msgstr ""

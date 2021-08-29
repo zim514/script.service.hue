@@ -2,7 +2,6 @@ import xbmc
 
 from resources.lib import core, reporting
 
-
 try:
     core.core()
 except Exception as exc:

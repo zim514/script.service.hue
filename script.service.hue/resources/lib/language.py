@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
 
 else:
-    from . import STRDEBUG, ADDON, xbmc
+    from resources.lib import STRDEBUG, ADDON, xbmc
 
 
     def get_string(t):

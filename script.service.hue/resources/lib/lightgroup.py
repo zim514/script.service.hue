@@ -34,8 +34,9 @@ class LightGroup(xbmc.Player):
         self.stop_scene = ADDON.getSettingString(f"group{self.light_group_id}_stopSceneID")
 
         self.state = initial_state
-
         self.media_type = media_type
+        self.video_info_tag = xbmc.InfoTagVideo
+        self.last_media_type = self.media_type
         self.lights = self.bridge.lights
         self.group0 = self.bridge.groups[0]
 
@@ -59,10 +60,7 @@ class LightGroup(xbmc.Player):
 
     def onAVStarted(self):
         if self.enabled:
-            xbmc.log(
-                "In KodiGroup[{}], onPlaybackStarted. Group enabled: {},startBehavior: {} , isPlayingVideo: {}, isPlayingAudio: {}, self.mediaType: {},self.playbackType(): {}".format(
-                    self.light_group_id, self.enabled, self.start_behavior, self.isPlayingVideo(), self.isPlayingAudio(),
-                    self.media_type, self.playback_type()))
+            xbmc.log(f"In KodiGroup[{self.light_group_id}], onPlaybackStarted. Group enabled: {self.enabled},startBehavior: {self.start_behavior} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.mediaType: {self.media_type},self.playbackType(): {self.playback_type()}")
             self.state = STATE_PLAYING
             self.last_media_type = self.playback_type()
 
@@ -161,7 +159,6 @@ class LightGroup(xbmc.Player):
 
     def activate(self):
         xbmc.log(f"[script.service.hue] Activate group [{self.light_group_id}]. State: {self.state}")
-        xbmc.sleep(200)
         if self.state == STATE_PAUSED:
             self.onPlayBackPaused()
         elif self.state == STATE_PLAYING:
