@@ -131,7 +131,7 @@ class AmbiGroup(lightgroup.LightGroup):
             try:
                 self.bridge.lights[L].state(xy=xy, bri=bri, on=on, transitiontime=self.resume_transition)
             except QhueException as exc:
-                if exc.type_id == 201:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
+                if "201" in exc.type_id:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
                     pass
                 else:
                     xbmc.log(f"[script.service.hue] resumeLightState: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
@@ -208,9 +208,11 @@ class AmbiGroup(lightgroup.LightGroup):
                 self.bridge.lights[light].state(xy=xy, bri=bri, transitiontime=int(transition_time))
                 self.ambi_lights[light].update(prev_xy=xy)
             except QhueException as exc:
-                #if exc.type_id == 201:  # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
-                #    pass
-                if exc.type_id == 500 or exc.type_id == 901:  # or exc == 500:  # bridge internal error
+                if "201" in exc.type_id:
+                    # xbmc.log(f"[script.service.hue] QhueException {exc.type_id} {exc.message}")
+                    # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
+                    pass
+                elif "500" in exc.type_id or "901" in exc.type_id:  # or exc == 500:  # bridge internal error
                     xbmc.log(f"[script.service.hue] Bridge internal error: {exc.type_id}: {exc.message} {traceback.format_exc()}")
                     self._bridge_error500()
                 else:

@@ -87,8 +87,7 @@ class LightGroup(xbmc.Player):
             self.state = STATE_STOPPED
 
             try:
-                if self.media_type == VIDEO and not self.check_video_activation(
-                        self.video_info_tag):  # If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
+                if self.media_type == VIDEO and not self.check_video_activation(self.video_info_tag):  # If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
                     return
             except AttributeError:
                 xbmc.log("[script.service.hue] No videoInfoTag")
@@ -218,8 +217,8 @@ class LightGroup(xbmc.Player):
             #     previousFileName = fileName
 
             # xbmc.log("[script.service.hue] InfoTag contents: duration: {}, mediaType: {}, file: {}".format(duration, mediaType, fileName))
-        except AttributeError:
-            xbmc.log("[script.service.hue] Can't read infoTag")
+        except (AttributeError, TypeError) as exc:
+            xbmc.log("[script.service.hue] Can't read infoTag {exc}")
             return False
         # xbmc.log("Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, PVR : {}, Other: {}".format(self.light_group_id, settings_storage['videoMinimumDuration'], settings_storage['video_enableMovie'],
         #                settings_storage['video_enableEpisode'], settings_storage['video_enableMusicVideo'], settings_storage['video_enablePVR'], settings_storage['video_enableOther']))
