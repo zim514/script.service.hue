@@ -7,20 +7,20 @@ _strings = {}
 if __name__ == "__main__":
 
     import os
-    import sys
 
     import polib
 
-    print(f"PATH: {sys.path}")
-    print(("executable: " + sys.executable))
+    # print(f"PATH: {sys.path}")
+    # print(f"executable: {sys.executable}")
 
-    dirpath = os.getcwd()
-    print(("current directory is : " + dirpath))
-    foldername = os.path.basename(dirpath)
-    print(("Directory name is : " + foldername))
+    dir_path = os.getcwd()
+    folder_name = os.path.basename(dir_path)
+
+    print(f"current directory is : {dir_path}")
+    print(f"Directory name is : {folder_name}")
 
     string_file = "../language/resource.language.en_gb/strings.po"
-    print(("input file: " + string_file))
+    print(f"input file: {string_file}")
 
     po = polib.pofile(string_file, wrapwidth=500)
 
@@ -28,7 +28,7 @@ if __name__ == "__main__":
         import re, subprocess
 
         command = ["grep", "-hnr", "_([\'\"]", "..\\.."]
-        print(f"grep command: {command}")
+        # print(f"grep command: {command}")
         r = subprocess.check_output(command, text=True)
 
         print(r)
@@ -38,7 +38,7 @@ if __name__ == "__main__":
         translated = [m.msgid.lower().replace("'", "\\'") for m in po]
         missing = set([s for s in strings if s.lower() not in translated])
 
-        print(("Missing:" + str(missing)))
+        print(f"Missing: {missing}")
 
         if missing:
             ids_range = list(range(30000, 35000))
@@ -50,10 +50,9 @@ if __name__ == "__main__":
                     ids_reserved.append(int(m.msgctxt[1:]))
 
             ids_available = [x for x in ids_range if x not in ids_reserved]
-            # print("IDs Reserved:")
-            # print(ids_reserved)
-            # print("IDs Available:")
-            # print(ids_available)
+            # print(f"IDs Reserved: {ids_reserved}")
+            # print(f"IDs Available: {ids_available}")
+
 
             print(f"WARNING: adding missing translation for '{missing}'")
             for text in missing:

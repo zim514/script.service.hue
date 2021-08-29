@@ -16,7 +16,6 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
 class AmbiGroup(lightgroup.LightGroup):
     def __init__(self, light_group_id, bridge, monitor, flash=False, initial_state=STATE_STOPPED):
-
         self.light_group_id = light_group_id
         self.bridge = bridge
         self.monitor = monitor
@@ -138,7 +137,6 @@ class AmbiGroup(lightgroup.LightGroup):
                     reporting.process_exception(exc)
 
     def _ambi_loop(self):
-
         cap = xbmc.RenderCapture()
         xbmc.log("[script.service.hue] _ambiLoop started")
         aspect_ratio = cap.getAspectRatio()
@@ -225,7 +223,6 @@ class AmbiGroup(lightgroup.LightGroup):
                 xbmc.log("[script.service.hue] Ambi: KeyError, light not found")
 
     def _bridge_error500(self):
-
         self.bridge_error500 = self.bridge_error500 + 1  # increment counter
         if self.bridge_error500 > 100 and ADDON.getSettingBool("show500Error"):
             stop_showing_error = xbmcgui.Dialog().yesno(_("Hue Bridge over capacity"), _("The Hue Bridge is over capacity. Increase refresh rate or reduce the number of Ambilights."), yeslabel=_("Do not show again"), nolabel=_("Ok"))
@@ -338,11 +335,9 @@ def _perf_average(process_times):
 
 def _get_light_states(lights, bridge):
     states = {}
-
     for L in lights:
         try:
             states[L] = (bridge.lights[L]())
         except QhueException as exc:
             xbmc.log(f"[script.service.hue] Hue call fail: {exc.type_id}: {exc.message}")
-
     return states
