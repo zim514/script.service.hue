@@ -177,9 +177,6 @@ class AmbiGroup(lightgroup.LightGroup):
                     x.daemon = True
                     x.start()
 
-                # if not CACHE.get("script.service.hue.service_enabled"):
-                #     xbmc.log("[script.service.hue] Service disabled, stopping Ambilight")
-                #     AMBI_RUNNING.clear()
                 self.monitor.waitForAbort(self.update_interval)  # seconds
 
             average_process_time = _perf_average(PROCESS_TIMES)
@@ -202,7 +199,7 @@ class AmbiGroup(lightgroup.LightGroup):
         elif gamut == "C":
             xy = self.converterC.rgb_to_xy(r, g, b)
 
-        xy = round(xy[0], 3), round(xy[1], 3)  # Hue has a max precision of 4 decimal points, but three is enough
+        xy = round(xy[0], 4), round(xy[1], 4)  # Hue has a max precision of 4 decimal points
         distance = self.helper.get_distance_between_two_points(XYPoint(xy[0], xy[1]), XYPoint(prev_xy[0], prev_xy[1]))  # only update hue if XY changed enough
 
         if distance > MINIMUM_COLOR_DISTANCE:
