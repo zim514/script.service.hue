@@ -126,10 +126,11 @@ def service(monitor):
 
             # reload if settings changed
             if SETTINGS_CHANGED.is_set():
-                light_groups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, initial_state=light_groups[0].state), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, initial_state=light_groups[1].state)]
+                light_groups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, initial_state=light_groups[0].state, video_info_tag=light_groups[0].video_info_tag),
+                                lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, initial_state=light_groups[1].state, video_info_tag=light_groups[1].video_info_tag)]
                 if ADDON.getSettingBool("group3_enabled"):
                     try:
-                        ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, initial_state=ambi_group.state)
+                        ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, initial_state=ambi_group.state, video_info_tag=ambi_group.video_info_tag)
                     except UnboundLocalError:
                         ambi_group = ambigroup.AmbiGroup(3, bridge, monitor)  # if ambi_group is constructed for the first time.
                 SETTINGS_CHANGED.clear()
@@ -191,10 +192,5 @@ def _process_actions(action, light_groups):
     action_action = action[0]
     action_light_group_id = int(action[1]) - 1
     xbmc.log(f"[script.service.hue] Action command: {action}, action_action: {action_action}, action_light_group_id: {action_light_group_id}")
-    if action_action == "play":
-        light_groups[action_light_group_id].run_play()
-    if action_action == "pause":
-        light_groups[action_light_group_id].run_pause()
-    if action_action == "stop":
-        light_groups[action_light_group_id].run_stop()
+    light_groups[action_light_group_id].run_scene(action_action)
     CACHE.set("script.service.hue.action", None)
