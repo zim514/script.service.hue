@@ -16,7 +16,7 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
 
 class AmbiGroup(lightgroup.LightGroup):
-    def __init__(self, light_group_id, bridge, monitor, flash=False, initial_state=STATE_STOPPED, video_info_tag=None):
+    def __init__(self, light_group_id, bridge, monitor, flash=False, initial_state=STATE_STOPPED):
         self.light_group_id = light_group_id
         self.bridge = bridge
         self.monitor = monitor
@@ -25,7 +25,7 @@ class AmbiGroup(lightgroup.LightGroup):
         self.state = initial_state
 
         self.saved_light_states = {}
-        self.video_info_tag = video_info_tag
+        self.video_info_tag = xbmc.InfoTagVideo
 
         self.image_process = imageprocess.ImageProcess()
 
@@ -182,7 +182,7 @@ class AmbiGroup(lightgroup.LightGroup):
 
             average_process_time = _perf_average(PROCESS_TIMES)
             xbmc.log(f"[script.service.hue] Average process time: {average_process_time}")
-            ADDON.setSetting("average_process_time", str(average_process_time))
+            self.capture_size_x = ADDON.setSetting("average_process_time", str(average_process_time))
 
         except Exception as exc:
             xbmc.log("[script.service.hue] Exception in _ambiLoop")
