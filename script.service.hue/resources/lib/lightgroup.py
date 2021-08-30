@@ -124,7 +124,7 @@ class LightGroup(xbmc.Player):
         try:
             self.group0.action(scene=self.start_scene)
         except QhueException as exc:
-            xbmc.log(f"[script.service.hue] onAVStarted: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
+            xbmc.log(f"[script.service.hue] run_play: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
             if exc.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
                 hue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
@@ -146,11 +146,11 @@ class LightGroup(xbmc.Player):
 
     def run_stop(self):
         try:
-            xbmc.sleep(100)  # sleep for any left over ambilight calls to complete first.
+            xbmc.sleep(500)  # sleep for any left over ambilight calls to complete first.
             self.group0.action(scene=self.stop_scene)
-            xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackStop() Stop scene activated")
+            # xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackStop() Stop scene activated")
         except QhueException as exc:
-            xbmc.log(f"[script.service.hue] onPlaybackStopped: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
+            xbmc.log(f"[script.service.hue] run_stop: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
             if exc.type_id == 7:
                 xbmc.log("[script.service.hue] Scene not found")
                 hue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
@@ -180,8 +180,7 @@ class LightGroup(xbmc.Player):
     def check_active_time():
         service_enabled = CACHE.get("script.service.hue.service_enabled")
         daylight = CACHE.get("script.service.hue.daylight")
-        # xbmc.log("[script.service.hue] Schedule: {}, daylightDisable: {}, daylight: {}, startTime: {}, endTime: {}".format(ADDON.getSettingBool("enableSchedule"), ADDON.getSettingBool("daylightDisable"), daylight, ADDON.getSettingBool("startTime"),
-        #         ADDON.getSettingBool("endTime")))
+        # xbmc.log(f"[script.service.hue] Schedule: {ADDON.getSettingBool('enableSchedule')}, daylightDisable: {ADDON.getSettingBool('daylightDisable')}, daylight: {daylight}, startTime: {ADDON.getSettingBool('startTime')}, endTime: {ADDON.getSettingBool('endTime')}")
 
         if ADDON.getSettingBool("daylightDisable") and daylight:
             xbmc.log("[script.service.hue] Disabled by daylight")
@@ -199,7 +198,6 @@ class LightGroup(xbmc.Player):
                 return False
             # xbmc.log("[script.service.hue] Schedule not enabled")
             return True
-
         # xbmc.log("[script.service.hue] Service disabled")
         return False
 
@@ -210,19 +208,10 @@ class LightGroup(xbmc.Player):
             file_name = info_tag.getFile()
             if not file_name and self.isPlayingVideo():
                 file_name = self.getPlayingFile()
-            #
-            # if not fileName and previousFileName:
-            #     fileName = previousFileName
-            # elif fileName:
-            #     previousFileName = fileName
-
-            # xbmc.log("[script.service.hue] InfoTag contents: duration: {}, mediaType: {}, file: {}".format(duration, mediaType, fileName))
         except (AttributeError, TypeError) as exc:
-            xbmc.log("[script.service.hue] Can't read infoTag {exc}")
+            xbmc.log(f"[script.service.hue] Can't read infoTag {exc}")
             return False
-        # xbmc.log("Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, PVR : {}, Other: {}".format(self.light_group_id, settings_storage['videoMinimumDuration'], settings_storage['video_enableMovie'],
-        #                settings_storage['video_enableEpisode'], settings_storage['video_enableMusicVideo'], settings_storage['video_enablePVR'], settings_storage['video_enableOther']))
-        # xbmc.log("[script.service.hue] Video Activation ({}): Duration: {}, mediaType: {}, ispvr: {}".format(self.light_group_id, duration, mediaType, fileName[0:3] == "pvr"))
+
         if ((duration >= ADDON.getSettingInt("video_MinimumDuration") or file_name[0:3] == "pvr") and
                 ((ADDON.getSettingBool("video_Movie") and media_type == "movie") or
                  (ADDON.getSettingBool("video_Episode") and media_type == "episode") or
