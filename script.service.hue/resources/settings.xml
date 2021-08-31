@@ -529,7 +529,7 @@
 			<group id="2">
 				<setting id="group3_forceOn" type="boolean" label="30057" help="30521">
 					<level>2</level>
-					<default>false</default>
+					<default>true</default>
 					<dependencies>
 						<dependency type="visible">
 							<condition operator="is" setting="group3_enabled">true</condition>
@@ -608,7 +608,7 @@
 			<group id="3" label="30814">
 				<setting id="group3_ResumeState" type="boolean" label="30815" help="">
 					<level>1</level>
-					<default>false</default>
+					<default>true</default>
 					<dependencies>
 						<dependency type="visible">
 							<condition operator="is" setting="group3_enabled">true</condition>

@@ -6,11 +6,11 @@ import re
 import json
 
 # for hostname retrieval for registering with the bridge
-from socket import getfqdn
+# from socket import getfqdn
 
 import requests
 
-__all__ = ("Bridge", "QhueException", "create_new_username")
+__all__ = ("Bridge", "QhueException")  # , "create_new_username")
 
 # default timeout in seconds
 _DEFAULT_TIMEOUT = 5
@@ -26,6 +26,7 @@ class Resource(object):
     When you call a Resource, you are making a request to that URL with some
     parameters.
     """
+
     def __init__(self, url, session, timeout=_DEFAULT_TIMEOUT, object_pairs_hook=None):
         self.url = url
         self.session = session
@@ -93,29 +94,29 @@ def _local_api_url(ip, username=None):
     return "http://{}/api/{}".format(ip, username)
 
 
-def create_new_username(ip, devicetype=None, timeout=_DEFAULT_TIMEOUT):
-    """Interactive helper function to generate a new anonymous username.
-
-    Args:
-        ip: ip address of the bridge
-        devicetype (optional): devicetype to register with the bridge. If
-            unprovided, generates a device type based on the local hostname.
-        timeout (optional, default=5): request timeout in seconds
-    Raises:
-        QhueException if something went wrong with username generation (for
-            example, if the bridge button wasn't pressed).
-    """
-    res = Resource(_local_api_url(ip), timeout)
-    prompt = "Press the Bridge button, then press Return: "
-    input(prompt)
-
-    if devicetype is None:
-        devicetype = "qhue#{}".format(getfqdn())
-
-    # raises QhueException if something went wrong
-    response = res(devicetype=devicetype, http_method="post")
-
-    return response[0]["success"]["username"]
+# def create_new_username(ip, devicetype=None, timeout=_DEFAULT_TIMEOUT):
+#     """Interactive helper function to generate a new anonymous username.
+#
+#     Args:
+#         ip: ip address of the bridge
+#         devicetype (optional): devicetype to register with the bridge. If
+#             unprovided, generates a device type based on the local hostname.
+#         timeout (optional, default=5): request timeout in seconds
+#     Raises:
+#         QhueException if something went wrong with username generation (for
+#             example, if the bridge button wasn't pressed).
+#     """
+#     res = Resource(_local_api_url(ip), timeout)
+#     prompt = "Press the Bridge button, then press Return: "
+#     input(prompt)
+#
+#     if devicetype is None:
+#         devicetype = "qhue#{}".format(getfqdn())
+#
+#     # raises QhueException if something went wrong
+#     response = res(devicetype=devicetype, http_method="post")
+#
+#     return response[0]["success"]["username"]
 
 
 class Bridge(Resource):
@@ -125,6 +126,7 @@ class Bridge(Resource):
     It is the basis for building other Resources that represent the things
     managed by that Bridge.
     """
+
     def __init__(self, ip, username, timeout=_DEFAULT_TIMEOUT, object_pairs_hook=None):
         """
         Create a new connection to a hue bridge.
