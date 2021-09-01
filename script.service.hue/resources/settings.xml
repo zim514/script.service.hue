@@ -796,32 +796,11 @@
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
-				<setting id="performanceLogging" type="boolean" label="30068" help="">
-					<level>4</level>
-					<default>False</default>
-					<control type="toggle"/>
-				</setting>
 				<setting id="show500Error" type="boolean" label="30068" help="">
-					<level>4</level>
+					<level>3</level>
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
-
-
-
-				<!-- TO DO
-				<setting id="daylight" type="boolean" label="30068" help="">
-					<level>4</level>
-					<default>True</default>
-					<control type="toggle"/>
-				</setting>
-
-				<setting id="service_enabled" type="boolean" label="30068" help="">
-					<level>4</level>
-					<default>True</default>
-					<control type="toggle"/>
-				</setting>
-				-->
 
 			</group>
 		</category>
