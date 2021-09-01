@@ -113,8 +113,8 @@ msgid "Scenes"
 msgstr ""
 
 msgctxt "#30513"
-msgid "Start Scene Enabled"
-msgstr ""
+msgid "Play Scene Enabled"
+msgstr "Play Scene Enabled"
 
 msgctxt "#30514"
 msgid "Pause Scene Enabled"
@@ -409,8 +409,8 @@ msgid "Frame capture size"
 msgstr ""
 
 msgctxt "#30068"
-msgid "Performance debug logging"
-msgstr ""
+msgid "Show Hue bridge capacity errors"
+msgstr "Show Hue bridge capacity errors"
 
 msgctxt "#30800"
 msgid "Minimum duration (Minutes)"
