@@ -95,8 +95,7 @@ class AmbiGroup(lightgroup.LightGroup):
                     self._force_on(self.ambi_lights, self.bridge, self.saved_light_states)
 
                 AMBI_RUNNING.set()
-                ambi_loop_thread = Thread(target=self._ambi_loop, name="_ambi_loop")
-                ambi_loop_thread.daemon = True
+                ambi_loop_thread = Thread(target=self._ambi_loop, name="_ambi_loop", daemon=True)
                 ambi_loop_thread.start()
 
     def onPlayBackStopped(self):
@@ -146,13 +145,15 @@ class AmbiGroup(lightgroup.LightGroup):
         expected_capture_size = self.capture_size_x * self.capture_size_y * 4  # size * 4 bytes - RGBA
         xbmc.log(f"[script.service.hue] aspect_ratio: {aspect_ratio}, Capture Size: ({self.capture_size_x},{self.capture_size_y}), expected_capture_size: {expected_capture_size}")
 
+        cap.capture(self.capture_size_x, self.capture_size_y)  # start the capture process https://github.com/xbmc/xbmc/pull/8613#issuecomment-165699101
+
         for L in list(self.ambi_lights):
             self.ambi_lights[L].update(prev_xy=(0.0001, 0.0001))
 
         try:
             while not self.monitor.abortRequested() and AMBI_RUNNING.is_set():  # loop until kodi tells add-on to stop or video playing flag is unset.
                 try:
-                    cap.capture(self.capture_size_x, self.capture_size_y)  # async capture request to underlying OS
+
                     cap_image = cap.getImage()  # timeout to wait for OS in ms, default 1000
 
                     if cap_image is None or len(cap_image) < expected_capture_size:
@@ -174,9 +175,8 @@ class AmbiGroup(lightgroup.LightGroup):
 
                 colors = self.image_process.img_avg(image, self.min_bri, self.max_bri, self.saturation)
                 for L in list(self.ambi_lights):
-                    x = Thread(target=self._update_hue_rgb, name="updateHue", args=(colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, self.transition_time, colors['bri']))
-                    x.daemon = True
-                    x.start()
+                    t = Thread(target=self._update_hue_rgb, name="updateHue", args=(colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, self.transition_time, colors['bri']), daemon=True)
+                    t.start()
 
                 self.monitor.waitForAbort(self.update_interval)  # seconds
 
@@ -197,7 +197,7 @@ class AmbiGroup(lightgroup.LightGroup):
             xy = self.converterA.rgb_to_xy(r, g, b)
         elif gamut == "B":
             xy = self.converterB.rgb_to_xy(r, g, b)
-        elif gamut == "C":
+        else:
             xy = self.converterC.rgb_to_xy(r, g, b)
 
         xy = round(xy[0], 4), round(xy[1], 4)  # Hue has a max precision of 4 decimal points
@@ -210,16 +210,15 @@ class AmbiGroup(lightgroup.LightGroup):
             except QhueException as exc:
                 if "201" in exc.type_id:
                     # xbmc.log(f"[script.service.hue] QhueException {exc.type_id} {exc.message}")
-                    # 201 Param not modifiable because light is off error. 901: internal hue bridge error.
+                    # 201 Param not modifiable because light is off error.
                     pass
-                elif "500" in exc.type_id or "901" in exc.type_id:  # or exc == 500:  # bridge internal error
+                elif "500" in exc.type_id or "901" in exc.type_id:  # bridge internal error, usually occurs when there's too many Zigbee calls
                     xbmc.log(f"[script.service.hue] Bridge internal error: {exc.type_id}: {exc.message} {traceback.format_exc()}")
                     self._bridge_error500()
                 else:
                     xbmc.log(f"[script.service.hue] Ambi: QhueException Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
-                    AMBI_RUNNING.clear() # shut it down
+                    AMBI_RUNNING.clear()  # shut it down
                     reporting.process_exception(exc)
-
             except requests.RequestException as exc:
                 xbmc.log(f"[script.service.hue] Ambi: RequestException: {exc}")
                 self._bridge_error500()
@@ -228,7 +227,7 @@ class AmbiGroup(lightgroup.LightGroup):
 
     def _bridge_error500(self):
         self.bridge_error500 = self.bridge_error500 + 1  # increment counter
-        if self.bridge_error500 > 100 and ADDON.getSettingBool("show500Error"):
+        if self.bridge_error500 > 50 and ADDON.getSettingBool("show500Error"):
             stop_showing_error = xbmcgui.Dialog().yesno(_("Hue Bridge over capacity"), _("The Hue Bridge is over capacity. Increase refresh rate or reduce the number of Ambilights."), yeslabel=_("Do not show again"), nolabel=_("Ok"))
 
             if stop_showing_error:

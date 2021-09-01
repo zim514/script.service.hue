@@ -113,8 +113,8 @@ msgid "Scenes"
 msgstr "Szenen"
 
 msgctxt "#30513"
-msgid "Start Scene Enabled"
-msgstr "Start Szene aktiviert"
+msgid "Play Scene Enabled"
+msgstr "Play Scene Enabled"
 
 msgctxt "#30514"
 msgid "Pause Scene Enabled"
@@ -409,8 +409,8 @@ msgid "Frame capture size"
 msgstr "Größe der Bilderfassung"
 
 msgctxt "#30068"
-msgid "Performance debug logging"
-msgstr "Performance-Debug-Protokollierung"
+msgid "Show Hue bridge capacity errors"
+msgstr "Show Hue bridge capacity errors"
 
 msgctxt "#30800"
 msgid "Minimum duration (Minutes)"
@@ -587,6 +587,14 @@ msgstr ""
 msgctxt "#30032"
 msgid "Hue Service Error"
 msgstr ""
+
+#~ msgctxt "#30513"
+#~ msgid "Start Scene Enabled"
+#~ msgstr "Start Szene aktiviert"
+
+#~ msgctxt "#30068"
+#~ msgid "Performance debug logging"
+#~ msgstr "Performance-Debug-Protokollierung"
 
 #~ msgctxt "#5111"
 #~ msgid "Flash on settings reload"
