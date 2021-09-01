@@ -703,7 +703,7 @@
 				</setting>
 				<setting id="average_process_time" type="string" label="30813" help="">
 					<level>3</level>
-					<default/>
+					<default>Unknown</default>
 					<constraints>
 						<allowempty>true</allowempty>
 					</constraints>
