@@ -384,24 +384,26 @@ def connect_bridge(silent=False):
     xbmc.log(f"[script.service.hue] in Connect() with settings: bridgeIP: {bridge_ip}, bridgeUser: {bridge_user}")
 
     if bridge_ip and bridge_user:
-        if _connection_test(bridge_ip):
-            xbmc.log("[script.service.hue] in Connect(): Bridge responding to connection test.")
-        else:
+        if not _connection_test(bridge_ip):
             xbmc.log("[script.service.hue] in Connect(): Bridge not responding to connection test, attempt finding a new bridge IP.")
             bridge_ip = _discover_bridge_ip()
             if bridge_ip:
                 xbmc.log(f"[script.service.hue] in Connect(): New IP found: {bridge_ip}. Saving")
                 ADDON.setSettingString("bridgeIP", bridge_ip)
+            else:
+                xbmc.log("[script.service.hue] Bridge not found")
+                notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
+                CONNECTED.clear()
+                return None
 
-        if bridge_ip:
-            xbmc.log("[script.service.hue] in Connect(): Checking User")
-            if _user_test(bridge_ip, bridge_user):
-                bridge = qhue.Bridge(bridge_ip, bridge_user, timeout=QHUE_TIMEOUT)
-                CONNECTED.set()
-                xbmc.log(f"[script.service.hue] Successfully connected to Hue Bridge: {bridge_ip}")
-                if not silent:
-                    notification(_("Hue Service"), _("Hue connected"), sound=False)
-                return bridge
+        xbmc.log("[script.service.hue] in Connect(): Checking User")
+        if _user_test(bridge_ip, bridge_user):
+            bridge = qhue.Bridge(bridge_ip, bridge_user, timeout=QHUE_TIMEOUT)
+            CONNECTED.set()
+            xbmc.log(f"[script.service.hue] Successfully connected to Hue Bridge: {bridge_ip}")
+            if not silent:
+                notification(_("Hue Service"), _("Hue connected"), sound=False)
+            return bridge
         else:
             xbmc.log("[script.service.hue] Bridge not responding")
             notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
