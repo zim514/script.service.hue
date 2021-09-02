@@ -58,6 +58,7 @@ def delete_hue_scene(bridge):
             # xbmc.log(f"[script.service.hue] In kodiHue createHueGroup. Res: {result}")
             except requests.RequestException as exc:
                 xbmc.log(f"[script.service.hue]: Delete Hue Scene requestsException: {result} {exc}")
+                notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
             if result[0]["success"]:
                 notification(_("Hue Service"), _("Scene deleted"))
             else:
@@ -303,7 +304,10 @@ def select_hue_lights(bridge):
     except QhueException as exc:
         xbmc.log(f"[script.service.hue]: Select Hue Lights QhueException: {exc.type_id}: {exc.message} {traceback.format_exc()}")
         notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
-        return None
+    except requests.RequestException as exc:
+        xbmc.log(f"[script.service.hue] Requests exception: {exc}")
+        notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
+    return None
 
     items = []
     index = []
@@ -338,6 +342,11 @@ def select_hue_scene(bridge):
     except QhueException as exc:
         xbmc.log(f"[script.service.hue]: Select Hue Lights QhueException: {exc.type_id}: {exc.message} {traceback.format_exc()}")
         notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
+        reporting.process_exception(exc)
+        return None
+    except requests.RequestException as exc:
+        xbmc.log(f"[script.service.hue] Requests exception: {exc}")
+        notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
         return None
 
     items = []
@@ -436,9 +445,13 @@ def check_bridge_model(bridge):
     try:
         bridge_config = bridge.config()
         model = bridge_config["modelid"]
-    except QhueException:
-        xbmc.log("[script.service.hue] Exception: checkBridgeModel")
+    except QhueException as exc:
+        xbmc.log(f"[script.service.hue] Exception: checkBridgeModel {exc.type_id}: {exc.message} {traceback.format_exc()}")
+        reporting.process_exception(exc)
         return None
+    except requests.RequestException as exc:
+        xbmc.log(f"[script.service.hue] Requests exception: {exc}")
+        notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
     if model == "BSB002":
         xbmc.log(f"[script.service.hue] Bridge model OK: {model}")
         return True
