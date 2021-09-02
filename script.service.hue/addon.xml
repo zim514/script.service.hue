@@ -35,10 +35,13 @@ Update to new settings system</news>
 		<summary lang="cs_CZ">Automatizace Hue světel s přehráváním Kodi</summary>
 		<summary lang="da_DK">Automatiser Hue-lys sammen med afspilning i Kodi</summary>
 		<summary lang="en_GB">Automate Hue lights with Kodi playback</summary>
+		<summary lang="ko_KR">Kodi 재생으로 Hue 조명 자동화</summary>
 		<description lang="cs_CZ">Ovládejte Hue světla automaticky pomocí Kodi. Vytvořte scény pro začátek, přestávku i ukončení přehrávání a nechte Kodi reagovat automaticky na Vaše akce. Je možné využít východ i západ slunce. Obsahuje podporu pro Ambilight.</description>
 		<description lang="en_GB">Automate your Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support.</description>
+		<description lang="ko_KR">Kodi로 Hue 조명을 자동화하세요. 미디어 재생을 재생, 일시 중지 또는 중지할 때 실행되는 멀티룸 장면을 만듭니다. 애드온 설정에서 멀티룸 장면을 만들거나 삭제하고 다른 재생 이벤트에 적용할 장면을 선택합니다. Hue의 일출 및 일몰 시간을 사용하여 주간에는 서비스를 자동으로 비활성화하고 재생 중에 일몰 시 조명을 켤 수 있습니다. Ambilight 지원이 포함됩니다.</description>
 		<disclaimer lang="cs_CZ">Vyžaduje Hue Bridge V2 (čtvercový). Ambilight není podporován na všech zařízeních.</disclaimer>
 		<disclaimer lang="da_DK">Kræver en Hue Bridge V2 (firkant). Ambilight er ikke tilgængelig på al hardware.</disclaimer>
 		<disclaimer lang="en_GB">Requires a Hue Bridge V2 (Square). Ambilight not available on all hardware.</disclaimer>
+		<disclaimer lang="ko_KR">Hue Bridge V2(정사각형)가 필요합니다. 모든 하드웨어에서 Ambilight를 사용할 수 있는 것은 아닙니다.</disclaimer>
 	</extension>
 </addon>
