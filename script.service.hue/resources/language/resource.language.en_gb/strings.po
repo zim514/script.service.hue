@@ -568,3 +568,7 @@ msgstr ""
 msgctxt "#30032"
 msgid "Hue Service Error"
 msgstr ""
+
+msgctxt "#30029"
+msgid "Connection Error"
+msgstr ""
