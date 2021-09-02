@@ -74,6 +74,9 @@ class AmbiGroup(lightgroup.LightGroup):
             except QhueException as exc:
                 xbmc.log(f"[script.service.hue] Force On Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
                 reporting.process_exception(exc)
+            except requests.RequestException as exc:
+                xbmc.log(f"[script.service.hue] Requests exception: {exc}")
+                hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
 
     def onAVStarted(self):
         xbmc.log(f"Ambilight AV Started. Group enabled: {self.enabled} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.playbackType(): {self.playback_type()}")
@@ -220,8 +223,9 @@ class AmbiGroup(lightgroup.LightGroup):
                     AMBI_RUNNING.clear()  # shut it down
                     reporting.process_exception(exc)
             except requests.RequestException as exc:
-                xbmc.log(f"[script.service.hue] Ambi: RequestException: {exc}")
-                self._bridge_error500()
+                xbmc.log(f"[script.service.hue] Requests exception: {exc}")
+                hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
+                AMBI_RUNNING.clear()
             except KeyError:
                 xbmc.log("[script.service.hue] Ambi: KeyError, light not found")
 
@@ -308,16 +312,18 @@ class AmbiGroup(lightgroup.LightGroup):
 
 
 def _get_light_gamut(bridge, light):
+    gamut = "C"  # default
     try:
         gamut = bridge.lights()[light]['capabilities']['control']['colorgamuttype']
         # xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(l, gamut))
-    except QhueException as error:
-        xbmc.log(f"[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {light}, error: {error}")
-        return "C"
+    except QhueException as exc:
+        xbmc.log(f"[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {light}, error: {exc}")
     except KeyError:
         xbmc.log(f"[script.service.hue] Unknown gamut type, unsupported light: {light}")
         hue.notification(_("Hue Service"), _(f"Unknown colour gamut for light {light}"))
-        return "C"
+    except requests.RequestException as exc:
+        xbmc.log(f"[script.service.hue] Get Light Gamut RequestsException: {exc}")
+        hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
 
     if gamut == "A" or gamut == "B" or gamut == "C":
         return gamut
@@ -343,4 +349,7 @@ def _get_light_states(lights, bridge):
             states[L] = (bridge.lights[L]())
         except QhueException as exc:
             xbmc.log(f"[script.service.hue] Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
+        except requests.RequestException as exc:
+            xbmc.log(f"[script.service.hue] Requests exception: {exc}")
+            hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
     return states
