@@ -526,7 +526,7 @@ msgid "User Found![CR]Saving settings..."
 msgstr ""
 
 msgctxt "#30085"
-msgid "Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or set to 0 seconds for an instant transition."
+msgid "Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or 0 for an instant transition."
 msgstr ""
 
 msgctxt "#30086"
@@ -534,7 +534,7 @@ msgid "User not found[CR]Check your bridge and network."
 msgstr ""
 
 msgctxt "#30087"
-msgid "Scene successfully created![CR]You may now assign your Scene to player actions."
+msgid "Scene successfully created![CR]You may now assign your scene to player actions."
 msgstr ""
 
 msgctxt "#30073"

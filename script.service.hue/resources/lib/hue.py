@@ -18,7 +18,7 @@ def create_hue_scene(bridge):
     xbmc.log("[script.service.hue] In kodiHue createHueScene")
     scenes = bridge.scenes
 
-    xbmcgui.Dialog().ok(heading=_("Create New Scene"), message=_("Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or set to 0 seconds for an instant transition."))
+    xbmcgui.Dialog().ok(heading=_("Create New Scene"), message=_("Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or 0 for an instant transition."))
 
     scene_name = xbmcgui.Dialog().input(_("Scene Name"))
 
@@ -36,7 +36,7 @@ def create_hue_scene(bridge):
             result = scenes(lights=selected, name=scene_name, recycle=False, type='LightScene', http_method='post', transitiontime=transition_time)
             # xbmc.log("[script.service.hue] In kodiHue createHueScene. Res: {}".format(res))
             if result[0]["success"]:
-                xbmcgui.Dialog().ok(heading=_("Create New Scene"), message=_("Scene successfully created![CR]You may now assign your Scene to player actions."))
+                xbmcgui.Dialog().ok(heading=_("Create New Scene"), message=_("Scene successfully created![CR]You may now assign your scene to player actions."))
             else:
                 xbmcgui.Dialog().ok(_("Error"), _("Scene not created."))
     else:
