@@ -2,7 +2,6 @@ name: Repo updater
 
 on:
   push:
-    branches: main
     tags:
       - v*
 
