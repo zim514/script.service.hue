@@ -53,7 +53,6 @@ if __name__ == "__main__":
         print(f"Missing: {missing}")
 
         if missing:
-
             print(f"WARNING: adding missing translation for '{missing}'")
             for text in missing:
                 id = ids_available.pop(0)
@@ -63,10 +62,11 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Exception: {e}")
         content = []
+
     with open(__file__, "r") as me:
         content = me.readlines()
         content = content[:content.index("# GENERATED\n") + 1]
-    with open(__file__, "w") as f:
+    with open(__file__, "w", newline="\n") as f:
         f.writelines(content)
         for m in po:
             if m.msgctxt.startswith("#"):
