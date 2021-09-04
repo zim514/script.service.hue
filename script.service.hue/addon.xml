@@ -16,8 +16,8 @@
 		<platform>all</platform>
 		<license>MIT</license>
 		<assets>
-			<icon>resources/icon.png</icon>
-			<fanart>resources/fanart.jpg</fanart>
+			<icon>resources/icons/icon.png</icon>
+			<fanart>resources/icons/fanart.jpg</fanart>
 		</assets>
 		<source>https://github.com/zim514/script.service.hue</source>
 		<forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>

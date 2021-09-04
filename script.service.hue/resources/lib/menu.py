@@ -4,9 +4,10 @@ from urllib.parse import parse_qs
 
 import xbmc
 import xbmcplugin
+import xbmcvfs
 from xbmcgui import ListItem
 
-from resources.lib import ADDON, CACHE, ADDONID
+from resources.lib import ADDON, CACHE, ADDONID, ADDONPATH
 from .language import get_string as _
 
 
@@ -25,11 +26,11 @@ def menu():
             ADDON.openSettings()
 
         elif command == "toggle":
-            if CACHE.get(f"{ADDONID}_enabled") and get_status() != "Disabled by daylight":
+            if CACHE.get(f"{ADDONID}_enabled") and _get_status() != "Disabled by daylight":
                 xbmc.log("[script.service.hue] Disable service")
                 CACHE.set(f"{ADDONID}_enabled", False)
 
-            elif get_status() != "Disabled by daylight":
+            elif _get_status() != "Disabled by daylight":
                 xbmc.log("[script.service.hue] Enable service")
                 CACHE.set(f"{ADDONID}_enabled", True)
             else:
@@ -42,13 +43,11 @@ def menu():
         light_group_id = parsed['light_group_id'][0]
         xbmc.log(f"[script.service.hue] Actions: {action}, light_group_id: {light_group_id}")
         if action == "menu":
-            items = [
-                (base_url + "?action=play&light_group_id=" + light_group_id, ListItem(_("Play"))),
-                (base_url + "?action=pause&light_group_id=" + light_group_id, ListItem(_("Pause"))),
-                (base_url + "?action=stop&light_group_id=" + light_group_id, ListItem(_("Stop")))
-            ]
 
-            xbmcplugin.addDirectoryItems(addon_handle, items, len(items))
+            xbmcplugin.addDirectoryItem(addon_handle, base_url + "?action=play&light_group_id=" + light_group_id, ListItem(_("Play")))
+            xbmcplugin.addDirectoryItem(addon_handle, base_url + "?action=pause&light_group_id=" + light_group_id, ListItem(_("Pause")))
+            xbmcplugin.addDirectoryItem(addon_handle, base_url + "?action=stop&light_group_id=" + light_group_id, ListItem(_("Stop")))
+
             xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=True)
         else:
             CACHE.set(f"{ADDONID}.action", (action, light_group_id), expiration=(timedelta(seconds=5)))
@@ -57,18 +56,38 @@ def menu():
 
 
 def build_menu(base_url, addon_handle):
-    items = [
-        (base_url + "/actions?light_group_id=1&action=menu", ListItem(_("Video Actions")), True),
-        (base_url + "/actions?light_group_id=2&action=menu", ListItem(_("Audio Actions")), True),
-        (base_url + "?toggle", ListItem(_("Hue Status: ") + get_status())),
-        (base_url + "?settings", ListItem(_("Settings")))
-    ]
+    status_item = ListItem(_("Hue Status: ") + _get_status())
+    status_icon = _get_status_icon()
+    if status_icon:
+        status_item.setArt({"icon": status_icon})
+        xbmc.log(f"[script.service.hue] status_icon: {status_icon}")
 
-    xbmcplugin.addDirectoryItems(addon_handle, items, len(items))
+    settings_item = ListItem(_("Settings"))
+    settings_item.setArt({"icon": xbmcvfs.makeLegalFilename(ADDONPATH + "resources/icons/settings.png")})
+
+    xbmcplugin.addDirectoryItem(addon_handle, base_url + "/actions?light_group_id=1&action=menu", ListItem(_("Video Actions")), True)
+    xbmcplugin.addDirectoryItem(addon_handle, base_url + "/actions?light_group_id=2&action=menu", ListItem(_("Audio Actions")), True)
+    xbmcplugin.addDirectoryItem(addon_handle, base_url + "?toggle", status_item)
+    xbmcplugin.addDirectoryItem(addon_handle, base_url + "?settings", settings_item)
+
+    #
+    # _("Disabled by daylight")
+    # _("Enabled")
+    # _("Disabled")
+    #
+
+    # items = [
+    #     (base_url + "/actions?light_group_id=1&action=menu", ListItem(_("Video Actions")), True),
+    #     (base_url + "/actions?light_group_id=2&action=menu", ListItem(_("Audio Actions")), True),
+    #     (base_url + "?toggle", ListItem(_("Hue Status: ") + get_status())),
+    #     (base_url + "?settings", ListItem(_("Settings")))
+    # ]
+
+    # xbmcplugin.addDirectoryItems(addon_handle, items, len(items))
     xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=False)
 
 
-def get_status():
+def _get_status():
     enabled = CACHE.get(f"{ADDONID}_enabled")
     daylight = CACHE.get(f"{ADDONID}.daylight")
     daylight_disable = ADDON.getSettingBool("daylightDisable")
@@ -78,3 +97,15 @@ def get_status():
     elif enabled:
         return _("Enabled")
     return _("Disabled")
+
+
+def _get_status_icon():
+    enabled = CACHE.get(f"{ADDONID}_enabled")
+    daylight = CACHE.get(f"{ADDONID}.daylight")
+    daylight_disable = ADDON.getSettingBool("daylightDisable")
+    # xbmc.log("[script.service.hue] Current status: {}".format(daylight_disable))
+    if daylight and daylight_disable:
+        return xbmcvfs.makeLegalFilename(ADDONPATH + "resources/icons/daylight.png")  # Disabled by Daylight
+    elif enabled:
+        return xbmcvfs.makeLegalFilename(ADDONPATH + "resources/icons/enabled.png")  # Enabled
+    return xbmcvfs.makeLegalFilename(ADDONPATH + "resources/icons/disabled.png")  # Disabled
