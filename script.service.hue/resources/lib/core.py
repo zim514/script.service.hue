@@ -3,7 +3,7 @@ import sys
 import requests
 import xbmc
 
-from resources.lib import ADDON, CACHE, SETTINGS_CHANGED
+from resources.lib import ADDON, CACHE, SETTINGS_CHANGED, ADDONID
 from resources.lib import ambigroup, lightgroup, AMBI_RUNNING, CONNECTED
 from resources.lib import hue, reporting, settings
 from resources.lib.language import get_string as _
@@ -11,15 +11,10 @@ from resources.lib.language import get_string as _
 
 def core():
     settings.validate_settings()
+    monitor = hue.HueMonitor()
 
     if len(sys.argv) > 1:
         command = sys.argv[1]
-    else:
-        command = ""
-
-    monitor = hue.HueMonitor()
-
-    if command:
         commands(monitor, command)
     else:
         service(monitor)
@@ -34,8 +29,8 @@ def commands(monitor, command):
             if bridge:
                 xbmc.log("[script.service.hue] Found bridge. Running model check & starting service.")
                 hue.check_bridge_model(bridge)
-                ADDON.openSettings()
                 service(monitor)
+                ADDON.openSettings()
 
     elif command == "createHueScene":
         xbmc.log(f"[script.service.hue] Started with {command}")
@@ -85,7 +80,7 @@ def commands(monitor, command):
 
 def service(monitor):
     bridge = hue.connect_bridge(silent=ADDON.getSettingBool("disableConnectionMessage"))
-    service_enabled = CACHE.get("script.service.hue.service_enabled")
+    service_enabled = CACHE.get(f"{ADDONID}_enabled")
     initial_flash = ADDON.getSettingBool("initialFlash")
 
     if bridge is not None:
@@ -98,15 +93,15 @@ def service(monitor):
         daylight = hue.get_daylight(bridge)
         new_daylight = daylight
 
-        CACHE.set("script.service.hue.daylight", daylight)
-        CACHE.set("script.service.hue.service_enabled", True)
+        CACHE.set(f"{ADDONID}.daylight", daylight)
+        CACHE.set(f"{ADDONID}_enabled", True)
         # xbmc.log("[script.service.hue] Core service starting. Connected: {}".format(CONNECTED))
 
         while CONNECTED.is_set() and not monitor.abortRequested():
 
             # check if service was just re-enabled and if so restart groups
             prev_service_enabled = service_enabled
-            service_enabled = CACHE.get("script.service.hue.service_enabled")
+            service_enabled = CACHE.get(f"{ADDONID}_enabled")
 
             if service_enabled and not prev_service_enabled:
                 try:
@@ -120,7 +115,7 @@ def service(monitor):
                 AMBI_RUNNING.clear()
 
             # process cached waiting commands
-            action = CACHE.get("script.service.hue.action")
+            action = CACHE.get(f"{ADDONID}.action")
             if action:
                 _process_actions(action, light_groups)
 
@@ -169,7 +164,7 @@ def service(monitor):
                     xbmc.log(f"[script.service.hue] Daylight change. current: {daylight}, new: {new_daylight}")
                     daylight = new_daylight
 
-                    CACHE.set("script.service.hue.daylight", daylight)
+                    CACHE.set(f"{ADDONID}.daylight", daylight)
                     if not daylight and service_enabled:
                         xbmc.log("[script.service.hue] Sunset activate")
                         try:
@@ -193,4 +188,4 @@ def _process_actions(action, light_groups):
     action_light_group_id = int(action[1]) - 1
     xbmc.log(f"[script.service.hue] Action command: {action}, action_action: {action_action}, action_light_group_id: {action_light_group_id}")
     light_groups[action_light_group_id].run_scene(action_action)
-    CACHE.set("script.service.hue.action", None)
+    CACHE.set(f"{ADDONID}.action", None)

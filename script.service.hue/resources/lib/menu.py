@@ -6,7 +6,7 @@ import xbmc
 import xbmcplugin
 from xbmcgui import ListItem
 
-from resources.lib import ADDON, CACHE
+from resources.lib import ADDON, CACHE, ADDONID
 from .language import get_string as _
 
 
@@ -17,28 +17,27 @@ def menu():
     command = sys.argv[2][1:]
     parsed = parse_qs(command)
 
-    if route == "plugin://script.service.hue/":
+    if route == f"plugin://{ADDONID}/":
         if not command:
             build_menu(base_url, addon_handle)
 
         elif command == "settings":
-            # xbmc.log("[script.service.hue] Opening settings")
             ADDON.openSettings()
 
         elif command == "toggle":
-            if CACHE.get("script.service.hue.service_enabled") and get_status() != "Disabled by daylight":
+            if CACHE.get(f"{ADDONID}_enabled") and get_status() != "Disabled by daylight":
                 xbmc.log("[script.service.hue] Disable service")
-                CACHE.set("script.service.hue.service_enabled", False)
+                CACHE.set(f"{ADDONID}_enabled", False)
 
             elif get_status() != "Disabled by daylight":
                 xbmc.log("[script.service.hue] Enable service")
-                CACHE.set("script.service.hue.service_enabled", True)
+                CACHE.set(f"{ADDONID}_enabled", True)
             else:
                 xbmc.log("[script.service.hue] Disabled by daylight, ignoring")
 
             xbmc.executebuiltin('Container.Refresh')
 
-    elif route == "plugin://script.service.hue/actions":
+    elif route == f"plugin://{ADDONID}/actions":
         action = parsed['action'][0]
         light_group_id = parsed['light_group_id'][0]
         xbmc.log(f"[script.service.hue] Actions: {action}, light_group_id: {light_group_id}")
@@ -52,7 +51,7 @@ def menu():
             xbmcplugin.addDirectoryItems(addon_handle, items, len(items))
             xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=True)
         else:
-            CACHE.set("script.service.hue.action", (action, light_group_id), expiration=(timedelta(seconds=5)))
+            CACHE.set(f"{ADDONID}.action", (action, light_group_id), expiration=(timedelta(seconds=5)))
     else:
         xbmc.log(f"[script.service.hue] Unknown command. Handle: {addon_handle}, route: {route}, Arguments: {sys.argv}")
 
@@ -70,8 +69,8 @@ def build_menu(base_url, addon_handle):
 
 
 def get_status():
-    enabled = CACHE.get("script.service.hue.service_enabled")
-    daylight = CACHE.get("script.service.hue.daylight")
+    enabled = CACHE.get(f"{ADDONID}_enabled")
+    daylight = CACHE.get(f"{ADDONID}.daylight")
     daylight_disable = ADDON.getSettingBool("daylightDisable")
     # xbmc.log("[script.service.hue] Current status: {}".format(daylight_disable))
     if daylight and daylight_disable:

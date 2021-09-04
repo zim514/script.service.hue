@@ -479,11 +479,11 @@ class HueMonitor(xbmc.Monitor):
 
             if method == "Other.disable":
                 xbmc.log("[script.service.hue] Notification received: Disable")
-                CACHE.set("script.service.hue.service_enabled", False)
+                CACHE.set(f"{ADDONID}_enabled", False)
 
             if method == "Other.enable":
                 xbmc.log("[script.service.hue] Notification received: Enable")
-                CACHE.set("script.service.hue.service_enabled", True)
+                CACHE.set(f"{ADDONID}_enabled", True)
 
             if method == "Other.actions":
                 json_loads = json.loads(data)

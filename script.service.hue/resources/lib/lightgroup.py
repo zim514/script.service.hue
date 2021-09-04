@@ -5,7 +5,7 @@ import requests
 import xbmc
 import xbmcgui
 
-from resources.lib import CACHE, ADDON, reporting, hue
+from resources.lib import CACHE, ADDON, reporting, hue, ADDONID
 from resources.lib.qhue import QhueException
 from resources.lib.settings import convert_time
 from .language import get_string as _
@@ -163,7 +163,7 @@ class LightGroup(xbmc.Player):
 
     @staticmethod
     def check_active_time():
-        service_enabled = CACHE.get("script.service.hue.service_enabled")
+        service_enabled = CACHE.get(f"{ADDONID}_enabled")
         daylight = CACHE.get("script.service.hue.daylight")
         # xbmc.log(f"[script.service.hue] Schedule: {ADDON.getSettingBool('enableSchedule')}, daylightDisable: {ADDON.getSettingBool('daylightDisable')}, daylight: {daylight}, startTime: {ADDON.getSettingBool('startTime')},
         # endTime: {ADDON.getSettingBool('endTime')}")
