@@ -1,6 +1,8 @@
-[![Kodi Addon-Check](https://github.com/zim514/script.service.hue/actions/workflows/kodi-addon-checker.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/kodi-addon-checker.yml) [![Sync addon metadata translations](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml) [![CodeFactor](https://www.codefactor.io/repository/github/zim514/script.service.hue/badge)](https://www.codefactor.io/repository/github/zim514/script.service.hue) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-# script.service.hue
-**Kodi Service for Philips Hue**
+[![Repo updater](https://github.com/zim514/script.service.hue/actions/workflows/repo-update.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/repo-update.yml) [![Kodi Addon-Check](https://github.com/zim514/script.service.hue/actions/workflows/kodi-addon-checker.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/kodi-addon-checker.yml) [![Sync addon metadata translations](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml) [![CodeFactor](https://www.codefactor.io/repository/github/zim514/script.service.hue/badge)](https://www.codefactor.io/repository/github/zim514/script.service.hue) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+#**Kodi Service for Philips Hue**
+## script.service.hue
+
 Automate your [Hue lights](https://www.meethue.com/) on audio or video playback with [Kodi Media Player](https://kodi.tv/)
 
 ## Requirements
@@ -13,28 +15,26 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 - [Install from official Kodi repo](https://kodi.wiki/view/Add-on_manager#How_to_install_add-ons_from_a_repository)
 
 **Development version**
- 1. [Download latest .zip version](https://github.com/zim514/script.service.hue/releases) or [Repo for auto-updates](https://github.com/zim514/zim514.github.io/raw/master/repo/repository.snapcase/repository.snapcase-1.0.8.zip)
+ 1. [Repo with auto-updates](https://github.com/zim514/zim514.github.io/raw/master/repo/repository.snapcase/repository.snapcase-1.0.8.zip) **(Recommended)** or [Download latest .zip version](https://github.com/zim514/script.service.hue/releases)
  2. [Install to Kodi from Zip](https://kodi.wiki/view/HOW-TO:Install_add-ons_from_zip_files)
 
 ## Features:
-- Create and delete multi-room LightScenes
+- Create and delete multi-room scenes
     - Adjust your light's colour and brightness
     - Optional transition time for scenes
     - Supports lights in multiple rooms or groups
     - Edit your scenes in 3rd party apps
     - - Apply selected scene on video or audio player actions
-    - Can be disabled based on video type (Episode, Movie or music video) or duration
+    - Can be disabled based on video type or duration
 - Ambilight Support
     - Lighting effects synced with on-screen action
-    - Not supported with all hardware
+    - **_Not supported with all hardware_**
 - Daylight detection
     - Uses Hue's sunrise and sunset settings
     - Disable during daylight hours
     - If sunset falls while watching media, optionally turn on lights
     - Add-on does nothing at sunset if there's no playback
-  
-
-- Enable schedule
+- Scheduling
     - Set a start and end time at which the add-on should be enabled
     - Time in 24h format (Eg: 22:00, not 10:00 PM)
     - Disable during daylight setting takes precedence over active hours
@@ -113,8 +113,8 @@ Audio Group: 2
 
 ### Problems?
 
-- Make sure you update your Hue bridge to the latest version. This add-on assumes you have the latest features
-- Turn on debug logging or the addon's logging (in addon_data)
+- Make sure you update your Hue bridge to the latest version. This add-on assumes you have the latest
+- Turn on debug logging
 
 ### Credits:
 
