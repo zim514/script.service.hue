@@ -8,10 +8,10 @@ jobs:
     name: Kodi addon checker
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
     - name: Kodi addon checker validation
       id: kodi-addon-checker
-      uses: xbmc/action-kodi-addon-checker@v1.1
+      uses: xbmc/action-kodi-addon-checker@v1.2
       with:
         kodi-version: matrix
         is-pr: false
