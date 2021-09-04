@@ -1,0 +1,52 @@
+name: Repo updater
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - v*
+
+
+jobs:
+  default:
+    if: github.repository == 'zim514/script.service.hue'
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ 3.9 ]
+
+    steps:
+#      - name: Checkout addon
+#        uses: actions/checkout@v2
+#        with:
+#          path: addon
+
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          repository: 'zim514/zim514.github.io'
+          token: ${{secrets.ACTIONS_TOKEN}}
+          # path: repo
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          chmod a+x create_repository.py
+          pip install gitpython
+          echo ls -al
+
+      - name: Generate repo
+        run: |
+          ./create_repository.py --datadir=docs/repo https://github.com/zim514/script.service.hue.git:script.service.hue https://github.com/zim514/zim514.github.io.git:repository.snapcase
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Repo Update ${{ github.ref }}
+          # file_pattern: *.md5 *.zip *.xml
+          # repository: repo

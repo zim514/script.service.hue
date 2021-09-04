@@ -28,10 +28,9 @@ def _validate_schedule():
         try:
             convert_time(ADDON.getSettingBool("startTime"))
             convert_time(ADDON.getSettingBool("endTime"))
-            xbmc.log("[script.service.hue] Time looks valid")
+            # xbmc.log("[script.service.hue] Time looks valid")
         except ValueError as e:
             xbmc.log(f"[script.service.hue] Invalid time settings: {e}")
-
             hue.notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"), icon=xbmcgui.NOTIFICATION_ERROR)
             ADDON.setSettingBool("EnableSchedule", False)
 
