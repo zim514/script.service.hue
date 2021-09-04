@@ -37,7 +37,9 @@ jobs:
 #        run: wget https://raw.githubusercontent.com/chadparry/kodi-repository.chad.parry.org/master/tools/create_repository.py
 
       - name: Generate repo
-        run: py create_repository.py --datadir=repo/docs https://github.com/zim514/script.service.hue.git:script.service.hue https://github.com/zim514/zim514.github.io.git:repository.snapcase
+        run: |
+          chmod a+x create_repository.py
+          ./create_repository.py --datadir=repo/docs https://github.com/zim514/script.service.hue.git:script.service.hue https://github.com/zim514/zim514.github.io.git:repository.snapcase
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
