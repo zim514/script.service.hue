@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: 'zim514/zim514.github.io'
+          token: ${{secrets.ACTIONS_TOKEN}}
           # path: repo
 
       - name: Set up Python ${{ matrix.python-version }}
