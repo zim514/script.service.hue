@@ -61,7 +61,7 @@ Every selected light increases the number of necessary commands therefore influe
 - **Average image processing time:** Shows the average time it took to process the colours before updating the Hue bulbs, in milliseconds. This value is updated whenever a video is stopped.
 
 
-### JSON RPC Commands
+## JSON RPC Commands
 This addon supports Kodi JSON RPC commands that can be sent by HTTP, other add-ons or skins. These commands simulate the same result as the commands in the plugin menu.
 
 **Disable**:
@@ -111,12 +111,12 @@ Audio Group: 2
     }
 ```
 
-### Problems?
+## Problems?
 
 - Make sure you update your Hue bridge to the latest version. This add-on assumes you have the latest
 - Turn on debug logging
 
-### Credits:
+## Credits:
 
 - [ScreenBloom by Tyler Kershner](https://github.com/kershner/screenBloom) 
 - [Qhue by Quentin Stafford-Fraser](https://github.com/quentinsf/qhue)
