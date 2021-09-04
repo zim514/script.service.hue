@@ -1,10 +1,9 @@
-name: Repo updater
+name: Repo update
 
 on:
   push:
     tags:
       - v*
-
 
 jobs:
   default:
@@ -22,7 +21,6 @@ jobs:
         with:
           repository: 'zim514/zim514.github.io'
           token: ${{secrets.ACTIONS_TOKEN}}
-          # path: repo
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
