@@ -26,8 +26,8 @@ def core():
 
 
 def commands(monitor, command):
+    xbmc.log(f"[script.service.hue] Started with {command}")
     if command == "discover":
-        xbmc.log("[script.service.hue] Started with Discovery")
         bridge_discovered = hue.discover_bridge(monitor)
         if bridge_discovered:
             bridge = hue.connect_bridge(silent=True)
@@ -38,7 +38,6 @@ def commands(monitor, command):
                 service(monitor)
 
     elif command == "createHueScene":
-        xbmc.log(f"[script.service.hue] Started with {command}")
         bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
             hue.create_hue_scene(bridge)
@@ -47,8 +46,6 @@ def commands(monitor, command):
             hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif command == "deleteHueScene":
-        xbmc.log(f"[script.service.hue] Started with {command}")
-
         bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
             hue.delete_hue_scene(bridge)
@@ -59,7 +56,7 @@ def commands(monitor, command):
     elif command == "sceneSelect":  # sceneSelect=light_group,action  / sceneSelect=0,play
         light_group = sys.argv[2]
         action = sys.argv[3]
-        xbmc.log(f"[script.service.hue] Started with {command}, light_group: {light_group}, action: {action}")
+        # xbmc.log(f"[script.service.hue] sceneSelect: light_group: {light_group}, action: {action}")
 
         bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
@@ -70,7 +67,7 @@ def commands(monitor, command):
 
     elif command == "ambiLightSelect":  # ambiLightSelect=light_group_id
         light_group = sys.argv[2]
-        xbmc.log(f"[script.service.hue] Started with {command}, light_group_id: {light_group}")
+        # xbmc.log(f"[script.service.hue] ambiLightSelect light_group_id: {light_group}")
 
         bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
         if bridge is not None:
