@@ -50,7 +50,7 @@ class Resource(object):
         # then send them as parameters to the bridge. This allows for
         # "escaping" of keywords that might conflict with Python syntax
         # or with the specially-handled keyword "http_method".
-        kwargs = {(k[:-1] if k.endswith("_") else k): v for k, v in kwargs.items()}
+        kwargs = {(k[:-1] if k.endswith("_") else k): v for k, v in list(kwargs.items())}
         if http_method == "put":
             r = self.session.put(url, data=json.dumps(kwargs, default=list), timeout=self.timeout)
         elif http_method == "post":
