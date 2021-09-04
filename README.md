@@ -94,9 +94,9 @@ Temporarily disable service. Service will be re-enabled when Kodi restarts.
 
 Available commands: play, pause, stop
 
-Video Group: 1
+Video Group: 0
 
-Audio Group: 2
+Audio Group: 1
 
 ```json
     {
