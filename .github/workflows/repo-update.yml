@@ -1,0 +1,37 @@
+name: Repo updater
+
+on:
+  push:
+#    tags:
+#      - v*
+
+
+jobs:
+  default:
+    if: github.repository == 'zim514/script.service.hue'
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ 3.9 ]
+
+
+repo-updater:
+  runs-on: ubuntu-latest
+      steps:
+        - name: Checkout addon
+          uses: actions/checkout@v2
+          with:
+            - path: addon
+
+        - name: Checkout repo
+          uses: actions/checkout@v2
+          with:
+            - repository: 'zim514/zim514.github.io'
+            - path: repo
+
+        - name: Set up Python ${{ matrix.python-version }}
+          uses: actions/setup-python@v2
+          with:
+            python-version: ${{ matrix.python-version }}
