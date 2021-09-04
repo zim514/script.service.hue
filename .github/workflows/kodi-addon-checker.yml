@@ -14,5 +14,4 @@ jobs:
       uses: xbmc/action-kodi-addon-checker@v1.2
       with:
         kodi-version: matrix
-        is-pr: false
         addon-id: ${{ github.event.repository.name }}
