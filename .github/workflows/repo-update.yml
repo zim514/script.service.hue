@@ -33,12 +33,13 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-#      - name: Install dependencies
-#        run: wget https://raw.githubusercontent.com/chadparry/kodi-repository.chad.parry.org/master/tools/create_repository.py
+      - name: Install dependencies
+        run: |
+          chmod a+x create_repository.py
+          pip install gitpython
 
       - name: Generate repo
         run: |
-          chmod a+x create_repository.py
           ./create_repository.py --datadir=repo/docs https://github.com/zim514/script.service.hue.git:script.service.hue https://github.com/zim514/zim514.github.io.git:repository.snapcase
 
       - uses: stefanzweifel/git-auto-commit-action@v4
