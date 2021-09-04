@@ -1,6 +1,6 @@
 [![Repo updater](https://github.com/zim514/script.service.hue/actions/workflows/repo-update.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/repo-update.yml) [![Kodi Addon-Check](https://github.com/zim514/script.service.hue/actions/workflows/kodi-addon-checker.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/kodi-addon-checker.yml) [![Sync addon metadata translations](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml) [![CodeFactor](https://www.codefactor.io/repository/github/zim514/script.service.hue/badge)](https://www.codefactor.io/repository/github/zim514/script.service.hue) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-#**Kodi Service for Philips Hue**
+# **Kodi Service for Philips Hue**
 ## script.service.hue
 
 Automate your [Hue lights](https://www.meethue.com/) on audio or video playback with [Kodi Media Player](https://kodi.tv/)
