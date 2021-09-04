@@ -37,6 +37,7 @@ jobs:
         run: |
           chmod a+x create_repository.py
           pip install gitpython
+          echo ls -al
 
       - name: Generate repo
         run: |
