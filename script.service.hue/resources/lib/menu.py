@@ -70,20 +70,6 @@ def build_menu(base_url, addon_handle):
     xbmcplugin.addDirectoryItem(addon_handle, base_url + "?toggle", status_item)
     xbmcplugin.addDirectoryItem(addon_handle, base_url + "?settings", settings_item)
 
-    #
-    # _("Disabled by daylight")
-    # _("Enabled")
-    # _("Disabled")
-    #
-
-    # items = [
-    #     (base_url + "/actions?light_group_id=1&action=menu", ListItem(_("Video Actions")), True),
-    #     (base_url + "/actions?light_group_id=2&action=menu", ListItem(_("Audio Actions")), True),
-    #     (base_url + "?toggle", ListItem(_("Hue Status: ") + get_status())),
-    #     (base_url + "?settings", ListItem(_("Settings")))
-    # ]
-
-    # xbmcplugin.addDirectoryItems(addon_handle, items, len(items))
     xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=False)
 
 
