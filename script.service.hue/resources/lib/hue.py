@@ -304,10 +304,11 @@ def select_hue_lights(bridge):
     except QhueException as exc:
         xbmc.log(f"[script.service.hue]: Select Hue Lights QhueException: {exc.type_id}: {exc.message} {traceback.format_exc()}")
         notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
+        return None
     except requests.RequestException as exc:
         xbmc.log(f"[script.service.hue] Requests exception: {exc}")
         notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
-    return None
+        return None
 
     items = []
     index = []
