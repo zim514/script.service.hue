@@ -239,21 +239,21 @@ class AmbiGroup(lightgroup.LightGroup):
             self.bridge_error500 = 0
 
     def _stop_effects(self):
-        self.savedEffectSensors = self._get_effect_sensors()
+        self.saved_effect_sensors = self._get_effect_sensors()
 
-        for sensor in self.savedEffectSensors:
+        for sensor in self.saved_effect_sensors:
             xbmc.log(f"[script.service.hue] Stopping effect sensor {sensor}")
             self.bridge.sensors[sensor].state(status=0)
 
     def _resume_effects(self):
-        if not hasattr(self, 'savedEffectSensors'):
+        if not hasattr(self, 'saved_effect_sensors'):
             return
 
-        for sensor in self.savedEffectSensors:
+        for sensor in self.saved_effect_sensors:
             xbmc.log(f"[script.service.hue] Resuming effect sensor {sensor}")
             self.bridge.sensors[sensor].state(status=1)
 
-        self.savedEffectSensors = None
+        self.saved_effect_sensors = None
 
     def _get_effect_sensors(self):
         # Map light/group IDs to associated effect sensor IDs
