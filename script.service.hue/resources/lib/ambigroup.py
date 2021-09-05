@@ -23,6 +23,7 @@ class AmbiGroup(lightgroup.LightGroup):
         self.group0 = self.bridge.groups[0]
         self.bridge_error500 = 0
         self.state = initial_state
+        self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
 
         self.saved_light_states = {}
         self.video_info_tag = xbmc.InfoTagVideo
@@ -53,8 +54,9 @@ class AmbiGroup(lightgroup.LightGroup):
         self.ambi_lights = {}
         light_ids = ADDON.getSetting(f"group{self.light_group_id}_Lights").split(",")
         index = 0
+
         for L in light_ids:
-            gamut = _get_light_gamut(self.bridge, L)
+            gamut = self._get_light_gamut(self.bridge, L)
             light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
             self.ambi_lights.update(light)
             index = index + 1
@@ -81,47 +83,50 @@ class AmbiGroup(lightgroup.LightGroup):
     def onAVStarted(self):
         xbmc.log(f"Ambilight AV Started. Group enabled: {self.enabled} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.playbackType(): {self.playback_type()}")
         # xbmc.log(f"Ambilight Settings: Interval: {self.update_interval}, transitionTime: {self.transition_time}")
-
         self.state = STATE_PLAYING
+        if self.enabled:
+            # save light state
+            self.saved_light_states = self._get_light_states(self.ambi_lights, self.bridge)
 
-        # save light state
-        self.saved_light_states = _get_light_states(self.ambi_lights, self.bridge)
+            self.video_info_tag = self.getVideoInfoTag()
+            if self.isPlayingVideo():
+                if self.enabled and self.check_active_time() and self.check_video_activation(self.video_info_tag):
 
-        self.video_info_tag = self.getVideoInfoTag()
-        if self.isPlayingVideo():
-            if self.enabled and self.check_active_time() and self.check_video_activation(self.video_info_tag):
+                    if self.disable_labs:
+                        self._stop_effects()
 
-                if self.disable_labs:
-                    self._stop_effects()
+                    if self.force_on:
+                        self._force_on(self.ambi_lights, self.bridge, self.saved_light_states)
 
-                if self.force_on:
-                    self._force_on(self.ambi_lights, self.bridge, self.saved_light_states)
-
-                AMBI_RUNNING.set()
-                ambi_loop_thread = Thread(target=self._ambi_loop, name="_ambi_loop", daemon=True)
-                ambi_loop_thread.start()
+                    AMBI_RUNNING.set()
+                    ambi_loop_thread = Thread(target=self._ambi_loop, name="_ambi_loop", daemon=True)
+                    ambi_loop_thread.start()
 
     def onPlayBackStopped(self):
+        # always stop ambilight even if group is disabled or it'll run forever
         xbmc.log(f"[script.service.hue] In ambiGroup[{self.light_group_id}], onPlaybackStopped()")
         self.state = STATE_STOPPED
         AMBI_RUNNING.clear()
 
-        if self.disable_labs:
-            self._resume_effects()
+        if self.enabled:
+            if self.disable_labs:
+                self._resume_effects()
 
-        if self.resume_state:
-            self._resume_light_state()
+            if self.resume_state:
+                self._resume_light_state()
 
     def onPlayBackPaused(self):
+        # always stop ambilight even if group is disabled or it'll run forever
         xbmc.log(f"[script.service.hue] In ambiGroup[{self.light_group_id}], onPlaybackPaused()")
         self.state = STATE_PAUSED
         AMBI_RUNNING.clear()
 
-        if self.disable_labs:
-            self._resume_effects()
+        if self.enabled:
+            if self.disable_labs:
+                self._resume_effects()
 
-        if self.resume_state:
-            self._resume_light_state()
+            if self.resume_state:
+                self._resume_light_state()
 
     def _resume_light_state(self):
         xbmc.log("[script.service.hue] Resuming light state")
@@ -183,7 +188,7 @@ class AmbiGroup(lightgroup.LightGroup):
 
                 self.monitor.waitForAbort(self.update_interval)  # seconds
 
-            average_process_time = _perf_average(PROCESS_TIMES)
+            average_process_time = self._perf_average(PROCESS_TIMES)
             xbmc.log(f"[script.service.hue] Average process time: {average_process_time}")
             self.capture_size_x = ADDON.setSetting("average_process_time", str(average_process_time))
 
@@ -233,7 +238,7 @@ class AmbiGroup(lightgroup.LightGroup):
         self.bridge_error500 = self.bridge_error500 + 1  # increment counter
         if self.bridge_error500 > 50 and ADDON.getSettingBool("show500Error"):
             stop_showing_error = xbmcgui.Dialog().yesno(_("Hue Bridge over capacity"), _("The Hue Bridge is over capacity. Increase refresh rate or reduce the number of Ambilights."), yeslabel=_("Do not show again"), nolabel=_("Ok"))
-
+            AMBI_RUNNING.clear()  # shut it down
             if stop_showing_error:
                 ADDON.setSettingBool("show500Error", False)
             self.bridge_error500 = 0
@@ -316,46 +321,46 @@ class AmbiGroup(lightgroup.LightGroup):
             xbmc.log('[script.service.hue] No active Hue Labs effects found')
             return []
 
-
-def _get_light_gamut(bridge, light):
-    gamut = "C"  # default
-    try:
-        gamut = bridge.lights()[light]['capabilities']['control']['colorgamuttype']
-        # xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(l, gamut))
-    except QhueException as exc:
-        xbmc.log(f"[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {light}, error: {exc}")
-    except KeyError:
-        xbmc.log(f"[script.service.hue] Unknown gamut type, unsupported light: {light}")
-        hue.notification(_("Hue Service"), _(f"Unknown colour gamut for light {light}"))
-    except requests.RequestException as exc:
-        xbmc.log(f"[script.service.hue] Get Light Gamut RequestsException: {exc}")
-        hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
-
-    if gamut == "A" or gamut == "B" or gamut == "C":
-        return gamut
-    return "C"  # default to C if unknown gamut type
-
-
-def _perf_average(process_times):
-    process_times = list(process_times)
-    size = len(process_times)
-    total = 0
-    if size > 0:
-        for x in process_times:
-            total += x
-        average_process_time = int(total / size * 1000)
-        return f"{average_process_time} ms"
-    return _("Unknown")
-
-
-def _get_light_states(lights, bridge):
-    states = {}
-    for L in lights:
+    @staticmethod
+    def _get_light_gamut(bridge, light):
+        gamut = "C"  # default
         try:
-            states[L] = (bridge.lights[L]())
+            gamut = bridge.lights()[light]['capabilities']['control']['colorgamuttype']
+            # xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(l, gamut))
         except QhueException as exc:
-            xbmc.log(f"[script.service.hue] Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
+            xbmc.log(f"[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {light}, error: {exc}")
+        except KeyError:
+            xbmc.log(f"[script.service.hue] Unknown gamut type, unsupported light: {light}")
+            hue.notification(_("Hue Service"), _(f"Unknown colour gamut for light {light}"))
         except requests.RequestException as exc:
-            xbmc.log(f"[script.service.hue] Requests exception: {exc}")
+            xbmc.log(f"[script.service.hue] Get Light Gamut RequestsException: {exc}")
             hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
-    return states
+
+        if gamut == "A" or gamut == "B" or gamut == "C":
+            return gamut
+        return "C"  # default to C if unknown gamut type
+
+    @staticmethod
+    def _perf_average(process_times):
+        process_times = list(process_times)
+        size = len(process_times)
+        total = 0
+        if size > 0:
+            for x in process_times:
+                total += x
+            average_process_time = int(total / size * 1000)
+            return f"{average_process_time} ms"
+        return _("Unknown")
+
+    @staticmethod
+    def _get_light_states(lights, bridge):
+        states = {}
+        for L in lights:
+            try:
+                states[L] = (bridge.lights[L]())
+            except QhueException as exc:
+                xbmc.log(f"[script.service.hue] Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
+            except requests.RequestException as exc:
+                xbmc.log(f"[script.service.hue] Requests exception: {exc}")
+                hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
+        return states
