@@ -5,9 +5,10 @@
 _strings = {}
 
 if __name__ == "__main__":
-
+    # running as standalone script
     import os
-
+    import re
+    import subprocess
     import polib
 
     # print(f"PATH: {sys.path}")
@@ -17,7 +18,7 @@ if __name__ == "__main__":
     folder_name = os.path.basename(dir_path)
 
     print(f"current directory is : {dir_path}")
-    print(f"Directory name is : {folder_name}")
+    # print(f"Directory name is : {folder_name}")
 
     string_file = "../language/resource.language.en_gb/strings.po"
     print(f"input file: {string_file}")
@@ -25,14 +26,12 @@ if __name__ == "__main__":
     po = polib.pofile(string_file, wrapwidth=500)
 
     try:
-        import re, subprocess
-
         command = ["grep", "-hnr", "_([\'\"]", "..\\.."]
         # print(f"grep command: {command}")
         r = subprocess.check_output(command, text=True)
 
         print(r)
-        print("End grep")
+        # print("End grep")
 
         strings = re.compile('_\(f?["\'](.*?)["\']\)', re.IGNORECASE).findall(r)
         translated = [m.msgid.lower().replace("'", "\\'") for m in po]
@@ -48,8 +47,7 @@ if __name__ == "__main__":
 
         ids_available = [x for x in ids_range if x not in ids_reserved]
         # print(f"IDs Reserved: {ids_reserved}")
-        print(f"IDs Available: {ids_available}")
-
+        print(f"Available IDs: {ids_available}")
         print(f"Missing: {missing}")
 
         if missing:
@@ -75,8 +73,8 @@ if __name__ == "__main__":
 
 
 else:
+    # running as Kodi module
     from resources.lib import STRDEBUG, ADDON, xbmc
-
 
     def get_string(t):
         string_id = _strings.get(t.lower())
