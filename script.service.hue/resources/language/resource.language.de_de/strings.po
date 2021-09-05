@@ -81,8 +81,8 @@ msgid "Bridge Serial"
 msgstr "Bridge Seriennummer"
 
 msgctxt "#30505"
-msgid "Enable Schedule (24-h format)"
-msgstr "Aktivere Zeitplan"
+msgid "Enable Schedule (24h format)"
+msgstr "Enable Schedule (24h format)"
 
 msgctxt "#30506"
 msgid "Start time:"
@@ -579,6 +579,10 @@ msgstr ""
 msgctxt "#30029"
 msgid "Connection Error"
 msgstr ""
+
+#~ msgctxt "#30505"
+#~ msgid "Enable Schedule (24-h format)"
+#~ msgstr "Aktivere Zeitplan"
 
 #~ msgctxt "#30027"
 #~ msgid "Are you sure you want to delete this scene: "
