@@ -294,21 +294,27 @@ class AmbiGroup(lightgroup.LightGroup):
 
         if lights:
             xbmc.log(f'[script.service.hue] Found active Hue Labs effects on lights: {lights}')
+            # Find all effect sensors that use the selected Ambilights.
+            #
+            # Only consider lights that are turned on, because enabling
+            # an effect will also power on its lights.
+            try:
+                sensors = set([sensor
+                               for id in self.ambi_lights.keys()
+                               for sensor in lights[id]
+                               if id in lights
+                               and id in self.saved_light_states
+                               and self.saved_light_states[id]['state']['on']
+                               ])
+                return sensors
+            except KeyError:
+                # Effects aren't running on any ambilights,
+                xbmc.log("[script.service.hue] KeyError: Active Hue Labs aren't on any ambilights")
+                return []
+
         else:
             xbmc.log('[script.service.hue] No active Hue Labs effects found')
             return []
-
-        # Find all effect sensors that use the selected Ambilights.
-        #
-        # Only consider lights that are turned on, because enabling
-        # an effect will also power on its lights.
-        return set([sensor
-                    for i in list(self.ambi_lights.keys())
-                    if i in lights
-                    and i in self.saved_light_states
-                    and self.saved_light_states[i]['state']['on']
-                    for sensor in lights[i]
-                    ])
 
 
 def _get_light_gamut(bridge, light):
