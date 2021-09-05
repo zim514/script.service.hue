@@ -74,8 +74,8 @@ msgid "Bridge Serial"
 msgstr "Bridge Serial"
 
 msgctxt "#30505"
-msgid "Enable Schedule (24-h format)"
-msgstr "Enable Schedule (24-h format)"
+msgid "Enable Schedule (24h format)"
+msgstr "Enable Schedule (24h format)"
 
 msgctxt "#30506"
 msgid "Start time:"
