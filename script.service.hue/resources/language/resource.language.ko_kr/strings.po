@@ -76,10 +76,9 @@ msgctxt "#30503"
 msgid "Bridge User"
 msgstr "브리지 사용자"
 
-msgctxt "#30504"
-msgid "Bridge Serial"
-msgstr "연속 브리지"
-
+msgctxt "#30505"
+msgid "Enable Schedule (24h format)"
+msgstr "Enable Schedule (24h format)"
 
 msgctxt "#30506"
 msgid "Start time:"
@@ -577,6 +576,10 @@ msgctxt "#30029"
 msgid "Connection Error"
 msgstr "연결 오류"
 
-msgctxt "#30505"
-msgid "Enable Schedule (24-h format)"
-msgstr "일정 활성화(24시간 형식)"
+#~ msgctxt "#30504"
+#~ msgid "Bridge Serial"
+#~ msgstr "연속 브리지"
+
+#~ msgctxt "#30505"
+#~ msgid "Enable Schedule (24-h format)"
+#~ msgstr "일정 활성화(24시간 형식)"

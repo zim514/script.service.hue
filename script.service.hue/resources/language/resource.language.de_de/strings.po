@@ -76,10 +76,6 @@ msgctxt "#30503"
 msgid "Bridge User"
 msgstr "Bridge Benutzer"
 
-msgctxt "#30504"
-msgid "Bridge Serial"
-msgstr "Bridge Seriennummer"
-
 msgctxt "#30505"
 msgid "Enable Schedule (24h format)"
 msgstr "Enable Schedule (24h format)"
@@ -579,6 +575,10 @@ msgstr ""
 msgctxt "#30029"
 msgid "Connection Error"
 msgstr ""
+
+#~ msgctxt "#30504"
+#~ msgid "Bridge Serial"
+#~ msgstr "Bridge Seriennummer"
 
 #~ msgctxt "#30505"
 #~ msgid "Enable Schedule (24-h format)"
