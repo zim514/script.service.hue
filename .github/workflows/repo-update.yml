@@ -32,7 +32,7 @@ jobs:
 
       - name: Generate repo
         run: |
-          rm -r *.md5 *.zip
+          rm -rf *.md5 *.zip
           ./create_repository.py --datadir=docs/repo https://github.com/zim514/script.service.hue.git:script.service.hue https://github.com/zim514/zim514.github.io.git:repository.snapcase
 
       - uses: stefanzweifel/git-auto-commit-action@v4
