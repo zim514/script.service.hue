@@ -3,29 +3,24 @@ import sys
 import requests
 import xbmc
 
-from resources.lib import ADDON, CACHE, SETTINGS_CHANGED, ADDONID
-from resources.lib import ambigroup, lightgroup, AMBI_RUNNING, CONNECTED
+from resources.lib import ADDON, CACHE, SETTINGS_CHANGED, ADDONID, AMBI_RUNNING, CONNECTED
+from resources.lib import ambigroup, lightgroup
 from resources.lib import hue, reporting, settings
 from resources.lib.language import get_string as _
 
 
 def core():
     settings.validate_settings()
+    monitor = hue.HueMonitor()
 
     if len(sys.argv) > 1:
         command = sys.argv[1]
+        _commands(monitor, command)
     else:
-        command = ""
-
-    monitor = hue.HueMonitor()
-
-    if command:
-        commands(monitor, command)
-    else:
-        service(monitor)
+        _service(monitor)
 
 
-def commands(monitor, command):
+def _commands(monitor, command):
     xbmc.log(f"[script.service.hue] Started with {command}")
     if command == "discover":
         bridge_discovered = hue.discover_bridge(monitor)
@@ -35,7 +30,7 @@ def commands(monitor, command):
                 xbmc.log("[script.service.hue] Found bridge. Running model check & starting service.")
                 hue.check_bridge_model(bridge)
                 ADDON.openSettings()
-                service(monitor)
+                _service(monitor)
 
     elif command == "createHueScene":
         bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
@@ -80,7 +75,7 @@ def commands(monitor, command):
         return
 
 
-def service(monitor):
+def _service(monitor):
     bridge = hue.connect_bridge(silent=ADDON.getSettingBool("disableConnectionMessage"))
     service_enabled = CACHE.get(f"{ADDONID}.service_enabled")
     initial_flash = ADDON.getSettingBool("initialFlash")
@@ -173,7 +168,7 @@ def service(monitor):
                         except UnboundLocalError:
                             hue.activate(light_groups)  # if no ambi_group, activate light_groups
                         except Exception as exc:
-                            xbmc.log("[script.service.hue] Get daylight exception")
+                            xbmc.log(f"[script.service.hue] Get daylight exception: {exc}")
                             reporting.process_exception(exc)
             timer += 1
             monitor.waitForAbort(1)

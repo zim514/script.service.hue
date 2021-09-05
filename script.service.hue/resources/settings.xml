@@ -192,8 +192,6 @@
 			</group>
 
 
-
-
 			<group id="4">
 				<setting id="group0_stopBehavior" type="boolean" label="30515" help="">
 					<level>0</level>
@@ -254,8 +252,6 @@
 					</control>
 				</setting>
 			</group>
-
-
 
 
 		</category>
@@ -655,7 +651,7 @@
 					<default>200</default>
 					<constraints>
 						<minimum>100</minimum>
-						<step>50</step>
+						<step>100</step>
 						<maximum>1000</maximum>
 					</constraints>
 					<dependencies>
@@ -672,7 +668,7 @@
 					<default>200</default>
 					<constraints>
 						<minimum>0</minimum>
-						<step>50</step>
+						<step>100</step>
 						<maximum>500</maximum>
 					</constraints>
 					<dependencies>
