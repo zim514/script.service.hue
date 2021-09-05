@@ -80,10 +80,6 @@ msgctxt "#30504"
 msgid "Bridge Serial"
 msgstr "Bridge sériové číslo"
 
-msgctxt "#30505"
-msgid "Enable Schedule (24h format)"
-msgstr "Enable Schedule (24h format)"
-
 msgctxt "#30506"
 msgid "Start time:"
 msgstr "Čas začátku:"
@@ -580,9 +576,9 @@ msgctxt "#30029"
 msgid "Connection Error"
 msgstr ""
 
-#~ msgctxt "#30505"
-#~ msgid "Enable Schedule (24-h format)"
-#~ msgstr "Zapnout plán (24h formát)"
+msgctxt "#30505"
+msgid "Enable Schedule (24-h format)"
+msgstr "Zapnout plán (24h formát)"
 
 #~ msgctxt "#30085"
 #~ msgid "Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or set to 0 seconds for an instant transition."

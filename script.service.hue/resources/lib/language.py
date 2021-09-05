@@ -99,7 +99,6 @@ _strings['bridge'] = 30500
 _strings['discover hue bridge'] = 30501
 _strings['bridge ip'] = 30502
 _strings['bridge user'] = 30503
-_strings['bridge serial'] = 30504
 _strings['enable schedule (24-h format)'] = 30505
 _strings['start time:'] = 30506
 _strings['end time:'] = 30507

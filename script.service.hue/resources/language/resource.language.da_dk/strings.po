@@ -80,10 +80,6 @@ msgctxt "#30504"
 msgid "Bridge Serial"
 msgstr "Bridge serienummer"
 
-msgctxt "#30505"
-msgid "Enable Schedule (24h format)"
-msgstr "Enable Schedule (24h format)"
-
 msgctxt "#30506"
 msgid "Start time:"
 msgstr "Starttidspunkt:"
@@ -580,9 +576,9 @@ msgctxt "#30029"
 msgid "Connection Error"
 msgstr ""
 
-#~ msgctxt "#30505"
-#~ msgid "Enable Schedule (24-h format)"
-#~ msgstr "Aktiver tidsplan (24-timers format)"
+msgctxt "#30505"
+msgid "Enable Schedule (24-h format)"
+msgstr "Aktiver tidsplan (24-timers format)"
 
 #~ msgctxt "#30513"
 #~ msgid "Start Scene Enabled"
