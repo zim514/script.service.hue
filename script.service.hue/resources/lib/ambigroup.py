@@ -36,7 +36,7 @@ class AmbiGroup(lightgroup.LightGroup):
 
         self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
 
-        self.transition_time = int(ADDON.getSettingInt(f"group{self.light_group_id}_TransitionTime") / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). transitiontime:10 will make the transition last 1 second.
+        self.transition_time = int(ADDON.getSettingInt(f"group{self.light_group_id}_TransitionTime") / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). transition_time:10 will make the transition last 1 second.
         self.force_on = ADDON.getSettingBool(f"group{self.light_group_id}_forceOn")
         self.disable_labs = ADDON.getSettingBool(f"group{self.light_group_id}_disableLabs")
         self.min_bri = ADDON.getSettingInt(f"group{self.light_group_id}_MinBrightness") * 255 / 100  # convert percentage to value 1-254
@@ -48,7 +48,7 @@ class AmbiGroup(lightgroup.LightGroup):
 
         self.update_interval = ADDON.getSettingInt(f"group{self.light_group_id}_Interval") / 1000  # convert MS to seconds
         if self.update_interval == 0:
-            self.update_interval = 0.002
+            self.update_interval = 0.1
 
         self.ambi_lights = {}
         light_ids = ADDON.getSetting(f"group{self.light_group_id}_Lights").split(",")
