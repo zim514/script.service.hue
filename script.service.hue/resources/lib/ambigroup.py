@@ -33,7 +33,7 @@ class AmbiGroup(lightgroup.LightGroup):
         self.converterA = Converter(GamutA)
         self.converterB = Converter(GamutB)
         self.converterC = Converter(GamutC)
-        self.helper = ColorHelper(GamutC)
+        self.helper = ColorHelper(GamutC)  # Gamut doesn't matter for this usage
 
         self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
 

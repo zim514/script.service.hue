@@ -24,7 +24,7 @@
 		<news>v1.1
 Add toggle to disable Hue Labs when Ambilight is activated (Thanks @toupeira!)
 Refactoring
-Many bug and crash fixes
+Bug and crash fixes
 Update Qhue lib
 Improve exception handling
 Add localisations

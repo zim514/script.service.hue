@@ -384,22 +384,18 @@ def get_daylight(bridge):
     return daylight
 
 
-def activate(light_groups, ambi_group=None):
+def activate(light_groups, ambi_group):
     """
     Activates play action as appropriate for all groups. Used at sunset and when service is re-nabled via Actions.
     """
     xbmc.log(f"[script.service.hue] Activating scenes: light_groups: {light_groups} ambigroup: {ambi_group}")
 
     for g in light_groups:
-        try:
-            if hasattr(g, 'light_group_id'):
-                xbmc.log(f"[script.service.hue] in activate g: {g}, light_group_id: {g.light_group_id}")
-                if ADDON.getSettingBool(f"group{g.light_group_id}_enabled"):
-                    g.activate()
-        except AttributeError:
-            pass
+        xbmc.log(f"[script.service.hue] in activate g: {g}, light_group_id: {g.light_group_id}")
+        if ADDON.getSettingBool(f"group{g.light_group_id}_enabled"):
+            g.activate()
 
-    if ADDON.getSettingBool("group3_enabled") and ambi_group is not None:
+    if ADDON.getSettingBool("group3_enabled"):
         ambi_group.activate()
 
 
