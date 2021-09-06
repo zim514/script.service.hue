@@ -16,7 +16,7 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
 
 class AmbiGroup(lightgroup.LightGroup):
-    def __init__(self, light_group_id, bridge, monitor, flash=False, initial_state=STATE_STOPPED):
+    def __init__(self, light_group_id, bridge, monitor, flash=False, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
         self.light_group_id = light_group_id
         self.bridge = bridge
         self.monitor = monitor
@@ -26,7 +26,7 @@ class AmbiGroup(lightgroup.LightGroup):
         self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
 
         self.saved_light_states = {}
-        self.video_info_tag = xbmc.InfoTagVideo
+        self.video_info_tag = video_info_tag
 
         self.image_process = imageprocess.ImageProcess()
 
