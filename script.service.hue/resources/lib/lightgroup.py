@@ -68,7 +68,7 @@ class LightGroup(xbmc.Player):
             if self.isPlayingVideo() and self.media_type == VIDEO:  # If video group, check video activation. Otherwise it's audio so ignore this and check other conditions.
                 try:
                     self.video_info_tag = self.getVideoInfoTag()
-                except Exception as exc:
+                except RuntimeError as exc:
                     xbmc.log(f"[script.service.hue] Get InfoTag Exception: {exc}")
                     reporting.process_exception(exc)
                     return

@@ -138,9 +138,6 @@ def _service(monitor):
                         xbmc.log(f"[script.service.hue] Bridge Connection Error. Attempt: {connection_retries}/10. Shutting down : {error}")
                         hue.notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
                         CONNECTED.clear()
-                except Exception as exc:
-                    xbmc.log(f"[script.service.hue] Get daylight exception: {exc}")
-                    reporting.process_exception(exc)
 
                 # check if sunset took place
                 if new_daylight != daylight:
@@ -154,9 +151,6 @@ def _service(monitor):
                             hue.activate(light_groups, ambi_group)
                         except UnboundLocalError:
                             hue.activate(light_groups)  # if no ambi_group, activate light_groups
-                        except Exception as exc:
-                            xbmc.log(f"[script.service.hue] Get daylight exception: {exc}")
-                            reporting.process_exception(exc)
             timer += 1
             monitor.waitForAbort(1)
         xbmc.log("[script.service.hue] Process exiting...")

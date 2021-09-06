@@ -238,12 +238,8 @@ def _create_user(monitor, bridge_ip, progress_bar=False):
 
         try:
             req = requests.post(f'http://{bridge_ip}/api', data=data)
-        except requests.exceptions.RequestException as exc:
+        except requests.RequestException as exc:
             xbmc.log(f"[script.service.hue] requests exception: {exc}")
-            return False
-        except Exception as exc:
-            xbmc.log(f"[script.service.hue] requests exception: {exc}")
-            reporting.process_exception(exc)
             return False
 
         res = req.text
@@ -257,8 +253,8 @@ def _create_user(monitor, bridge_ip, progress_bar=False):
     try:
         username = res[0]['success']['username']
         return username
-    except Exception as exc:
-        xbmc.log(f"[script.service.hue] Username exception: {exc}")
+    except requests.RequestException as exc:
+        xbmc.log(f"[script.service.hue] Username Requests exception: {exc}")
         return False
 
 

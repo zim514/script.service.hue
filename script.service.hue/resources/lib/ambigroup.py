@@ -158,43 +158,33 @@ class AmbiGroup(lightgroup.LightGroup):
         for L in list(self.ambi_lights):
             self.ambi_lights[L].update(prev_xy=(0.0001, 0.0001))
 
-        try:
-            while not self.monitor.abortRequested() and AMBI_RUNNING.is_set():  # loop until kodi tells add-on to stop or video playing flag is unset.
-                try:
+        while not self.monitor.abortRequested() and AMBI_RUNNING.is_set():  # loop until kodi tells add-on to stop or video playing flag is unset.
+            try:
 
-                    cap_image = cap.getImage()  # timeout to wait for OS in ms, default 1000
+                cap_image = cap.getImage()  # timeout to wait for OS in ms, default 1000
 
-                    if cap_image is None or len(cap_image) < expected_capture_size:
-                        # xbmc.log("[script.service.hue] capImage is none or < expected. captured: {}, expected: {}".format(len(capImage), expected_capture_size))
-                        xbmc.sleep(250)  # pause before trying again
-                        continue  # no image captured, try again next iteration
-                    image = Image.frombytes("RGBA", (self.capture_size_x, self.capture_size_y), bytes(cap_image), "raw", "BGRA", 0, 1)  # Kodi always returns a BGRA image.
+                if cap_image is None or len(cap_image) < expected_capture_size:
+                    # xbmc.log("[script.service.hue] capImage is none or < expected. captured: {}, expected: {}".format(len(capImage), expected_capture_size))
+                    xbmc.sleep(250)  # pause before trying again
+                    continue  # no image captured, try again next iteration
+                image = Image.frombytes("RGBA", (self.capture_size_x, self.capture_size_y), bytes(cap_image), "raw", "BGRA", 0, 1)  # Kodi always returns a BGRA image.
 
-                except ValueError:
-                    xbmc.log(f"[script.service.hue] capImage: {len(cap_image)}")
-                    xbmc.log("[script.service.hue] Value Error")
-                    self.monitor.waitForAbort(0.25)
-                    continue  # returned capture is  smaller than expected, but this happens when player is stopping so fail silently. give up this loop.
-                except Exception as exc:
-                    xbmc.log(f"[script.service.hue] Capture exception: {exc}")
-                    reporting.process_exception(exc)
-                    self.monitor.waitForAbort(0.25)
-                    continue
+            except ValueError:
+                xbmc.log(f"[script.service.hue] capImage: {len(cap_image)}")
+                xbmc.log("[script.service.hue] Value Error")
+                self.monitor.waitForAbort(0.25)
+                continue  # returned capture is  smaller than expected, but this happens when player is stopping so fail silently. give up this loop.
 
-                colors = self.image_process.img_avg(image, self.min_bri, self.max_bri, self.saturation)
-                for L in list(self.ambi_lights):
-                    t = Thread(target=self._update_hue_rgb, name="updateHue", args=(colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, self.transition_time, colors['bri']), daemon=True)
-                    t.start()
+            colors = self.image_process.img_avg(image, self.min_bri, self.max_bri, self.saturation)
+            for L in list(self.ambi_lights):
+                t = Thread(target=self._update_hue_rgb, name="updateHue", args=(colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, self.transition_time, colors['bri']), daemon=True)
+                t.start()
 
-                self.monitor.waitForAbort(self.update_interval)  # seconds
+            self.monitor.waitForAbort(self.update_interval)  # seconds
 
-            average_process_time = self._perf_average(PROCESS_TIMES)
-            xbmc.log(f"[script.service.hue] Average process time: {average_process_time}")
-            self.capture_size_x = ADDON.setSetting("average_process_time", str(average_process_time))
-
-        except Exception as exc:
-            xbmc.log("[script.service.hue] Exception in _ambiLoop")
-            reporting.process_exception(exc)
+        average_process_time = self._perf_average(PROCESS_TIMES)
+        xbmc.log(f"[script.service.hue] Average process time: {average_process_time}")
+        self.capture_size_x = ADDON.setSetting("average_process_time", str(average_process_time))
         xbmc.log("[script.service.hue] _ambiLoop stopped")
 
     def _update_hue_rgb(self, r, g, b, light, transition_time, bri):
