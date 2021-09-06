@@ -295,7 +295,7 @@ class AmbiGroup(lightgroup.LightGroup):
             # an effect will also power on its lights.
             try:
                 sensors = set([sensor
-                               for id in self.ambi_lights.keys()
+                               for id in list(self.ambi_lights.keys())
                                for sensor in lights[id]
                                if id in lights
                                and id in self.saved_light_states

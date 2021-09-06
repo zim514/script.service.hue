@@ -26,13 +26,13 @@ def menu():
             ADDON.openSettings()
 
         elif command == "toggle":
-            if CACHE.get(f"{ADDONID}_enabled") and _get_status() != "Disabled by daylight":
+            if CACHE.get(f"{ADDONID}.service_enabled") and _get_status() != "Disabled by daylight":
                 xbmc.log("[script.service.hue] Disable service")
-                CACHE.set(f"{ADDONID}_enabled", False)
+                CACHE.set(f"{ADDONID}.service_enabled", False)
 
             elif _get_status() != "Disabled by daylight":
                 xbmc.log("[script.service.hue] Enable service")
-                CACHE.set(f"{ADDONID}_enabled", True)
+                CACHE.set(f"{ADDONID}.service_enabled", True)
             else:
                 xbmc.log("[script.service.hue] Disabled by daylight, ignoring")
 
@@ -74,7 +74,7 @@ def build_menu(base_url, addon_handle):
 
 
 def _get_status():
-    enabled = CACHE.get(f"{ADDONID}_enabled")
+    enabled = CACHE.get(f"{ADDONID}.service_enabled")
     daylight = CACHE.get(f"{ADDONID}.daylight")
     daylight_disable = ADDON.getSettingBool("daylightDisable")
     # xbmc.log("[script.service.hue] Current status: {}".format(daylight_disable))
@@ -86,7 +86,7 @@ def _get_status():
 
 
 def _get_status_icon():
-    enabled = CACHE.get(f"{ADDONID}_enabled")
+    enabled = CACHE.get(f"{ADDONID}.service_enabled")
     daylight = CACHE.get(f"{ADDONID}.daylight")
     daylight_disable = ADDON.getSettingBool("daylightDisable")
     # xbmc.log("[script.service.hue] Current status: {}".format(daylight_disable))
