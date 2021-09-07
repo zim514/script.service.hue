@@ -776,6 +776,7 @@
 		</category>
 		<category id="advanced" label="32101" help="">
 			<group id="1">
+
 				<setting id="initialFlash" type="boolean" label="5110" help="">
 					<level>3</level>
 					<default>False</default>
@@ -787,11 +788,13 @@
 					<default>False</default>
 					<control type="toggle"/>
 				</setting>
+
 				<setting id="error_reporting" type="boolean" label="30016" help="">
 					<level>3</level>
 					<default>True</default>
 					<control type="toggle"/>
 				</setting>
+				
 				<setting id="show500Error" type="boolean" label="30068" help="">
 					<level>3</level>
 					<default>True</default>

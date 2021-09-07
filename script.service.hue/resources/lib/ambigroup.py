@@ -73,9 +73,6 @@ class AmbiGroup(lightgroup.LightGroup):
                 if not saved_light_states[L]['state']['on']:
                     xbmc.log("[script.service.hue] Forcing lights on")
                     bridge.lights[L].state(on=True, bri=1)
-            except QhueException as exc:
-                xbmc.log(f"[script.service.hue] Force On Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
-                reporting.process_exception(exc)
             except requests.RequestException as exc:
                 xbmc.log(f"[script.service.hue] Requests exception: {exc}")
                 hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)

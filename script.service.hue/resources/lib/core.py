@@ -5,7 +5,7 @@ import xbmc
 
 from resources.lib import ADDON, CACHE, SETTINGS_CHANGED, ADDONID, AMBI_RUNNING, CONNECTED
 from resources.lib import ambigroup, lightgroup
-from resources.lib import hue, reporting, settings
+from resources.lib import hue, settings
 from resources.lib.language import get_string as _
 
 
