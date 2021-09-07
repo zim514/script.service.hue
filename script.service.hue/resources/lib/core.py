@@ -113,7 +113,7 @@ def _service(monitor):
             # reload groups if settings changed, but keep player state
             if SETTINGS_CHANGED.is_set():
                 light_groups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, initial_state=light_groups[0].state, video_info_tag=light_groups[0].video_info_tag),
-                                lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, initial_state=light_groups[1].state, video_info_tag=light_groups[2].video_info_tag)]
+                                lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, initial_state=light_groups[1].state, video_info_tag=light_groups[1].video_info_tag)]
                 ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, initial_state=ambi_group.state, video_info_tag=ambi_group.video_info_tag)
                 SETTINGS_CHANGED.clear()
 
