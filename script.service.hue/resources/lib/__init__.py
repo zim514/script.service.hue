@@ -3,9 +3,9 @@ import time
 from collections import deque
 from threading import Event
 
+import simplecache
 import xbmc
 import xbmcaddon
-import simplecache
 import xbmcvfs
 
 STRDEBUG = False  # Show string ID in UI

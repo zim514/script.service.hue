@@ -3,6 +3,7 @@
 # http://www.screenbloom.com/
 
 from PIL import ImageEnhance
+
 from resources.lib import timer
 
 

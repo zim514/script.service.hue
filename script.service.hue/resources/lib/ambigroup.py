@@ -95,7 +95,6 @@ class AmbiGroup(lightgroup.LightGroup):
                     if self.force_on:
                         self._force_on(self.ambi_lights, self.bridge, self.saved_light_states)
 
-                    AMBI_RUNNING.set()
                     ambi_loop_thread = Thread(target=self._ambi_loop, name="_ambi_loop", daemon=True)
                     ambi_loop_thread.start()
 
@@ -142,6 +141,7 @@ class AmbiGroup(lightgroup.LightGroup):
                     reporting.process_exception(exc)
 
     def _ambi_loop(self):
+        AMBI_RUNNING.set()
         cap = xbmc.RenderCapture()
         xbmc.log("[script.service.hue] _ambiLoop started")
         aspect_ratio = cap.getAspectRatio()
@@ -179,10 +179,11 @@ class AmbiGroup(lightgroup.LightGroup):
 
             self.monitor.waitForAbort(self.update_interval)  # seconds
 
-        average_process_time = self._perf_average(PROCESS_TIMES)
-        xbmc.log(f"[script.service.hue] Average process time: {average_process_time}")
-        self.capture_size_x = ADDON.setSetting("average_process_time", str(average_process_time))
-        xbmc.log("[script.service.hue] _ambiLoop stopped")
+        if not self.monitor.abortRequested():  # ignore writing average process time if Kodi is shutting down
+            average_process_time = self._perf_average(PROCESS_TIMES)
+            xbmc.log(f"[script.service.hue] Average process time: {average_process_time}")
+            ADDON.setSetting("average_process_time", str(average_process_time))
+            xbmc.log("[script.service.hue] _ambiLoop stopped")
 
     def _update_hue_rgb(self, r, g, b, light, transition_time, bri):
         gamut = self.ambi_lights[light].get('gamut')
