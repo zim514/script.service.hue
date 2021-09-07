@@ -68,7 +68,7 @@ def _commands(monitor, command):
         if bridge is not None:
             hue.configure_ambilights(bridge, light_group)
         else:
-            xbmc.log("[script.service.hue] No bridge found. scene ambi lights cancelled.")
+            xbmc.log("[script.service.hue] No bridge found. Select ambi lights cancelled.")
             hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
     else:
         xbmc.log("[script.service.hue] Unknown command")
