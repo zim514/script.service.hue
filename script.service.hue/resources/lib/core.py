@@ -71,8 +71,8 @@ def _commands(monitor, command):
             xbmc.log("[script.service.hue] No bridge found. Select ambi lights cancelled.")
             hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
     else:
-        xbmc.log("[script.service.hue] Unknown command")
-        return
+        xbmc.log(f"[script.service.hue] Unknown command: {command}")
+        raise RuntimeError(f"Unknown Command: {command}")
 
 
 def _service(monitor):
