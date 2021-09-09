@@ -1,9 +1,6 @@
-*.pyc
-*.pyo
-/.pydevproject
-/.project
-/.settings
+#compiled python
+*.py[cod]
+
+# pycharm
 /.idea
-*.bak
-check.bat
-/venv/
+
