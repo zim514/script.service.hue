@@ -145,10 +145,6 @@ msgctxt "#32106"
 msgid "Video Activation"
 msgstr "Video Activation"
 
-msgctxt "#6100"
-msgid "Light Selection"
-msgstr "Light Selection"
-
 msgctxt "#6101"
 msgid "Select Lights"
 msgstr "Select Lights"
