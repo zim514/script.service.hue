@@ -152,10 +152,6 @@ msgctxt "#32106"
 msgid "Video Activation"
 msgstr ""
 
-msgctxt "#5110"
-msgid "Initial flash"
-msgstr ""
-
 msgctxt "#6100"
 msgid "Light Selection"
 msgstr ""

@@ -152,10 +152,6 @@ msgctxt "#32106"
 msgid "Video Activation"
 msgstr "Aktivování videa"
 
-msgctxt "#5110"
-msgid "Initial flash"
-msgstr "Probliknutí světel při spuštění"
-
 msgctxt "#6100"
 msgid "Light Selection"
 msgstr "Výběr světel"
@@ -575,6 +571,10 @@ msgstr ""
 msgctxt "#30029"
 msgid "Connection Error"
 msgstr ""
+
+#~ msgctxt "#5110"
+#~ msgid "Initial flash"
+#~ msgstr "Probliknutí světel při spuštění"
 
 #~ msgctxt "#30504"
 #~ msgid "Bridge Serial"

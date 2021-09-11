@@ -152,10 +152,6 @@ msgctxt "#32106"
 msgid "Video Activation"
 msgstr ""
 
-msgctxt "#5110"
-msgid "Initial flash"
-msgstr "Anfängliches aufleuchten"
-
 msgctxt "#6100"
 msgid "Light Selection"
 msgstr "Auswähl der Lame(n)"
@@ -575,6 +571,10 @@ msgstr ""
 msgctxt "#30029"
 msgid "Connection Error"
 msgstr ""
+
+#~ msgctxt "#5110"
+#~ msgid "Initial flash"
+#~ msgstr "Anfängliches aufleuchten"
 
 #~ msgctxt "#30504"
 #~ msgid "Bridge Serial"
