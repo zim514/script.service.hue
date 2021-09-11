@@ -208,10 +208,6 @@ msgctxt "#30013"
 msgid "Cancelled"
 msgstr "Ukončeno"
 
-msgctxt "#30014"
-msgid "Saving settings"
-msgstr "Ukládám nastavení"
-
 msgctxt "#30015"
 msgid "Select Hue Lights..."
 msgstr "Vyberte Hue světla..."
@@ -223,10 +219,6 @@ msgstr "Bridge nalezen: "
 msgctxt "#30018"
 msgid "Discover bridge..."
 msgstr "Hledat Bridge..."
-
-msgctxt "#30019"
-msgid "User Found!"
-msgstr "Uživatel nalezen!"
 
 msgctxt "#30021"
 msgid "Bridge connection failed"
@@ -567,6 +559,14 @@ msgstr ""
 msgctxt "#30029"
 msgid "Connection Error"
 msgstr ""
+
+#~ msgctxt "#30014"
+#~ msgid "Saving settings"
+#~ msgstr "Ukládám nastavení"
+
+#~ msgctxt "#30019"
+#~ msgid "User Found!"
+#~ msgstr "Uživatel nalezen!"
 
 #~ msgctxt "#6100"
 #~ msgid "Light Selection"
