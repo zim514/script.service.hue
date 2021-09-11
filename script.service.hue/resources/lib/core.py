@@ -78,11 +78,10 @@ def _commands(monitor, command):
 def _service(monitor):
     bridge = hue.connect_bridge(silent=ADDON.getSettingBool("disableConnectionMessage"))
     service_enabled = CACHE.get(f"{ADDONID}.service_enabled")
-    initial_flash = ADDON.getSettingBool("initialFlash")
 
     if bridge is not None:
-        light_groups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, initial_flash), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, initial_flash)]
-        ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, initial_flash)
+        light_groups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO)]
+        ambi_group = ambigroup.AmbiGroup(3, bridge, monitor)
 
         connection_retries = 0
         timer = 60

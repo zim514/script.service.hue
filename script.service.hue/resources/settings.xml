@@ -777,12 +777,6 @@
 		<category id="advanced" label="32101" help="">
 			<group id="1">
 
-				<setting id="initialFlash" type="boolean" label="5110" help="">
-					<level>3</level>
-					<default>False</default>
-					<control type="toggle"/>
-				</setting>
-
 				<setting id="disableConnectionMessage" type="boolean" label="30812" help="">
 					<level>3</level>
 					<default>False</default>

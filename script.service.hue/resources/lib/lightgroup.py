@@ -20,7 +20,7 @@ ALL_MEDIA = 3
 
 
 class LightGroup(xbmc.Player):
-    def __init__(self, light_group_id, bridge, media_type, flash=False, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
+    def __init__(self, light_group_id, bridge, media_type, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
         self.light_group_id = light_group_id
         self.bridge = bridge
         self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
@@ -41,23 +41,10 @@ class LightGroup(xbmc.Player):
         self.lights = self.bridge.lights
         self.group0 = self.bridge.groups[0]
 
-        if flash:
-            self.flash()
-
         super().__init__()
 
     def __repr__(self):
         return f"light_group_id: {self.light_group_id}, enabled: {self.enabled}, state: {self.state}"
-
-    def flash(self):
-        # xbmc.log("[script.service.hue] in KodiGroup Flash")
-        try:
-            self.group0.action(alert="select")
-        except QhueException as exc:
-            xbmc.log(f"[script.service.hue] Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
-            reporting.process_exception(exc)
-        except requests.RequestException as exc:
-            xbmc.log(f"[script.service.hue] RequestException: {exc}")
 
     def onAVStarted(self):
         if self.enabled:

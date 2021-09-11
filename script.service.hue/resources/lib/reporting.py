@@ -11,11 +11,11 @@ from resources.lib.language import get_string as _
 
 def process_exception(exc, level="critical"):
     if ADDON.getSettingBool("error_reporting"):
-        if _error_report_requested(exc):
+        if _error_report_dialog(exc):
             _report_error(level)
 
 
-def _error_report_requested(exc):
+def _error_report_dialog(exc):
     response = xbmcgui.Dialog().yesnocustom(heading=_("Hue Service Error"), message=_("The following error occurred:") + f"\n[COLOR=red]{exc}[/COLOR]\n" + _("Automatically report this error?"), customlabel=_("Never report errors"))
     if response == 2:
         xbmc.log("[script.service.hue] Error Reporting disabled")
