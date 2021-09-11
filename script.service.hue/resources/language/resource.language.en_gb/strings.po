@@ -201,10 +201,6 @@ msgctxt "#30013"
 msgid "Cancelled"
 msgstr "Cancelled"
 
-msgctxt "#30014"
-msgid "Saving settings"
-msgstr "Saving settings"
-
 msgctxt "#30015"
 msgid "Select Hue Lights..."
 msgstr "Select Hue Lights..."
@@ -216,10 +212,6 @@ msgstr "Found bridge: "
 msgctxt "#30018"
 msgid "Discover bridge..."
 msgstr "Discover bridge..."
-
-msgctxt "#30019"
-msgid "User Found!"
-msgstr "User Found!"
 
 msgctxt "#30021"
 msgid "Bridge connection failed"
