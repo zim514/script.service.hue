@@ -220,3 +220,4 @@ _strings['report errors'] = 30016
 _strings['never report errors'] = 30020
 _strings['hue service error'] = 30032
 _strings['connection error'] = 30029
+_strings['error: lights incompatible with ambilight'] = 30014
