@@ -560,6 +560,10 @@ msgctxt "#30029"
 msgid "Connection Error"
 msgstr "연결 오류"
 
+msgctxt "#30014"
+msgid "Error: Lights incompatible with Ambilight"
+msgstr ""
+
 #~ msgctxt "#30014"
 #~ msgid "Saving settings"
 #~ msgstr "설정 저장 중"

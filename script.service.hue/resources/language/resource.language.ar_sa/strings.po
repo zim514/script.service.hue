@@ -559,3 +559,7 @@ msgstr ""
 msgctxt "#30029"
 msgid "Connection Error"
 msgstr ""
+
+msgctxt "#30014"
+msgid "Error: Lights incompatible with Ambilight"
+msgstr ""
