@@ -16,7 +16,7 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
 
 class AmbiGroup(lightgroup.LightGroup):
-    def __init__(self, light_group_id, bridge, monitor, flash=False, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
+    def __init__(self, light_group_id, bridge, monitor, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
         self.light_group_id = light_group_id
         self.bridge = bridge
         self.monitor = monitor
@@ -60,9 +60,6 @@ class AmbiGroup(lightgroup.LightGroup):
             light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
             self.ambi_lights.update(light)
             index = index + 1
-
-        if flash:
-            self.flash()
 
         super(xbmc.Player).__init__()
 
