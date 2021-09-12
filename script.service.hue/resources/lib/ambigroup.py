@@ -211,6 +211,10 @@ class AmbiGroup(lightgroup.LightGroup):
                 elif "500" in exc.type_id or "901" in exc.type_id:  # bridge internal error, usually occurs when there's too many Zigbee calls
                     xbmc.log(f"[script.service.hue] Bridge internal error: {exc.type_id}: {exc.message} {traceback.format_exc()}")
                     self._bridge_error500()
+                elif "6" in exc.type_id:
+                    xbmc.log(f"[script.service.hue] Parameter unavailable error: {exc.type_id}: {exc.message} {traceback.format_exc()}")
+                    AMBI_RUNNING.clear()
+                    hue.notification(header=_("Hue Service"), message=_(f"Error: Lights incompatible with Ambilight"), icon=xbmcgui.NOTIFICATION_ERROR)
                 else:
                     xbmc.log(f"[script.service.hue] Ambi: QhueException Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
                     AMBI_RUNNING.clear()  # shut it down
