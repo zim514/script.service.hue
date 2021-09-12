@@ -208,10 +208,6 @@ msgctxt "#30013"
 msgid "Cancelled"
 msgstr ""
 
-msgctxt "#30014"
-msgid "Saving settings"
-msgstr ""
-
 msgctxt "#30015"
 msgid "Select Hue Lights..."
 msgstr ""
@@ -222,10 +218,6 @@ msgstr ""
 
 msgctxt "#30018"
 msgid "Discover bridge..."
-msgstr ""
-
-msgctxt "#30019"
-msgid "User Found!"
 msgstr ""
 
 msgctxt "#30021"

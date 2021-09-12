@@ -208,10 +208,6 @@ msgctxt "#30013"
 msgid "Cancelled"
 msgstr "취소됨"
 
-msgctxt "#30014"
-msgid "Saving settings"
-msgstr "설정 저장 중"
-
 msgctxt "#30015"
 msgid "Select Hue Lights..."
 msgstr "색조 조명 선택..."
@@ -223,10 +219,6 @@ msgstr "브리지 발견: "
 msgctxt "#30018"
 msgid "Discover bridge..."
 msgstr "브리지 검색..."
-
-msgctxt "#30019"
-msgid "User Found!"
-msgstr "사용자를 찾음!"
 
 msgctxt "#30021"
 msgid "Bridge connection failed"
@@ -567,6 +559,14 @@ msgstr "색조 서비스 오류"
 msgctxt "#30029"
 msgid "Connection Error"
 msgstr "연결 오류"
+
+#~ msgctxt "#30014"
+#~ msgid "Saving settings"
+#~ msgstr "설정 저장 중"
+
+#~ msgctxt "#30019"
+#~ msgid "User Found!"
+#~ msgstr "사용자를 찾음!"
 
 #~ msgctxt "#6100"
 #~ msgid "Light Selection"
