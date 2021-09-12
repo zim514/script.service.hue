@@ -23,7 +23,7 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
     - Optional transition time for scenes
     - Supports lights in multiple rooms or groups
     - Edit your scenes in 3rd party apps
-    - - Apply selected scene on video or audio player actions
+    - Apply selected scene on video or audio player actions
     - Can be disabled based on video type or duration
 - Ambilight Support
     - Lighting effects synced with on-screen action
