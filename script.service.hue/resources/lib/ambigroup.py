@@ -167,11 +167,11 @@ class AmbiGroup(lightgroup.LightGroup):
                 xbmc.log(f"[script.service.hue] capImage: {len(cap_image)}")
                 xbmc.log("[script.service.hue] Value Error")
                 self.monitor.waitForAbort(0.25)
-                continue  # returned capture is  smaller than expected, but this happens when player is stopping so fail silently. give up this loop.
+                continue  # returned capture is smaller than expected, but this happens when player is stopping so fail silently. give up this loop.
 
             colors = self.image_process.img_avg(image, self.min_bri, self.max_bri, self.saturation)
             for L in list(self.ambi_lights):
-                t = Thread(target=self._update_hue_rgb, name="updateHue", args=(colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, self.transition_time, colors['bri']), daemon=True)
+                t = Thread(target=self._update_hue_rgb, name="_update_hue_rgb", args=(colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, self.transition_time, colors['bri']), daemon=True)
                 t.start()
 
             self.monitor.waitForAbort(self.update_interval)  # seconds
