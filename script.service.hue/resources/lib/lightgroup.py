@@ -14,9 +14,8 @@ STATE_STOPPED = 0
 STATE_PLAYING = 1
 STATE_PAUSED = 2
 
-VIDEO = 1
-AUDIO = 2
-ALL_MEDIA = 3
+VIDEO = 0
+AUDIO = 1
 
 
 class LightGroup(xbmc.Player):
@@ -151,8 +150,8 @@ class LightGroup(xbmc.Player):
     def check_active_time():
         service_enabled = CACHE.get(f"{ADDONID}.service_enabled")
         daylight = CACHE.get("script.service.hue.daylight")
-        # xbmc.log("[script.service.hue] Schedule: {}, daylightDisable: {}, daylight: {}, startTime: {}, endTime: {}".format(ADDON.getSettingBool("enableSchedule"), ADDON.getSettingBool("daylightDisable"), daylight, ADDON.getSettingBool("startTime"),
-        #         ADDON.getSettingBool("endTime")))
+        # xbmc.log("[script.service.hue] Schedule: {}, daylightDisable: {}, daylight: {}, startTime: {}, endTime: {}".format(ADDON.getSettingBool("enableSchedule"), ADDON.getSettingBool("daylightDisable"), daylight,
+        #           ADDON.getSettingBool("startTime"), ADDON.getSettingBool("endTime")))
 
         if ADDON.getSettingBool("daylightDisable") and daylight:
             xbmc.log("[script.service.hue] Disabled by daylight")
