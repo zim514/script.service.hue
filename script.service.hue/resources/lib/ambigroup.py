@@ -102,11 +102,11 @@ class AmbiGroup(lightgroup.LightGroup):
         AMBI_RUNNING.clear()
 
         if self.enabled:
-            if self.disable_labs:
-                self._resume_effects()
-
             if self.resume_state:
                 self._resume_light_state()
+
+            if self.disable_labs:
+                self._resume_effects()
 
     def onPlayBackPaused(self):
         # always stop ambilight even if group is disabled or it'll run forever
@@ -115,11 +115,11 @@ class AmbiGroup(lightgroup.LightGroup):
         AMBI_RUNNING.clear()
 
         if self.enabled:
-            if self.disable_labs:
-                self._resume_effects()
-
             if self.resume_state:
                 self._resume_light_state()
+
+            if self.disable_labs:
+                self._resume_effects()
 
     def _resume_light_state(self):
         xbmc.log("[script.service.hue] Resuming light state")
