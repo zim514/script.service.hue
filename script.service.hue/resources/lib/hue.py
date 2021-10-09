@@ -89,9 +89,8 @@ def _discover_ssdp():
         ssdp_list = ssdp.discover("upnp:rootdevice", timeout=10, mx=5)
     except Exception as exc:
         xbmc.log(f"[script.service.hue] SSDP error: {exc.args}")
-        notification(_("Hue Service"), _("Network not ready"), xbmcgui.NOTIFICATION_ERROR)
-        #  I want to replace this for a more specific exception, but I'm not sure what it raises. Send to Rollbar for now
-        # TODO: Remove this before publish to Kodi repo.
+        notification(_("Hue Service"), _("Network not ready"), icon=xbmcgui.NOTIFICATION_ERROR)
+        #  TODO: I want to replace this for a more specific exception, but I'm not sure what it raises. Send to Rollbar for now
         reporting.process_exception(exc)
         return None
 
