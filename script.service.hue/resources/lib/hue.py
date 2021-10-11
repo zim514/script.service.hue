@@ -90,7 +90,6 @@ def _discover_ssdp():
     except Exception as exc:
         xbmc.log(f"[script.service.hue] SSDP error: {exc.args}")
         notification(_("Hue Service"), _("Network not ready"), icon=xbmcgui.NOTIFICATION_ERROR)
-        #  TODO: I want to replace this for a more specific exception, but I'm not sure what it raises. Send to Rollbar for now
         reporting.process_exception(exc)
         return None
 
@@ -227,16 +226,18 @@ def _create_user(monitor, bridge_ip, progress_bar=False):
 
     req = requests
     res = 'link button not pressed'
-    timeout = 0
+    time = 0
+    timeout = 90
     progress = 0
+
     if progress_bar:
         progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))  # press link button on bridge
 
-    while 'link button not pressed' in res and timeout <= 90 and not monitor.abortRequested() and not progress_bar.iscanceled():
-        xbmc.log(f"[script.service.hue] In create_user: abortRquested: {str(monitor.abortRequested())}, timer: {timeout}")
+    while 'link button not pressed' in res and time <= timeout and not monitor.abortRequested() and not progress_bar.iscanceled():
+        #xbmc.log(f"[script.service.hue] In create_user: abortRequested: {str(monitor.abortRequested())}, timer: {time}")
 
         if progress_bar:
-            progress_bar.update(percent=progress, message=_("Press link button on bridge"))  # press link button on bridge
+            progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))  # press link button on bridge
 
         try:
             req = requests.post(f'http://{bridge_ip}/api', data=data)
@@ -246,8 +247,8 @@ def _create_user(monitor, bridge_ip, progress_bar=False):
 
         res = req.text
         monitor.waitForAbort(1)
-        timeout = timeout + 1
-        progress = progress + 1
+        time = time + 1
+        progress = int((time / timeout) * 100)
 
     res = req.json()
     xbmc.log(f"[script.service.hue] json response: {res}, content: {req.content}")
@@ -257,6 +258,9 @@ def _create_user(monitor, bridge_ip, progress_bar=False):
         return username
     except requests.RequestException as exc:
         xbmc.log(f"[script.service.hue] Username Requests exception: {exc}")
+        return False
+    except KeyError as exc:
+        xbmc.log(f"[script.service.hue] Username not found: {exc}")
         return False
 
 
