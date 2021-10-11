@@ -184,16 +184,8 @@ msgctxt "#30006"
 msgid "Hue connected"
 msgstr ""
 
-msgctxt "#30007"
-msgid "Press link button on bridge"
-msgstr ""
-
 msgctxt "#30008"
 msgid "Bridge not found"
-msgstr ""
-
-msgctxt "#30009"
-msgid "Waiting for 90 seconds..."
 msgstr ""
 
 msgctxt "#30010"

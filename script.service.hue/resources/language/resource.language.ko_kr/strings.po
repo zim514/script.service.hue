@@ -184,17 +184,9 @@ msgctxt "#30006"
 msgid "Hue connected"
 msgstr "색조 연결됨"
 
-msgctxt "#30007"
-msgid "Press link button on bridge"
-msgstr "브리지의 링크 버튼 누르기"
-
 msgctxt "#30008"
 msgid "Bridge not found"
 msgstr "브리지를 찾을 수 없음"
-
-msgctxt "#30009"
-msgid "Waiting for 90 seconds..."
-msgstr "90초 기다림..."
 
 msgctxt "#30010"
 msgid "User not found"
@@ -563,6 +555,14 @@ msgstr "연결 오류"
 msgctxt "#30014"
 msgid "Error: Lights incompatible with Ambilight"
 msgstr "오류: Ambilight와 호환되지 않는 조명"
+
+#~ msgctxt "#30007"
+#~ msgid "Press link button on bridge"
+#~ msgstr "브리지의 링크 버튼 누르기"
+
+#~ msgctxt "#30009"
+#~ msgid "Waiting for 90 seconds..."
+#~ msgstr "90초 기다림..."
 
 #~ msgctxt "#30014"
 #~ msgid "Saving settings"
