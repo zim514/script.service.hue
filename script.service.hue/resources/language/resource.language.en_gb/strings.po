@@ -270,8 +270,8 @@ msgid "Create Hue Scene"
 msgstr "Create Hue Scene"
 
 msgctxt "#30002"
-msgid "Scene not created."
-msgstr "Scene not created."
+msgid "ERROR: Scene not created"
+msgstr "ERROR: Scene not created"
 
 msgctxt "#30039"
 msgid "Set a fade time in seconds, or 0 for an instant transition."

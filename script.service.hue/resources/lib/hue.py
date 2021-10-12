@@ -33,14 +33,23 @@ def create_hue_scene(bridge):
         selected = select_hue_lights(bridge)
 
         if selected:
-            result = scenes(lights=selected, name=scene_name, recycle=False, type='LightScene', http_method='post', transitiontime=transition_time)
-            # xbmc.log("[script.service.hue] In kodiHue createHueScene. Res: {}".format(res))
+            try:
+                result = scenes(lights=selected, name=scene_name, recycle=False, type='LightScene', http_method='post', transitiontime=transition_time)
+                # xbmc.log("[script.service.hue] In kodiHue createHueScene. Res: {}".format(res))
+            except QhueException as exc:
+                xbmc.log(f"[script.service.hue]: Delete Hue Scene QhueException: {exc.type_id}: {exc.message} {traceback.format_exc()}")
+                notification(_("Hue Service"), _("ERROR: Scene not created") + f"[CR]{exc.message}")
+            # xbmc.log(f"[script.service.hue] In kodiHue createHueGroup. Res: {result}")
+            except requests.RequestException as exc:
+                xbmc.log(f"[script.service.hue]: Delete Hue Scene requestsException: {result} {exc}")
+                notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
+
             if result[0]["success"]:
                 xbmcgui.Dialog().ok(heading=_("Create New Scene"), message=_("Scene successfully created![CR]You may now assign your scene to player actions."))
             else:
-                xbmcgui.Dialog().ok(_("Error"), _("Scene not created."))
+                xbmcgui.Dialog().ok(_("Error"), _("ERROR: Scene not created"))
     else:
-        xbmcgui.Dialog().ok(_("Error"), _("Scene not created."))
+        xbmcgui.Dialog().ok(_("Error"), _("ERROR: Scene not created"))
 
 
 def delete_hue_scene(bridge):
@@ -54,7 +63,7 @@ def delete_hue_scene(bridge):
                 result = scenes[scene[0]](http_method='delete')
             except QhueException as exc:
                 xbmc.log(f"[script.service.hue]: Delete Hue Scene QhueException: {exc.type_id}: {exc.message} {traceback.format_exc()}")
-                notification(_("Hue Service"), _("ERROR: Scene not deleted"))
+                notification(_("Hue Service"), _("ERROR: Scene not deleted") + f"[CR]{exc.message}")
             # xbmc.log(f"[script.service.hue] In kodiHue createHueGroup. Res: {result}")
             except requests.RequestException as exc:
                 xbmc.log(f"[script.service.hue]: Delete Hue Scene requestsException: {result} {exc}")
