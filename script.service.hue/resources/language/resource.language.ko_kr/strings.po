@@ -277,8 +277,8 @@ msgid "Create Hue Scene"
 msgstr "색조 장면 만들기"
 
 msgctxt "#30002"
-msgid "Scene not created."
-msgstr "장면이 생성되지 않음."
+msgid "ERROR: Scene not created"
+msgstr "ERROR: Scene not created"
 
 msgctxt "#30039"
 msgid "Set a fade time in seconds, or 0 for an instant transition."
@@ -555,6 +555,10 @@ msgstr "연결 오류"
 msgctxt "#30014"
 msgid "Error: Lights incompatible with Ambilight"
 msgstr "오류: Ambilight와 호환되지 않는 조명"
+
+#~ msgctxt "#30002"
+#~ msgid "Scene not created."
+#~ msgstr "장면이 생성되지 않음."
 
 #~ msgctxt "#30007"
 #~ msgid "Press link button on bridge"
