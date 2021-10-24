@@ -1,3 +1,10 @@
+#  """
+#      Copyright (C) 2021 Kodi Hue Service (script.service.hue)
+#      This file is part of script.service.hue
+#      SPDX-License-Identifier: MIT
+#      See LICENSE.TXT for more information.
+#  """
+
 import traceback
 from threading import Thread
 

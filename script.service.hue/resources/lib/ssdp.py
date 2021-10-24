@@ -1,5 +1,7 @@
-#   Copyright 2014 Dan Krause, Python 3 hack 2016 Adam Baxter,
-#       Server field addition and Win32 mod 2017 Andre Wagner
+#      Copyright (C) 2019-2021 Kodi Hue Service (script.service.hue)
+#      This file is part of script.service.hue
+#      SPDX-License-Identifier: MIT
+#      See LICENSE.TXT for more information.
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.

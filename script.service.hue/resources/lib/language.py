@@ -1,4 +1,10 @@
 #!/usr/bin/python
+
+#      Copyright (C) 2019-2021 Kodi Hue Service (script.service.hue)
+#      This file is part of script.service.hue
+#      SPDX-License-Identifier: MIT
+#      See LICENSE.TXT for more information.
+
 # Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
 # https://forum.kodi.tv/showthread.php?tid=268081&highlight=generate+.po+python+gettext
 
@@ -84,6 +90,7 @@ else:
 
         if STRDEBUG:
             return f"STR:{string_id} {ADDON.getLocalizedString(string_id)}"
+
         return ADDON.getLocalizedString(string_id)
 
 # GENERATED
