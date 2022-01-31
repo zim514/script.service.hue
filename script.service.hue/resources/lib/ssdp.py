@@ -1,8 +1,5 @@
-#      Copyright (C) 2019-2021 Kodi Hue Service (script.service.hue)
-#      This file is part of script.service.hue
-#      SPDX-License-Identifier: MIT
-#      See LICENSE.TXT for more information.
-#
+#   Copyright 2014 Dan Krause, Python 3 hack 2016 Adam Baxter
+
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
