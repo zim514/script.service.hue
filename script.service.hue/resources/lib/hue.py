@@ -95,26 +95,10 @@ def _discover_nupnp():
     return bridge_ip
 
 
-def _discover_ssdp():
-    from . import ssdp
-    from urllib.parse import urlsplit
+def _discover_mDNS():
+    xbmc.log("[script.service.hue] In kodiHue discover_mDNS()")
 
-    try:
-        ssdp_list = ssdp.discover("upnp:rootdevice", timeout=10, mx=5)
-    except Exception as exc:
-        xbmc.log(f"[script.service.hue] SSDP error: {exc.args}")
-        notification(_("Hue Service"), _("Network not ready"), icon=xbmcgui.NOTIFICATION_ERROR)
-        reporting.process_exception(exc)
-        return None
-
-    xbmc.log(f"[script.service.hue] ssdp_list: {ssdp_list}")
-
-    bridges = [u for u in ssdp_list if 'IpBridge' in u.server]
-    if bridges:
-        ip = urlsplit(bridges[0].location).hostname
-        xbmc.log(f"[script.service.hue] ip: {ip}")
-        return ip
-    return None
+    return
 
 
 def discover_bridge(monitor):
@@ -133,10 +117,6 @@ def discover_bridge(monitor):
 
         progress_bar.update(percent=10, message=_("N-UPnP discovery..."))
         bridge_ip = _discover_nupnp()
-
-        if not bridge_ip:
-            progress_bar.update(percent=20, message=_("UPnP discovery..."))
-            bridge_ip = _discover_ssdp()
 
         if _connection_test(bridge_ip):
             progress_bar.update(percent=100, message=_("Found bridge: ") + bridge_ip)
@@ -226,10 +206,6 @@ def _discover_bridge_ip():
     if _connection_test(bridge_ip):
         return bridge_ip
 
-    bridge_ip = _discover_ssdp()
-    if _connection_test(bridge_ip):
-        return bridge_ip
-
     return False
 
 
@@ -248,7 +224,7 @@ def _create_user(monitor, bridge_ip, progress_bar=False):
         progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))  # press link button on bridge
 
     while 'link button not pressed' in res and time <= timeout and not monitor.abortRequested() and not progress_bar.iscanceled():
-        #xbmc.log(f"[script.service.hue] In create_user: abortRequested: {str(monitor.abortRequested())}, timer: {time}")
+        # xbmc.log(f"[script.service.hue] In create_user: abortRequested: {str(monitor.abortRequested())}, timer: {time}")
 
         if progress_bar:
             progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))  # press link button on bridge
