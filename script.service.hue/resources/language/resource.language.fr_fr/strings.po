@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-09-20 10:04+0000\n"
+"PO-Revision-Date: 2022-03-09 14:05+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: French (France) <https://kodi.weblate.cloud/projects/kodi-add-ons-scripts/script-service-hue/fr_fr/>\n"
 "Language: fr_fr\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.8\n"
+"X-Generator: Weblate 4.11.2\n"
 
 msgctxt "Addon Summary"
 msgid "Automate Hue lights with Kodi playback"
@@ -98,11 +98,11 @@ msgstr ""
 
 msgctxt "#30510"
 msgid "General"
-msgstr ""
+msgstr "Général"
 
 msgctxt "#30511"
 msgid "Schedule"
-msgstr ""
+msgstr "Planifier"
 
 msgctxt "#30512"
 msgid "Scenes"
@@ -142,7 +142,7 @@ msgstr ""
 
 msgctxt "#32101"
 msgid "Advanced"
-msgstr ""
+msgstr "Avancé"
 
 msgctxt "#32105"
 msgid "Separate debug log"
@@ -184,16 +184,8 @@ msgctxt "#30006"
 msgid "Hue connected"
 msgstr ""
 
-msgctxt "#30007"
-msgid "Press link button on bridge"
-msgstr ""
-
 msgctxt "#30008"
 msgid "Bridge not found"
-msgstr ""
-
-msgctxt "#30009"
-msgid "Waiting for 90 seconds..."
 msgstr ""
 
 msgctxt "#30010"
@@ -278,15 +270,15 @@ msgstr ""
 
 msgctxt "#30037"
 msgid "Save"
-msgstr ""
+msgstr "Enregistrer"
 
 msgctxt "#30038"
 msgid "Create Hue Scene"
 msgstr ""
 
 msgctxt "#30002"
-msgid "Scene not created."
-msgstr ""
+msgid "ERROR: Scene not created"
+msgstr "ERROR: Scene not created"
 
 msgctxt "#30039"
 msgid "Set a fade time in seconds, or 0 for an instant transition."
@@ -306,7 +298,7 @@ msgstr ""
 
 msgctxt "#30043"
 msgid "Error"
-msgstr ""
+msgstr "Erreur"
 
 msgctxt "#30044"
 msgid "Create New Scene"
@@ -450,7 +442,7 @@ msgstr ""
 
 msgctxt "#30060"
 msgid "Play"
-msgstr ""
+msgstr "Lire"
 
 msgctxt "#30061"
 msgid "Hue Status: "
@@ -458,7 +450,7 @@ msgstr ""
 
 msgctxt "#30062"
 msgid "Settings"
-msgstr ""
+msgstr "Paramètres"
 
 msgctxt "#30063"
 msgid "Disabled by daylight"

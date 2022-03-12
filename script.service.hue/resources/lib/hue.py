@@ -1,3 +1,8 @@
+#      Copyright (C) 2019-2022 Kodi Hue Service (script.service.hue)
+#      This file is part of script.service.hue
+#      SPDX-License-Identifier: MIT
+#      See LICENSE.TXT for more information.
+
 import json
 import traceback
 from datetime import timedelta
@@ -33,14 +38,23 @@ def create_hue_scene(bridge):
         selected = select_hue_lights(bridge)
 
         if selected:
-            result = scenes(lights=selected, name=scene_name, recycle=False, type='LightScene', http_method='post', transitiontime=transition_time)
-            # xbmc.log("[script.service.hue] In kodiHue createHueScene. Res: {}".format(res))
+            try:
+                result = scenes(lights=selected, name=scene_name, recycle=False, type='LightScene', http_method='post', transitiontime=transition_time)
+                # xbmc.log("[script.service.hue] In kodiHue createHueScene. Res: {}".format(res))
+            except QhueException as exc:
+                xbmc.log(f"[script.service.hue]: Delete Hue Scene QhueException: {exc.type_id}: {exc.message} {traceback.format_exc()}")
+                notification(_("Hue Service"), _("ERROR: Scene not created") + f"[CR]{exc.message}")
+            # xbmc.log(f"[script.service.hue] In kodiHue createHueGroup. Res: {result}")
+            except requests.RequestException as exc:
+                xbmc.log(f"[script.service.hue]: Delete Hue Scene requestsException: {result} {exc}")
+                notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
+
             if result[0]["success"]:
                 xbmcgui.Dialog().ok(heading=_("Create New Scene"), message=_("Scene successfully created![CR]You may now assign your scene to player actions."))
             else:
-                xbmcgui.Dialog().ok(_("Error"), _("Scene not created."))
+                xbmcgui.Dialog().ok(_("Error"), _("ERROR: Scene not created"))
     else:
-        xbmcgui.Dialog().ok(_("Error"), _("Scene not created."))
+        xbmcgui.Dialog().ok(_("Error"), _("ERROR: Scene not created"))
 
 
 def delete_hue_scene(bridge):
@@ -54,7 +68,7 @@ def delete_hue_scene(bridge):
                 result = scenes[scene[0]](http_method='delete')
             except QhueException as exc:
                 xbmc.log(f"[script.service.hue]: Delete Hue Scene QhueException: {exc.type_id}: {exc.message} {traceback.format_exc()}")
-                notification(_("Hue Service"), _("ERROR: Scene not deleted"))
+                notification(_("Hue Service"), _("ERROR: Scene not deleted") + f"[CR]{exc.message}")
             # xbmc.log(f"[script.service.hue] In kodiHue createHueGroup. Res: {result}")
             except requests.RequestException as exc:
                 xbmc.log(f"[script.service.hue]: Delete Hue Scene requestsException: {result} {exc}")
@@ -81,28 +95,10 @@ def _discover_nupnp():
     return bridge_ip
 
 
-def _discover_ssdp():
-    from . import ssdp
-    from urllib.parse import urlsplit
+def _discover_mDNS():
+    xbmc.log("[script.service.hue] In kodiHue discover_mDNS()")
 
-    try:
-        ssdp_list = ssdp.discover("upnp:rootdevice", timeout=10, mx=5)
-    except Exception as exc:
-        xbmc.log(f"[script.service.hue] SSDP error: {exc.args}")
-        notification(_("Hue Service"), _("Network not ready"), xbmcgui.NOTIFICATION_ERROR)
-        #  I want to replace this for a more specific exception, but I'm not sure what it raises. Send to Rollbar for now
-        # TODO: Remove this before publish to Kodi repo.
-        reporting.process_exception(exc)
-        return None
-
-    xbmc.log(f"[script.service.hue] ssdp_list: {ssdp_list}")
-
-    bridges = [u for u in ssdp_list if 'IpBridge' in u.server]
-    if bridges:
-        ip = urlsplit(bridges[0].location).hostname
-        xbmc.log(f"[script.service.hue] ip: {ip}")
-        return ip
-    return None
+    return
 
 
 def discover_bridge(monitor):
@@ -121,10 +117,6 @@ def discover_bridge(monitor):
 
         progress_bar.update(percent=10, message=_("N-UPnP discovery..."))
         bridge_ip = _discover_nupnp()
-
-        if not bridge_ip:
-            progress_bar.update(percent=20, message=_("UPnP discovery..."))
-            bridge_ip = _discover_ssdp()
 
         if _connection_test(bridge_ip):
             progress_bar.update(percent=100, message=_("Found bridge: ") + bridge_ip)
@@ -214,10 +206,6 @@ def _discover_bridge_ip():
     if _connection_test(bridge_ip):
         return bridge_ip
 
-    bridge_ip = _discover_ssdp()
-    if _connection_test(bridge_ip):
-        return bridge_ip
-
     return False
 
 
@@ -228,16 +216,18 @@ def _create_user(monitor, bridge_ip, progress_bar=False):
 
     req = requests
     res = 'link button not pressed'
-    timeout = 0
+    time = 0
+    timeout = 90
     progress = 0
+
     if progress_bar:
         progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))  # press link button on bridge
 
-    while 'link button not pressed' in res and timeout <= 90 and not monitor.abortRequested() and not progress_bar.iscanceled():
-        xbmc.log(f"[script.service.hue] In create_user: abortRquested: {str(monitor.abortRequested())}, timer: {timeout}")
+    while 'link button not pressed' in res and time <= timeout and not monitor.abortRequested() and not progress_bar.iscanceled():
+        # xbmc.log(f"[script.service.hue] In create_user: abortRequested: {str(monitor.abortRequested())}, timer: {time}")
 
         if progress_bar:
-            progress_bar.update(percent=progress, message=_("Press link button on bridge"))  # press link button on bridge
+            progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))  # press link button on bridge
 
         try:
             req = requests.post(f'http://{bridge_ip}/api', data=data)
@@ -247,8 +237,8 @@ def _create_user(monitor, bridge_ip, progress_bar=False):
 
         res = req.text
         monitor.waitForAbort(1)
-        timeout = timeout + 1
-        progress = progress + 1
+        time = time + 1
+        progress = int((time / timeout) * 100)
 
     res = req.json()
     xbmc.log(f"[script.service.hue] json response: {res}, content: {req.content}")
@@ -258,6 +248,9 @@ def _create_user(monitor, bridge_ip, progress_bar=False):
         return username
     except requests.RequestException as exc:
         xbmc.log(f"[script.service.hue] Username Requests exception: {exc}")
+        return False
+    except KeyError as exc:
+        xbmc.log(f"[script.service.hue] Username not found: {exc}")
         return False
 
 

@@ -1,4 +1,10 @@
 #!/usr/bin/python
+
+#      Copyright (C) 2019-2021 Kodi Hue Service (script.service.hue)
+#      This file is part of script.service.hue
+#      SPDX-License-Identifier: MIT
+#      See LICENSE.TXT for more information.
+
 # Based upon: https://raw.githubusercontent.com/Quihico/handy.stuff/master/language.py
 # https://forum.kodi.tv/showthread.php?tid=268081&highlight=generate+.po+python+gettext
 
@@ -84,6 +90,7 @@ else:
 
         if STRDEBUG:
             return f"STR:{string_id} {ADDON.getLocalizedString(string_id)}"
+
         return ADDON.getLocalizedString(string_id)
 
 # GENERATED
@@ -126,9 +133,7 @@ _strings['delete scene'] = 9008
 _strings['hue service'] = 30000
 _strings['check your bridge and network'] = 30004
 _strings['hue connected'] = 30006
-_strings['press link button on bridge'] = 30007
 _strings['bridge not found'] = 30008
-_strings['waiting for 90 seconds...'] = 30009
 _strings['user not found'] = 30010
 _strings['complete!'] = 30011
 _strings['cancelled'] = 30013
@@ -151,7 +156,7 @@ _strings['lights:'] = 30035
 _strings['scene name:'] = 30036
 _strings['save'] = 30037
 _strings['create hue scene'] = 30038
-_strings['scene not created.'] = 30002
+_strings['error: scene not created'] = 30002
 _strings['set a fade time in seconds, or 0 for an instant transition.'] = 30039
 _strings['scene deleted'] = 30040
 _strings['you may now assign your scene to player actions.'] = 30041
