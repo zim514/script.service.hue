@@ -376,7 +376,7 @@ def get_daylight(bridge):
     return daylight
 
 
-def activate(light_groups, ambi_group):
+def activate(light_groups, ambi_group=None):
     """
     Activates play action as appropriate for all groups. Used at sunset and when service is re-nabled via Actions.
     """
@@ -387,7 +387,7 @@ def activate(light_groups, ambi_group):
         if ADDON.getSettingBool(f"group{g.light_group_id}_enabled"):
             g.activate()
 
-    if ADDON.getSettingBool("group3_enabled"):
+    if ADDON.getSettingBool("group3_enabled") and ambi_group:
         ambi_group.activate()
 
 
