@@ -144,10 +144,6 @@ msgctxt "#32101"
 msgid "Advanced"
 msgstr "Pokročilé"
 
-msgctxt "#32105"
-msgid "Separate debug log"
-msgstr "Oddělený debug log"
-
 msgctxt "#32106"
 msgid "Video Activation"
 msgstr "Aktivování videa"
@@ -555,6 +551,10 @@ msgstr ""
 msgctxt "#30014"
 msgid "Error: Lights incompatible with Ambilight"
 msgstr ""
+
+#~ msgctxt "#32105"
+#~ msgid "Separate debug log"
+#~ msgstr "Oddělený debug log"
 
 #~ msgctxt "#30007"
 #~ msgid "Press link button on bridge"

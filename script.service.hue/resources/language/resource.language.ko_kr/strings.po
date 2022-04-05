@@ -144,10 +144,6 @@ msgctxt "#32101"
 msgid "Advanced"
 msgstr "고급"
 
-msgctxt "#32105"
-msgid "Separate debug log"
-msgstr "별도의 디버그 로그"
-
 msgctxt "#32106"
 msgid "Video Activation"
 msgstr "비디오 활성화"
@@ -555,6 +551,10 @@ msgstr "연결 오류"
 msgctxt "#30014"
 msgid "Error: Lights incompatible with Ambilight"
 msgstr "오류: Ambilight와 호환되지 않는 조명"
+
+#~ msgctxt "#32105"
+#~ msgid "Separate debug log"
+#~ msgstr "별도의 디버그 로그"
 
 #~ msgctxt "#30002"
 #~ msgid "Scene not created."
