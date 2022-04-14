@@ -144,10 +144,6 @@ msgctxt "#32101"
 msgid "Advanced"
 msgstr "Täpsem"
 
-msgctxt "#32105"
-msgid "Separate debug log"
-msgstr ""
-
 msgctxt "#32106"
 msgid "Video Activation"
 msgstr ""
