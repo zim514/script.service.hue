@@ -1,4 +1,4 @@
-name: Submit Add-on
+name: Submit scripte.module.hue
 
 on:
   workflow_dispatch:
