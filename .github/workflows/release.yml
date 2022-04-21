@@ -25,6 +25,7 @@ jobs:
       - name: Install dependencies with pipenv
         run: |
           pip install pipenv
+          pip install git+https://github.com/romanvm/kodi-addon-submitter.git
           pipenv install --dev
 
       - name: Kodi addon checker validation
@@ -38,6 +39,7 @@ jobs:
       - name: Build plugin for Matrix # ZIP archives
         id: build_plugin
         run: |
+          
           pipenv run submit-addon -z -s script.service.hue
 
       - name: Create Github Release
