@@ -1,4 +1,4 @@
-name: Addon Check
+name: Addon Checker
 
 on: [push, pull_request]
 
