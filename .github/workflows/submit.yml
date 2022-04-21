@@ -1,9 +1,7 @@
 name: Kodi Addon-Submitter
 
 on:
-  push:
-    tags:
-      - v*
+  workflow_dispatch:
 
 jobs:
   kodi-addon-submitter:

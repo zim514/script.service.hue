@@ -1,0 +1,52 @@
+name: Create release
+
+on:
+  workflow_dispatch:
+
+#  push:
+    # Sequence of patterns matched against refs/tags
+#    tags:
+#      - "v*.*.*" # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  build:
+    name: Check, build and release addon
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.9"
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies with pipenv
+        run: |
+          pip install pipenv
+          pipenv install --dev
+
+      - name: Kodi addon checker validation
+        id: kodi-addon-checker
+        uses: xbmc/action-kodi-addon-checker@v1.2
+        with:
+          kodi-version: matrix
+          addon-id: ${{ github.event.repository.name }}
+
+
+      - name: Build plugin for Matrix # ZIP archives
+        id: build_plugin
+        run: |
+          pipenv run submit-addon -z -s script.service.hue
+
+      - name: Create Github Release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
