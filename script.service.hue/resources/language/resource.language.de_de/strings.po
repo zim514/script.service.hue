@@ -144,10 +144,6 @@ msgctxt "#32101"
 msgid "Advanced"
 msgstr "Erweitert"
 
-msgctxt "#32105"
-msgid "Separate debug log"
-msgstr "Separate debug log"
-
 msgctxt "#32106"
 msgid "Video Activation"
 msgstr "Video-Aktivierung"
@@ -555,6 +551,10 @@ msgstr "Verbindungsfehler"
 msgctxt "#30014"
 msgid "Error: Lights incompatible with Ambilight"
 msgstr "Fehler: Lichter mit Ambilight inkompatibel"
+
+#~ msgctxt "#32105"
+#~ msgid "Separate debug log"
+#~ msgstr "Separate debug log"
 
 #~ msgctxt "#30002"
 #~ msgid "Scene not created."

@@ -9,9 +9,9 @@ import traceback
 import requests
 import xbmc
 import xbmcgui
+from qhue import QhueException
 
 from resources.lib import CACHE, ADDON, reporting, hue, ADDONID
-from resources.lib.qhue import QhueException
 from resources.lib.settings import convert_time
 from .language import get_string as _
 

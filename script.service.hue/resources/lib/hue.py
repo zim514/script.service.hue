@@ -11,11 +11,13 @@ from socket import getfqdn
 import requests
 import xbmc
 import xbmcgui
+import qhue
 
 from resources.lib import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED, reporting, CONNECTED
-from resources.lib import qhue, ADDONID, CACHE
+from resources.lib import ADDONID, CACHE
+
 from .language import get_string as _
-from .qhue import QhueException
+from qhue import QhueException
 from .settings import validate_settings
 
 
@@ -159,10 +161,10 @@ def discover_bridge(monitor):
 
 
 def _connection_test(bridge_ip):
-    b = qhue.qhue.Resource(f"http://{bridge_ip}/api", requests.session())
+    b = qhue.Resource(f"http://{bridge_ip}/api", requests.session())
     try:
         api_version = b.config()['apiversion']
-    except qhue.QhueException as error:
+    except QhueException as error:
         xbmc.log(f"[script.service.hue] Connection test failed.  {error.type_id}: {error.message} {traceback.format_exc()}")
         reporting.process_exception(error)
         return False
