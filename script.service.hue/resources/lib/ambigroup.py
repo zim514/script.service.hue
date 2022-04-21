@@ -15,7 +15,7 @@ from resources.lib import ADDON, MINIMUM_COLOR_DISTANCE, imageprocess, lightgrou
 from resources.lib import PROCESS_TIMES, reporting, hue, AMBI_RUNNING
 from resources.lib.language import get_string as _
 from .lightgroup import STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
-from .qhue import QhueException
+from qhue import QhueException
 from .rgbxy import Converter, ColorHelper  # https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
