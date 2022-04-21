@@ -20,7 +20,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install dependencies with pipenv
+      - name: Install dependencies
         run: |
           pip install pipenv
           pip install git+https://github.com/romanvm/kodi-addon-submitter.git
@@ -34,10 +34,9 @@ jobs:
           addon-id: ${{ github.event.repository.name }}
 
 
-      - name: Build plugin for Matrix # ZIP archives
+      - name: Build plugin zip
         id: build_plugin
         run: |
-          
           pipenv run submit-addon -z -s script.service.hue
 
       - name: Create Github Release
