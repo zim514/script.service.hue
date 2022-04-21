@@ -1,4 +1,4 @@
-name: Kodi Addon-Submitter
+name: Submit Add-on
 
 on:
   workflow_dispatch:
