@@ -1,4 +1,4 @@
-name: Submit scripte.module.hue
+name: Submit script.service.hue
 
 on:
   workflow_dispatch:
