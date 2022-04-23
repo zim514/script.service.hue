@@ -11,7 +11,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Generate distribution zip and submit to official kodi repository
+    - name: Submit to official kodi repository
       id: kodi-addon-submitter
       uses: xbmc/action-kodi-addon-submitter@master
       with: # Replace all the below values
