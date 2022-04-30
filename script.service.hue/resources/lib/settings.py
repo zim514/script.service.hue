@@ -31,8 +31,8 @@ def _validate_schedule():
     xbmc.log(f"[script.service.hue] Validate schedule. Schedule Enabled: {ADDON.getSettingBool('enableSchedule')}")
     if ADDON.getSettingBool("enableSchedule"):
         try:
-            convert_time(ADDON.getSettingBool("startTime"))
-            convert_time(ADDON.getSettingBool("endTime"))
+            convert_time(ADDON.getSettingString("startTime"))
+            convert_time(ADDON.getSettingString("endTime"))
             # xbmc.log("[script.service.hue] Time looks valid")
         except ValueError as e:
             xbmc.log(f"[script.service.hue] Invalid time settings: {e}")
