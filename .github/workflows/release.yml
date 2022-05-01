@@ -42,12 +42,12 @@ jobs:
           addon-id: ${{ github.event.repository.name }}
 
 
-      - name: Build plugin zip
-        id: build_plugin
+      - name: Build zip
+        id: build_zip
         run: |
           pipenv run submit-addon -z -s script.service.hue
           ls *.zip
-          echo ::set-output name=buildzip::ls *.zip
+          echo ::set-output name=zip_filename::ls *.zip
 
       - name: Create Github Release
         id: create_release
@@ -67,6 +67,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./script.service.hue-${{ steps.get_version.outputs.version }}.zip
-          asset_name: script.service.hue-${{ steps.get_version.outputs.version }}.zip
+          asset_path: ./${{ steps.build_zip.outputs.zip_filename }}
+          asset_name: ${{ steps.build_zip.outputs.zip_filename }}
           asset_content_type: application/zip
