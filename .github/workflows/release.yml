@@ -15,7 +15,7 @@ jobs:
       - name: Get the version
         id: get_version
         run: |
-          echo ::set-output name=version::${GITHUB_REF/refs\/tags\//v}
+          echo ::set-output name=version::${GITHUB_REF/refs\/tags\//}
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v3
