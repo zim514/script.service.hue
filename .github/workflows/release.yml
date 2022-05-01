@@ -1,10 +1,13 @@
 name: Create release
 
 on:
-  push:
+  workflow_dispatch:
+
+
+#  push:
     # Sequence of patterns matched against refs/tags
-    tags:
-      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+#    tags:
+#      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
   build:
@@ -12,6 +15,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=version::${GITHUB_REF/refs\/tags\//}
+
       - name: Set up Python 3.9
         uses: actions/setup-python@v3
         with:
@@ -38,6 +46,7 @@ jobs:
         id: build_plugin
         run: |
           pipenv run submit-addon -z -s script.service.hue
+          ls
 
       - name: Create Github Release
         id: create_release
@@ -49,3 +58,14 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
+
+      - name: Upload Addon zip to github release
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./script.service.hue-{{steps.get_version.outputs.version}}.zip
+          asset_name: ${{ steps.build_plugin.outputs.addon-zip }}
+          asset_content_type: application/zip
