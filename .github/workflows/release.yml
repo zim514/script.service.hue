@@ -47,7 +47,7 @@ jobs:
         run: |
           pipenv run submit-addon -z -s script.service.hue
           ls *.zip
-          echo ::set-output name=zip_filename::ls *.zip
+          echo ::set-output name=zip_filename::*.zip
 
       - name: Create Github Release
         id: create_release
@@ -56,7 +56,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release {{steps.get_version.outputs.version}}
+          release_name: Release ${{steps.get_version.outputs.version}}
           draft: false
           prerelease: false
 
