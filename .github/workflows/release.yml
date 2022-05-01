@@ -18,7 +18,8 @@ jobs:
 
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=version::${GITHUB_REF/refs\/tags\//v}
+        run: |
+          echo ::set-output name=version::${GITHUB_REF/refs\/tags\//v}
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v3
@@ -47,7 +48,8 @@ jobs:
         run: |
           pipenv run submit-addon -z -s script.service.hue
           ls *.zip
-          echo ::set-output name=zip_filename::{ls *.zip}
+          echo "::set-output name=zip_filename::$(ls *.zip)"
+
 
       - name: Create Github Release
         id: create_release
