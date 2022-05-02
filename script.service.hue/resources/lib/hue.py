@@ -6,6 +6,7 @@
 import json
 import traceback
 from datetime import timedelta
+from json import JSONDecodeError
 from socket import getfqdn
 
 import requests
@@ -86,11 +87,16 @@ def _discover_nupnp():
     xbmc.log("[script.service.hue] In kodiHue discover_nupnp()")
     try:
         req = requests.get('https://discovery.meethue.com/')
-    except requests.RequestException as exc:
-        xbmc.log(f"[script.service.hue] Nupnp failed: {exc}")
+        result = req.json()
+    except requests.RequestException as error:
+        xbmc.log(f"[script.service.hue] Nupnp failed: {error}")
+        return None
+    except JSONDecodeError as error:
+        xbmc.log(f"[script.service.hue] Nupnp failed: {error}, req: {req}")
+        reporting.process_exception(req, "critical", req)
         return None
 
-    result = req.json()
+
     bridge_ip = None
     if result:
         bridge_ip = result[0]["internalipaddress"]
