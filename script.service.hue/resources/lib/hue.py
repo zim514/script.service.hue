@@ -1,4 +1,4 @@
-#      Copyright (C) 2019-2022 Kodi Hue Service (script.service.hue)
+#      Copyright (C) 2019 Kodi Hue Service (script.service.hue)
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
 #      See LICENSE.TXT for more information.
@@ -96,17 +96,10 @@ def _discover_nupnp():
         reporting.process_exception(req, "critical", req)
         return None
 
-
     bridge_ip = None
     if result:
         bridge_ip = result[0]["internalipaddress"]
     return bridge_ip
-
-
-def _discover_mDNS():
-    xbmc.log("[script.service.hue] In kodiHue discover_mDNS()")
-
-    return
 
 
 def discover_bridge(monitor):

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-#      Copyright (C) 2019-2021 Kodi Hue Service (script.service.hue)
+#      Copyright (C) 2019 Kodi Hue Service (script.service.hue)
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
 #      See LICENSE.TXT for more information.
