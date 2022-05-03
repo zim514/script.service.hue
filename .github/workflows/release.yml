@@ -1,13 +1,60 @@
-name: Create release
+name: Update repo
 
 on:
   push:
     tags:
-      - "v*" # Push events matching v*, i.e. v1.0, v20.15.10
+      - v*
 
 jobs:
+  repo_update:
+    name: Update Kodi Dev Repo
+    if: github.repository == 'zim514/script.service.hue'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          repository: 'zim514/zim514.github.io'
+          token: ${{secrets.ACTIONS_TOKEN}}
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: pip install gitpython
+
+      - name: Generate repo
+        run: |
+          git rm -rf *.md5 *.zip
+          ./create_repository.py --datadir=docs/repo https://github.com/zim514/script.service.hue.git:script.service.hue https://github.com/zim514/script.module.qhue:script.module.qhue https://github.com/zim514/zim514.github.io.git:repository.snapcase
+        working-directory: ./
+
+      - name: Commit
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Automated repo update ${{ steps.get_version.outputs.VERSION }}
+          add_options: '--all'
+
+      - name: Notify deploy to Rollbar
+        uses: rollbar/github-deploy-action@2.1.1
+        id: rollbar_deploy
+        with:
+          environment: 'production'
+          version: ${{ github.sha }}
+        env:
+          ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_ACCESS_TOKEN }}
+          ROLLBAR_USERNAME: ${{ github.actor }}
+
   release:
     name: Check, build and release addon
+    if: github.repository == 'zim514/script.service.hue'
     runs-on: ubuntu-latest
 
     steps:
