@@ -6,7 +6,7 @@ on:
       - "v*" # Push events matching v*, i.e. v1.0, v20.15.10
 
 jobs:
-  build:
+  release:
     name: Check, build and release addon
     runs-on: ubuntu-latest
 
