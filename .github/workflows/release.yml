@@ -27,7 +27,7 @@ jobs:
     needs: kodi-addon-checker
 
     steps:
-      - name: Get the version
+      - name: Get version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
@@ -69,14 +69,13 @@ jobs:
 
 
   release:
-    name: Check, build and release addon
+    name: Build and release addon
     if: github.repository == 'zim514/script.service.hue'
     runs-on: ubuntu-latest
     needs: kodi-addon-checker
 
     steps:
-
-      - name: Get the version
+      - name: Get version
         id: get_version
         run: |
           echo ::set-output name=version::${GITHUB_REF/refs\/tags\//}
