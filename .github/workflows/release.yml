@@ -1,4 +1,4 @@
-name: Update repo
+name: Release version
 
 on:
   push:
@@ -6,10 +6,25 @@ on:
       - v*
 
 jobs:
+  kodi-addon-checker:
+    runs-on: ubuntu-latest
+    name: Kodi addon checker
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Kodi addon checker validation
+      id: kodi-addon-checker
+      uses: xbmc/action-kodi-addon-checker@v1.2
+      with:
+        kodi-version: matrix
+        addon-id: ${{ github.event.repository.name }}
+
+
   repo_update:
     name: Update Kodi Dev Repo
     if: github.repository == 'zim514/script.service.hue'
     runs-on: ubuntu-latest
+    needs: kodi-addon-checker
 
     steps:
       - name: Get the version
@@ -52,10 +67,12 @@ jobs:
           ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_ACCESS_TOKEN }}
           ROLLBAR_USERNAME: ${{ github.actor }}
 
+
   release:
     name: Check, build and release addon
     if: github.repository == 'zim514/script.service.hue'
     runs-on: ubuntu-latest
+    needs: kodi-addon-checker
 
     steps:
 
@@ -78,21 +95,12 @@ jobs:
           pip install git+https://github.com/romanvm/kodi-addon-submitter.git
           pipenv install --dev
 
-      - name: Kodi addon checker validation
-        id: kodi-addon-checker
-        uses: xbmc/action-kodi-addon-checker@v1.2
-        with:
-          kodi-version: matrix
-          addon-id: ${{ github.event.repository.name }}
-
-
       - name: Build zip
         id: build_zip
         run: |
           pipenv run submit-addon -z -s script.service.hue
           ls *.zip
           echo "::set-output name=zip_filename::$(ls *.zip)"
-
 
       - name: Create Github Release
         id: create_release
