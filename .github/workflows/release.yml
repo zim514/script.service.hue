@@ -123,3 +123,22 @@ jobs:
           asset_path: ./${{ steps.build_zip.outputs.zip_filename }}
           asset_name: ${{ steps.build_zip.outputs.zip_filename }}
           asset_content_type: application/zip
+
+  rollbar:
+    name: Notify deploy to Rollbar
+    if: github.repository == 'zim514/script.service.hue'
+    runs-on: ubuntu-latest
+    needs: [release, repo_update]
+
+    steps:
+      - name: Notify deploy to Rollbar
+        uses: rollbar/github-deploy-action@2.1.1
+        id: rollbar_deploy
+        with:
+          environment: 'production'
+          version: ${{ github.sha }}
+        env:
+          ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_ACCESS_TOKEN }}
+          ROLLBAR_USERNAME: ${{ github.actor }}
+
+
