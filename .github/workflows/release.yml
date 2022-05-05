@@ -58,17 +58,6 @@ jobs:
           commit_message: Automated repo update ${{ steps.get_version.outputs.VERSION }}
           add_options: '--all'
 
-      - name: Notify deploy to Rollbar
-        uses: rollbar/github-deploy-action@2.1.1
-        id: rollbar_deploy
-        with:
-          environment: 'production'
-          version: ${{ github.sha }}
-        env:
-          ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_ACCESS_TOKEN }}
-          ROLLBAR_USERNAME: ${{ github.actor }}
-
-
   release:
     name: Build and release addon
     if: github.repository == 'zim514/script.service.hue'
