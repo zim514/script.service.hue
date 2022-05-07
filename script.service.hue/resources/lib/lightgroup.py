@@ -164,8 +164,8 @@ class LightGroup(xbmc.Player):
 
         if service_enabled:
             if ADDON.getSettingBool("enableSchedule"):
-                start = convert_time(ADDON.getSettingBool("startTime"))
-                end = convert_time(ADDON.getSettingBool("endTime"))
+                start = convert_time(ADDON.getSettingString("startTime"))
+                end = convert_time(ADDON.getSettingString("endTime"))
                 now = datetime.datetime.now().time()
                 if (now > start) and (now < end):
                     # xbmc.log("[script.service.hue] Enabled by schedule")
