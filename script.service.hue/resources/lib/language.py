@@ -123,7 +123,6 @@ _strings['[b][i]warning: not supported on all hardware[/b][/i]'] = 30521
 _strings['cpu & hue performance'] = 30522
 _strings['ambilight'] = 30523
 _strings['advanced'] = 32101
-_strings['separate debug log'] = 32105
 _strings['video activation'] = 32106
 _strings['select lights'] = 6101
 _strings['enabled'] = 30520

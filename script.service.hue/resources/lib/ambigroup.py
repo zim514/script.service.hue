@@ -231,8 +231,8 @@ class AmbiGroup(lightgroup.LightGroup):
     def _bridge_error500(self):
         self.bridge_error500 = self.bridge_error500 + 1  # increment counter
         if self.bridge_error500 > 50 and ADDON.getSettingBool("show500Error"):
-            stop_showing_error = xbmcgui.Dialog().yesno(_("Hue Bridge over capacity"), _("The Hue Bridge is over capacity. Increase refresh rate or reduce the number of Ambilights."), yeslabel=_("Do not show again"), nolabel=_("Ok"))
             AMBI_RUNNING.clear()  # shut it down
+            stop_showing_error = xbmcgui.Dialog().yesno(_("Hue Bridge over capacity"), _("The Hue Bridge is over capacity. Increase refresh rate or reduce the number of Ambilights."), yeslabel=_("Do not show again"), nolabel=_("Ok"))
             if stop_showing_error:
                 ADDON.setSettingBool("show500Error", False)
             self.bridge_error500 = 0
