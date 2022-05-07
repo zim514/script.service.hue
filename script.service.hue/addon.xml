@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.1.6">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.1.7~dev1">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="script.module.requests" version="2.25.1"/>
@@ -6,7 +6,6 @@
 		<import addon="script.module.simplecache" version="2.0.2"/>
 		<import addon="script.module.pyrollbar" version="0.15.2"/>
 		<import addon="script.module.qhue" version="2.0.1"/>
-		<!-- <import addon="script.module.web-pdb" version="1.5.6"/>  -->
 	</requires>
 	<extension point="xbmc.service" name="service.hue" library="service.py"/>
 	<extension point="xbmc.python.pluginsource" library="plugin.py">
@@ -22,8 +21,9 @@
 		</assets>
 		<source>https://github.com/zim514/script.service.hue</source>
 		<forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-		<news>v1.1.5
+		<news>v1.1.7
 Crash fixes
+Error reporting improvements
 v1.1.4
 Fix error reporting
 </news>

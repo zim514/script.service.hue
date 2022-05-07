@@ -131,7 +131,7 @@ def discover_bridge(monitor):
 
                 ADDON.setSettingString("bridgeIP", bridge_ip)
                 ADDON.setSettingString("bridgeUser", bridge_user)
-                complete = True
+
                 CONNECTED.set()
                 progress_bar.update(percent=100, message=_("Complete!"))
                 monitor.waitForAbort(5)
@@ -155,7 +155,6 @@ def discover_bridge(monitor):
     if progress_bar.iscanceled():
         xbmc.log("[script.service.hue] Bridge discovery cancelled by user")
         progress_bar.update(100, _("Cancelled"))
-        complete = True
         progress_bar.close()
 
 
