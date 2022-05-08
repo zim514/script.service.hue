@@ -24,7 +24,6 @@ def _validate_ambilight():
         if light_ids == "-1":
             xbmc.log("[script.service.hue] No ambilights selected")
             hue.notification(_("Hue Service"), _("No lights selected for Ambilight."), icon=xbmcgui.NOTIFICATION_ERROR)
-            ADDON.setSettingBool("group3_enabled", False)
 
 
 def _validate_schedule():
@@ -35,9 +34,9 @@ def _validate_schedule():
             convert_time(ADDON.getSettingString("endTime"))
             # xbmc.log("[script.service.hue] Time looks valid")
         except ValueError as e:
+            ADDON.setSettingBool("EnableSchedule", False)
             xbmc.log(f"[script.service.hue] Invalid time settings: {e}")
             hue.notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"), icon=xbmcgui.NOTIFICATION_ERROR)
-            ADDON.setSettingBool("EnableSchedule", False)
 
 
 def convert_time(time):
