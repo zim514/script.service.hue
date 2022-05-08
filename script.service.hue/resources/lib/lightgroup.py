@@ -126,7 +126,7 @@ class LightGroup(xbmc.Player):
             self.group0.action(scene=scene)
         except QhueException as exc:
             xbmc.log(f"[script.service.hue] run_action: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
-            if "7" in exc.type_id:
+            if ["7", "3"] in exc.type_id:
                 xbmc.log("[script.service.hue] Scene not found")
                 hue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
@@ -224,8 +224,12 @@ class LightGroup(xbmc.Player):
                         return True
                 # xbmc.log("[script.service.hue] Check if scene light already active: False")
             except QhueException as exc:
-                xbmc.log(f"[script.service.hue] checkAlreadyActive: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
-                reporting.process_exception(exc)
+                if ["7", "3"] in exc.type_id:
+                    xbmc.log("[script.service.hue] Scene not found")
+                    hue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+                else:
+                    xbmc.log(f"[script.service.hue] checkAlreadyActive: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
+                    reporting.process_exception(exc)
             except requests.RequestException as exc:
                 xbmc.log(f"[script.service.hue] Requests exception: {exc}")
                 hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
