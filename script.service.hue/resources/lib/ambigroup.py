@@ -56,17 +56,20 @@ class AmbiGroup(lightgroup.LightGroup):
         if self.update_interval == 0:
             self.update_interval = 0.1
 
-        self.ambi_lights = {}
-        light_ids = ADDON.getSetting(f"group{self.light_group_id}_Lights").split(",")
-        index = 0
 
-        for L in light_ids:
-            gamut = self._get_light_gamut(self.bridge, L)
-            light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
-            self.ambi_lights.update(light)
-            index = index + 1
 
-        super(xbmc.Player).__init__()
+        if self.enabled:
+            self.ambi_lights = {}
+            light_ids = ADDON.getSetting(f"group{self.light_group_id}_Lights").split(",")
+            index = 0
+
+            for L in light_ids:
+                gamut = self._get_light_gamut(self.bridge, L)
+                light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
+                self.ambi_lights.update(light)
+                index = index + 1
+
+            super(xbmc.Player).__init__()
 
     @staticmethod
     def _force_on(ambi_lights, bridge, saved_light_states):

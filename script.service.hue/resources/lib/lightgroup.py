@@ -45,7 +45,8 @@ class LightGroup(xbmc.Player):
         self.lights = self.bridge.lights
         self.group0 = self.bridge.groups[0]
 
-        super().__init__()
+        if self.enabled:
+            super().__init__()
 
     def __repr__(self):
         return f"light_group_id: {self.light_group_id}, enabled: {self.enabled}, state: {self.state}"
