@@ -22,8 +22,10 @@ def _validate_ambilight():
     if ADDON.getSettingBool("group3_enabled"):
         light_ids = ADDON.getSetting("group3_Lights")
         if light_ids == "-1":
+            ADDON.setSettingBool("group3_enabled", False)
             xbmc.log("[script.service.hue] No ambilights selected")
             hue.notification(_("Hue Service"), _("No lights selected for Ambilight."), icon=xbmcgui.NOTIFICATION_ERROR)
+
 
 
 def _validate_schedule():
