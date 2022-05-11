@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.2~dev1">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.2.0~dev2">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="script.module.requests" version="2.25.1"/>
@@ -21,7 +21,11 @@
 		</assets>
 		<source>https://github.com/zim514/script.service.hue</source>
 		<forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-		<news>v1.1.9
+		<news>v1.2
+Don't crash on bad/empty result from Hue discovery endpoint - fixes rb#410, fixes rb#411, fixes #172
+Allow manual IP entry - fixes #172, fixes #173
+Disable ambilight when no ambilights selected
+v1.1.9
 Fix Ambilight attempting to initialize when disabled.
 Crash fixes
 Error reporting improvements
