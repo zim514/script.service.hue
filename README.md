@@ -19,35 +19,38 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 
 ## Features:
 - Create and delete multi-room scenes
-    - Adjust your light's colour and brightness
+    - Adjust your lights' colour and brightness
     - Optional transition time for scenes
-    - Supports lights in multiple rooms or groups
+    - Supports lights in multiple rooms or zones
     - Edit your scenes in 3rd party apps
     - Apply selected scene on video or audio player actions
     - Can be disabled based on video type or duration
+ 
 - Ambilight Support
-    - Lighting effects synced with on-screen action
     - **_Not supported with all hardware_**
+    - Lights synchronize with on-screen colour
+
 - Daylight detection
     - Uses Hue's sunrise and sunset settings
     - Disable during daylight hours
     - If sunset falls while watching media, optionally turn on lights
     - Add-on does nothing at sunset if there's no playback
+ 
 - Scheduling
     - Set a start and end time at which the add-on should be enabled
     - Time in 24h format (Eg: 22:00, not 10:00 PM)
     - Disable during daylight setting takes precedence over active hours
 
 ## Experimental Ambilight Support
-You can now configure multiple lights to match playing video as closely as possible.  [Coloured bias lighting](https://en.wikipedia.org/wiki/Bias_lighting)  can reduce eye strain and add colour effects to your media center. 
+You can now configure multiple lights to match playing video as closely as possible.  
 
 These settings can impact performance, and may need to be tuned for your set up. 
 
 ### Basic Settings:
-- **Select Lights:** Only Hue bulbs and lamps that support colours (Gamuts A, B and C) can be used with this system. Lights that can only reproduce whites or color temperatures are ignored.
-- **Force on :** Force the selected lights on when playback starts. Otherwise, lights will stay turned off.
+- **Select Lights:** Only Hue bulbs and lamps that support colour  can be used with this system. Lights that can only reproduce whites or color temperatures are ignored.
+- **Force on :** Force the selected lights on when playback starts. Otherwise, lights will stay off.
 - **Minimum & Maximum Brightness:** Sets the brightness
-- **Saturation:** Increase the colour saturation factor, with 1 being no change. This can create more colourful effects, but may cause incorrect colours with some content.
+- **Saturation:** Increase the colour saturation factor, with 1 being no change. This can create more colourful effects, but less precision.
 
 ### Performance:
 
@@ -115,9 +118,8 @@ Audio Group: 1
 - Make sure you update your Hue bridge to the latest version. This add-on assumes you have the latest
 - Turn on debug logging
 
-## Credits:
+## Includes code from:
 
 - [ScreenBloom by Tyler Kershner](https://github.com/kershner/screenBloom) 
 - [Qhue by Quentin Stafford-Fraser](https://github.com/quentinsf/qhue)
-- [ssdp.py by dankrause](https://gist.github.com/dankrause/6000248)
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)
