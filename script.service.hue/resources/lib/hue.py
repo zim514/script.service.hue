@@ -124,7 +124,7 @@ def discover_bridge(monitor):
                 bridge_ip = xbmcgui.Dialog().numeric(3, _("Bridge IP"))
 
         if bridge_ip:
-            progress_bar.update(percent=50, message=_("Connecting...."))
+            progress_bar.update(percent=50, message=_("Connecting..."))
 
             if _connection_test(bridge_ip):
                 progress_bar.update(percent=100, message=_("Found bridge: ") + bridge_ip)

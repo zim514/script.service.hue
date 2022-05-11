@@ -127,7 +127,7 @@ class LightGroup(xbmc.Player):
             self.group0.action(scene=scene)
         except QhueException as exc:
             xbmc.log(f"[script.service.hue] run_action: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
-            if ["7", "3"] in exc.type_id:
+            if "3" in exc.type_id or "7" in exc.type_id:
                 xbmc.log("[script.service.hue] Scene not found")
                 hue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
