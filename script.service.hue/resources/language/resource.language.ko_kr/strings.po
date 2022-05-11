@@ -348,10 +348,6 @@ msgctxt "#30058"
 msgid "Light Names:"
 msgstr "조명 이름:"
 
-msgctxt "#30059"
-msgid "Light Gamut:"
-msgstr "조명 영역:"
-
 msgctxt "#30065"
 msgid "Update interval (ms)"
 msgstr "업데이트 간격(ms)"
@@ -551,6 +547,18 @@ msgstr "연결 오류"
 msgctxt "#30014"
 msgid "Error: Lights incompatible with Ambilight"
 msgstr "오류: Ambilight와 호환되지 않는 조명"
+
+msgctxt "#30007"
+msgid "Bridge not found automatically. Please make sure your bridge is up to date and has access to the internet. [CR]Would you like to enter your bridge IP manually?"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Connecting..."
+msgstr ""
+
+#~ msgctxt "#30059"
+#~ msgid "Light Gamut:"
+#~ msgstr "조명 영역:"
 
 #~ msgctxt "#32105"
 #~ msgid "Separate debug log"
