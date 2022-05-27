@@ -61,7 +61,7 @@ class AmbiGroup(lightgroup.LightGroup):
             light_ids = ADDON.getSetting(f"group{self.light_group_id}_Lights").split(",")
             index = 0
 
-            if len(light_ids) <= 0:
+            if len(light_ids) > 0:
                 for L in light_ids:
                     gamut = self._get_light_gamut(self.bridge, L)
                     light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
