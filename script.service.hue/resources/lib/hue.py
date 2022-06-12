@@ -126,7 +126,7 @@ def discover_bridge(monitor):
         if bridge_ip:
             progress_bar.update(percent=50, message=_("Connecting..."))
 
-            if _connection_test(bridge_ip):
+            if _version_check(bridge_ip):
                 progress_bar.update(percent=100, message=_("Found bridge: ") + bridge_ip)
                 monitor.waitForAbort(1)
 
@@ -172,20 +172,20 @@ def discover_bridge(monitor):
         progress_bar.close()
 
 
-def _connection_test(bridge_ip):
-    b = qhue.Resource(f"http://{bridge_ip}/api", requests.session())
+def _version_check(bridge_ip):
+    b = qhue.Bridge(bridge_ip, None, timeout=QHUE_TIMEOUT)
     try:
         api_version = b.config()['apiversion']
     except QhueException as error:
-        xbmc.log(f"[script.service.hue] Connection test failed.  {error.type_id}: {error.message} {traceback.format_exc()}")
+        xbmc.log(f"[script.service.hue] Version check connection failed.  {error.type_id}: {error.message} {traceback.format_exc()}")
         reporting.process_exception(error)
         return False
     except requests.RequestException as error:
-        xbmc.log(f"[script.service.hue] Connection test failed.  {error}")
+        xbmc.log(f"[script.service.hue] Version check connection failed.  {error}")
         return False
     except KeyError as error:
         notification(_("Hue Service"), _(f"Bridge API: {api_version}, update your bridge"), icon=xbmcgui.NOTIFICATION_ERROR)
-        xbmc.log(f"[script.service.hue] in _connection_test():  Connected! Bridge too old: {api_version}, error: {error}")
+        xbmc.log(f"[script.service.hue] in _version_check():  Connected! Bridge too old: {api_version}, error: {error}")
         return False
 
     api_split = api_version.split(".")
@@ -217,7 +217,7 @@ def _discover_bridge_ip():
     # discover hue bridge IP silently for non-interactive discovery / bridge IP change.
     xbmc.log("[script.service.hue] In discoverBridgeIP")
     bridge_ip = _discover_nupnp()
-    if _connection_test(bridge_ip):
+    if _version_check(bridge_ip):
         return bridge_ip
 
     return False
@@ -411,7 +411,7 @@ def connect_bridge(silent=False):
     xbmc.log(f"[script.service.hue] in connect_bridge() with settings: bridgeIP: {bridge_ip}, bridgeUser: {bridge_user}")
 
     if bridge_ip and bridge_user:
-        if not _connection_test(bridge_ip):
+        if not _version_check(bridge_ip):
             xbmc.log("[script.service.hue] in connect_bridge(): Bridge not responding to connection test, attempt finding a new bridge IP.")
             bridge_ip = _discover_bridge_ip()
             if bridge_ip:
