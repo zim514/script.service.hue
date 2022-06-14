@@ -10,12 +10,13 @@ import requests
 import xbmc
 import xbmcgui
 from PIL import Image
+from qhue import QhueException
 
 from resources.lib import ADDON, MINIMUM_COLOR_DISTANCE, imageprocess, lightgroup
-from resources.lib import PROCESS_TIMES, reporting, hue, AMBI_RUNNING
+from resources.lib import PROCESS_TIMES, reporting, AMBI_RUNNING
 from resources.lib.language import get_string as _
+from .kodiutils import notification
 from .lightgroup import STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
-from qhue import QhueException
 from .rgbxy import Converter, ColorHelper  # https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
@@ -79,7 +80,7 @@ class AmbiGroup(lightgroup.LightGroup):
                     bridge.lights[L].state(on=True, bri=1)
             except requests.RequestException as exc:
                 xbmc.log(f"[script.service.hue] Requests exception: {exc}")
-                hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
+                notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
 
     def onAVStarted(self):
         xbmc.log(f"Ambilight AV Started. Group enabled: {self.enabled} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.playbackType(): {self.playback_type()}")
@@ -218,14 +219,14 @@ class AmbiGroup(lightgroup.LightGroup):
                 elif "6" in exc.type_id:
                     xbmc.log(f"[script.service.hue] Parameter unavailable error: {exc.type_id}: {exc.message} {traceback.format_exc()}")
                     AMBI_RUNNING.clear()
-                    hue.notification(header=_("Hue Service"), message=_(f"Error: Lights incompatible with Ambilight"), icon=xbmcgui.NOTIFICATION_ERROR)
+                    notification(header=_("Hue Service"), message=_(f"Error: Lights incompatible with Ambilight"), icon=xbmcgui.NOTIFICATION_ERROR)
                 else:
                     xbmc.log(f"[script.service.hue] Ambi: QhueException Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
                     AMBI_RUNNING.clear()  # shut it down
                     reporting.process_exception(exc)
             except requests.RequestException as exc:
                 xbmc.log(f"[script.service.hue] Requests exception: {exc}")
-                hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
+                notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
                 AMBI_RUNNING.clear()
             except KeyError:
                 xbmc.log("[script.service.hue] Ambi: KeyError, light not found")
@@ -327,10 +328,10 @@ class AmbiGroup(lightgroup.LightGroup):
             xbmc.log(f"[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {light}, error: {exc}")
         except KeyError:
             xbmc.log(f"[script.service.hue] Unknown gamut type, unsupported light: {light}")
-            hue.notification(_("Hue Service"), _(f"Unknown colour gamut for light {light}"))
+            notification(_("Hue Service"), _(f"Unknown colour gamut for light {light}"))
         except requests.RequestException as exc:
             xbmc.log(f"[script.service.hue] Get Light Gamut RequestsException: {exc}")
-            hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
+            notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
 
         if gamut == "A" or gamut == "B" or gamut == "C":
             return gamut
@@ -358,5 +359,5 @@ class AmbiGroup(lightgroup.LightGroup):
                 xbmc.log(f"[script.service.hue] Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
             except requests.RequestException as exc:
                 xbmc.log(f"[script.service.hue] Requests exception: {exc}")
-                hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
+                notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
         return states

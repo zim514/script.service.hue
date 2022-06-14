@@ -11,8 +11,8 @@ import xbmc
 import xbmcgui
 from qhue import QhueException
 
-from resources.lib import CACHE, ADDON, reporting, hue, ADDONID
-from resources.lib.settings import convert_time
+from resources.lib import CACHE, ADDON, reporting, ADDONID
+from resources.lib.kodiutils import convert_time, notification
 from .language import get_string as _
 
 STATE_STOPPED = 0
@@ -129,7 +129,7 @@ class LightGroup(xbmc.Player):
             xbmc.log(f"[script.service.hue] run_action: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
             if "3" in exc.type_id or "7" in exc.type_id:
                 xbmc.log("[script.service.hue] Scene not found")
-                hue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+                notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
                 reporting.process_exception(exc)
 
@@ -227,13 +227,13 @@ class LightGroup(xbmc.Player):
             except QhueException as exc:
                 if ["7", "3"] in exc.type_id:
                     xbmc.log("[script.service.hue] Scene not found")
-                    hue.notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+                    notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
                 else:
                     xbmc.log(f"[script.service.hue] checkAlreadyActive: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
                     reporting.process_exception(exc)
             except requests.RequestException as exc:
                 xbmc.log(f"[script.service.hue] Requests exception: {exc}")
-                hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
+                notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
 
         return False
 
@@ -256,6 +256,6 @@ class LightGroup(xbmc.Player):
                 reporting.process_exception(exc)
             except requests.RequestException as exc:
                 xbmc.log(f"[script.service.hue] Requests exception: {exc}")
-                hue.notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
+                notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
 
         return True

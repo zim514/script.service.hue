@@ -3,9 +3,7 @@
 #      SPDX-License-Identifier: MIT
 #      See LICENSE.TXT for more information.
 
-import json
 import traceback
-from datetime import timedelta
 from json import JSONDecodeError
 from socket import getfqdn
 
@@ -14,12 +12,11 @@ import xbmc
 import xbmcgui
 import qhue
 
-from resources.lib import ADDON, QHUE_TIMEOUT, SETTINGS_CHANGED, reporting, CONNECTED
-from resources.lib import ADDONID, CACHE
+from resources.lib import ADDON, QHUE_TIMEOUT, reporting, CONNECTED
+from resources.lib.kodiutils import notification
 
 from .language import get_string as _
 from qhue import QhueException
-from .settings import validate_settings
 
 
 def connect_bridge(silent=False):
@@ -437,25 +434,6 @@ def get_daylight(bridge):
     return daylight
 
 
-def activate(light_groups, ambi_group=None):
-    """
-    Activates play action as appropriate for all groups. Used at sunset and when service is re-enabled via Actions.
-    """
-    xbmc.log(f"[script.service.hue] Activating scenes: light_groups: {light_groups} ambigroup: {ambi_group}")
-
-    for g in light_groups:
-        xbmc.log(f"[script.service.hue] in activate g: {g}, light_group_id: {g.light_group_id}")
-        if ADDON.getSettingBool(f"group{g.light_group_id}_enabled"):
-            g.activate()
-
-    if ADDON.getSettingBool("group3_enabled") and ambi_group:
-        ambi_group.activate()
-
-
-def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), sound=False):
-    xbmcgui.Dialog().notification(header, message, icon, time, sound)
-
-
 def _get_light_name(bridge, light):
     try:
         name = bridge.lights()[light]['name']
@@ -468,31 +446,3 @@ def _get_light_name(bridge, light):
     return name
 
 
-class HueMonitor(xbmc.Monitor):
-    def __init__(self):
-        super().__init__()
-
-    def onSettingsChanged(self):
-        # xbmc.log("[script.service.hue] Settings changed")
-        validate_settings()
-        SETTINGS_CHANGED.set()
-
-    def onNotification(self, sender, method, data):
-        if sender == ADDONID:
-            xbmc.log(f"[script.service.hue] Notification received: method: {method}, data: {data}")
-
-            if method == "Other.disable":
-                xbmc.log("[script.service.hue] Notification received: Disable")
-                CACHE.set(f"{ADDONID}.service_enabled", False)
-
-            if method == "Other.enable":
-                xbmc.log("[script.service.hue] Notification received: Enable")
-                CACHE.set(f"{ADDONID}.service_enabled", True)
-
-            if method == "Other.actions":
-                json_loads = json.loads(data)
-
-                light_group_id = json_loads['group']
-                action = json_loads['command']
-                xbmc.log(f"[script.service.hue] Action Notification: group: {light_group_id}, command: {action}")
-                CACHE.set("script.service.hue.action", (action, light_group_id), expiration=(timedelta(seconds=5)))

@@ -2,21 +2,23 @@
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
 #      See LICENSE.TXT for more information.
-
+import json
 import sys
+from datetime import timedelta
 
 import requests
 import xbmc
 
 from resources.lib import ADDON, CACHE, SETTINGS_CHANGED, ADDONID, AMBI_RUNNING, CONNECTED
-from resources.lib import ambigroup, lightgroup
-from resources.lib import hue, settings
+from resources.lib import ambigroup, lightgroup, kodiutils
+from resources.lib import hue
 from resources.lib.language import get_string as _
+from resources.lib.kodiutils import validate_settings, notification
 
 
 def core():
-    settings.validate_settings()
-    monitor = hue.HueMonitor()
+    kodiutils.validate_settings()
+    monitor = HueMonitor()
 
     if len(sys.argv) > 1:
         command = sys.argv[1]
@@ -42,7 +44,7 @@ def _commands(monitor, command):
             hue.create_hue_scene(bridge)
         else:
             xbmc.log("[script.service.hue] No bridge found. createHueScene cancelled.")
-            hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+            notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif command == "deleteHueScene":
         bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
@@ -50,7 +52,7 @@ def _commands(monitor, command):
             hue.delete_hue_scene(bridge)
         else:
             xbmc.log("[script.service.hue] No bridge found. deleteHueScene cancelled.")
-            hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+            notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif command == "sceneSelect":  # sceneSelect=light_group,action  / sceneSelect=0,play
         light_group = sys.argv[2]
@@ -62,7 +64,7 @@ def _commands(monitor, command):
             hue.configure_scene(bridge, light_group, action)
         else:
             xbmc.log("[script.service.hue] No bridge found. sceneSelect cancelled.")
-            hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+            notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif command == "ambiLightSelect":  # ambiLightSelect=light_group_id
         light_group = sys.argv[2]
@@ -73,7 +75,7 @@ def _commands(monitor, command):
             hue.configure_ambilights(bridge, light_group)
         else:
             xbmc.log("[script.service.hue] No bridge found. Select ambi lights cancelled.")
-            hue.notification(_("Hue Service"), _("Check Hue Bridge configuration"))
+            notification(_("Hue Service"), _("Check Hue Bridge configuration"))
     else:
         xbmc.log(f"[script.service.hue] Unknown command: {command}")
         raise RuntimeError(f"Unknown Command: {command}")
@@ -102,7 +104,7 @@ def _service(monitor):
             prev_service_enabled = service_enabled
             service_enabled = CACHE.get(f"{ADDONID}.service_enabled")
             if service_enabled and not prev_service_enabled:
-                hue.activate(light_groups, ambi_group)
+                activate(light_groups, ambi_group)
 
             # if service disabled, stop ambilight._ambi_loop thread
             if not service_enabled:
@@ -136,11 +138,11 @@ def _service(monitor):
                     connection_retries = connection_retries + 1
                     if connection_retries <= 10:
                         xbmc.log(f"[script.service.hue] Bridge Connection Error. Attempt: {connection_retries}/10 : {error}")
-                        hue.notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
+                        notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
                         timer = -60
                     else:
                         xbmc.log(f"[script.service.hue] Bridge Connection Error. Attempt: {connection_retries}/10. Shutting down : {error}")
-                        hue.notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
+                        notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
                         CONNECTED.clear()
 
                 # check if sunset took place
@@ -152,9 +154,9 @@ def _service(monitor):
                     if not daylight and service_enabled:
                         xbmc.log("[script.service.hue] Sunset activate")
                         try:
-                            hue.activate(light_groups, ambi_group)
+                            activate(light_groups, ambi_group)
                         except UnboundLocalError:
-                            hue.activate(light_groups)  # if no ambi_group, activate light_groups
+                            activate(light_groups)  # if no ambi_group, activate light_groups
             timer += 1
             monitor.waitForAbort(1)
         xbmc.log("[script.service.hue] Process exiting...")
@@ -171,3 +173,48 @@ def _process_actions(action, light_groups):
     light_groups[action_light_group_id].run_action(action_action)
 
     CACHE.set(f"{ADDONID}.action", None)
+
+
+class HueMonitor(xbmc.Monitor):
+    def __init__(self):
+        super().__init__()
+
+    def onSettingsChanged(self):
+        # xbmc.log("[script.service.hue] Settings changed")
+        validate_settings()
+        SETTINGS_CHANGED.set()
+
+    def onNotification(self, sender, method, data):
+        if sender == ADDONID:
+            xbmc.log(f"[script.service.hue] Notification received: method: {method}, data: {data}")
+
+            if method == "Other.disable":
+                xbmc.log("[script.service.hue] Notification received: Disable")
+                CACHE.set(f"{ADDONID}.service_enabled", False)
+
+            if method == "Other.enable":
+                xbmc.log("[script.service.hue] Notification received: Enable")
+                CACHE.set(f"{ADDONID}.service_enabled", True)
+
+            if method == "Other.actions":
+                json_loads = json.loads(data)
+
+                light_group_id = json_loads['group']
+                action = json_loads['command']
+                xbmc.log(f"[script.service.hue] Action Notification: group: {light_group_id}, command: {action}")
+                CACHE.set("script.service.hue.action", (action, light_group_id), expiration=(timedelta(seconds=5)))
+
+
+def activate(light_groups, ambi_group=None):
+    """
+    Activates play action as appropriate for all groups. Used at sunset and when service is re-enabled via Actions.
+    """
+    xbmc.log(f"[script.service.hue] Activating scenes: light_groups: {light_groups} ambigroup: {ambi_group}")
+
+    for g in light_groups:
+        xbmc.log(f"[script.service.hue] in activate g: {g}, light_group_id: {g.light_group_id}")
+        if ADDON.getSettingBool(f"group{g.light_group_id}_enabled"):
+            g.activate()
+
+    if ADDON.getSettingBool("group3_enabled") and ambi_group:
+        ambi_group.activate()
