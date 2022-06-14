@@ -153,7 +153,11 @@ def _discover_nupnp():
 
     bridge_ip = None
     if result:
-        bridge_ip = result[0]["internalipaddress"]
+        try:
+            bridge_ip = result[0]["internalipaddress"]
+        except KeyError:
+            xbmc.log("[script.service.hue] Nupnp: No IP found in response")
+            return None
     return bridge_ip
 
 
