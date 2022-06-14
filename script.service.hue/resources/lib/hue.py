@@ -444,5 +444,3 @@ def _get_light_name(bridge, light):
     if name is None:
         return None
     return name
-
-

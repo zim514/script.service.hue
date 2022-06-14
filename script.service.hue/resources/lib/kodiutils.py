@@ -27,7 +27,6 @@ def _validate_ambilight():
             notification(_("Hue Service"), _("No lights selected for Ambilight."), icon=xbmcgui.NOTIFICATION_ERROR)
 
 
-
 def _validate_schedule():
     xbmc.log(f"[script.service.hue] Validate schedule. Schedule Enabled: {ADDON.getSettingBool('enableSchedule')}")
     if ADDON.getSettingBool("enableSchedule"):
