@@ -32,8 +32,7 @@ def _commands(monitor, command):
         if bridge_discovered:
             bridge = hue.connect_bridge(silent=True)
             if bridge:
-                xbmc.log("[script.service.hue] Found bridge. Running model check & starting service.")
-                hue.check_bridge_model(bridge)
+                xbmc.log("[script.service.hue] Found bridge. Starting service.")
                 ADDON.openSettings()
                 _service(monitor)
 
