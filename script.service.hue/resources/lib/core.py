@@ -10,8 +10,8 @@ import requests
 import xbmc
 
 from resources.lib import ADDON, CACHE, SETTINGS_CHANGED, ADDONID, AMBI_RUNNING, CONNECTED
-from resources.lib import ambigroup, lightgroup, kodiutils
-from resources.lib import hue
+from resources.lib import ambigroup, lightgroup, kodiutils, hue
+from resources.lib.hue import Hue
 from resources.lib.language import get_string as _
 from resources.lib.kodiutils import validate_settings, notification
 
@@ -29,27 +29,28 @@ def core():
 
 def _commands(monitor, command):
     xbmc.log(f"[script.service.hue] Started with {command}")
+    hue_connection = hue.Hue(monitor)
     if command == "discover":
-        bridge_discovered = hue.discover_bridge(monitor)
-        if bridge_discovered:
-            bridge = hue.connect_bridge(silent=True)
-            if bridge:
-                xbmc.log("[script.service.hue] Found bridge. Starting service.")
-                ADDON.openSettings()
-                _service(monitor)
+
+        if hue_connection.discover_bridge(monitor):
+            xbmc.log("[script.service.hue] Found bridge. Starting service.")
+            ADDON.openSettings()
+            _service(monitor)
+        else:
+            ADDON.openSettings()
 
     elif command == "createHueScene":
-        bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
-        if bridge is not None:
-            hue.create_hue_scene(bridge)
+        hue_connection.connect_bridge(silent=True)  # don't rediscover, proceed silently
+        if hue_connection.connected:
+            hue_connection.create_hue_scene()
         else:
             xbmc.log("[script.service.hue] No bridge found. createHueScene cancelled.")
             notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif command == "deleteHueScene":
-        bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
-        if bridge is not None:
-            hue.delete_hue_scene(bridge)
+        hue_connection.connect_bridge(silent=True)  # don't rediscover, proceed silently
+        if hue_connection.connected:
+            hue_connection.delete_hue_scene()
         else:
             xbmc.log("[script.service.hue] No bridge found. deleteHueScene cancelled.")
             notification(_("Hue Service"), _("Check Hue Bridge configuration"))
@@ -59,9 +60,9 @@ def _commands(monitor, command):
         action = sys.argv[3]
         # xbmc.log(f"[script.service.hue] sceneSelect: light_group: {light_group}, action: {action}")
 
-        bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
-        if bridge is not None:
-            hue.configure_scene(bridge, light_group, action)
+        hue_connection.connect_bridge(silent=True)  # don't rediscover, proceed silently
+        if hue_connection.connected:
+            hue_connection.configure_scene(light_group, action)
         else:
             xbmc.log("[script.service.hue] No bridge found. sceneSelect cancelled.")
             notification(_("Hue Service"), _("Check Hue Bridge configuration"))
@@ -70,9 +71,9 @@ def _commands(monitor, command):
         light_group = sys.argv[2]
         # xbmc.log(f"[script.service.hue] ambiLightSelect light_group_id: {light_group}")
 
-        bridge = hue.connect_bridge(silent=True)  # don't rediscover, proceed silently
-        if bridge is not None:
-            hue.configure_ambilights(bridge, light_group)
+        hue_connection.connect_bridge(silent=True)  # don't rediscover, proceed silently
+        if hue_connection.connected:
+            hue_connection.configure_ambilights(light_group)
         else:
             xbmc.log("[script.service.hue] No bridge found. Select ambi lights cancelled.")
             notification(_("Hue Service"), _("Check Hue Bridge configuration"))
@@ -82,16 +83,17 @@ def _commands(monitor, command):
 
 
 def _service(monitor):
-    bridge = hue.connect_bridge(silent=ADDON.getSettingBool("disableConnectionMessage"))
+    hue_connection = Hue(monitor)
+    hue_connection.connect_bridge(silent=ADDON.getSettingBool("disableConnectionMessage"))
     service_enabled = CACHE.get(f"{ADDONID}.service_enabled")
 
-    if bridge is not None:
-        light_groups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO), lightgroup.LightGroup(1, bridge, lightgroup.AUDIO)]
-        ambi_group = ambigroup.AmbiGroup(3, bridge, monitor)
+    if hue_connection.connected:
+        light_groups = [lightgroup.LightGroup(0, hue_connection.bridge, lightgroup.VIDEO), lightgroup.LightGroup(1, hue_connection.bridge, lightgroup.AUDIO)]
+        ambi_group = ambigroup.AmbiGroup(3, hue_connection.bridge, monitor)
 
         connection_retries = 0
         timer = 60
-        daylight = hue.get_daylight(bridge)
+        daylight = hue_connection.get_daylight()
         new_daylight = daylight
 
         CACHE.set(f"{ADDONID}.daylight", daylight)
@@ -117,23 +119,23 @@ def _service(monitor):
 
             # reload groups if settings changed, but keep player state
             if SETTINGS_CHANGED.is_set():
-                light_groups = [lightgroup.LightGroup(0, bridge, lightgroup.VIDEO, initial_state=light_groups[0].state, video_info_tag=light_groups[0].video_info_tag),
-                                lightgroup.LightGroup(1, bridge, lightgroup.AUDIO, initial_state=light_groups[1].state, video_info_tag=light_groups[1].video_info_tag)]
-                ambi_group = ambigroup.AmbiGroup(3, bridge, monitor, initial_state=ambi_group.state, video_info_tag=ambi_group.video_info_tag)
+                light_groups = [lightgroup.LightGroup(0, hue_connection.bridge, lightgroup.VIDEO, initial_state=light_groups[0].state, video_info_tag=light_groups[0].video_info_tag),
+                                lightgroup.LightGroup(1, hue_connection.bridge, lightgroup.AUDIO, initial_state=light_groups[1].state, video_info_tag=light_groups[1].video_info_tag)]
+                ambi_group = ambigroup.AmbiGroup(3, hue_connection.bridge, monitor, initial_state=ambi_group.state, video_info_tag=ambi_group.video_info_tag)
                 SETTINGS_CHANGED.clear()
 
             # every minute, check for sunset & connection
             if timer > 59:
                 timer = 0
-                # check connection to Hue bridge and fetch daylight status
+                # check connection to Hue hue_connection and fetch daylight status
                 try:
                     if connection_retries > 0:
-                        bridge = hue.connect_bridge(silent=True)
-                        if bridge is not None:
-                            new_daylight = hue.get_daylight(bridge)
+                        hue_connection.connect_bridge(silent=True)
+                        if hue_connection.connected:
+                            new_daylight = hue_connection.get_daylight()
                             connection_retries = 0
                     else:
-                        new_daylight = hue.get_daylight(bridge)
+                        new_daylight = hue_connection.get_daylight()
                 except requests.RequestException as error:
                     connection_retries = connection_retries + 1
                     if connection_retries <= 10:
@@ -144,6 +146,7 @@ def _service(monitor):
                         xbmc.log(f"[script.service.hue] Bridge Connection Error. Attempt: {connection_retries}/10. Shutting down : {error}")
                         notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
                         CONNECTED.clear()
+                        hue_connection.connected = False
 
                 # check if sunset took place
                 if new_daylight != daylight:
@@ -161,7 +164,7 @@ def _service(monitor):
             monitor.waitForAbort(1)
         xbmc.log("[script.service.hue] Process exiting...")
         return
-    xbmc.log("[script.service.hue] No connected bridge, exiting...")
+    xbmc.log("[script.service.hue] No connected hue_connection, exiting...")
     return
 
 
