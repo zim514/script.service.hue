@@ -12,14 +12,14 @@ import xbmc
 import xbmcgui
 import qhue
 
-from resources.lib import ADDON, QHUE_TIMEOUT, reporting, CONNECTED
+from resources.lib import ADDON, QHUE_TIMEOUT, reporting
 from resources.lib.kodiutils import notification
 
 from .language import get_string as _
 from qhue import QhueException
 
 
-class Hue(object):
+class HueConnection(object):
     def __init__(self, monitor):
         self.bridge = None
         self.bridge_ip = ADDON.getSettingString("bridgeIP")
@@ -32,24 +32,22 @@ class Hue(object):
         xbmc.log(f"[script.service.hue] in connect_bridge() with settings: bridgeIP: {self.bridge_ip}, bridgeUser: {self.bridge_user}")
 
         if self.bridge_ip and self.bridge_user:
-            if not self._check_version(self.bridge_ip):
+            if not self._check_version():
                 xbmc.log("[script.service.hue] in connect_bridge(): Bridge not responding to connection test, attempt finding a new bridge IP.")
-                bridge_ip = self._discover_bridge_ip()
-                if bridge_ip:
-                    xbmc.log(f"[script.service.hue] in connect_bridge(): New IP found: {bridge_ip}. Saving")
-                    ADDON.setSettingString("bridgeIP", bridge_ip)
+                self._discover_bridge_ip()
+                if self.bridge_ip:
+                    xbmc.log(f"[script.service.hue] in connect_bridge(): New IP found: {self.bridge_ip}. Saving")
+                    ADDON.setSettingString("bridgeIP", self.bridge_ip)
                 else:
                     xbmc.log("[script.service.hue] Bridge not found")
                     notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
                     self.connected = False
-                    CONNECTED.clear()
                     return
 
             xbmc.log("[script.service.hue] in Connect(): Checking User")
-            if self._check_user(self.bridge_ip, self.bridge_user):
+            if self._check_user():
                 bridge = qhue.Bridge(self.bridge_ip, self.bridge_user, timeout=QHUE_TIMEOUT)
                 self.connected = True
-                CONNECTED.set()
                 xbmc.log(f"[script.service.hue] Successfully connected to Hue Bridge: {self.bridge_ip}")
                 if not silent:
                     notification(_("Hue Service"), _("Hue connected"), sound=False)
@@ -58,20 +56,20 @@ class Hue(object):
                 xbmc.log("[script.service.hue] Bridge not responding")
                 notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
                 self.connected = False
-                CONNECTED.clear()
 
         else:
             xbmc.log("[script.service.hue] Bridge not configured")
             notification(_("Hue Service"), _("Bridge not configured"), icon=xbmcgui.NOTIFICATION_ERROR)
-            CONNECTED.clear()
             self.connected = False
 
-    def discover_bridge(self, monitor):
+    def discover_bridge(self):
         xbmc.log("[script.service.hue] Start bridgeDiscover")
         # Create new config if none exists. Returns success or fail as bool
         ADDON.setSettingString("bridgeIP", "")
         ADDON.setSettingString("bridgeUser", "")
-        CONNECTED.clear()
+        self.bridge_ip = ""
+        self.bridge_user = ""
+
         self.connected = False
 
         progress_bar = xbmcgui.DialogProgress()
@@ -79,72 +77,70 @@ class Hue(object):
         progress_bar.update(5, _("Discovery started"))
 
         complete = False
-        while not progress_bar.iscanceled() and not complete and not monitor.abortRequested():
+        while not progress_bar.iscanceled() and not complete and not self.monitor.abortRequested():
 
             progress_bar.update(percent=10, message=_("N-UPnP discovery..."))
-            bridge_ip = self._discover_nupnp()
+            bridge_ip_found = self._discover_nupnp()
 
-            if not bridge_ip:
+            if not bridge_ip_found:
                 manual_entry = xbmcgui.Dialog().yesno(_("Bridge not found"),
                                                       _("Bridge not found automatically. Please make sure your bridge is up to date and has access to the internet. [CR]Would you like to enter your bridge IP manually?"))
                 if manual_entry:
-                    bridge_ip = xbmcgui.Dialog().numeric(3, _("Bridge IP"))
+                    self.bridge_ip = xbmcgui.Dialog().numeric(3, _("Bridge IP"))
 
-            if bridge_ip:
+            if self.bridge_ip:
                 progress_bar.update(percent=50, message=_("Connecting..."))
+                if self._check_version() and self._check_bridge_model():
+                    progress_bar.update(percent=100, message=_("Found bridge: ") + self.bridge_ip)
+                    self.monitor.waitForAbort(1)
 
-                if self._check_version(bridge_ip) and self._check_bridge_model(bridge_ip):
-                    progress_bar.update(percent=100, message=_("Found bridge: ") + bridge_ip)
-                    monitor.waitForAbort(1)
+                    bridge_user_created = self._create_user(progress_bar)
 
-                    bridge_user = self._create_user(monitor, bridge_ip, progress_bar)
-
-                    if bridge_user:
-                        xbmc.log(f"[script.service.hue] User created: {bridge_user}")
+                    if bridge_user_created:
+                        xbmc.log(f"[script.service.hue] User created: {self.bridge_user}")
                         progress_bar.update(percent=90, message=_("User Found![CR]Saving settings..."))
 
-                        ADDON.setSettingString("bridgeIP", bridge_ip)
-                        ADDON.setSettingString("bridgeUser", bridge_user)
+                        ADDON.setSettingString("bridgeIP", self.bridge_ip)
+                        ADDON.setSettingString("bridgeUser", self.bridge_user)
 
                         progress_bar.update(percent=100, message=_("Complete!"))
-                        monitor.waitForAbort(5)
+                        self.monitor.waitForAbort(5)
                         progress_bar.close()
                         xbmc.log("[script.service.hue] Bridge discovery complete")
                         self.connect_bridge(True)
                         return True
 
-                    xbmc.log(f"[script.service.hue] User not created, received: {bridge_user}")
+                    xbmc.log(f"[script.service.hue] User not created, received: {self.bridge_user}")
                     progress_bar.update(percent=100, message=_("User not found[CR]Check your bridge and network."))
-                    monitor.waitForAbort(5)
+                    self.monitor.waitForAbort(5)
                     complete = True
                     progress_bar.close()
 
                 else:
                     progress_bar.update(percent=100, message=_("Bridge not found[CR]Check your bridge and network."))
                     xbmc.log("[script.service.hue] Bridge not found, check your bridge and network")
-                    monitor.waitForAbort(5)
+                    self.monitor.waitForAbort(5)
                     complete = True
                     progress_bar.close()
 
             xbmc.log("[script.service.hue] Manual IP entry cancelled by user")
             complete = True
             progress_bar.update(percent=100, message=_("Cancelled"))
-            monitor.waitForAbort(2)
+            self.monitor.waitForAbort(2)
             progress_bar.close()
 
         if progress_bar.iscanceled():
             xbmc.log("[script.service.hue] Bridge discovery cancelled by user")
             progress_bar.update(percent=100, message=_("Cancelled"))
-            monitor.waitForAbort(2)
+            self.monitor.waitForAbort(2)
             progress_bar.close()
 
     def _discover_bridge_ip(self):
         # discover hue bridge IP silently for non-interactive discovery / bridge IP change.
         xbmc.log("[script.service.hue] In discoverBridgeIP")
-        bridge_ip = self._discover_nupnp()
-        if self._check_version(bridge_ip):
-            return bridge_ip
-
+        self.bridge_ip = self._discover_nupnp()
+        if self._check_version():
+            return self.bridge_ip
         return False
 
     def _discover_nupnp(self):
@@ -166,10 +162,11 @@ class Hue(object):
             except KeyError:
                 xbmc.log("[script.service.hue] Nupnp: No IP found in response")
                 return None
-        return bridge_ip
+        self.bridge_ip = bridge_ip
+        return True
 
-    def _check_bridge_model(self, bridge_ip):
-        bridge = qhue.Bridge(bridge_ip, None, timeout=QHUE_TIMEOUT)
+    def _check_bridge_model(self):
+        bridge = qhue.Bridge(self.bridge_ip, None, timeout=QHUE_TIMEOUT)
         try:
             bridge_config = bridge.config()
             model = bridge_config["modelid"]
@@ -187,8 +184,8 @@ class Hue(object):
         xbmcgui.Dialog().ok(_("Unsupported Hue Bridge"), _("Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."))
         return None
 
-    def _check_version(self, bridge_ip):
-        b = qhue.Bridge(bridge_ip, None, timeout=QHUE_TIMEOUT)
+    def _check_version(self):
+        b = qhue.Bridge(self.bridge_ip, None, timeout=QHUE_TIMEOUT)
         try:
             api_version = b.config()['apiversion']
         except QhueException as error:
@@ -213,9 +210,9 @@ class Hue(object):
         xbmc.log(f"[script.service.hue] in _connection_test():  Connected! Bridge too old: {api_version}")
         return False
 
-    def _check_user(self, bridge_ip, bridge_user):
+    def _check_user(self):
         xbmc.log("[script.service.hue] in user_test() Attempt initial connection")
-        b = qhue.Bridge(bridge_ip, bridge_user, timeout=QHUE_TIMEOUT)
+        b = qhue.Bridge(self.bridge_ip, self.bridge_user, timeout=QHUE_TIMEOUT)
         try:
             zigbee = b.config()['zigbeechannel']
         except (requests.RequestException, qhue.QhueException, KeyError):
@@ -226,7 +223,7 @@ class Hue(object):
             return True
         return False
 
-    def _create_user(self, monitor, bridge_ip, progress_bar=False):
+    def _create_user(self, progress_bar=False):
         xbmc.log("[script.service.hue] In createUser")
         # devicetype = 'kodi#'+getfqdn()
         data = '{{"devicetype": "kodi#{}"}}'.format(getfqdn())  # Create a devicetype named kodi#localhostname. Eg: kodi#LibreELEC
@@ -240,20 +237,20 @@ class Hue(object):
         if progress_bar:
             progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))  # press link button on bridge
 
-        while 'link button not pressed' in res and time <= timeout and not monitor.abortRequested() and not progress_bar.iscanceled():
+        while 'link button not pressed' in res and time <= timeout and not self.monitor.abortRequested() and not progress_bar.iscanceled():
             # xbmc.log(f"[script.service.hue] In create_user: abortRequested: {str(monitor.abortRequested())}, timer: {time}")
 
             if progress_bar:
                 progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))  # press link button on bridge
 
             try:
-                req = requests.post(f'http://{bridge_ip}/api', data=data)
+                req = requests.post(f'http://{self.bridge_ip}/api', data=data)
             except requests.RequestException as exc:
                 xbmc.log(f"[script.service.hue] requests exception: {exc}")
                 return False
 
             res = req.text
-            monitor.waitForAbort(1)
+            self.monitor.waitForAbort(1)
             time = time + 1
             progress = int((time / timeout) * 100)
 
@@ -262,7 +259,8 @@ class Hue(object):
 
         try:
             username = res[0]['success']['username']
-            return username
+            self.bridge_user = username
+            return True
         except requests.RequestException as exc:
             xbmc.log(f"[script.service.hue] Username Requests exception: {exc}")
             return False

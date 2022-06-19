@@ -24,9 +24,9 @@ AUDIO = 1
 
 
 class LightGroup(xbmc.Player):
-    def __init__(self, light_group_id, bridge, media_type, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
+    def __init__(self, light_group_id, hue_connection, media_type, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
         self.light_group_id = light_group_id
-        self.bridge = bridge
+        self.bridge = hue_connection.bridge
         self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
 
         self.start_behavior = ADDON.getSettingBool(f"group{self.light_group_id}_startBehavior")

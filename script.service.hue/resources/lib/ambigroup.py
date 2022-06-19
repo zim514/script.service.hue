@@ -22,10 +22,11 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
 
 class AmbiGroup(lightgroup.LightGroup):
-    def __init__(self, light_group_id, bridge, monitor, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
+    def __init__(self, light_group_id, hue_connection, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
+        self.hue_connection = hue_connection
         self.light_group_id = light_group_id
-        self.bridge = bridge
-        self.monitor = monitor
+        self.bridge = hue_connection.bridge
+        self.monitor = hue_connection.monitor
         self.group0 = self.bridge.groups[0]
         self.bridge_error500 = 0
         self.state = initial_state
@@ -160,7 +161,7 @@ class AmbiGroup(lightgroup.LightGroup):
         for L in list(self.ambi_lights):
             self.ambi_lights[L].update(prev_xy=(0.0001, 0.0001))
 
-        while not self.monitor.abortRequested() and AMBI_RUNNING.is_set():  # loop until kodi tells add-on to stop or video playing flag is unset.
+        while not self.monitor.abortRequested() and AMBI_RUNNING.is_set() and self.hue_connection.connected:  # loop until kodi tells add-on to stop or video playing flag is unset.
             try:
 
                 cap_image = cap.getImage()  # timeout to wait for OS in ms, default 1000

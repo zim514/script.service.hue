@@ -9,9 +9,9 @@ from datetime import timedelta
 import requests
 import xbmc
 
-from resources.lib import ADDON, CACHE, SETTINGS_CHANGED, ADDONID, AMBI_RUNNING, CONNECTED
-from resources.lib import ambigroup, lightgroup, kodiutils, hue
-from resources.lib.hue import Hue
+from resources.lib import ADDON, CACHE, SETTINGS_CHANGED, ADDONID, AMBI_RUNNING
+from resources.lib import ambigroup, lightgroup, kodiutils, hueconnection
+from resources.lib.hueconnection import HueConnection
 from resources.lib.language import get_string as _
 from resources.lib.kodiutils import validate_settings, notification
 
@@ -29,10 +29,10 @@ def core():
 
 def _commands(monitor, command):
     xbmc.log(f"[script.service.hue] Started with {command}")
-    hue_connection = hue.Hue(monitor)
+    hue_connection = hue.HueConnection(monitor)
     if command == "discover":
 
-        if hue_connection.discover_bridge(monitor):
+        if hue_connection.discover_bridge():
             xbmc.log("[script.service.hue] Found bridge. Starting service.")
             ADDON.openSettings()
             _service(monitor)
@@ -83,13 +83,13 @@ def _commands(monitor, command):
 
 
 def _service(monitor):
-    hue_connection = Hue(monitor)
+    hue_connection = HueConnection(monitor)
     hue_connection.connect_bridge(silent=ADDON.getSettingBool("disableConnectionMessage"))
     service_enabled = CACHE.get(f"{ADDONID}.service_enabled")
 
     if hue_connection.connected:
-        light_groups = [lightgroup.LightGroup(0, hue_connection.bridge, lightgroup.VIDEO), lightgroup.LightGroup(1, hue_connection.bridge, lightgroup.AUDIO)]
-        ambi_group = ambigroup.AmbiGroup(3, hue_connection.bridge, monitor)
+        light_groups = [lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO), lightgroup.LightGroup(1, hue_connection.bridge, lightgroup.AUDIO)]
+        ambi_group = ambigroup.AmbiGroup(3, hue_connection)
 
         connection_retries = 0
         timer = 60
@@ -100,7 +100,7 @@ def _service(monitor):
         CACHE.set(f"{ADDONID}.service_enabled", True)
         # xbmc.log("[script.service.hue] Core service starting. Connected: {}".format(CONNECTED))
 
-        while CONNECTED.is_set() and not monitor.abortRequested():
+        while hue_connection.connected and not monitor.abortRequested():
 
             # check if service was just re-enabled and if so activate groups
             prev_service_enabled = service_enabled
@@ -119,9 +119,9 @@ def _service(monitor):
 
             # reload groups if settings changed, but keep player state
             if SETTINGS_CHANGED.is_set():
-                light_groups = [lightgroup.LightGroup(0, hue_connection.bridge, lightgroup.VIDEO, initial_state=light_groups[0].state, video_info_tag=light_groups[0].video_info_tag),
-                                lightgroup.LightGroup(1, hue_connection.bridge, lightgroup.AUDIO, initial_state=light_groups[1].state, video_info_tag=light_groups[1].video_info_tag)]
-                ambi_group = ambigroup.AmbiGroup(3, hue_connection.bridge, monitor, initial_state=ambi_group.state, video_info_tag=ambi_group.video_info_tag)
+                light_groups = [lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO, initial_state=light_groups[0].state, video_info_tag=light_groups[0].video_info_tag),
+                                lightgroup.LightGroup(1, hue_connection, lightgroup.AUDIO, initial_state=light_groups[1].state, video_info_tag=light_groups[1].video_info_tag)]
+                ambi_group = ambigroup.AmbiGroup(3, hue_connection, initial_state=ambi_group.state, video_info_tag=ambi_group.video_info_tag)
                 SETTINGS_CHANGED.clear()
 
             # every minute, check for sunset & connection
@@ -145,7 +145,6 @@ def _service(monitor):
                     else:
                         xbmc.log(f"[script.service.hue] Bridge Connection Error. Attempt: {connection_retries}/10. Shutting down : {error}")
                         notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
-                        CONNECTED.clear()
                         hue_connection.connected = False
 
                 # check if sunset took place

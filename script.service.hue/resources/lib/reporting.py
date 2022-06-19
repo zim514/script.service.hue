@@ -42,5 +42,5 @@ def _report_error(level="critical", error="", exc=""):
         'error': error,
         'exc': exc
     }
-    rollbar.init(ROLLBAR_API_KEY, capture_ip=False, code_version="v" + ADDONVERSION, root=ADDONPATH, scrub_fields='bridgeUser, bridgeIP', environment=env)
+    rollbar.init(ROLLBAR_API_KEY, capture_ip=False, code_version="v" + ADDONVERSION, root=ADDONPATH, scrub_fields='bridgeUser, bridgeIP, bridge_user, bridge_ip', environment=env)
     rollbar.report_exc_info(sys.exc_info(), extra_data=data, level=level)
