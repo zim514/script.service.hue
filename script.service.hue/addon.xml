@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.2.6">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.2.7">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="script.module.requests" version="2.25.1"/>
@@ -21,7 +21,7 @@
 		</assets>
 		<source>https://github.com/zim514/script.service.hue</source>
 		<forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-		<news>v1.2.6
+		<news>v1.2.7
 Refactor bridge connection
 </news>
 		<summary lang="cs_CZ">Automatizace Hue světel s přehráváním Kodi</summary>

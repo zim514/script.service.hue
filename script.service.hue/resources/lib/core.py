@@ -29,10 +29,10 @@ def core():
 
 def _commands(monitor, command):
     xbmc.log(f"[script.service.hue] Started with {command}")
-    hue_connection = hue.HueConnection(monitor)
-    if command == "discover":
 
-        if hue_connection.discover_bridge():
+    if command == "discover":
+        hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=True)
+        if hue_connection.connected:
             xbmc.log("[script.service.hue] Found bridge. Starting service.")
             ADDON.openSettings()
             _service(monitor)
@@ -40,7 +40,7 @@ def _commands(monitor, command):
             ADDON.openSettings()
 
     elif command == "createHueScene":
-        hue_connection.connect_bridge(silent=True)  # don't rediscover, proceed silently
+        hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=False)  # don't rediscover, proceed silently
         if hue_connection.connected:
             hue_connection.create_hue_scene()
         else:
@@ -48,7 +48,7 @@ def _commands(monitor, command):
             notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif command == "deleteHueScene":
-        hue_connection.connect_bridge(silent=True)  # don't rediscover, proceed silently
+        hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=False)  # don't rediscover, proceed silently
         if hue_connection.connected:
             hue_connection.delete_hue_scene()
         else:
@@ -60,7 +60,7 @@ def _commands(monitor, command):
         action = sys.argv[3]
         # xbmc.log(f"[script.service.hue] sceneSelect: light_group: {light_group}, action: {action}")
 
-        hue_connection.connect_bridge(silent=True)  # don't rediscover, proceed silently
+        hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=False)  # don't rediscover, proceed silently
         if hue_connection.connected:
             hue_connection.configure_scene(light_group, action)
         else:
@@ -71,7 +71,7 @@ def _commands(monitor, command):
         light_group = sys.argv[2]
         # xbmc.log(f"[script.service.hue] ambiLightSelect light_group_id: {light_group}")
 
-        hue_connection.connect_bridge(silent=True)  # don't rediscover, proceed silently
+        hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=False)  # don't rediscover, proceed silently  # don't rediscover, proceed silently
         if hue_connection.connected:
             hue_connection.configure_ambilights(light_group)
         else:
@@ -83,8 +83,7 @@ def _commands(monitor, command):
 
 
 def _service(monitor):
-    hue_connection = HueConnection(monitor)
-    hue_connection.connect_bridge(silent=ADDON.getSettingBool("disableConnectionMessage"))
+    hue_connection = HueConnection(monitor, silent=ADDON.getSettingBool("disableConnectionMessage"), discover=False)
     service_enabled = CACHE.get(f"{ADDONID}.service_enabled")
 
     if hue_connection.connected:

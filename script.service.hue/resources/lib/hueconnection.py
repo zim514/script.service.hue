@@ -20,12 +20,17 @@ from qhue import QhueException
 
 
 class HueConnection(object):
-    def __init__(self, monitor):
+    def __init__(self, monitor, silent=True, discover=False):
         self.bridge = None
         self.bridge_ip = ADDON.getSettingString("bridgeIP")
         self.bridge_user = ADDON.getSettingString("bridgeUser")
         self.monitor = monitor
         self.connected = False
+
+        if discover:
+            self.discover_bridge()
+        else:
+            self.connect_bridge(silent)
 
     def connect_bridge(self, silent=False):
 
