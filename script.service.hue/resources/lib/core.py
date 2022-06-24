@@ -2,6 +2,7 @@
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
 #      See LICENSE.TXT for more information.
+
 import json
 import sys
 from datetime import timedelta
@@ -87,8 +88,9 @@ def _service(monitor):
     service_enabled = CACHE.get(f"{ADDONID}.service_enabled")
 
     if hue_connection.connected:
-        light_groups = [lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO), lightgroup.LightGroup(1, hue_connection, lightgroup.AUDIO)]
-        ambi_group = ambigroup.AmbiGroup(3, hue_connection)
+        light_groups = [lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO),
+                        lightgroup.LightGroup(1, hue_connection, lightgroup.AUDIO),
+                        ambigroup.AmbiGroup(3, hue_connection)]
 
         connection_retries = 0
         timer = 60
@@ -105,7 +107,7 @@ def _service(monitor):
             prev_service_enabled = service_enabled
             service_enabled = CACHE.get(f"{ADDONID}.service_enabled")
             if service_enabled and not prev_service_enabled:
-                activate(light_groups, ambi_group)
+                activate(light_groups)
 
             # if service disabled, stop ambilight._ambi_loop thread
             if not service_enabled:
@@ -119,8 +121,8 @@ def _service(monitor):
             # reload groups if settings changed, but keep player state
             if SETTINGS_CHANGED.is_set():
                 light_groups = [lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO, initial_state=light_groups[0].state, video_info_tag=light_groups[0].video_info_tag),
-                                lightgroup.LightGroup(1, hue_connection, lightgroup.AUDIO, initial_state=light_groups[1].state, video_info_tag=light_groups[1].video_info_tag)]
-                ambi_group = ambigroup.AmbiGroup(3, hue_connection, initial_state=ambi_group.state, video_info_tag=ambi_group.video_info_tag)
+                                lightgroup.LightGroup(1, hue_connection, lightgroup.AUDIO, initial_state=light_groups[1].state, video_info_tag=light_groups[1].video_info_tag),
+                                ambigroup.AmbiGroup(3, hue_connection, initial_state=light_groups[2].state, video_info_tag=light_groups[2].video_info_tag)]
                 SETTINGS_CHANGED.clear()
 
             # every minute, check for sunset & connection
@@ -154,10 +156,7 @@ def _service(monitor):
                     CACHE.set(f"{ADDONID}.daylight", daylight)
                     if not daylight and service_enabled:
                         xbmc.log("[script.service.hue] Sunset activate")
-                        try:
-                            activate(light_groups, ambi_group)
-                        except UnboundLocalError:
-                            activate(light_groups)  # if no ambi_group, activate light_groups
+                        activate(light_groups)
             timer += 1
             monitor.waitForAbort(1)
         xbmc.log("[script.service.hue] Process exiting...")
@@ -206,16 +205,13 @@ class HueMonitor(xbmc.Monitor):
                 CACHE.set("script.service.hue.action", (action, light_group_id), expiration=(timedelta(seconds=5)))
 
 
-def activate(light_groups, ambi_group=None):
+def activate(light_groups):
     """
     Activates play action as appropriate for all groups. Used at sunset and when service is re-enabled via Actions.
     """
-    xbmc.log(f"[script.service.hue] Activating scenes: light_groups: {light_groups} ambigroup: {ambi_group}")
+    xbmc.log(f"[script.service.hue] Activating scenes: light_groups: {light_groups}")
 
     for g in light_groups:
         xbmc.log(f"[script.service.hue] in activate g: {g}, light_group_id: {g.light_group_id}")
         if ADDON.getSettingBool(f"group{g.light_group_id}_enabled"):
             g.activate()
-
-    if ADDON.getSettingBool("group3_enabled") and ambi_group:
-        ambi_group.activate()
