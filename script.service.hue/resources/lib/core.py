@@ -87,7 +87,7 @@ def _service(monitor):
     service_enabled = CACHE.get(f"{ADDONID}.service_enabled")
 
     if hue_connection.connected:
-        light_groups = [lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO), lightgroup.LightGroup(1, hue_connection.bridge, lightgroup.AUDIO)]
+        light_groups = [lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO), lightgroup.LightGroup(1, hue_connection, lightgroup.AUDIO)]
         ambi_group = ambigroup.AmbiGroup(3, hue_connection)
 
         connection_retries = 0
