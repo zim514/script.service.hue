@@ -7,16 +7,15 @@ import traceback
 from json import JSONDecodeError
 from socket import getfqdn
 
+import qhue
 import requests
 import xbmc
 import xbmcgui
-import qhue
+from qhue import QhueException
 
 from resources.lib import ADDON, QHUE_TIMEOUT, reporting
 from resources.lib.kodiutils import notification
-
 from .language import get_string as _
-from qhue import QhueException
 
 
 class HueConnection(object):
@@ -53,10 +52,11 @@ class HueConnection(object):
             if self._check_user():
                 bridge = qhue.Bridge(self.bridge_ip, self.bridge_user, timeout=QHUE_TIMEOUT)
                 self.connected = True
+                self.bridge = bridge
                 xbmc.log(f"[script.service.hue] Successfully connected to Hue Bridge: {self.bridge_ip}")
                 if not silent:
                     notification(_("Hue Service"), _("Hue connected"), sound=False)
-                self.bridge = bridge
+                return
             else:
                 xbmc.log("[script.service.hue] Bridge not responding")
                 notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
@@ -87,7 +87,7 @@ class HueConnection(object):
             progress_bar.update(percent=10, message=_("N-UPnP discovery..."))
             bridge_ip_found = self._discover_nupnp()
 
-            if not bridge_ip_found:
+            if not bridge_ip_found and not progress_bar.iscanceled():
                 manual_entry = xbmcgui.Dialog().yesno(_("Bridge not found"),
                                                       _("Bridge not found automatically. Please make sure your bridge is up to date and has access to the internet. [CR]Would you like to enter your bridge IP manually?"))
                 if manual_entry:
@@ -95,7 +95,7 @@ class HueConnection(object):
 
             if self.bridge_ip:
                 progress_bar.update(percent=50, message=_("Connecting..."))
-                if self._check_version() and self._check_bridge_model():
+                if self._check_version() and self._check_bridge_model() and not progress_bar.iscanceled():
                     progress_bar.update(percent=100, message=_("Found bridge: ") + self.bridge_ip)
                     self.monitor.waitForAbort(1)
 
@@ -115,12 +115,24 @@ class HueConnection(object):
                         self.connect_bridge(True)
                         return True
 
-                    xbmc.log(f"[script.service.hue] User not created, received: {self.bridge_user}")
-                    progress_bar.update(percent=100, message=_("User not found[CR]Check your bridge and network."))
-                    self.monitor.waitForAbort(5)
-                    complete = True
-                    progress_bar.close()
+                    elif progress_bar.iscanceled():
+                        xbmc.log("[script.service.hue] Cancelled 2")
+                        complete = True
+                        progress_bar.update(percent=100, message=_("Cancelled"))
+                        progress_bar.close()
 
+                    else:
+                        xbmc.log(f"[script.service.hue] User not created, received: {self.bridge_user}")
+                        progress_bar.update(percent=100, message=_("User not found[CR]Check your bridge and network."))
+                        self.monitor.waitForAbort(5)
+                        complete = True
+                        progress_bar.close()
+                        return
+                elif progress_bar.iscanceled():
+                    xbmc.log("[script.service.hue] Cancelled 3")
+                    complete = True
+                    progress_bar.update(percent=100, message=_("Cancelled"))
+                    progress_bar.close()
                 else:
                     progress_bar.update(percent=100, message=_("Bridge not found[CR]Check your bridge and network."))
                     xbmc.log("[script.service.hue] Bridge not found, check your bridge and network")
@@ -128,16 +140,14 @@ class HueConnection(object):
                     complete = True
                     progress_bar.close()
 
-            xbmc.log("[script.service.hue] Manual IP entry cancelled by user")
+            xbmc.log("[script.service.hue] Cancelled 4")
             complete = True
             progress_bar.update(percent=100, message=_("Cancelled"))
-            self.monitor.waitForAbort(2)
             progress_bar.close()
 
         if progress_bar.iscanceled():
-            xbmc.log("[script.service.hue] Bridge discovery cancelled by user")
+            xbmc.log("[script.service.hue] Bridge discovery cancelled by user 5")
             progress_bar.update(percent=100, message=_("Cancelled"))
-            self.monitor.waitForAbort(2)
             progress_bar.close()
 
     def _discover_bridge_ip(self):
@@ -228,7 +238,7 @@ class HueConnection(object):
             return True
         return False
 
-    def _create_user(self, progress_bar=False):
+    def _create_user(self, progress_bar):
         xbmc.log("[script.service.hue] In createUser")
         # devicetype = 'kodi#'+getfqdn()
         data = '{{"devicetype": "kodi#{}"}}'.format(getfqdn())  # Create a devicetype named kodi#localhostname. Eg: kodi#LibreELEC
@@ -239,14 +249,12 @@ class HueConnection(object):
         timeout = 90
         progress = 0
 
-        if progress_bar:
-            progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))  # press link button on bridge
+        progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))  # press link button on bridge
 
         while 'link button not pressed' in res and time <= timeout and not self.monitor.abortRequested() and not progress_bar.iscanceled():
             # xbmc.log(f"[script.service.hue] In create_user: abortRequested: {str(monitor.abortRequested())}, timer: {time}")
 
-            if progress_bar:
-                progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))  # press link button on bridge
+            progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))  # press link button on bridge
 
             try:
                 req = requests.post(f'http://{self.bridge_ip}/api', data=data)
@@ -259,10 +267,12 @@ class HueConnection(object):
             time = time + 1
             progress = int((time / timeout) * 100)
 
-        res = req.json()
-        xbmc.log(f"[script.service.hue] json response: {res}, content: {req.content}")
+        if progress_bar.iscanceled():
+            return False
 
         try:
+            res = req.json()
+            xbmc.log(f"[script.service.hue] json response: {res}, content: {req.content}")
             username = res[0]['success']['username']
             self.bridge_user = username
             return True
