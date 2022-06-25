@@ -9,7 +9,7 @@ jobs:
     name: Kodi addon submitter
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Submit to official kodi repository
       id: kodi-addon-submitter
