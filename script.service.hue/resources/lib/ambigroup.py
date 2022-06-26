@@ -168,7 +168,7 @@ class AmbiGroup(lightgroup.LightGroup):
 
                 if cap_image is None or len(cap_image) < expected_capture_size:
                     xbmc.log("[script.service.hue] capImage is none or < expected. captured: {}, expected: {}".format(len(cap_image), expected_capture_size))
-                    xbmc.sleep(250)  # pause before trying again
+                    self.monitor.waitForAbort(0.25)  # pause before trying again
                     continue  # no image captured, try again next iteration
                 image = Image.frombytes("RGBA", (self.capture_size_x, self.capture_size_y), bytes(cap_image), "raw", "BGRA", 0, 1)  # Kodi always returns a BGRA image.
 
