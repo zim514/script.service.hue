@@ -155,5 +155,5 @@ _strings['connection error'] = 30029
 _strings['error: lights incompatible with ambilight'] = 30014
 _strings['bridge not found automatically. please make sure your bridge is up to date and has access to the internet. [cr]would you like to enter your bridge ip manually?'] = 30007
 _strings['connecting...'] = 30009
-_strings['are you sure you want to delete this scene:[cr][b]'] = 30027
+_strings['are you sure you want to delete this scene:'] = 30027
 _strings['bridge outdated. please update your bridge.'] = 30019
