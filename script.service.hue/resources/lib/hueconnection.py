@@ -346,7 +346,7 @@ class HueConnection(object):
         xbmc.log("[script.service.hue] In kodiHue deleteHueScene")
         scene = self.select_hue_scene()
         if scene is not None:
-            confirm = xbmcgui.Dialog().yesno(heading=_("Delete Hue Scene"), message=_("Are you sure you want to delete this scene:") + f" [CR][B]{scene[1]}[/B]")
+            confirm = xbmcgui.Dialog().yesno(heading=_("Delete Hue Scene"), message=_("Are you sure you want to delete this scene:") + f"[CR][B]{scene[1]}[/B]")
             if confirm:
                 scenes = self.bridge.scenes
                 try:
