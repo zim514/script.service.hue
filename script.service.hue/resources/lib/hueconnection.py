@@ -211,7 +211,7 @@ class HueConnection(object):
             xbmc.log(f"[script.service.hue] Version check connection failed.  {error}")
             return False
         except KeyError as error:
-            notification(_("Hue Service"), _(f"Bridge API: {api_version}, update your bridge"), icon=xbmcgui.NOTIFICATION_ERROR)
+            notification(_("Hue Service"), _("Bridge outdated. Please update your bridge."), icon=xbmcgui.NOTIFICATION_ERROR)
             xbmc.log(f"[script.service.hue] in _version_check():  Connected! Bridge too old: {api_version}, error: {error}")
             return False
 
@@ -221,7 +221,7 @@ class HueConnection(object):
             xbmc.log(f"[script.service.hue] Bridge Found! Hue API version: {api_version}")
             return True
 
-        notification(_("Hue Service"), _(f"Bridge API: {api_version}, update your bridge"), icon=xbmcgui.NOTIFICATION_ERROR)
+        notification(_("Hue Service"), _("Bridge outdated. Please update your bridge."), icon=xbmcgui.NOTIFICATION_ERROR)
         xbmc.log(f"[script.service.hue] in _connection_test():  Connected! Bridge too old: {api_version}")
         return False
 
@@ -346,7 +346,7 @@ class HueConnection(object):
         xbmc.log("[script.service.hue] In kodiHue deleteHueScene")
         scene = self.select_hue_scene()
         if scene is not None:
-            confirm = xbmcgui.Dialog().yesno(heading=_("Delete Hue Scene"), message=_(f"Are you sure you want to delete this scene:[CR][B]{scene[1]}[/B]"))
+            confirm = xbmcgui.Dialog().yesno(heading=_("Delete Hue Scene"), message=_("Are you sure you want to delete this scene:[CR][B]") + f" {scene[1]}[/B]")
             if confirm:
                 scenes = self.bridge.scenes
                 try:

@@ -329,7 +329,7 @@ class AmbiGroup(lightgroup.LightGroup):
             xbmc.log(f"[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {light}, error: {exc}")
         except KeyError:
             xbmc.log(f"[script.service.hue] Unknown gamut type, unsupported light: {light}")
-            notification(_("Hue Service"), _(f"Unknown colour gamut for light {light}"))
+            notification(_("Hue Service"), _("Unknown colour gamut for light:") + f" {light}")
         except requests.RequestException as exc:
             xbmc.log(f"[script.service.hue] Get Light Gamut RequestsException: {exc}")
             notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
