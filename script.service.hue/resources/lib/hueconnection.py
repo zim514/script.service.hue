@@ -38,8 +38,8 @@ class HueConnection(object):
         if self.bridge_ip and self.bridge_user:
             if not self._check_version():
                 xbmc.log("[script.service.hue] in connect_bridge(): Bridge not responding to connection test, attempt finding a new bridge IP.")
-                self._discover_bridge_ip()
-                if self.bridge_ip:
+
+                if self._discover_bridge_ip():
                     xbmc.log(f"[script.service.hue] in connect_bridge(): New IP found: {self.bridge_ip}. Saving")
                     ADDON.setSettingString("bridgeIP", self.bridge_ip)
                 else:
@@ -153,9 +153,9 @@ class HueConnection(object):
     def _discover_bridge_ip(self):
         # discover hue bridge IP silently for non-interactive discovery / bridge IP change.
         xbmc.log("[script.service.hue] In discoverBridgeIP")
-        self.bridge_ip = self._discover_nupnp()
-        if self._check_version():
-            return self.bridge_ip
+        if self._discover_nupnp():
+            if self._check_version():
+                return True
         return False
 
     def _discover_nupnp(self):
