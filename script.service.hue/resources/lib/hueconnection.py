@@ -3,6 +3,7 @@
 #      SPDX-License-Identifier: MIT
 #      See LICENSE.TXT for more information.
 
+import json
 import traceback
 from json import JSONDecodeError
 from socket import getfqdn
@@ -166,7 +167,7 @@ class HueConnection(object):
         except requests.RequestException as error:
             xbmc.log(f"[script.service.hue] Nupnp failed: {error}")
             return None
-        except JSONDecodeError as error:  # when discovery.meethue.com returns empty JSON or 429
+        except (JSONDecodeError, json.JSONDecodeError) as error:  # when discovery.meethue.com returns empty JSON or 429
             xbmc.log(f"[script.service.hue] Nupnp failed: {error}, req: {req}")
             return None
 

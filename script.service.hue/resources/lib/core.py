@@ -137,7 +137,7 @@ def _service(monitor):
                             connection_retries = 0
                     else:
                         new_daylight = hue_connection.get_daylight()
-                except requests.RequestException as error:
+                except (requests.RequestException, ConnectionError) as error:
                     connection_retries = connection_retries + 1
                     if connection_retries <= 10:
                         xbmc.log(f"[script.service.hue] Bridge Connection Error. Attempt: {connection_retries}/10 : {error}")
