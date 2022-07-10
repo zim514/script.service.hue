@@ -14,7 +14,7 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 - [Install from official Kodi repo](https://kodi.wiki/view/Add-on_manager#How_to_install_add-ons_from_a_repository)
 
 **Development version**
- 1. [Repo with auto-updates](https://zim514.github.io/repo/repository.snapcase/repository.snapcase-1.0.10.zip) **(Recommended)** or [Download latest .zip version](https://github.com/zim514/script.service.hue/releases/latest)
+ 1. [Repo with auto-updates](https://zim514.github.io/repo/repository.snapcase/repository.snapcase-1.0.11.zip) **(Recommended)** or [Download latest .zip version](https://github.com/zim514/script.service.hue/releases/latest)
  2. [Install to Kodi from Zip](https://kodi.wiki/view/HOW-TO:Install_add-ons_from_zip_files)
 
 ## Features:
