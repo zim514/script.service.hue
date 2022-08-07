@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-06-26 01:53+0000\n"
+"PO-Revision-Date: 2022-08-06 02:14+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Danish <https://kodi.weblate.cloud/projects/kodi-add-ons-scripts/script-service-hue/da_dk/>\n"
 "Language: da_dk\n"
@@ -74,7 +74,7 @@ msgstr "Bridge IP"
 
 msgctxt "#30503"
 msgid "Bridge User"
-msgstr "Brudge bruger"
+msgstr "Bridge bruger"
 
 msgctxt "#30505"
 msgid "Enable Schedule (24h format)"
@@ -158,7 +158,7 @@ msgstr "Aktiveret"
 
 msgctxt "#9001"
 msgid "Press connect button on Hue bridge"
-msgstr "Tryk på forbindelsesknappen på Hue-broen"
+msgstr "Tryk på forbindelsesknappen på din Hue Bridge"
 
 msgctxt "#9007"
 msgid "Create Scene"
@@ -174,7 +174,7 @@ msgstr "Hue-tjeneste"
 
 msgctxt "#30004"
 msgid "Check your bridge and network"
-msgstr "Tjek din Hue-bro og netværk"
+msgstr "Tjek din Hue bridge og netværk"
 
 msgctxt "#30006"
 msgid "Hue connected"
@@ -182,7 +182,7 @@ msgstr "Hue er forbundet"
 
 msgctxt "#30008"
 msgid "Bridge not found"
-msgstr "Bro er ikke fundet"
+msgstr "Bridge er ikke fundet"
 
 msgctxt "#30010"
 msgid "User not found"
@@ -202,19 +202,19 @@ msgstr "Vælg hue-lys..."
 
 msgctxt "#30017"
 msgid "Found bridge: "
-msgstr ""
+msgstr "Bridge fundet: "
 
 msgctxt "#30018"
 msgid "Discover bridge..."
-msgstr ""
+msgstr "Find bridge..."
 
 msgctxt "#30021"
 msgid "Bridge connection failed"
-msgstr ""
+msgstr "Forbindelse til bridge mislykkedes"
 
 msgctxt "#30022"
 msgid "Discovery started"
-msgstr ""
+msgstr "Discovery er startet"
 
 msgctxt "#30023"
 msgid "Bridge not configured"
@@ -314,11 +314,11 @@ msgstr ""
 
 msgctxt "#30050"
 msgid "N-UPnP discovery..."
-msgstr ""
+msgstr "Søg efter N-UPnP..."
 
 msgctxt "#30051"
 msgid "UPnP discovery..."
-msgstr ""
+msgstr "Søg efter UPnP..."
 
 msgctxt "#30005"
 msgid "Searching for bridge..."
