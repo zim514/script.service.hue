@@ -65,8 +65,8 @@ msgid "Bridge"
 msgstr "브리지"
 
 msgctxt "#30501"
-msgid "Discover Hue Bridge"
-msgstr "Hue 브리지 찾기"
+msgid "Discover Hue Bridge / Enter IP"
+msgstr "Discover Hue Bridge / Enter IP"
 
 msgctxt "#30502"
 msgid "Bridge IP"
@@ -551,6 +551,10 @@ msgstr "이 장면을 삭제할까요:"
 msgctxt "#30019"
 msgid "Bridge outdated. Please update your bridge."
 msgstr "브리지가 오래되었습니다. 브리지를 업데이트하십시오."
+
+#~ msgctxt "#30501"
+#~ msgid "Discover Hue Bridge"
+#~ msgstr "Hue 브리지 찾기"
 
 #~ msgctxt "#30027"
 #~ msgid "Are you sure you want to delete this scene:[CR][B]{scene[1]}[/B]"
