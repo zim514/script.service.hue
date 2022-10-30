@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Get version
         id: get_version
-        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}"  >> $GITHUB_ENV
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}"  >> $GITHUB_STATE
 
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -68,7 +68,7 @@ jobs:
       - name: Get version
         id: get_version
         run: |
-          echo "version=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
+          echo "version=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_STATE
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v4
@@ -89,7 +89,7 @@ jobs:
         run: |
           pipenv run submit-addon -z -s script.service.hue
           ls *.zip
-          echo "zip_filename=$(ls *.zip)" >> $GITHUB_ENV
+          echo "zip_filename=$(ls *.zip)" >> $GITHUB_STATE
 
       - name: Create Github Release
         id: create_release
