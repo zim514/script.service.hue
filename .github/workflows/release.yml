@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Get version
         id: get_version
-        run: echo "name=VERSION::${GITHUB_REF/refs\/tags\//}"  >> $GITHUB_OUTPUT
+        run: echo "name=VERSION::${GITHUB_REF/refs\/tags\//}"  >> $GITHUB_ENV
 
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -68,7 +68,7 @@ jobs:
       - name: Get version
         id: get_version
         run: |
-          echo "name=version::${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+          echo "name=version::${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v4
@@ -89,7 +89,7 @@ jobs:
         run: |
           pipenv run submit-addon -z -s script.service.hue
           ls *.zip
-          echo "name=zip_filename::$(ls *.zip)" >> $GITHUB_OUTPUT
+          echo "name=zip_filename::$(ls *.zip)" >> $GITHUB_ENV
 
       - name: Create Github Release
         id: create_release
@@ -108,9 +108,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./${{ steps.build_zip.outputs.zip_filename }}
-          asset_name: ${{ steps.build_zip.outputs.zip_filename }}
+          upload_url: ${{ env.upload_url }}
+          asset_path: ./${{ env.zip_filename }}
+          asset_name: ${{ env.zip_filename }}
           asset_content_type: application/zip
 
   rollbar:
