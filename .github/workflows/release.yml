@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Get version
         id: get_version
-        run: echo "name=VERSION::${GITHUB_REF/refs\/tags\//}"  >> $GITHUB_ENV
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}"  >> $GITHUB_ENV
 
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -55,7 +55,7 @@ jobs:
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: Automated repo update ${{ steps.get_version.outputs.VERSION }}
+          commit_message: Automated repo update ${{ env.VERSION }}
           add_options: '--all'
 
   release:
@@ -68,7 +68,7 @@ jobs:
       - name: Get version
         id: get_version
         run: |
-          echo "name=version::${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
+          echo "version=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v4
@@ -89,7 +89,7 @@ jobs:
         run: |
           pipenv run submit-addon -z -s script.service.hue
           ls *.zip
-          echo "name=zip_filename::$(ls *.zip)" >> $GITHUB_ENV
+          echo "zip_filename=$(ls *.zip)" >> $GITHUB_ENV
 
       - name: Create Github Release
         id: create_release
@@ -98,7 +98,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: ${{steps.get_version.outputs.version}}
+          release_name: ${{env.version}}
           draft: false
           prerelease: false
 
