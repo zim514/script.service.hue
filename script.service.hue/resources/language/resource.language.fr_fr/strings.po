@@ -27,7 +27,7 @@ msgstr "[CR]Automatiser vos lumières Hue V2 (Philips) avec Kodi. Créez des sc�
 
 msgctxt "Addon Disclaimer"
 msgid "Requires a Hue Bridge V2 (Square). Ambilight not available on all hardware."
-msgstr "[CR]Nécessite un bridge Hue V2 (carré). Ambilight n'est pas disponible sur tous [CR]les matériels."
+msgstr "[CR]Nécessite un bridge Hue V2 (carré). Ambilight n'est pas disponible sur tous [CR]les matériels.[CR][CR]Automatiser vos lumières Hue V2 (Philips) avec Kodi. Créez des scènes multi-[CR]pièces qui s'exécutent lorsque vous lisez, mettez en pause ou arrêtez la [CR]lecture multimédia. Créer et supprimer des scènes multi-pièces à partir des [CR]paramètres complémentaires, puis sélectionner celle à appliquer pour [CR]différents événements de lecture. Peut utiliser les heures de lever et de [CR]coucher du soleil de Hue pour désactiver automatiquement le service pendant [CR]la journée et allumer les lumières au coucher du soleil pendant la lecture. [CR]Inclut la prise en charge Ambilight.[CR][CR]Nécessite un bridge Hue V2 (carré). Ambilight n'est pas disponible sur tous [CR]les matériels."
 
 "Automatiser vos lumières Hue V2 (Philips) avec Kodi. Créez des scènes multi-"
 "pièces qui s'exécutent lorsque vous lisez, mettez en pause ou arrêtez la "
