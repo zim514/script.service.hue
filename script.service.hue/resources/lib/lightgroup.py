@@ -11,8 +11,9 @@ import xbmc
 import xbmcgui
 from qhue import QhueException
 
-from resources.lib import CACHE, ADDON, reporting, ADDONID
-from resources.lib.kodiutils import convert_time, notification
+import resources.lib.kodiutils
+from resources.lib import ADDON, reporting, ADDONID
+from resources.lib.kodiutils import convert_time, notification, cache_get, cache_set
 from .language import get_string as _
 
 STATE_STOPPED = 0
@@ -21,6 +22,7 @@ STATE_PAUSED = 2
 
 VIDEO = 0
 AUDIO = 1
+
 
 
 class LightGroup(xbmc.Player):
@@ -154,8 +156,8 @@ class LightGroup(xbmc.Player):
 
     @staticmethod
     def check_active_time():
-        service_enabled = CACHE.get(f"{ADDONID}.service_enabled")
-        daylight = CACHE.get("script.service.hue.daylight")
+        service_enabled = cache_get(f"{ADDONID}.service_enabled")
+        daylight = cache_get("script.service.hue.daylight")
         # xbmc.log("[script.service.hue] Schedule: {}, daylightDisable: {}, daylight: {}, startTime: {}, endTime: {}".format(ADDON.getSettingBool("enableSchedule"), ADDON.getSettingBool("daylightDisable"), daylight,
         #           ADDON.getSettingBool("startTime"), ADDON.getSettingBool("endTime")))
 

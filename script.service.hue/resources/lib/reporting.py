@@ -5,6 +5,7 @@
 
 import platform
 import sys
+import traceback
 
 import rollbar
 import xbmc
@@ -15,6 +16,7 @@ from resources.lib.language import get_string as _
 
 
 def process_exception(exc, level="critical", error=""):
+    traceback.print_exc()
     if ADDON.getSettingBool("error_reporting"):
         if _error_report_dialog(exc):
             _report_error(level, error, exc)

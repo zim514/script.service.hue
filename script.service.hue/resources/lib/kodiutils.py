@@ -4,12 +4,16 @@
 #      See LICENSE.TXT for more information.
 
 import datetime
+import json
+from json import JSONDecodeError
 
 import xbmc
 import xbmcgui
 
 from resources.lib import ADDON
 from resources.lib.language import get_string as _
+
+win = xbmcgui.Window(10000)
 
 
 def validate_settings():
@@ -48,3 +52,22 @@ def convert_time(time):
 
 def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), sound=False):
     xbmcgui.Dialog().notification(header, message, icon, time, sound)
+
+
+def cache_get(key: str):
+    data_str = win.getProperty(key)
+    try:
+        data = json.loads(data_str)
+        # xbmc.log(f"[script.service.hue] Cache Get: {key}, {data}")
+        return data
+    except JSONDecodeError:
+        # Occurs when Cache is empty or unreadable (Eg. Old SimpleCache data still in memory because Kodi hasn't restarted)
+        return None
+
+
+def cache_set(key, data):
+    data_type = type(data)
+    data_str = json.dumps(data)
+    # xbmc.log(f"[script.service.hue] Cache Set: {key}, {data_str} - {data_type}")
+    win.setProperty(key, data_str)
+    return
