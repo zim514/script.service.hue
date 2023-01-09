@@ -11,9 +11,8 @@ import xbmc
 import xbmcgui
 from qhue import QhueException
 
-import resources.lib.kodiutils
 from resources.lib import ADDON, reporting, ADDONID
-from resources.lib.kodiutils import convert_time, notification, cache_get, cache_set
+from resources.lib.kodiutils import convert_time, notification, cache_get
 from .language import get_string as _
 
 STATE_STOPPED = 0
@@ -22,7 +21,6 @@ STATE_PAUSED = 2
 
 VIDEO = 0
 AUDIO = 1
-
 
 
 class LightGroup(xbmc.Player):
@@ -73,6 +71,7 @@ class LightGroup(xbmc.Player):
             else:
                 self.video_info_tag = None
 
+            xbmc.log(f"[script.service.hue] onAVStarted: check_active_time: {self.check_active_time()}, check_already_active: {self.check_already_active(self.start_scene)}")
             if (self.check_active_time() or self.check_already_active(self.start_scene)) and self.check_keep_lights_off_rule(self.start_scene) and self.start_behavior and self.media_type == self.playback_type():
                 self.run_action("play")
 
@@ -116,24 +115,27 @@ class LightGroup(xbmc.Player):
         self.onPlayBackStopped()
 
     def run_action(self, action):
-        if action == "play":
-            scene = self.start_scene
-        elif action == "pause":
-            scene = self.pause_scene
-        elif action == "stop":
-            scene = self.stop_scene
-        else:
-            xbmc.log(f"[script.service.hue] Unknown action type: {action}")
-            raise RuntimeError
-        try:
-            self.group0.action(scene=scene)
-        except QhueException as exc:
-            xbmc.log(f"[script.service.hue] run_action: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
-            if "3" in exc.type_id or "7" in exc.type_id:
-                xbmc.log("[script.service.hue] Scene not found")
-                notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+
+        service_enabled = cache_get(f"{ADDONID}.service_enabled")
+        if service_enabled:
+            if action == "play":
+                scene = self.start_scene
+            elif action == "pause":
+                scene = self.pause_scene
+            elif action == "stop":
+                scene = self.stop_scene
             else:
-                reporting.process_exception(exc)
+                xbmc.log(f"[script.service.hue] Unknown action type: {action}")
+                raise RuntimeError
+            try:
+                self.group0.action(scene=scene)
+            except QhueException as exc:
+                xbmc.log(f"[script.service.hue] run_action: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
+                if "3" in exc.type_id or "7" in exc.type_id:
+                    xbmc.log("[script.service.hue] Scene not found")
+                    notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+                else:
+                    reporting.process_exception(exc)
 
     def activate(self):
         xbmc.log(f"[script.service.hue] Activate group [{self.light_group_id}]. State: {self.state}")
@@ -158,28 +160,24 @@ class LightGroup(xbmc.Player):
     def check_active_time():
         service_enabled = cache_get(f"{ADDONID}.service_enabled")
         daylight = cache_get("script.service.hue.daylight")
-        # xbmc.log("[script.service.hue] Schedule: {}, daylightDisable: {}, daylight: {}, startTime: {}, endTime: {}".format(ADDON.getSettingBool("enableSchedule"), ADDON.getSettingBool("daylightDisable"), daylight,
-        #           ADDON.getSettingBool("startTime"), ADDON.getSettingBool("endTime")))
+        xbmc.log("[script.service.hue] Schedule: {}, daylightDisable: {}, daylight: {}, startTime: {}, endTime: {}".format(ADDON.getSettingBool("enableSchedule"), ADDON.getSettingBool("daylightDisable"), daylight,
+                                                                                                                           ADDON.getSettingString("startTime"), ADDON.getSettingString("endTime")))
 
         if ADDON.getSettingBool("daylightDisable") and daylight:
             xbmc.log("[script.service.hue] Disabled by daylight")
             return False
 
-        if service_enabled:
-            if ADDON.getSettingBool("enableSchedule"):
-                start = convert_time(ADDON.getSettingString("startTime"))
-                end = convert_time(ADDON.getSettingString("endTime"))
-                now = datetime.datetime.now().time()
-                if (now > start) and (now < end):
-                    # xbmc.log("[script.service.hue] Enabled by schedule")
-                    return True
-                # xbmc.log("[script.service.hue] Disabled by schedule")
-                return False
-            # xbmc.log("[script.service.hue] Schedule not enabled")
-            return True
-
-        # xbmc.log("[script.service.hue] Service disabled")
-        return False
+        if ADDON.getSettingBool("enableSchedule"):
+            start = convert_time(ADDON.getSettingString("startTime"))
+            end = convert_time(ADDON.getSettingString("endTime"))
+            now = datetime.datetime.now().time()
+            if (now > start) and (now < end):
+                xbmc.log("[script.service.hue] Enabled by schedule")
+                return True
+            xbmc.log("[script.service.hue] Disabled by schedule")
+            return False
+        xbmc.log("[script.service.hue] Schedule not enabled")
+        return True
 
     def check_video_activation(self, info_tag):
         try:

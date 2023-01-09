@@ -106,6 +106,7 @@ def _service(monitor):
             # check if service was just re-enabled and if so activate groups
             prev_service_enabled = service_enabled
             service_enabled = cache_get(f"{ADDONID}.service_enabled")
+
             if service_enabled and not prev_service_enabled:
                 activate(light_groups)
 
@@ -113,7 +114,7 @@ def _service(monitor):
             if not service_enabled:
                 AMBI_RUNNING.clear()
 
-            # process CACHEd waiting commands
+            # process CACHED waiting commands
             action = cache_get(f"{ADDONID}.action")
             if action:
                 _process_actions(action, light_groups)
