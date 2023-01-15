@@ -31,6 +31,7 @@ def menu():
 
         elif command == "settings":
             ADDON.openSettings()
+            xbmc.executebuiltin('Container.Refresh')
 
         elif command == "toggle":
             if cache_get(f"{ADDONID}.service_enabled") and _get_status() != "Disabled by daylight":
@@ -85,16 +86,18 @@ def _get_status():
     enabled = cache_get(f"{ADDONID}.service_enabled")
     daylight = cache_get(f"{ADDONID}.daylight")
     daylight_disable = ADDON.getSettingBool("daylightDisable")
-    enabled_type = type(enabled)
-    xbmc.log(f"[script.service.hue] _get_status enabled: {enabled}   -  {enabled_type}, daylight: {daylight}, daylight_disable: {daylight_disable}")
-
+    xbmc.log(f"[script.service.hue] _get_status enabled: {enabled}   -  {type(enabled)}, daylight: {daylight}, daylight_disable: {daylight_disable}")
 
     # xbmc.log("[script.service.hue] Current status: {}".format(daylight_disable))
     if daylight and daylight_disable:
         return _("Disabled by daylight")
     if enabled:
         return _("Enabled")
-    return _("Disabled")
+    elif not enabled:
+        return _("Disabled")
+    else:
+        return "NoneType"
+
 
 
 def _get_status_icon():

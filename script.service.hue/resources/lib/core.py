@@ -129,6 +129,12 @@ def _service(monitor):
             # every minute, check for sunset & connection
             if timer > 59:
                 timer = 0
+
+                ##### DEBUG
+                service_enabled = cache_get(f"{ADDONID}.service_enabled")
+                xbmc.log(f"[script.service.hue] DEBUG: enabled: {service_enabled}   -  {type(service_enabled)}")
+
+
                 # check connection to Hue hue_connection and fetch daylight status
                 try:
                     if connection_retries > 0:

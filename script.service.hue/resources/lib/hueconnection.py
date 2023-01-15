@@ -189,13 +189,12 @@ class HueConnection(object):
         try:
             bridge_config = bridge.config()
             model = bridge_config["modelid"]
-        except QhueException as exc:
-            xbmc.log(f"[script.service.hue] Exception: checkBridgeModel {exc.type_id}: {exc.message} {traceback.format_exc()}")
-            reporting.process_exception(exc)
-            return None
         except requests.RequestException as exc:
             xbmc.log(f"[script.service.hue] Requests exception: {exc}")
             notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
+            return None
+        except Exception as exc:
+            reporting.process_exception(exc)
             return None
 
         if model == "BSB002":
@@ -209,16 +208,16 @@ class HueConnection(object):
         b = qhue.Bridge(self.bridge_ip, None, timeout=QHUE_TIMEOUT)
         try:
             api_version = b.config()['apiversion']
-        except QhueException as error:
-            xbmc.log(f"[script.service.hue] Version check connection failed.  {error.type_id}: {error.message} {traceback.format_exc()}")
-            reporting.process_exception(error)
-            return False
+
         except requests.RequestException as error:
             xbmc.log(f"[script.service.hue] Version check connection failed.  {error}")
             return False
         except KeyError as error:
             notification(_("Hue Service"), _("Bridge outdated. Please update your bridge."), icon=xbmcgui.NOTIFICATION_ERROR)
             xbmc.log(f"[script.service.hue] in _version_check():  Connected! Bridge too old: {api_version}, error: {error}")
+            return False
+        except Exception as exc:
+            reporting.process_exception(exc)
             return False
 
         api_split = api_version.split(".")
@@ -236,8 +235,12 @@ class HueConnection(object):
         b = qhue.Bridge(self.bridge_ip, self.bridge_user, timeout=QHUE_TIMEOUT)
         try:
             zigbee = b.config()['zigbeechannel']
-        except (requests.RequestException, qhue.QhueException, KeyError):
+        except (requests.RequestException, QhueException, KeyError):
             return False
+        except Exception as exc:
+            reporting.process_exception(exc)
+            return False
+
 
         if zigbee:
             xbmc.log(f"[script.service.hue] Hue User Authorized. Bridge Zigbee Channel: {zigbee}")
@@ -376,13 +379,13 @@ class HueConnection(object):
     def select_hue_lights(self):
         try:
             hue_lights = self.bridge.lights()
-        except QhueException as exc:
-            xbmc.log(f"[script.service.hue]: Select Hue Lights QhueException: {exc.type_id}: {exc.message} {traceback.format_exc()}")
-            notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
-            return None
+
         except requests.RequestException as exc:
             xbmc.log(f"[script.service.hue] Requests exception: {exc}")
             notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
+            return None
+        except Exception as exc:
+            reporting.process_exception(exc)
             return None
 
         items = []
@@ -414,15 +417,12 @@ class HueConnection(object):
 
         try:
             hue_scenes = self.bridge.scenes()
-        except QhueException as exc:
-            xbmc.log(f"[script.service.hue]: Select Hue Lights QhueException: {exc.type_id}: {exc.message} {traceback.format_exc()}")
-            notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
-            reporting.process_exception(exc)
-            return None
         except requests.RequestException as exc:
             xbmc.log(f"[script.service.hue] Requests exception: {exc}")
             notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
             return None
+        except Exception as exc:
+            reporting.process_exception(exc)
 
         items = []
         index = []
@@ -450,8 +450,7 @@ class HueConnection(object):
     def get_daylight(self):
         try:
             daylight = self.bridge.sensors['1']()['state']['daylight']
-        except QhueException as exc:
-            xbmc.log(f"[script.service.hue]: Get Daylight Qhue Exception: {exc.type_id}: {exc.message} {traceback.format_exc()}")
+        except Exception as exc:
             reporting.process_exception(exc)
             return
         return daylight
@@ -459,8 +458,8 @@ class HueConnection(object):
     def _get_light_name(self, light):
         try:
             name = self.bridge.lights()[light]['name']
-        except (qhue.QhueException, requests.RequestException) as exc:
-            xbmc.log(f"[script.service.hue] getLightName Qhue Exception: {exc} {traceback.format_exc()}")
+        except Exception as exc:
+            reporting.process_exception(exc)
             return None
 
         if name is None:

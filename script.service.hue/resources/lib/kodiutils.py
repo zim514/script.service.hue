@@ -66,7 +66,6 @@ def cache_get(key: str):
 
 
 def cache_set(key, data):
-    data_type = type(data)
     data_str = json.dumps(data)
     # xbmc.log(f"[script.service.hue] Cache Set: {key}, {data_str} - {data_type}")
     win.setProperty(key, data_str)

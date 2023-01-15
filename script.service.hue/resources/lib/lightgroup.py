@@ -9,7 +9,7 @@ import traceback
 import requests
 import xbmc
 import xbmcgui
-from qhue import QhueException
+
 
 from resources.lib import ADDON, reporting, ADDONID
 from resources.lib.kodiutils import convert_time, notification, cache_get
@@ -53,8 +53,7 @@ class LightGroup(xbmc.Player):
 
     def onAVStarted(self):
         if self.enabled:
-            xbmc.log(
-                f"In KodiGroup[{self.light_group_id}], onPlaybackStarted. Group enabled: {self.enabled},startBehavior: {self.start_behavior} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.mediaType: {self.media_type},self.playbackType(): {self.playback_type()}")
+            xbmc.log(f"[script.service.hue] In LightGroup[{self.light_group_id}], onPlaybackStarted. Group enabled: {self.enabled},startBehavior: {self.start_behavior} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.mediaType: {self.media_type},self.playbackType(): {self.playback_type()}")
             self.state = STATE_PLAYING
             self.last_media_type = self.playback_type()
 
@@ -77,7 +76,7 @@ class LightGroup(xbmc.Player):
 
     def onPlayBackPaused(self):
         if self.enabled:
-            xbmc.log(f"[script.service.hue] In KodiGroup[{self.light_group_id}], onPlaybackPaused() , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}")
+            xbmc.log(f"[script.service.hue] In LightGroup[{self.light_group_id}], onPlaybackPaused() , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}")
             self.state = STATE_PAUSED
 
             if self.media_type == VIDEO and not self.check_video_activation(
@@ -90,7 +89,7 @@ class LightGroup(xbmc.Player):
 
     def onPlayBackStopped(self):
         if self.enabled:
-            xbmc.log(f"[script.service.hue] In KodiGroup[{self.light_group_id}], onPlaybackStopped() , mediaType: {self.media_type}, lastMediaType: {self.last_media_type} ")
+            xbmc.log(f"[script.service.hue] In LightGroup[{self.light_group_id}], onPlaybackStopped() , mediaType: {self.media_type}, lastMediaType: {self.last_media_type} ")
             self.state = STATE_STOPPED
 
             try:
@@ -103,15 +102,15 @@ class LightGroup(xbmc.Player):
                 self.run_action("stop")
 
     def onPlayBackResumed(self):
-        # xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackResumed()".format(self.light_group_id))
+        # xbmc.log("[script.service.hue] In LightGroup[{}], onPlaybackResumed()".format(self.light_group_id))
         self.onAVStarted()
 
     def onPlayBackError(self):
-        # xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackError()".format(self.light_group_id))
+        # xbmc.log("[script.service.hue] In LightGroup[{}], onPlaybackError()".format(self.light_group_id))
         self.onPlayBackStopped()
 
     def onPlayBackEnded(self):
-        # xbmc.log("[script.service.hue] In KodiGroup[{}], onPlaybackEnded()".format(self.light_group_id))
+        # xbmc.log("[script.service.hue] In LightGroup[{}], onPlaybackEnded()".format(self.light_group_id))
         self.onPlayBackStopped()
 
     def run_action(self, action):
@@ -129,13 +128,8 @@ class LightGroup(xbmc.Player):
                 raise RuntimeError
             try:
                 self.group0.action(scene=scene)
-            except QhueException as exc:
-                xbmc.log(f"[script.service.hue] run_action: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
-                if "3" in exc.type_id or "7" in exc.type_id:
-                    xbmc.log("[script.service.hue] Scene not found")
-                    notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
-                else:
-                    reporting.process_exception(exc)
+            except Exception as exc:
+                reporting.process_exception(exc)
 
     def activate(self):
         xbmc.log(f"[script.service.hue] Activate group [{self.light_group_id}]. State: {self.state}")
@@ -224,17 +218,11 @@ class LightGroup(xbmc.Player):
                         # xbmc.log("[script.service.hue] Check if scene light already active: True")
                         return True
                 # xbmc.log("[script.service.hue] Check if scene light already active: False")
-            except QhueException as exc:
-                if ["7", "3"] in exc.type_id:
-                    xbmc.log("[script.service.hue] Scene not found")
-                    notification(_("Hue Service"), _("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
-                else:
-                    xbmc.log(f"[script.service.hue] checkAlreadyActive: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
-                    reporting.process_exception(exc)
             except requests.RequestException as exc:
                 xbmc.log(f"[script.service.hue] Requests exception: {exc}")
                 notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
-
+            except Exception as exc:
+                reporting.process_exception(exc)
         return False
 
     def check_keep_lights_off_rule(self, scene):
@@ -251,11 +239,11 @@ class LightGroup(xbmc.Player):
                         xbmc.log("[script.service.hue] Check if lights should stay off: True")
                         return False
                 xbmc.log("[script.service.hue] Check if lights should stay off: False")
-            except QhueException as exc:
-                xbmc.log(f"[script.service.hue] checkKeepLightsOffRule: Hue call fail: {exc.type_id}: {exc.message} {traceback.format_exc()}")
-                reporting.process_exception(exc)
             except requests.RequestException as exc:
                 xbmc.log(f"[script.service.hue] Requests exception: {exc}")
                 notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
+            except Exception as exc:
+                reporting.process_exception(exc)
+
 
         return True
