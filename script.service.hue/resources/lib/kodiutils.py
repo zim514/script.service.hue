@@ -10,10 +10,10 @@ from json import JSONDecodeError
 import xbmc
 import xbmcgui
 
-from resources.lib import ADDON
+from resources.lib import ADDON, ADDONID
 from resources.lib.language import get_string as _
 
-win = xbmcgui.Window(10000)
+cache_window = xbmcgui.Window(10000)
 
 
 def validate_settings():
@@ -55,18 +55,20 @@ def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), so
 
 
 def cache_get(key: str):
-    data_str = win.getProperty(key)
+    data_str = cache_window.getProperty(f"{ADDONID}.{key}]")
+
     try:
         data = json.loads(data_str)
         # xbmc.log(f"[script.service.hue] Cache Get: {key}, {data}")
         return data
     except JSONDecodeError:
         # Occurs when Cache is empty or unreadable (Eg. Old SimpleCache data still in memory because Kodi hasn't restarted)
+        xbmc.log("[script.service.hue] cache_get JSONDecodeError: {data}")
         return None
 
 
 def cache_set(key, data):
     data_str = json.dumps(data)
     # xbmc.log(f"[script.service.hue] Cache Set: {key}, {data_str} - {data_type}")
-    win.setProperty(key, data_str)
+    cache_window.setProperty(f"{ADDONID}.{key}]", data_str)
     return

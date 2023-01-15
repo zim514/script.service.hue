@@ -34,13 +34,13 @@ def menu():
             xbmc.executebuiltin('Container.Refresh')
 
         elif command == "toggle":
-            if cache_get(f"{ADDONID}.service_enabled") and _get_status() != "Disabled by daylight":
+            if cache_get("service_enabled") and _get_status() != "Disabled by daylight":
                 xbmc.log("[script.service.hue] Disable service")
-                cache_set(f"{ADDONID}.service_enabled", False)
+                cache_set("service_enabled", False)
 
             elif _get_status() != "Disabled by daylight":
                 xbmc.log("[script.service.hue] Enable service")
-                cache_set(f"{ADDONID}.service_enabled", True)
+                cache_set("service_enabled", True)
             else:
                 xbmc.log("[script.service.hue] Disabled by daylight, ignoring")
 
@@ -56,9 +56,9 @@ def menu():
             xbmcplugin.addDirectoryItem(addon_handle, base_url + "?action=pause&light_group_id=" + light_group_id, ListItem(_("Pause")))
             xbmcplugin.addDirectoryItem(addon_handle, base_url + "?action=stop&light_group_id=" + light_group_id, ListItem(_("Stop")))
 
-            xbmcplugin.endOfDirectory(handle=addon_handle, CACHEToDisc=True)
+            xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=True)
         else:
-            cache_set(f"{ADDONID}.action", (action, light_group_id), expiration=(timedelta(seconds=5)))
+            cache_set("action", (action, light_group_id))
     else:
         xbmc.log(f"[script.service.hue] Unknown command. Handle: {addon_handle}, route: {route}, Arguments: {sys.argv}")
 
@@ -83,8 +83,8 @@ def build_menu(base_url, addon_handle):
 
 
 def _get_status():
-    enabled = cache_get(f"{ADDONID}.service_enabled")
-    daylight = cache_get(f"{ADDONID}.daylight")
+    enabled = cache_get("service_enabled")
+    daylight = cache_get("daylight")
     daylight_disable = ADDON.getSettingBool("daylightDisable")
     xbmc.log(f"[script.service.hue] _get_status enabled: {enabled}   -  {type(enabled)}, daylight: {daylight}, daylight_disable: {daylight_disable}")
 
@@ -99,10 +99,9 @@ def _get_status():
         return "NoneType"
 
 
-
 def _get_status_icon():
-    enabled = cache_get(f"{ADDONID}.service_enabled")
-    daylight = cache_get(f"{ADDONID}.daylight")
+    enabled = cache_get("service_enabled")
+    daylight = cache_get("daylight")
     daylight_disable = ADDON.getSettingBool("daylightDisable")
     # xbmc.log("[script.service.hue] Current status: {}".format(daylight_disable))
     if daylight and daylight_disable:

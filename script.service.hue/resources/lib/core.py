@@ -85,7 +85,7 @@ def _commands(monitor, command):
 
 def _service(monitor):
     hue_connection = HueConnection(monitor, silent=ADDON.getSettingBool("disableConnectionMessage"), discover=False)
-    service_enabled = cache_get(f"{ADDONID}.service_enabled")
+    service_enabled = cache_get("service_enabled")
 
     if hue_connection.connected:
         light_groups = [lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO),
@@ -97,15 +97,15 @@ def _service(monitor):
         daylight = hue_connection.get_daylight()
         new_daylight = daylight
 
-        cache_set(f"{ADDONID}.daylight", daylight)
-        cache_set(f"{ADDONID}.service_enabled", True)
+        cache_set("daylight", daylight)
+        cache_set("service_enabled", True)
         # xbmc.log("[script.service.hue] Core service starting. Connected: {}".format(CONNECTED))
 
         while hue_connection.connected and not monitor.abortRequested():
 
             # check if service was just re-enabled and if so activate groups
             prev_service_enabled = service_enabled
-            service_enabled = cache_get(f"{ADDONID}.service_enabled")
+            service_enabled = cache_get("service_enabled")
 
             if service_enabled and not prev_service_enabled:
                 activate(light_groups)
@@ -115,7 +115,7 @@ def _service(monitor):
                 AMBI_RUNNING.clear()
 
             # process CACHED waiting commands
-            action = cache_get(f"{ADDONID}.action")
+            action = cache_get("action")
             if action:
                 _process_actions(action, light_groups)
 
@@ -131,7 +131,7 @@ def _service(monitor):
                 timer = 0
 
                 ##### DEBUG
-                service_enabled = cache_get(f"{ADDONID}.service_enabled")
+                service_enabled = cache_get("service_enabled")
                 xbmc.log(f"[script.service.hue] DEBUG: enabled: {service_enabled}   -  {type(service_enabled)}")
 
 
@@ -160,7 +160,7 @@ def _service(monitor):
                     xbmc.log(f"[script.service.hue] Daylight change. current: {daylight}, new: {new_daylight}")
                     daylight = new_daylight
 
-                    cache_set(f"{ADDONID}.daylight", daylight)
+                    cache_set("daylight", daylight)
                     if not daylight and service_enabled:
                         xbmc.log("[script.service.hue] Sunset activate")
                         activate(light_groups)
@@ -179,7 +179,7 @@ def _process_actions(action, light_groups):
     xbmc.log(f"[script.service.hue] Action command: {action}, action_action: {action_action}, action_light_group_id: {action_light_group_id}")
     light_groups[action_light_group_id].run_action(action_action)
 
-    cache_set(f"{ADDONID}.action", None)
+    cache_set("action", None)
 
 
 class HueMonitor(xbmc.Monitor):
@@ -197,11 +197,11 @@ class HueMonitor(xbmc.Monitor):
 
             if method == "Other.disable":
                 xbmc.log("[script.service.hue] Notification received: Disable")
-                cache_set(f"{ADDONID}.service_enabled", False)
+                cache_set("service_enabled", False)
 
             if method == "Other.enable":
                 xbmc.log("[script.service.hue] Notification received: Enable")
-                cache_set(f"{ADDONID}.service_enabled", True)
+                cache_set("service_enabled", True)
 
             if method == "Other.actions":
                 json_loads = json.loads(data)
