@@ -551,3 +551,7 @@ msgstr "Sigurno želite obrisati ovu scenu:"
 msgctxt "#30019"
 msgid "Bridge outdated. Please update your bridge."
 msgstr "Most je zastario. Nadopunite svoj most."
+
+msgctxt "#30003"
+msgid "ERROR: Scene or Light not found, it may have changed or been deleted. Check your configuration."
+msgstr ""
