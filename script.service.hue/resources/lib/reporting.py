@@ -18,7 +18,7 @@ from resources.lib.language import get_string as _
 
 
 def process_exception(exc, level="critical", error=""):
-    xbmc.log(f"[script.service.hue] Exception: {type(exc)}, {exc}, {error}, {exc.message}, {traceback.format_exc()}")
+    xbmc.log(f"[script.service.hue] Exception: {type(exc)}, {exc}, {error}, {traceback.format_exc()}")
 
     if type(exc) == QhueException and exc.type_id in ["3", "7"]:  # 3: resource not found, 7: invalid value for parameter
         xbmc.log("[script.service.hue] Qhue resource not found, not reporting to rollbar")
