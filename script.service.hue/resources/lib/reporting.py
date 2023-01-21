@@ -39,7 +39,7 @@ def _error_report_dialog(exc):
 
 
 def _report_error(level="critical", error="", exc=""):
-    if ["dev", "alpha", "beta"] in ADDONVERSION:
+    if any(val in ADDONVERSION for val in ["dev", "alpha", "beta"]):
         env = "dev"
     else:
         env = "production"
