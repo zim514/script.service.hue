@@ -92,7 +92,6 @@ def _service(monitor):
                         lightgroup.LightGroup(1, hue_connection, lightgroup.AUDIO),
                         ambigroup.AmbiGroup(3, hue_connection)]
 
-        connection_retries = 0
         timer = 60
         daylight = hue_connection.get_daylight()
         new_daylight = daylight
@@ -106,7 +105,6 @@ def _service(monitor):
             # check if service was just re-enabled and if so activate groups
             prev_service_enabled = service_enabled
             service_enabled = cache_get("service_enabled")
-
             if service_enabled and not prev_service_enabled:
                 activate(light_groups)
 
@@ -130,30 +128,15 @@ def _service(monitor):
             if timer > 59:
                 timer = 0
 
-                ##### DEBUG
-                service_enabled = cache_get("service_enabled")
-                xbmc.log(f"[script.service.hue] DEBUG: enabled: {service_enabled}   -  {type(service_enabled)}")
-
-
-                # check connection to Hue hue_connection and fetch daylight status
+                # fetch daylight status, reconnect to Hue if it fails
                 try:
-                    if connection_retries > 0:
-                        hue_connection.connect_bridge(silent=True)
-                        if hue_connection.connected:
-                            new_daylight = hue_connection.get_daylight()
-                            connection_retries = 0
-                    else:
+                    new_daylight = hue_connection.get_daylight()
+                except requests.exceptions.RequestException as error:
+                    if hue_connection.reconnect(monitor):
                         new_daylight = hue_connection.get_daylight()
-                except (requests.RequestException, ConnectionError) as error:
-                    connection_retries = connection_retries + 1
-                    if connection_retries <= 10:
-                        xbmc.log(f"[script.service.hue] Bridge Connection Error. Attempt: {connection_retries}/10 : {error}")
-                        notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
-                        timer = -60
                     else:
-                        xbmc.log(f"[script.service.hue] Bridge Connection Error. Attempt: {connection_retries}/10. Shutting down : {error}")
                         notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
-                        hue_connection.connected = False
+                        return
 
                 # check if sunset took place
                 if new_daylight != daylight:

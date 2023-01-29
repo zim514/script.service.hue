@@ -1,4 +1,3 @@
-
 #      Copyright (C) 2019 Kodi Hue Service (script.service.hue)
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
@@ -29,20 +28,20 @@ class HueConnection(object):
         self.connected = False
 
         if discover:
-            self.discover_bridge()
+            self.discover()
         else:
-            self.connect_bridge(silent)
+            self.connect(silent)
 
-    def connect_bridge(self, silent=False):
+    def connect(self, silent=False):
 
-        xbmc.log(f"[script.service.hue] in connect_bridge() with settings: bridgeIP: {self.bridge_ip}, bridgeUser: {self.bridge_user}")
+        xbmc.log(f"[script.service.hue] in connect() with settings: bridgeIP: {self.bridge_ip}, bridgeUser: {self.bridge_user}")
 
         if self.bridge_ip and self.bridge_user:
             if not self._check_version():
-                xbmc.log("[script.service.hue] in connect_bridge(): Bridge not responding to connection test, attempt finding a new bridge IP.")
+                xbmc.log("[script.service.hue] in connect(): Bridge not responding to connection test, attempt finding a new bridge IP.")
 
                 if self._discover_bridge_ip():
-                    xbmc.log(f"[script.service.hue] in connect_bridge(): New IP found: {self.bridge_ip}. Saving")
+                    xbmc.log(f"[script.service.hue] in connect(): New IP found: {self.bridge_ip}. Saving")
                     ADDON.setSettingString("bridgeIP", self.bridge_ip)
                 else:
                     xbmc.log("[script.service.hue] Bridge not found")
@@ -69,8 +68,37 @@ class HueConnection(object):
             notification(_("Hue Service"), _("Bridge not configured"), icon=xbmcgui.NOTIFICATION_ERROR)
             self.connected = False
 
-    def discover_bridge(self):
-        xbmc.log("[script.service.hue] Start bridgeDiscover")
+    def reconnect(self, monitor):
+        xbmc.log(f"[script.service.hue] reconnect() with settings: bridgeIP: {self.bridge_ip}, bridgeUser: {self.bridge_user}")
+        retries = 0
+
+        while retries < 11 and not monitor.abortRequested():
+            if self._check_version():
+                xbmc.log(f"[script.service.hue] reconnect(): Check version successful! ")
+                notification(_("Hue Service"), _("Reconnected"))
+                return True
+            else:
+                if self._discover_bridge_ip():
+                    xbmc.log(f"[script.service.hue] in reconnect(): New IP found: {self.bridge_ip}. Saving")
+                    if self._check_version():
+                        xbmc.log(f"[script.service.hue] in reconnect(): Version check successful. Saving bridge IP")
+                        ADDON.setSettingString("bridgeIP", self.bridge_ip)
+                        return True
+                else:
+                    xbmc.log(f"[script.service.hue] Bridge not found. Attempt {retries}/10. Trying again in 2 minutes.")
+                    notification(_("Hue Service"), _("Connection lost. Trying again in 2 minutes"))
+
+            retries = retries + 1
+            monitor.waitForAbort(120)  # Retry in 2 minutes
+
+        # give up
+        xbmc.log(f"[script.service.hue] Reconnect. Attempt: {retries}/10. Shutting down")
+        notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
+        self.connected = False
+        return False
+
+    def discover(self):
+        xbmc.log("[script.service.hue] Start discover")
         # Create new config if none exists. Returns success or fail as bool
         ADDON.setSettingString("bridgeIP", "")
         ADDON.setSettingString("bridgeUser", "")
@@ -114,7 +142,7 @@ class HueConnection(object):
                         self.monitor.waitForAbort(5)
                         progress_bar.close()
                         xbmc.log("[script.service.hue] Bridge discovery complete")
-                        self.connect_bridge(True)
+                        self.connect(True)
                         return True
 
                     elif progress_bar.iscanceled():
@@ -156,8 +184,11 @@ class HueConnection(object):
         # discover hue bridge IP silently for non-interactive discovery / bridge IP change.
         xbmc.log("[script.service.hue] In discoverBridgeIP")
         if self._discover_nupnp():
+            xbmc.log(f"[script.service.hue] In discoverBridgeIP, discover_nupnp SUCCESS: {self.bridge_ip}")
             if self._check_version():
+                xbmc.log(f"[script.service.hue] In discoverBridgeIP, check version SUCCESS")
                 return True
+        xbmc.log(f"[script.service.hue] In discoverBridgeIP, discover_nupnp FAIL: {self.bridge_ip}")
         return False
 
     def _discover_nupnp(self):
@@ -165,7 +196,7 @@ class HueConnection(object):
         try:
             req = requests.get('https://discovery.meethue.com/')
             result = req.json()
-        except requests.RequestException as error:
+        except requests.exceptions.RequestException as error:
             xbmc.log(f"[script.service.hue] Nupnp failed: {error}")
             return None
         except (JSONDecodeError, json.JSONDecodeError) as error:  # when discovery.meethue.com returns empty JSON or 429
@@ -208,7 +239,6 @@ class HueConnection(object):
         b = qhue.Bridge(self.bridge_ip, None, timeout=QHUE_TIMEOUT)
         try:
             api_version = b.config()['apiversion']
-
         except requests.RequestException as error:
             xbmc.log(f"[script.service.hue] Version check connection failed.  {error}")
             return False
@@ -240,7 +270,6 @@ class HueConnection(object):
         except Exception as exc:
             reporting.process_exception(exc)
             return False
-
 
         if zigbee:
             xbmc.log(f"[script.service.hue] Hue User Authorized. Bridge Zigbee Channel: {zigbee}")
@@ -448,11 +477,7 @@ class HueConnection(object):
         return None
 
     def get_daylight(self):
-        try:
-            daylight = self.bridge.sensors['1']()['state']['daylight']
-        except Exception as exc:
-            reporting.process_exception(exc)
-            return
+        daylight = self.bridge.sensors['1']()['state']['daylight']
         return daylight
 
     def _get_light_name(self, light):

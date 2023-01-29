@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.4.3">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.4.4">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.27.1"/>
@@ -23,6 +23,7 @@
         <news>
 Remove dependency with SimpleCache
 Fix service not disabling correctly
+Fix reconnection
 Improved Hue error handling
         </news>
         <summary lang="ca_ES">Automatitza les llums Hue amb la reproducció de Kodi</summary>

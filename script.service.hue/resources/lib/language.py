@@ -158,3 +158,4 @@ _strings['connecting...'] = 30009
 _strings['are you sure you want to delete this scene:'] = 30027
 _strings['bridge outdated. please update your bridge.'] = 30019
 _strings['error: scene or light not found, it may have changed or been deleted. check your configuration.'] = 30003
+_strings['reconnected'] = 30033

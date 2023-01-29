@@ -63,7 +63,7 @@ def cache_get(key: str):
         return data
     except JSONDecodeError:
         # Occurs when Cache is empty or unreadable (Eg. Old SimpleCache data still in memory because Kodi hasn't restarted)
-        xbmc.log("[script.service.hue] cache_get JSONDecodeError: {data}")
+        #xbmc.log(f"[script.service.hue] cache_get JSONDecodeError: {key}: {data_str}")
         return None
 
 
