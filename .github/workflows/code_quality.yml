@@ -6,7 +6,7 @@ on:
 
 
 jobs:
-  qodana:
+  Qodana:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
