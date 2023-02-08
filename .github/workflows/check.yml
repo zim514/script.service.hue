@@ -15,3 +15,8 @@ jobs:
       with:
         kodi-version: matrix
         addon-id: ${{ github.event.repository.name }}
+  qodana:
+    name: 'Qodana Scan'
+    uses: JetBrains/qodana-action@main
+    env:
+      QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
