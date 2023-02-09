@@ -14,8 +14,8 @@ import xbmc
 import xbmcgui
 from qhue import QhueException
 
-from resources.lib import ADDON, QHUE_TIMEOUT, reporting
-from resources.lib.kodiutils import notification
+from . import ADDON, QHUE_TIMEOUT, reporting
+from .kodiutils import notification
 from .language import get_string as _
 
 

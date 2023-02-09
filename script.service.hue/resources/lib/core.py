@@ -10,11 +10,11 @@ from datetime import timedelta
 import requests
 import xbmc
 
-from resources.lib import ADDON, SETTINGS_CHANGED, ADDONID, AMBI_RUNNING
-from resources.lib import ambigroup, lightgroup, kodiutils, hueconnection
-from resources.lib.hueconnection import HueConnection
-from resources.lib.language import get_string as _
-from resources.lib.kodiutils import validate_settings, notification, cache_set, cache_get
+from . import ADDON, SETTINGS_CHANGED, ADDONID, AMBI_RUNNING
+from . import ambigroup, lightgroup, kodiutils, hueconnection
+from .hueconnection import HueConnection
+from .kodiutils import validate_settings, notification, cache_set, cache_get
+from .language import get_string as _
 
 
 def core():
