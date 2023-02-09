@@ -12,7 +12,6 @@ import re
 import subprocess
 import polib
 
-
 _strings = {}
 
 # print(f"PATH: {sys.path}")
@@ -31,7 +30,7 @@ code_base = f"{dir_path}\\script.service.hue\\resources\\lib"
 print(f"input file: {string_file}")
 print(f"code file: {code_file}")
 print(f"__file__: {__file__}")
-print (f"grep location: {code_base}")
+print(f"grep location: {code_base}")
 
 po = polib.pofile(string_file, wrapwidth=500)
 

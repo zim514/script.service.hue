@@ -51,7 +51,8 @@ class LightGroup(xbmc.Player):
 
     def onAVStarted(self):
         if self.enabled:
-            xbmc.log(f"[script.service.hue] In LightGroup[{self.light_group_id}], onPlaybackStarted. Group enabled: {self.enabled},startBehavior: {self.start_behavior} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.mediaType: {self.media_type},self.playbackType(): {self.playback_type()}")
+            xbmc.log(
+                f"[script.service.hue] In LightGroup[{self.light_group_id}], onPlaybackStarted. Group enabled: {self.enabled},startBehavior: {self.start_behavior} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.mediaType: {self.media_type},self.playbackType(): {self.playback_type()}")
             self.state = STATE_PLAYING
             self.last_media_type = self.playback_type()
 
@@ -150,7 +151,7 @@ class LightGroup(xbmc.Player):
 
     @staticmethod
     def check_active_time():
-        service_enabled = cache_get("service_enabled")
+
         daylight = cache_get("script.service.hue.daylight")
         xbmc.log("[script.service.hue] Schedule: {}, daylightDisable: {}, daylight: {}, startTime: {}, endTime: {}".format(ADDON.getSettingBool("enableSchedule"), ADDON.getSettingBool("daylightDisable"), daylight,
                                                                                                                            ADDON.getSettingString("startTime"), ADDON.getSettingString("endTime")))
@@ -185,7 +186,7 @@ class LightGroup(xbmc.Player):
             #     previousFileName = fileName
 
             # xbmc.log("[script.service.hue] InfoTag contents: duration: {}, mediaType: {}, file: {}".format(duration, mediaType, fileName))
-        except (AttributeError, TypeError) as exc:
+        except (AttributeError, TypeError):
             xbmc.log("[script.service.hue] Can't read infoTag {exc}")
             return False
         # xbmc.log("Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, PVR : {}, Other: {}".format(self.light_group_id, settings_storage['videoMinimumDuration'], settings_storage['video_enableMovie'],
@@ -211,8 +212,8 @@ class LightGroup(xbmc.Player):
             try:
                 scene_data = self.bridge.scenes[scene]()
                 for light in scene_data["lights"]:
-                    l = self.bridge.lights[light]()
-                    if l["state"]["on"]:  # one light is on, the scene can be applied
+                    states = self.bridge.lights[light]()
+                    if states["state"]["on"]:  # one light is on, the scene can be applied
                         # xbmc.log("[script.service.hue] Check if scene light already active: True")
                         return True
                 # xbmc.log("[script.service.hue] Check if scene light already active: False")
@@ -232,8 +233,8 @@ class LightGroup(xbmc.Player):
             try:
                 scene_data = self.bridge.scenes[scene]()
                 for light in scene_data["lights"]:
-                    l = self.bridge.lights[light]()
-                    if l["state"]["on"] is False:  # one light is off, the scene should not be applied
+                    states = self.bridge.lights[light]()
+                    if states["state"]["on"] is False:  # one light is off, the scene should not be applied
                         xbmc.log("[script.service.hue] Check if lights should stay off: True")
                         return False
                 xbmc.log("[script.service.hue] Check if lights should stay off: False")
@@ -242,6 +243,5 @@ class LightGroup(xbmc.Player):
                 notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
             except Exception as exc:
                 reporting.process_exception(exc)
-
 
         return True

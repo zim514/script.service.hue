@@ -70,6 +70,7 @@ class AmbiGroup(lightgroup.LightGroup):
                     self.ambi_lights.update(light)
                     index = index + 1
 
+                # noinspection PyArgumentList
                 super(xbmc.Player).__init__()
 
     @staticmethod

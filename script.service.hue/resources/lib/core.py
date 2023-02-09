@@ -131,7 +131,7 @@ def _service(monitor):
                 # fetch daylight status, reconnect to Hue if it fails
                 try:
                     new_daylight = hue_connection.get_daylight()
-                except requests.exceptions.RequestException as error:
+                except requests.exceptions.RequestException:
                     if hue_connection.reconnect(monitor):
                         new_daylight = hue_connection.get_daylight()
                     else:
@@ -192,7 +192,7 @@ class HueMonitor(xbmc.Monitor):
                 light_group_id = json_loads['group']
                 action = json_loads['command']
                 xbmc.log(f"[script.service.hue] Action Notification: group: {light_group_id}, command: {action}")
-                cache_set("script.service.hue.action", (action, light_group_id), expiration=(timedelta(seconds=5)))
+                cache_set("script.service.hue.action", (action, light_group_id))
 
 
 def activate(light_groups):

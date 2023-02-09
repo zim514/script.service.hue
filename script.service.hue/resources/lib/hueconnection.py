@@ -147,7 +147,6 @@ class HueConnection(object):
 
                     elif progress_bar.iscanceled():
                         xbmc.log("[script.service.hue] Cancelled 2")
-                        complete = True
                         progress_bar.update(percent=100, message=_("Cancelled"))
                         progress_bar.close()
 
@@ -155,19 +154,17 @@ class HueConnection(object):
                         xbmc.log(f"[script.service.hue] User not created, received: {self.bridge_user}")
                         progress_bar.update(percent=100, message=_("User not found[CR]Check your bridge and network."))
                         self.monitor.waitForAbort(5)
-                        complete = True
                         progress_bar.close()
                         return
                 elif progress_bar.iscanceled():
                     xbmc.log("[script.service.hue] Cancelled 3")
-                    complete = True
+
                     progress_bar.update(percent=100, message=_("Cancelled"))
                     progress_bar.close()
                 else:
                     progress_bar.update(percent=100, message=_("Bridge not found[CR]Check your bridge and network."))
                     xbmc.log("[script.service.hue] Bridge not found, check your bridge and network")
                     self.monitor.waitForAbort(5)
-                    complete = True
                     progress_bar.close()
 
             xbmc.log("[script.service.hue] Cancelled 4")
