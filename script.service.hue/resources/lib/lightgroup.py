@@ -4,15 +4,13 @@
 #      See LICENSE.TXT for more information.
 
 import datetime
-import traceback
 
 import requests
 import xbmc
 import xbmcgui
 
-
-from resources.lib import ADDON, reporting, ADDONID
-from resources.lib.kodiutils import convert_time, notification, cache_get
+from . import ADDON, reporting
+from .kodiutils import convert_time, notification, cache_get
 from .language import get_string as _
 
 STATE_STOPPED = 0

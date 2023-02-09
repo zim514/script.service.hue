@@ -10,8 +10,8 @@ from json import JSONDecodeError
 import xbmc
 import xbmcgui
 
-from resources.lib import ADDON, ADDONID
-from resources.lib.language import get_string as _
+from . import ADDON, ADDONID
+from .language import get_string as _
 
 cache_window = xbmcgui.Window(10000)
 

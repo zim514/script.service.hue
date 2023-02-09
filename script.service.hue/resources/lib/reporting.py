@@ -12,9 +12,9 @@ import xbmc
 import xbmcgui
 from qhue import QhueException
 
-from resources.lib import ADDONVERSION, ROLLBAR_API_KEY, KODIVERSION, ADDONPATH, ADDON
-from resources.lib.kodiutils import notification
-from resources.lib.language import get_string as _
+from . import ADDONVERSION, ROLLBAR_API_KEY, KODIVERSION, ADDONPATH, ADDON
+from .kodiutils import notification
+from .language import get_string as _
 
 
 def process_exception(exc, level="critical", error=""):
