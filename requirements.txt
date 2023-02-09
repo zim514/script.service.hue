@@ -4,10 +4,3 @@ rollbar~=0.15.2
 polib
 Pillow
 Kodistubs
-functools
-time
-collections
-deque
-os
-re
-subprocess
