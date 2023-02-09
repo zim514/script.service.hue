@@ -3,3 +3,4 @@ qhue~=2.0.1
 rollbar~=0.15.2
 polib
 Pillow
+Kodistubs
