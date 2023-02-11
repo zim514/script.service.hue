@@ -24,17 +24,13 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 class AmbiGroup(lightgroup.LightGroup):
     def __init__(self, light_group_id, hue_connection, media_type=lightgroup.VIDEO, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
 
-        self.hue_connection = hue_connection
-        self.light_group_id = light_group_id
         self.bridge = hue_connection.bridge
-        self.monitor = hue_connection.monitor
-        self.group0 = self.bridge.groups[0]
-        self.bridge_error500 = 0
-        self.state = initial_state
+        self.light_group_id = light_group_id
         self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
+        self.monitor = hue_connection.monitor
 
+        self.bridge_error500 = 0
         self.saved_light_states = {}
-        self.video_info_tag = video_info_tag
 
         self.image_process = imageprocess.ImageProcess()
 
@@ -42,8 +38,6 @@ class AmbiGroup(lightgroup.LightGroup):
         self.converterB = Converter(GamutB)
         self.converterC = Converter(GamutC)
         self.helper = ColorHelper(GamutC)  # Gamut doesn't matter for this usage
-
-        self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
 
         self.transition_time = int(ADDON.getSettingInt(f"group{self.light_group_id}_TransitionTime") / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). transition_time:10 will make the transition last 1 second.
         self.force_on = ADDON.getSettingBool(f"group{self.light_group_id}_forceOn")
@@ -61,7 +55,7 @@ class AmbiGroup(lightgroup.LightGroup):
 
         if self.enabled:
             self.ambi_lights = {}
-            light_ids = ADDON.getSetting(f"group{self.light_group_id}_Lights").split(",")
+            light_ids = ADDON.getSetting(f"group{light_group_id}_Lights").split(",")
             index = 0
 
             if len(light_ids) > 0:

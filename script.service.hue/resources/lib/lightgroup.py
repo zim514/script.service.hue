@@ -25,6 +25,14 @@ class LightGroup(xbmc.Player):
     def __init__(self, light_group_id, hue_connection, media_type=VIDEO, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
         self.light_group_id = light_group_id
         self.bridge = hue_connection.bridge
+        self.hue_connection = hue_connection
+        self.state = initial_state
+        self.media_type = media_type
+        self.video_info_tag = video_info_tag
+        self.last_media_type = self.media_type
+        self.lights = self.bridge.lights
+        self.group0 = self.bridge.groups[0]
+
         self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
 
         if not isinstance(self, ambigroup.AmbiGroup):
@@ -36,13 +44,6 @@ class LightGroup(xbmc.Player):
 
             self.stop_behavior = ADDON.getSettingBool(f"group{self.light_group_id}_stopBehavior")
             self.stop_scene = ADDON.getSettingString(f"group{self.light_group_id}_stopSceneID")
-
-        self.state = initial_state
-        self.media_type = media_type
-        self.video_info_tag = video_info_tag
-        self.last_media_type = self.media_type
-        self.lights = self.bridge.lights
-        self.group0 = self.bridge.groups[0]
 
         if self.enabled:
             super().__init__()
