@@ -22,7 +22,8 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
 
 class AmbiGroup(lightgroup.LightGroup):
-    def __init__(self, light_group_id, hue_connection, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
+    def __init__(self, light_group_id, hue_connection, media_type=lightgroup.VIDEO, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
+
         self.hue_connection = hue_connection
         self.light_group_id = light_group_id
         self.bridge = hue_connection.bridge
@@ -70,8 +71,7 @@ class AmbiGroup(lightgroup.LightGroup):
                     self.ambi_lights.update(light)
                     index = index + 1
 
-                # noinspection PyArgumentList
-                super(xbmc.Player).__init__()
+            super().__init__(light_group_id, hue_connection, media_type, initial_state, video_info_tag)
 
     @staticmethod
     def _force_on(ambi_lights, bridge, saved_light_states):
@@ -149,6 +149,7 @@ class AmbiGroup(lightgroup.LightGroup):
     def _ambi_loop(self):
         AMBI_RUNNING.set()
         cap = xbmc.RenderCapture()
+        cap_image = None
         xbmc.log("[script.service.hue] _ambiLoop started")
         aspect_ratio = cap.getAspectRatio()
 
@@ -265,8 +266,8 @@ class AmbiGroup(lightgroup.LightGroup):
 
         # Find all sensor IDs for active Hue Labs effects
         all_sensors = self.bridge.sensors()
-        effects = [id
-                   for id, sensor in list(all_sensors.items())
+        effects = [effect_id
+                   for effect_id, sensor in list(all_sensors.items())
                    if sensor['modelid'] == 'HUELABSVTOGGLE' and 'status' in sensor['state'] and sensor['state']['status'] == 1
                    ]
 
@@ -280,6 +281,7 @@ class AmbiGroup(lightgroup.LightGroup):
                             ]
 
             for link in sensor_links:
+
                 i = link.split('/')[-1]
                 if link.startswith('/lights/'):
                     lights.setdefault(i, set())
@@ -303,11 +305,11 @@ class AmbiGroup(lightgroup.LightGroup):
             # an effect will also power on its lights.
             try:
                 sensors = set([sensor
-                               for id in list(self.ambi_lights.keys())
-                               for sensor in lights[id]
-                               if id in lights
-                               and id in self.saved_light_states
-                               and self.saved_light_states[id]['state']['on']
+                               for sensor_id in list(self.ambi_lights.keys())
+                               for sensor in lights[sensor_id]
+                               if sensor_id in lights
+                               and sensor_id in self.saved_light_states
+                               and self.saved_light_states[sensor_id]['state']['on']
                                ])
                 return sensors
             except KeyError:

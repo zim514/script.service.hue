@@ -7,4 +7,3 @@ exclude:
   - name: All
     paths:
       - script.service.hue/resources/lib/rgbxy
-  - name: PyInterpreterInspection

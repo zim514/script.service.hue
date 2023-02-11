@@ -5,7 +5,6 @@
 
 import json
 import sys
-from datetime import timedelta
 
 import requests
 import xbmc
@@ -93,8 +92,7 @@ def _service(monitor):
                         ambigroup.AmbiGroup(3, hue_connection)]
 
         timer = 60
-        daylight = hue_connection.get_daylight()
-        new_daylight = daylight
+        daylight = new_daylight = hue_connection.get_daylight()
 
         cache_set("daylight", daylight)
         cache_set("service_enabled", True)

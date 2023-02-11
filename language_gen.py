@@ -62,8 +62,8 @@ try:
     if missing:
         print(f"WARNING: adding missing translation for '{missing}'")
         for text in missing:
-            id = ids_available.pop(0)
-            entry = polib.POEntry(msgid=text, msgstr='', msgctxt=f"#{id}")
+            string_id = ids_available.pop(0)
+            entry = polib.POEntry(msgid=text, msgstr='', msgctxt=f"#{string_id}")
             po.append(entry)
         po.save(string_file)
 except Exception as e:
