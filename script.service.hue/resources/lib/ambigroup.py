@@ -143,7 +143,7 @@ class AmbiGroup(lightgroup.LightGroup):
     def _ambi_loop(self):
         AMBI_RUNNING.set()
         cap = xbmc.RenderCapture()
-        cap_image = None
+        cap_image = bytes
         xbmc.log("[script.service.hue] _ambiLoop started")
         aspect_ratio = cap.getAspectRatio()
 
