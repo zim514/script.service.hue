@@ -190,6 +190,7 @@ class HueConnection(object):
 
     def _discover_nupnp(self):
         xbmc.log("[script.service.hue] In kodiHue discover_nupnp()")
+        req = ""
         try:
             req = requests.get('https://discovery.meethue.com/')
             result = req.json()
@@ -212,7 +213,7 @@ class HueConnection(object):
 
     def _check_bridge_model(self):
         bridge = qhue.Bridge(self.bridge_ip, None, timeout=QHUE_TIMEOUT)
-        model = ""
+        model = ""  # variable is used 
 
         try:
             bridge_config = bridge.config()
@@ -233,6 +234,7 @@ class HueConnection(object):
         return None
 
     def _check_version(self):
+        api_version = ""
         b = qhue.Bridge(self.bridge_ip, None, timeout=QHUE_TIMEOUT)
         try:
             api_version = b.config()['apiversion']
