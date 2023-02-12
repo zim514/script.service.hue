@@ -213,7 +213,7 @@ class HueConnection(object):
 
     def _check_bridge_model(self):
         bridge = qhue.Bridge(self.bridge_ip, None, timeout=QHUE_TIMEOUT)
-        model = ""  # variable is used 
+        model = ""  # variable is used
 
         try:
             bridge_config = bridge.config()
@@ -351,6 +351,7 @@ class HueConnection(object):
         scene_name = xbmcgui.Dialog().input(_("Scene Name"))
 
         if scene_name:
+            result = ""
             try:
                 transition_time = int(xbmcgui.Dialog().numeric(0, _("Fade Time (Seconds)"), defaultt="10")) * 10  # yes, default with two ts. *10 to convert secs to msecs
             except ValueError:
@@ -380,6 +381,7 @@ class HueConnection(object):
             xbmcgui.Dialog().ok(_("Error"), _("ERROR: Scene not created"))
 
     def delete_hue_scene(self):
+        result = ""
         xbmc.log("[script.service.hue] In kodiHue deleteHueScene")
         scene = self.select_hue_scene()
         if scene is not None:
@@ -441,6 +443,8 @@ class HueConnection(object):
         return None
 
     def select_hue_scene(self):
+        hue_scenes = ""
+        h_scene_name = ""
         xbmc.log("[script.service.hue] In selectHueScene{}")
 
         try:
