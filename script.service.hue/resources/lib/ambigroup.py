@@ -28,6 +28,7 @@ class AmbiGroup(lightgroup.LightGroup):
         self.light_group_id = light_group_id
         self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
         self.monitor = hue_connection.monitor
+        self.state = initial_state
 
         self.bridge_error500 = 0
         self.saved_light_states = {}
