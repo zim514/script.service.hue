@@ -28,10 +28,6 @@ jobs:
     needs: kodi-addon-checker
 
     steps:
-      - name: Get version
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}"  >> $GITHUB_ENV
-
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
@@ -55,7 +51,7 @@ jobs:
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: Automated repo update ${{ env.VERSION }}
+          commit_message: Automated repo update ${{  github.ref_name }}
           add_options: '--all'
 
   release:
@@ -65,10 +61,6 @@ jobs:
     needs: kodi-addon-checker
 
     steps:
-      - name: Get version
-        id: get_version
-        run: |
-          echo "version=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -113,9 +105,7 @@ jobs:
         id: rollbar_deploy
         with:
           environment: 'production'
-          version: ${{env.version}}
+          version: ${{  github.ref_name }}
         env:
           ROLLBAR_ACCESS_TOKEN: ${{ secrets.ROLLBAR_ACCESS_TOKEN }}
           ROLLBAR_USERNAME: ${{ github.actor }}
-
-
