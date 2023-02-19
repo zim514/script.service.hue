@@ -7,10 +7,12 @@ import platform
 import sys
 import traceback
 
+
 import rollbar
 import xbmc
 import xbmcgui
 from qhue import QhueException
+from requests import RequestException
 
 from . import ADDONVERSION, ROLLBAR_API_KEY, KODIVERSION, ADDONPATH, ADDON
 from .kodiutils import notification
@@ -23,6 +25,9 @@ def process_exception(exc, level="critical", error=""):
     if type(exc) == QhueException and exc.type_id in ["3", "7"]:  # 3: resource not found, 7: invalid value for parameter
         xbmc.log("[script.service.hue] Qhue resource not found, not reporting to rollbar")
         notification(_("Hue Service"), _("ERROR: Scene or Light not found, it may have changed or been deleted. Check your configuration."), icon=xbmcgui.NOTIFICATION_ERROR)
+    elif type(exc) == RequestException:
+        xbmc.log("[script.service.hue] RequestException, not reporting to rollbar")
+        notification(_("Hue Service"), _("Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
     else:
         if ADDON.getSettingBool("error_reporting"):
             if _error_report_dialog(exc):
