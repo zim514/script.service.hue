@@ -1828,19 +1828,19 @@
                 ]
               },
               {
-                "id": "CommandLineInspection",
+                "id": "PyComparisonWithNoneInspection",
                 "shortDescription": {
-                  "text": "Incorrect CLI syntax"
+                  "text": "Using equality operators to compare with None"
                 },
                 "fullDescription": {
-                  "text": "Reports the problems if the arguments of the command you type in the console are not in the proper order. The inspection also verifies that option names and arguments are correct. Do not disable the inspection if you are going to use command-line interfaces like manage.py in Django.",
-                  "markdown": "Reports the problems if the arguments of the command you type in the console are not in the proper order. The inspection also verifies\nthat option names and arguments are correct.\n\nDo not disable the inspection if you are going to use command-line interfaces like [manage.py in Django](https://www.jetbrains.com/help/pycharm/running-manage-py.html)."
+                  "text": "Reports comparisons with 'None'. That type of comparisons should always be done with 'is' or 'is not', never the equality operators. Example: a = 2\n\n\nif a == None:\n    print(\"Success\")\n Once the quick-fix is applied, the code changes to: a = 2\n\n\nif a is None:\n    print(\"Success\")",
+                  "markdown": "Reports comparisons with `None`. That type of comparisons\nshould always be done with `is` or `is not`, never\nthe equality operators.\n\n**Example:**\n\n```\na = 2\n\n\nif a == None:\n    print(\"Success\")\n```\n\nOnce the quick-fix is applied, the code changes to:\n\n```\na = 2\n\n\nif a is None:\n    print(\"Success\")\n```"
                 },
                 "defaultConfiguration": {
-                  "enabled": false,
-                  "level": "warning",
+                  "enabled": true,
+                  "level": "note",
                   "parameters": {
-                    "ideaSeverity": "WARNING"
+                    "ideaSeverity": "WEAK WARNING"
                   }
                 },
                 "relationships": [
@@ -1859,19 +1859,19 @@
                 ]
               },
               {
-                "id": "PyComparisonWithNoneInspection",
+                "id": "CommandLineInspection",
                 "shortDescription": {
-                  "text": "Using equality operators to compare with None"
+                  "text": "Incorrect CLI syntax"
                 },
                 "fullDescription": {
-                  "text": "Reports comparisons with 'None'. That type of comparisons should always be done with 'is' or 'is not', never the equality operators. Example: a = 2\n\n\nif a == None:\n    print(\"Success\")\n Once the quick-fix is applied, the code changes to: a = 2\n\n\nif a is None:\n    print(\"Success\")",
-                  "markdown": "Reports comparisons with `None`. That type of comparisons\nshould always be done with `is` or `is not`, never\nthe equality operators.\n\n**Example:**\n\n```\na = 2\n\n\nif a == None:\n    print(\"Success\")\n```\n\nOnce the quick-fix is applied, the code changes to:\n\n```\na = 2\n\n\nif a is None:\n    print(\"Success\")\n```"
+                  "text": "Reports the problems if the arguments of the command you type in the console are not in the proper order. The inspection also verifies that option names and arguments are correct. Do not disable the inspection if you are going to use command-line interfaces like manage.py in Django.",
+                  "markdown": "Reports the problems if the arguments of the command you type in the console are not in the proper order. The inspection also verifies\nthat option names and arguments are correct.\n\nDo not disable the inspection if you are going to use command-line interfaces like [manage.py in Django](https://www.jetbrains.com/help/pycharm/running-manage-py.html)."
                 },
                 "defaultConfiguration": {
-                  "enabled": true,
-                  "level": "note",
+                  "enabled": false,
+                  "level": "warning",
                   "parameters": {
-                    "ideaSeverity": "WEAK WARNING"
+                    "ideaSeverity": "WARNING"
                   }
                 },
                 "relationships": [
@@ -2975,19 +2975,19 @@
                 ]
               },
               {
-                "id": "PyOldStyleClassesInspection",
+                "id": "PyAbstractClassInspection",
                 "shortDescription": {
-                  "text": "Old-style class contains new-style class features"
+                  "text": "Class must implement all abstract methods"
                 },
                 "fullDescription": {
-                  "text": "Reports occurrences of new-style class features in old-style classes. The inspection highlights '__slots__', '__getattribute__', and 'super()' inside old-style classes.",
-                  "markdown": "Reports occurrences of\n[new-style class features](https://www.python.org/doc/newstyle/)\nin old-style classes. The inspection highlights\n`__slots__`, `__getattribute__`, and `super()`\ninside old-style classes."
+                  "text": "Reports cases when not all abstract properties or methods are defined in a subclass. Example: from abc import abstractmethod, ABC\n\n\nclass Figure(ABC):\n\n    @abstractmethod\n    def do_figure(self):\n        pass\n\n\nclass Triangle(Figure):\n    def do_triangle(self):\n        pass\n When the quick-fix is applied, the IDE implements an abstract method for the 'Triangle' class: from abc import abstractmethod, ABC\n\n\nclass Figure(ABC):\n\n    @abstractmethod\n    def do_figure(self):\n        pass\n\n\nclass Triangle(Figure):\n    def do_figure(self):\n        pass\n\n    def do_triangle(self):\n        pass",
+                  "markdown": "Reports cases when not all abstract properties or methods are defined in\na subclass.\n\n**Example:**\n\n```\nfrom abc import abstractmethod, ABC\n\n\nclass Figure(ABC):\n\n    @abstractmethod\n    def do_figure(self):\n        pass\n\n\nclass Triangle(Figure):\n    def do_triangle(self):\n        pass\n```\n\nWhen the quick-fix is applied, the IDE implements an abstract method for the `Triangle` class:\n\n```\nfrom abc import abstractmethod, ABC\n\n\nclass Figure(ABC):\n\n    @abstractmethod\n    def do_figure(self):\n        pass\n\n\nclass Triangle(Figure):\n    def do_figure(self):\n        pass\n\n    def do_triangle(self):\n        pass\n```"
                 },
                 "defaultConfiguration": {
                   "enabled": true,
-                  "level": "warning",
+                  "level": "note",
                   "parameters": {
-                    "ideaSeverity": "WARNING"
+                    "ideaSeverity": "WEAK WARNING"
                   }
                 },
                 "relationships": [
@@ -3006,19 +3006,19 @@
                 ]
               },
               {
-                "id": "PyAbstractClassInspection",
+                "id": "PyOldStyleClassesInspection",
                 "shortDescription": {
-                  "text": "Class must implement all abstract methods"
+                  "text": "Old-style class contains new-style class features"
                 },
                 "fullDescription": {
-                  "text": "Reports cases when not all abstract properties or methods are defined in a subclass. Example: from abc import abstractmethod, ABC\n\n\nclass Figure(ABC):\n\n    @abstractmethod\n    def do_figure(self):\n        pass\n\n\nclass Triangle(Figure):\n    def do_triangle(self):\n        pass\n When the quick-fix is applied, the IDE implements an abstract method for the 'Triangle' class: from abc import abstractmethod, ABC\n\n\nclass Figure(ABC):\n\n    @abstractmethod\n    def do_figure(self):\n        pass\n\n\nclass Triangle(Figure):\n    def do_figure(self):\n        pass\n\n    def do_triangle(self):\n        pass",
-                  "markdown": "Reports cases when not all abstract properties or methods are defined in\na subclass.\n\n**Example:**\n\n```\nfrom abc import abstractmethod, ABC\n\n\nclass Figure(ABC):\n\n    @abstractmethod\n    def do_figure(self):\n        pass\n\n\nclass Triangle(Figure):\n    def do_triangle(self):\n        pass\n```\n\nWhen the quick-fix is applied, the IDE implements an abstract method for the `Triangle` class:\n\n```\nfrom abc import abstractmethod, ABC\n\n\nclass Figure(ABC):\n\n    @abstractmethod\n    def do_figure(self):\n        pass\n\n\nclass Triangle(Figure):\n    def do_figure(self):\n        pass\n\n    def do_triangle(self):\n        pass\n```"
+                  "text": "Reports occurrences of new-style class features in old-style classes. The inspection highlights '__slots__', '__getattribute__', and 'super()' inside old-style classes.",
+                  "markdown": "Reports occurrences of\n[new-style class features](https://www.python.org/doc/newstyle/)\nin old-style classes. The inspection highlights\n`__slots__`, `__getattribute__`, and `super()`\ninside old-style classes."
                 },
                 "defaultConfiguration": {
                   "enabled": true,
-                  "level": "note",
+                  "level": "warning",
                   "parameters": {
-                    "ideaSeverity": "WEAK WARNING"
+                    "ideaSeverity": "WARNING"
                   }
                 },
                 "relationships": [
@@ -3626,37 +3626,6 @@
                 ]
               },
               {
-                "id": "PyStubPackagesCompatibilityInspection",
-                "shortDescription": {
-                  "text": "Incompatible stub packages"
-                },
-                "fullDescription": {
-                  "text": "Reports stub packages that do not support the version of the corresponding runtime package. A stub package contains type information for some runtime package.",
-                  "markdown": "Reports stub packages that do not support the version of the corresponding runtime package.\n\nA [stub package](https://www.python.org/dev/peps/pep-0561/) contains type information for some runtime package."
-                },
-                "defaultConfiguration": {
-                  "enabled": false,
-                  "level": "warning",
-                  "parameters": {
-                    "ideaSeverity": "WARNING"
-                  }
-                },
-                "relationships": [
-                  {
-                    "target": {
-                      "id": "Python",
-                      "index": 2,
-                      "toolComponent": {
-                        "name": "QDPY"
-                      }
-                    },
-                    "kinds": [
-                      "superset"
-                    ]
-                  }
-                ]
-              },
-              {
                 "id": "DjangoCloseTagInspection",
                 "shortDescription": {
                   "text": "Mismatched opening and closing tags"
@@ -3677,6 +3646,37 @@
                     "target": {
                       "id": "Django",
                       "index": 14,
+                      "toolComponent": {
+                        "name": "QDPY"
+                      }
+                    },
+                    "kinds": [
+                      "superset"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "PyStubPackagesCompatibilityInspection",
+                "shortDescription": {
+                  "text": "Incompatible stub packages"
+                },
+                "fullDescription": {
+                  "text": "Reports stub packages that do not support the version of the corresponding runtime package. A stub package contains type information for some runtime package.",
+                  "markdown": "Reports stub packages that do not support the version of the corresponding runtime package.\n\nA [stub package](https://www.python.org/dev/peps/pep-0561/) contains type information for some runtime package."
+                },
+                "defaultConfiguration": {
+                  "enabled": false,
+                  "level": "warning",
+                  "parameters": {
+                    "ideaSeverity": "WARNING"
+                  }
+                },
+                "relationships": [
+                  {
+                    "target": {
+                      "id": "Python",
+                      "index": 2,
                       "toolComponent": {
                         "name": "QDPY"
                       }
@@ -4475,37 +4475,6 @@
                 ]
               },
               {
-                "id": "MongoJSSideEffectsInspection",
-                "shortDescription": {
-                  "text": "Statement with side effects"
-                },
-                "fullDescription": {
-                  "text": "Reports statements that can cause side effects while the data source is in read-only mode. For more information about enabling read-only mode, see Enable read-only mode for a connection in the IDE documentation. The Disable read-only mode quick-fix turns off the read-only mode for the respective data source. Example: 'db.my_collection.insertOne()'",
-                  "markdown": "Reports statements that can cause side effects while the data source is in read-only mode.\n\nFor more information about enabling read-only mode, see\n[Enable\nread-only mode for a connection in the IDE documentation](https://www.jetbrains.com/help/datagrip/configuring-database-connections.html#enable-read-only-mode-for-a-connection).\n\nThe **Disable read-only mode** quick-fix turns off the read-only mode for the respective data source.\n\nExample:\n\n\n    db.my_collection.insertOne()\n"
-                },
-                "defaultConfiguration": {
-                  "enabled": false,
-                  "level": "warning",
-                  "parameters": {
-                    "ideaSeverity": "WARNING"
-                  }
-                },
-                "relationships": [
-                  {
-                    "target": {
-                      "id": "MongoJS",
-                      "index": 9,
-                      "toolComponent": {
-                        "name": "QDPY"
-                      }
-                    },
-                    "kinds": [
-                      "superset"
-                    ]
-                  }
-                ]
-              },
-              {
                 "id": "SqlInsertIntoGeneratedColumnInspection",
                 "shortDescription": {
                   "text": "Insertion into generated columns"
@@ -4526,6 +4495,37 @@
                     "target": {
                       "id": "SQL",
                       "index": 5,
+                      "toolComponent": {
+                        "name": "QDPY"
+                      }
+                    },
+                    "kinds": [
+                      "superset"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "MongoJSSideEffectsInspection",
+                "shortDescription": {
+                  "text": "Statement with side effects"
+                },
+                "fullDescription": {
+                  "text": "Reports statements that can cause side effects while the data source is in read-only mode. For more information about enabling read-only mode, see Enable read-only mode for a connection in the IDE documentation. The Disable read-only mode quick-fix turns off the read-only mode for the respective data source. Example: 'db.my_collection.insertOne()'",
+                  "markdown": "Reports statements that can cause side effects while the data source is in read-only mode.\n\nFor more information about enabling read-only mode, see\n[Enable\nread-only mode for a connection in the IDE documentation](https://www.jetbrains.com/help/datagrip/configuring-database-connections.html#enable-read-only-mode-for-a-connection).\n\nThe **Disable read-only mode** quick-fix turns off the read-only mode for the respective data source.\n\nExample:\n\n\n    db.my_collection.insertOne()\n"
+                },
+                "defaultConfiguration": {
+                  "enabled": false,
+                  "level": "warning",
+                  "parameters": {
+                    "ideaSeverity": "WARNING"
+                  }
+                },
+                "relationships": [
+                  {
+                    "target": {
+                      "id": "MongoJS",
+                      "index": 9,
                       "toolComponent": {
                         "name": "QDPY"
                       }
@@ -4940,37 +4940,6 @@
                 ]
               },
               {
-                "id": "SqlIdentifierInspection",
-                "shortDescription": {
-                  "text": "Identifier should be quoted"
-                },
-                "fullDescription": {
-                  "text": "Reports situations when you use SQL reserved keywords as identifier names in your query. Example (Microsoft SQL Server): 'CREATE TABLE select (identity INT IDENTITY NOT NULL, order INT NOT NULL);' We use 'select', 'identity', and 'order' as table and column names. But they are also reserved keywords in Microsoft SQL Server. Therefore, in order to use them as object names in the query, you must quote these identifiers. To quote them, you can use the Quote identifier quick-fix. After the quick-fix is applied: 'CREATE TABLE [select] ([identity] INT IDENTITY NOT NULL, [order] INT NOT NULL);'",
-                  "markdown": "Reports situations when you use SQL reserved keywords as identifier names in your query.\n\nExample (Microsoft SQL Server):\n\n    CREATE TABLE select (identity INT IDENTITY NOT NULL, order INT NOT NULL);\n\nWe use `select`, `identity`, and `order` as table and column names.\nBut they are also reserved keywords in Microsoft SQL Server.\nTherefore, in order to use them as object names in the query, you must quote these identifiers. To quote them, you can use the\n**Quote identifier** quick-fix.\n\nAfter the quick-fix is applied:\n\n    CREATE TABLE [select] ([identity] INT IDENTITY NOT NULL, [order] INT NOT NULL);\n"
-                },
-                "defaultConfiguration": {
-                  "enabled": false,
-                  "level": "warning",
-                  "parameters": {
-                    "ideaSeverity": "WARNING"
-                  }
-                },
-                "relationships": [
-                  {
-                    "target": {
-                      "id": "SQL",
-                      "index": 5,
-                      "toolComponent": {
-                        "name": "QDPY"
-                      }
-                    },
-                    "kinds": [
-                      "superset"
-                    ]
-                  }
-                ]
-              },
-              {
                 "id": "SqlRedundantAliasInspection",
                 "shortDescription": {
                   "text": "Redundant alias expressions"
@@ -5009,6 +4978,37 @@
                 "fullDescription": {
                   "text": "Reports tables that contain two columns with an automatic increment. In MySQL, Microsoft SQL Server, and Db2 dialects, a table can have only one field with a auto-increment option, and this field must be a key. Example (MySQL): 'CREATE TABLE my_table\n(\n    id INT AUTO_INCREMENT,\n    c2 INT AUTO_INCREMENT,\n);' The AUTO_INCREMENT constraint for 'c2' will be highlighted as 'c1' already has this constraint. To fix the warning, you can make 'id' a primary key and delete AUTO_INCREMENT for 'c2'. 'CREATE TABLE my_table\n(\n    id INT AUTO_INCREMENT PRIMARY KEY,\n    c2 INT,\n);'",
                   "markdown": "Reports tables that contain two columns with an automatic increment. In MySQL, Microsoft SQL Server, and Db2 dialects, a table can have only one field with a auto-increment option, and this field must be a key.\n\nExample (MySQL):\n\n    CREATE TABLE my_table\n    (\n        id INT AUTO_INCREMENT,\n        c2 INT AUTO_INCREMENT,\n    );\n\nThe AUTO_INCREMENT constraint for `c2` will be highlighted as `c1` already has this constraint. To fix the warning,\nyou can make `id` a primary key and delete AUTO_INCREMENT for `c2`.\n\n    CREATE TABLE my_table\n    (\n        id INT AUTO_INCREMENT PRIMARY KEY,\n        c2 INT,\n    );\n"
+                },
+                "defaultConfiguration": {
+                  "enabled": false,
+                  "level": "warning",
+                  "parameters": {
+                    "ideaSeverity": "WARNING"
+                  }
+                },
+                "relationships": [
+                  {
+                    "target": {
+                      "id": "SQL",
+                      "index": 5,
+                      "toolComponent": {
+                        "name": "QDPY"
+                      }
+                    },
+                    "kinds": [
+                      "superset"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "SqlIdentifierInspection",
+                "shortDescription": {
+                  "text": "Identifier should be quoted"
+                },
+                "fullDescription": {
+                  "text": "Reports situations when you use SQL reserved keywords as identifier names in your query. Example (Microsoft SQL Server): 'CREATE TABLE select (identity INT IDENTITY NOT NULL, order INT NOT NULL);' We use 'select', 'identity', and 'order' as table and column names. But they are also reserved keywords in Microsoft SQL Server. Therefore, in order to use them as object names in the query, you must quote these identifiers. To quote them, you can use the Quote identifier quick-fix. After the quick-fix is applied: 'CREATE TABLE [select] ([identity] INT IDENTITY NOT NULL, [order] INT NOT NULL);'",
+                  "markdown": "Reports situations when you use SQL reserved keywords as identifier names in your query.\n\nExample (Microsoft SQL Server):\n\n    CREATE TABLE select (identity INT IDENTITY NOT NULL, order INT NOT NULL);\n\nWe use `select`, `identity`, and `order` as table and column names.\nBut they are also reserved keywords in Microsoft SQL Server.\nTherefore, in order to use them as object names in the query, you must quote these identifiers. To quote them, you can use the\n**Quote identifier** quick-fix.\n\nAfter the quick-fix is applied:\n\n    CREATE TABLE [select] ([identity] INT IDENTITY NOT NULL, [order] INT NOT NULL);\n"
                 },
                 "defaultConfiguration": {
                   "enabled": false,
@@ -6087,13 +6087,13 @@
                 ]
               },
               {
-                "id": "SqlUnusedVariableInspection",
+                "id": "SqlNoDataSourceInspection",
                 "shortDescription": {
-                  "text": "Unused variable"
+                  "text": "No data sources configured"
                 },
                 "fullDescription": {
-                  "text": "Reports unused arguments, variables, or parameters. Example (PostgreSQL): 'CREATE FUNCTION foo(PARAMUSED INT, PARAMUNUSED INT) RETURNS INT AS\n$$\nBEGIN\n    RETURN PARAMUSED;\nEND\n$$ LANGUAGE plpgsql;' The 'PARAMUNUSED' parameter is not used in the function and might be deleted.",
-                  "markdown": "Reports unused arguments, variables, or parameters.\n\nExample (PostgreSQL):\n\n    CREATE FUNCTION foo(PARAMUSED INT, PARAMUNUSED INT) RETURNS INT AS\n    $$\n    BEGIN\n        RETURN PARAMUSED;\n    END\n    $$ LANGUAGE plpgsql;\n\nThe `PARAMUNUSED` parameter is not used in the function and might be deleted."
+                  "text": "Reports the absence of data sources in the Database tool window (View | Tool Windows | Database).",
+                  "markdown": "Reports the absence of data sources in the **Database** tool window (**View \\| Tool Windows \\| Database**)."
                 },
                 "defaultConfiguration": {
                   "enabled": false,
@@ -6118,13 +6118,13 @@
                 ]
               },
               {
-                "id": "SqlNoDataSourceInspection",
+                "id": "SqlUnusedVariableInspection",
                 "shortDescription": {
-                  "text": "No data sources configured"
+                  "text": "Unused variable"
                 },
                 "fullDescription": {
-                  "text": "Reports the absence of data sources in the Database tool window (View | Tool Windows | Database).",
-                  "markdown": "Reports the absence of data sources in the **Database** tool window (**View \\| Tool Windows \\| Database**)."
+                  "text": "Reports unused arguments, variables, or parameters. Example (PostgreSQL): 'CREATE FUNCTION foo(PARAMUSED INT, PARAMUNUSED INT) RETURNS INT AS\n$$\nBEGIN\n    RETURN PARAMUSED;\nEND\n$$ LANGUAGE plpgsql;' The 'PARAMUNUSED' parameter is not used in the function and might be deleted.",
+                  "markdown": "Reports unused arguments, variables, or parameters.\n\nExample (PostgreSQL):\n\n    CREATE FUNCTION foo(PARAMUSED INT, PARAMUNUSED INT) RETURNS INT AS\n    $$\n    BEGIN\n        RETURN PARAMUSED;\n    END\n    $$ LANGUAGE plpgsql;\n\nThe `PARAMUNUSED` parameter is not used in the function and might be deleted."
                 },
                 "defaultConfiguration": {
                   "enabled": false,
@@ -6378,37 +6378,6 @@
                 ]
               },
               {
-                "id": "XmlDuplicatedId",
-                "shortDescription": {
-                  "text": "Duplicate 'id' attribute"
-                },
-                "fullDescription": {
-                  "text": "Reports a duplicate 'id' attribute in XML.",
-                  "markdown": "Reports a duplicate `id` attribute in XML."
-                },
-                "defaultConfiguration": {
-                  "enabled": false,
-                  "level": "error",
-                  "parameters": {
-                    "ideaSeverity": "ERROR"
-                  }
-                },
-                "relationships": [
-                  {
-                    "target": {
-                      "id": "XML",
-                      "index": 6,
-                      "toolComponent": {
-                        "name": "QDPY"
-                      }
-                    },
-                    "kinds": [
-                      "superset"
-                    ]
-                  }
-                ]
-              },
-              {
                 "id": "JsonSchemaDeprecation",
                 "shortDescription": {
                   "text": "Deprecated JSON property"
@@ -6429,6 +6398,37 @@
                     "target": {
                       "id": "JSON and JSON5",
                       "index": 8,
+                      "toolComponent": {
+                        "name": "QDPY"
+                      }
+                    },
+                    "kinds": [
+                      "superset"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "XmlDuplicatedId",
+                "shortDescription": {
+                  "text": "Duplicate 'id' attribute"
+                },
+                "fullDescription": {
+                  "text": "Reports a duplicate 'id' attribute in XML.",
+                  "markdown": "Reports a duplicate `id` attribute in XML."
+                },
+                "defaultConfiguration": {
+                  "enabled": false,
+                  "level": "error",
+                  "parameters": {
+                    "ideaSeverity": "ERROR"
+                  }
+                },
+                "relationships": [
+                  {
+                    "target": {
+                      "id": "XML",
+                      "index": 6,
                       "toolComponent": {
                         "name": "QDPY"
                       }
@@ -7525,37 +7525,6 @@
                 ]
               },
               {
-                "id": "RegExpRedundantNestedCharacterClass",
-                "shortDescription": {
-                  "text": "Redundant nested character class"
-                },
-                "fullDescription": {
-                  "text": "Reports unnecessary nested character classes. Example: '[a-c[x-z]]' After the quick-fix is applied: '[a-cx-z]' New in 2020.2",
-                  "markdown": "Reports unnecessary nested character classes.\n\n**Example:**\n\n\n      [a-c[x-z]]\n\nAfter the quick-fix is applied:\n\n\n      [a-cx-z]\n\nNew in 2020.2"
-                },
-                "defaultConfiguration": {
-                  "enabled": true,
-                  "level": "warning",
-                  "parameters": {
-                    "ideaSeverity": "WARNING"
-                  }
-                },
-                "relationships": [
-                  {
-                    "target": {
-                      "id": "RegExp",
-                      "index": 10,
-                      "toolComponent": {
-                        "name": "QDPY"
-                      }
-                    },
-                    "kinds": [
-                      "superset"
-                    ]
-                  }
-                ]
-              },
-              {
                 "id": "XmlDeprecatedElement",
                 "shortDescription": {
                   "text": "Deprecated symbol"
@@ -7576,6 +7545,37 @@
                     "target": {
                       "id": "XML",
                       "index": 6,
+                      "toolComponent": {
+                        "name": "QDPY"
+                      }
+                    },
+                    "kinds": [
+                      "superset"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "RegExpRedundantNestedCharacterClass",
+                "shortDescription": {
+                  "text": "Redundant nested character class"
+                },
+                "fullDescription": {
+                  "text": "Reports unnecessary nested character classes. Example: '[a-c[x-z]]' After the quick-fix is applied: '[a-cx-z]' New in 2020.2",
+                  "markdown": "Reports unnecessary nested character classes.\n\n**Example:**\n\n\n      [a-c[x-z]]\n\nAfter the quick-fix is applied:\n\n\n      [a-cx-z]\n\nNew in 2020.2"
+                },
+                "defaultConfiguration": {
+                  "enabled": true,
+                  "level": "warning",
+                  "parameters": {
+                    "ideaSeverity": "WARNING"
+                  }
+                },
+                "relationships": [
+                  {
+                    "target": {
+                      "id": "RegExp",
+                      "index": 10,
                       "toolComponent": {
                         "name": "QDPY"
                       }
@@ -7680,37 +7680,6 @@
                 ]
               },
               {
-                "id": "HtmlExtraClosingTag",
-                "shortDescription": {
-                  "text": "Redundant closing tag"
-                },
-                "fullDescription": {
-                  "text": "Reports redundant closing tags on empty elements, for example, 'img' or 'br'. Example: '<html>\n    <body>\n      <br></br>\n    </body>\n  </html>' After the quick-fix is applied: '<html>\n    <body>\n      <br>\n    </body>\n  </html>'",
-                  "markdown": "Reports redundant closing tags on empty elements, for example, `img` or `br`.\n\n**Example:**\n\n\n      <html>\n        <body>\n          <br></br>\n        </body>\n      </html>\n\nAfter the quick-fix is applied:\n\n\n      <html>\n        <body>\n          <br>\n        </body>\n      </html>\n"
-                },
-                "defaultConfiguration": {
-                  "enabled": false,
-                  "level": "error",
-                  "parameters": {
-                    "ideaSeverity": "ERROR"
-                  }
-                },
-                "relationships": [
-                  {
-                    "target": {
-                      "id": "HTML",
-                      "index": 15,
-                      "toolComponent": {
-                        "name": "QDPY"
-                      }
-                    },
-                    "kinds": [
-                      "superset"
-                    ]
-                  }
-                ]
-              },
-              {
                 "id": "RegExpOctalEscape",
                 "shortDescription": {
                   "text": "Octal escape"
@@ -7731,6 +7700,37 @@
                     "target": {
                       "id": "RegExp",
                       "index": 10,
+                      "toolComponent": {
+                        "name": "QDPY"
+                      }
+                    },
+                    "kinds": [
+                      "superset"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "HtmlExtraClosingTag",
+                "shortDescription": {
+                  "text": "Redundant closing tag"
+                },
+                "fullDescription": {
+                  "text": "Reports redundant closing tags on empty elements, for example, 'img' or 'br'. Example: '<html>\n    <body>\n      <br></br>\n    </body>\n  </html>' After the quick-fix is applied: '<html>\n    <body>\n      <br>\n    </body>\n  </html>'",
+                  "markdown": "Reports redundant closing tags on empty elements, for example, `img` or `br`.\n\n**Example:**\n\n\n      <html>\n        <body>\n          <br></br>\n        </body>\n      </html>\n\nAfter the quick-fix is applied:\n\n\n      <html>\n        <body>\n          <br>\n        </body>\n      </html>\n"
+                },
+                "defaultConfiguration": {
+                  "enabled": false,
+                  "level": "error",
+                  "parameters": {
+                    "ideaSeverity": "ERROR"
+                  }
+                },
+                "relationships": [
+                  {
+                    "target": {
+                      "id": "HTML",
+                      "index": 15,
                       "toolComponent": {
                         "name": "QDPY"
                       }
@@ -10295,7 +10295,7 @@
       "versionControlProvenance": [
         {
           "repositoryUri": "https://github.com/zim514/script.service.hue.git",
-          "revisionId": "b1f5c7a6c999533ba2d2392e130f2dfc0f89cea2",
+          "revisionId": "61eb92a4ef9a5fd2405f14a5e643d0301f6c775a",
           "branch": "main",
           "properties": {
             "repoUrl": "https://github.com/zim514/script.service.hue.git",
@@ -10352,6 +10352,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "61ad551b4af2d2d1ec903f8a7aae32b58fcf1ec998144b0f677b35b67a4c00c2"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -10405,6 +10406,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "e10b54254f221bf8280af38afc3b4e93db39b421d78864972094c74005d7584f"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -10458,6 +10460,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "609348cf9936dfac39bb6d2ab314c1066a3041dcb8e641be7c56408097906a0f"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -10511,6 +10514,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "119ac1b9f0fefaaaeb3cb3e77480b45e52b8db3131557943b9c539a50a318cfa"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -10564,6 +10568,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "d80b62171b6f8c100bcf9d97b9a12be7d4295ba4ccf4e90db4f04e84e7f2264f"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -10617,6 +10622,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "8d9d25479d5e0e2b4074c2a1c5b494361b49fe9b86d3a74a3bc78ecd369c9793"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -10670,6 +10676,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "67f304d36757d994a531cb5b202e8360a457b04a3d84d527f3f5997f262e549d"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -10723,6 +10730,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "b35035b92dcade527fd1fffb54bd04b44c0ccbcdba096975e87398b19f3a15b0"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -10776,6 +10784,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "9eb33c237497947dbc868f025ca649d8358cc3632f4918aff4bd97ea4b8e9641"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -10829,6 +10838,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "da47f64111ddbfb308bebaad99a7af2d6dc8d241802e6bf9de49a30e038c9c83"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -10882,6 +10892,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "ee736383fe1ab9a401d21d9a83b8b66bc5be749dbce9cd148bf9528dfc8d31be"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -10935,6 +10946,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "0e947a5511bdc68a2eb6877c0ab444be4d17584e88c3e302e51ec35d4e7c3186"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -10988,6 +11000,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "e752cb3bff3fdf1277bb8653039b6df936bb58698298d55fed4ca704c4bbaada"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11041,6 +11054,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "3eaa6ae1c7b5b22c7e8c0ffdd7a04e11ac015d1eb168f8ff6c4a9dff35f8e19b"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11094,6 +11108,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "1909d1954bcaea93c8f92bad472f1bfaea7616b2ca4c50e6921b9ac62ad73b16"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11147,6 +11162,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "bb417cdcd6fc8536dfc582b905734c5d65d5ca98329da5b103016c333722c4b2"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11159,8 +11175,8 @@
           "kind": "fail",
           "level": "note",
           "message": {
-            "text": "PEP 8: E501 line too long (178 > 120 characters)",
-            "markdown": "PEP 8: E501 line too long (178 \\> 120 characters)"
+            "text": "PEP 8: E501 line too long (191 > 120 characters)",
+            "markdown": "PEP 8: E501 line too long (191 \\> 120 characters)"
           },
           "locations": [
             {
@@ -11173,9 +11189,9 @@
                   "startLine": 59,
                   "startColumn": 115,
                   "charOffset": 2337,
-                  "charLength": 46,
+                  "charLength": 59,
                   "snippet": {
-                    "text": "'bridgeUser, bridgeIP, bridge_user, bridge_ip'"
+                    "text": "'bridgeUser, bridgeIP, bridge_user, bridge_ip, server.host'"
                   },
                   "sourceLanguage": "Python"
                 },
@@ -11183,9 +11199,9 @@
                   "startLine": 57,
                   "startColumn": 1,
                   "charOffset": 2198,
-                  "charLength": 278,
+                  "charLength": 291,
                   "snippet": {
-                    "text": "        'exc': exc\n    }\n    rollbar.init(ROLLBAR_API_KEY, capture_ip=False, code_version=\"v\" + ADDONVERSION, root=ADDONPATH, scrub_fields='bridgeUser, bridgeIP, bridge_user, bridge_ip', environment=env)\n    rollbar.report_exc_info(sys.exc_info(), extra_data=data, level=level)\n"
+                    "text": "        'exc': exc\n    }\n    rollbar.init(ROLLBAR_API_KEY, capture_ip=False, code_version=\"v\" + ADDONVERSION, root=ADDONPATH, scrub_fields='bridgeUser, bridgeIP, bridge_user, bridge_ip, server.host', environment=env)\n    rollbar.report_exc_info(sys.exc_info(), extra_data=data, level=level)\n"
                   }
                 }
               },
@@ -11198,8 +11214,9 @@
             }
           ],
           "partialFingerprints": {
-            "equalIndicator/v1": "5baf6faa2b1290196920d14fce1c9b7b8c82f883c1ccf933852bf7aec4319d0e"
+            "equalIndicator/v1": "1e0fb5c3b7ab6229f7c8099d2aa8f1c923369c2fbe1ea1770bd21a3d38389ac1"
           },
+          "baselineState": "new",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11253,6 +11270,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "9b645ed9f8b180e250e93b146d522401e4d1a2ff9faa321cd0a658572f17a3b2"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11306,6 +11324,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "2a974be0f939bd0cf59ccb485665ee58ccfd4ab534d8e7a0958245e7180a43c4"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11359,6 +11378,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "dd3cac651ed22b8c5f47626c00317eb14a8608da6c367865c377e6a040ee5924"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11412,6 +11432,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "d2f2e2981e0d3cf49515a0869e00378156658a34193e73db74c8d6e2139ac75f"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11465,6 +11486,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "5121bee142970b4bbd8fbf9088e69571d897c7258528f34dd50ac7cedfa507e5"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11518,6 +11540,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "7159a8355f7303a7648a2598d9726e900909a797e4af510c978dd533cb40ff9c"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11571,6 +11594,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "8a0bf0b7e63e9fa1df10257c7aaae4e4f312d64ac6cc867db5c635796a442e36"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11624,6 +11648,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "7981ed6c0496d24be3121f066283e805ceb867c8261c1542bc73065a7e1cd035"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11677,6 +11702,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "034b056945261eeae6ba351a74b9da6276bbde70b2bce2657ee0b27ee86115dc"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11730,6 +11756,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "a17bbf84c4a43525d9835f511bb95de97a6d5129875071fa02488b8b170a12b2"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11783,6 +11810,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "f01a7cfd146a30529ac761ddfed0f9f95253437ebe1c86e428c0d6cdfe269189"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11836,6 +11864,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "44e1f62d1f113924e111a653abbcb20ad2a6285604b620830b0fd1826c7ecd30"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11889,6 +11918,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "b4833b717dfc8efa307700ce6047adc2cd163225097648e1dd2879e3fcde960e"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11942,6 +11972,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "baa370f318ba602bed7eadc093e32b35bbc0e042b9032c8b4bcc5c21390ccffb"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -11995,6 +12026,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "f873d51a61d2554d135ab03edda548e8c4d91bee3968b7c92b1b396994a765fb"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12048,6 +12080,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "456b36166be3b913768cb1679706db84e965b2ee5ee3308a0133725b4739c480"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12101,6 +12134,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "ac65c8f7823c48b76eb23c8ebffa36dc75b2b29806fea718a60b7b87fd9e50ed"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12154,6 +12188,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "45fedd4c873d42f430127447793e3ba101f4065a7aa8c0700ed19d34ded38774"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12207,6 +12242,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "fa2b9e3cdc18409afae1c837565c73e255f3cf6d1e6ca6be2b6b737b54a410d6"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12260,6 +12296,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "249743f8d8ad715580adc32ed488fd3fd0361db9fe3483a6df912bb6a26a4e89"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12313,6 +12350,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "cf07cbdfdc5c33b18a5378c63ac2a8bb8e751b27eaffeaa2aed3f4ed6297fa9a"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12366,6 +12404,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "b9a0197a9e99aea6139149068d76c9ab0cbc5432cbc724aa86d55a97fee1941f"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12419,6 +12458,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "47af654c1aeba297caf397c53d36dfa9b433b2e1e6548572d9ee412cf3ad9b45"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12472,6 +12512,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "b11c5f064f9f7224a5fd6aa84f1b655e64467e08183be60cda59ab3a7ba458ac"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12525,6 +12566,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "4cba4220b5dddb50fee8ec288f1472e7c1c71289abc1d7dd4ea555573e8fe7d9"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12578,6 +12620,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "5ef15728159b8534a234109320e4eb1b8cb2d350ba1efb77e0915a15fe57f82c"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12631,6 +12674,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "14cc61f167d56534d5f0f075716670a144923bbbf0fcdabfff37cbc113e312f4"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12684,6 +12728,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "b7771dfb07b176e8396a09a35a17d73a7eaa4a13a08e9dc7b6986fc99e167f21"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12737,6 +12782,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "8e1f74f1c35a95fdd40947f041c9320a3ff40249c60c93d96ab1cddeec2abbd8"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12790,6 +12836,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "77de2dc2fa5f63cb996fa21e0bf2852fe239e5f51acc58be5775d98ae7726eae"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12843,6 +12890,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "2b219056c818458a232124f4d7b9dc2b3300beece659885ffea2e13a7e129bf8"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12896,6 +12944,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "8e57ba8174c1c0bea4ce585f3fd9da4781a482c2ef446075842f2dc4c8275dfc"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -12949,6 +12998,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "d46ea475ab30cbce259c549f30d93bf97a320e2d127a11071d0623e71584027d"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13002,6 +13052,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "db048ee203b5576af425a895f91a9e6e2db2bbf126342b8423375a67ee728148"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13055,6 +13106,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "9069cf203b8b10e5d89e7578858b39ded8a4c55e8b683b04a53b9ff6280ca10a"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13108,6 +13160,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "00745fcdf2dbf952c73efdba67b2b7d305ce951786a5cc71c6298d215a6e386b"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13161,6 +13214,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "b56b8436dc26a2f2562b98d84657e4e2ce3ce4beaf481356a139ff57207a493b"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13214,6 +13268,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "23040907712a700e044129b9dd629ea26dd2ae203e2791d7960608dfcec71239"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13267,6 +13322,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "1c575392dd1eb79d3a80b49249684bfca642c26ead9a01ef984071c4a5ebc2cd"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13320,6 +13376,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "523f071688f5286e238a43007c2acf005ffe38419b7570ffe4249145c0a3cce4"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13373,6 +13430,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "9140e062b214b52a910663d0630e687fe5f23a998079969777afcb77f7e03859"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13426,6 +13484,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "5e6d6c2cacc4ef8ca38115f3cafa86e8962052397c57b33b0a4894924fe14845"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13479,6 +13538,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "53701ef921f6d04fa0c8b5c7296f20d83c15d815b8616cf86adc1ada8b659b2f"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13532,6 +13592,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "f34f4410c90e9941c4f951de9ab1f13885b6c849c794ad3e5f4c3a18b33fe102"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13585,6 +13646,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "bc566a97f772676f165651d1ddd17007d934b2f6f790f0aca6296eeeeaad3791"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13638,6 +13700,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "d7ef9b1944e5cd2a5877397df6c6b6ae814dd5d1f0b0e0027ee1a14f5b28a05c"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13691,6 +13754,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "6ae36fd62d4ebf134de96a5f1e1562d49d756ae3ff9c673a6dc78ef13c528c25"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13744,6 +13808,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "946907e74491a0d8fc46f3339e73335ad4e76f0ecb6c4ba2869684a2ba71f58c"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13797,6 +13862,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "2a32484a47dd889aebb9546c5f306699839fd28dc8b72ca2676c437a15759c18"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13850,6 +13916,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "24e20a104cd9dedad1cb8ae1e19e08101662d82e8025a3871fecf4be4db89cd3"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13903,6 +13970,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "cbcbfb9136570ba084f0932f6ce4b408cb2b2047fa9029ca24a48fd36637b52f"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -13956,6 +14024,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "33b94d384f8941eb85ad8c970ab2f4f4ce3456370d39df97f090fc0a2e0f83de"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14009,6 +14078,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "82a6706512e0a7774ed6be9a842b488be27e84494b4635a5e621b641000b594b"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14062,6 +14132,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "c7ca193d5d35cc2845530c0cbffbed461b3e4fad36e1984816c14d78d54b448a"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14115,6 +14186,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "8e1933f651054a043643c9704e96ae900585bab2c2a508263c40a46333d436cb"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14168,6 +14240,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "294703cfe5df05cbe87b0df2ef4dbc524e556a2f35aff1f26e5ea69a35ef2809"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14221,6 +14294,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "4fa1ec70e6c5f7c56451ea835d0626ea54598e9b716046f64b3e9ade1d119bda"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14274,6 +14348,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "e883ffdb2feec973059974a21ae5f852bfd3302adc67afade18ffadd82a6e586"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14327,6 +14402,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "a9a3c255efd3943791e4e5dcb149eaaa7cb12b298589fa482a2d0c6baf2f6bca"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14380,6 +14456,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "456147bd726e230c5fd9453330b3a80682d4431d49858a0c22a704c53584240d"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14433,6 +14510,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "becc6c562b1889a0017f6623a3c8bed6314e8d04179a6bd34d013681749ff195"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14486,6 +14564,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "bf2983ac6402ebd6b9a680aeb85f8dde0bdc115fd658a7c9543cb9a9e288c1c6"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14539,6 +14618,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "8fc3158674abd4c002726a4b8ef85dc6e8b13e4f1b6023f8639580579598284a"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14592,6 +14672,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "26babff3da314706c164d07e0f97c5cfe60d889874f6d2869f743cc1e5d205b1"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14645,6 +14726,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "96ce623940437f4bdbccce91fe27b3777e41692d8b80ebfd444c27fe389d50e7"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14698,6 +14780,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "1eae33849bd24a73e2b968a32ced873868ba967a5f872b8fd4852595826bf5f9"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14751,6 +14834,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "1b8cfd7c8c315a3436b0b62269eaf0d4f52c023214a1b38d3d6922faea9f50e0"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14804,6 +14888,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "c176f2a08cd052809ff8ffb2db9c25ab90525b33e2943bdb729e8d0ac97e462c"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14857,6 +14942,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "e789ce1215ef1b9c313d5245dd254de759366a7f3d2f4df8efe4583464e6b01a"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14910,6 +14996,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "531512153e4ceec5940775fe3f5f92388d87ab3f304db9c726d4d0c43e150098"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -14963,6 +15050,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "07b08efe5204b65eef477a9bda031092a3c71c204e99050071a0cd5e0355283c"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -15016,6 +15104,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "332f7cc9e02e32b70754d7111f1186cd0d00f3fad39ed20809221a5fb5213b25"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -15069,6 +15158,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "12a00cf9e6251bcf0e52d9414eb2731c8bfce0ac3232ce407ae4b4b3a6499e26"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -15122,6 +15212,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "a3124a54ce1d69f7664da5144245bbbe07e61a50a006425ff1c44a7c292e7e09"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -15175,6 +15266,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "26ed3503a7826fad8cf9181784494c3751c62cb6ea863b6b266b3d6d9e7469c6"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -15228,6 +15320,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "6fa47ad66054dd47b94b22bba73962d69ca1541200a5ad288b2d4579c6cd883b"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -15281,6 +15374,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "72166c0bbf8f35c720d2326b0798f36c9ee7f721f7c771b2ddb686b9cf8a0b39"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -15334,6 +15428,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "d60a1b46e228c86b44c6bf389513f2d1a380503660b9c1e1ef15df27adaf7d5d"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WEAK WARNING",
             "tags": [
@@ -15387,6 +15482,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "c556f75fea7d75b7ae4334d450f1d562a578234a9fcb450ea52fd51225124b4f"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WARNING",
             "tags": [
@@ -15440,6 +15536,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "beb325b3234bba06388e6ca7083b64a5d77dac9e21e10787da84c0c84334d91a"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WARNING",
             "tags": [
@@ -15493,6 +15590,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "31890d59f2ce4f950d1700f30dd4de94e81f4e19f574aafa59e10b80af99ae3a"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WARNING",
             "tags": [
@@ -15546,6 +15644,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "f43e4ecc560c910abea4057c682a2fc10ea36eb6b88064945937aed4b47716af"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WARNING",
             "tags": [
@@ -15599,6 +15698,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "05b35a787e1786af0d3e3c142d9c031e8509745b263a19792f3797b5cbee5d5d"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WARNING",
             "tags": [
@@ -15652,6 +15752,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "1f6e26d138fac093fde8ef4398a45d3cdae2658aa8f71e2c9cc9963900212f8d"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WARNING",
             "tags": [
@@ -15705,6 +15806,7 @@
           "partialFingerprints": {
             "equalIndicator/v1": "7bbb9a00ad50005dcac873f4167730fbbd7c052e0f7921b45c3268fac4a40fb1"
           },
+          "baselineState": "unchanged",
           "properties": {
             "ideaSeverity": "WARNING",
             "tags": [
@@ -15714,10 +15816,10 @@
         }
       ],
       "automationDetails": {
-        "id": "project/qodana/2023-02-19",
-        "guid": "4b0a0cf3-8744-4976-9342-b9d71df68b61",
+        "id": "project/qodana/2023-02-20",
+        "guid": "5f2b818f-30fb-4003-90df-2f37a9c87969",
         "properties": {
-          "jobUrl": "https://github.com/zim514/script.service.hue/actions/runs/4217577720"
+          "jobUrl": "https://github.com/zim514/script.service.hue/actions/runs/4220327792"
         }
       },
       "newlineSequences": [
