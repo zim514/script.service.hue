@@ -7,3 +7,5 @@ exclude:
   - name: All
     paths:
       - script.service.hue/resources/lib/rgbxy
+include:
+  - name: CheckDependencyLicenses
