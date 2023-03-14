@@ -37,6 +37,7 @@ Improved Hue error handling
         <summary lang="hr_HR">Automatski Hue svjetla s Kodi reprodukcijom</summary>
         <summary lang="it_IT">Automatizza le luci Hue con la riproduzione di Kodi</summary>
         <summary lang="ko_KR">Kodi 재생으로 Hue 조명 자동화</summary>
+        <summary lang="sk_SK">Automatizácia svetiel Hue s prehrávaním v Kodi</summary>
         <summary lang="zh_CN">Kodi 播放时自动调整 Hue 灯光</summary>
         <description lang="ca_ES">Automatitza les teves llums Hue amb Kodi. Creeu escenes en diverses habitacions que s&apos;executen al reproduir, posar en pausa o aturar la reproducció multimèdia. Crea i suprimeix escenes de diverses habitacions des de la configuració del complement i, a continuació, selecciona quina vols aplicar als diferents esdeveniments de reproducció. Pots utilitzar les hores de sortida i posta del sol de Hue per desactivar automàticament el servei durant el dia i encendre els llums al capvespre durant la reproducció. Inclou suport d&apos;Ambilight.</description>
         <description lang="cs_CZ">Ovládejte Hue světla automaticky pomocí Kodi. Vytvořte scény pro začátek, přestávku i ukončení přehrávání a nechte Kodi reagovat automaticky na Vaše akce. Je možné využít východ i západ slunce. Obsahuje podporu pro Ambilight.</description>
@@ -49,6 +50,7 @@ Improved Hue error handling
         <description lang="hr_HR">Automatizirajte svoja Hue svjetla s Kodijem. Stvorite višesobnu scenu koja se pokreće kada Reproducirate, Pauzirate ili Zaustavite medijsku reprodukciju. Stvorite i obrišite višesobne scene iz postavki dodatka tada odaberite koju primijeniti za drugačiji događaj reprodukcije. Može se koristiti zasićenje vremena izlaska i zalaska sunca za automatsko onemogućavanje usluge tijekom dana i uključivanje svjetla pri zalasku sunca tijekom reprodukcije.</description>
         <description lang="it_IT">Automatizza le tue luci Hue con Kodi. Crea scene multi-stanza che vengono eseguite quando riproduci, metti in pausa o interrompi la riproduzione multimediale. Crea ed elimina scene multi-room dalle impostazioni del componente aggiuntivo, quindi seleziona quali applicare per diversi eventi di riproduzione. Può utilizzare gli orari di alba e tramonto di Hue per disabilitare automaticamente il servizio durante il giorno e accendere le luci al tramonto durante la riproduzione. Include il supporto Ambilight.</description>
         <description lang="ko_KR">Kodi로 Hue 조명을 자동화하세요. 미디어 재생을 재생, 일시 중지 또는 중지할 때 실행되는 멀티룸 장면을 만듭니다. 애드온 설정에서 멀티룸 장면을 만들거나 삭제하고 다른 재생 이벤트에 적용할 장면을 선택합니다. Hue의 일출 및 일몰 시간을 사용하여 주간에는 서비스를 자동으로 비활성화하고 재생 중에 일몰 시 조명을 켤 수 있습니다. Ambilight 지원이 포함됩니다.</description>
+        <description lang="sk_SK">Automatizácia svetiel Hue pomocou Kodi. Vytvorte scény pre viacero miestností, ktoré sa spustia pri prehrávaní, pozastavení alebo ukončení prehrávania médií. Vytvárajte a odstraňujte scény z viacerých miestností v nastaveniach doplnku a potom vyberte, ktoré sa majú použiť pre rôzne udalosti prehrávania. Môžete využiť časy východu a západu slnka zariadenia Hue na automatické vypnutie služby počas dňa a zapnutie svetiel pri západe slnka počas prehrávania. Obsahuje podporu funkcie Ambilight.</description>
         <description lang="zh_CN">使用 Kodi 自动化 Hue 灯光。创建播放、暂停或停止媒体播放时运行的多房间场景。从插件设置中创建和删除多房间场景，然后选择要应用于不同播放事件的场景。可以使用 Hue 灯的日出和日落时间在白天自动禁用服务，并在日落后播放期间打开灯光。包括 Ambilight 支持。</description>
         <disclaimer lang="cs_CZ">Vyžaduje Hue Bridge V2 (čtvercový). Ambilight není podporován na všech zařízeních.</disclaimer>
         <disclaimer lang="da_DK">Kræver en Hue Bridge V2 (firkant). Ambilight er ikke tilgængelig på al hardware.</disclaimer>
@@ -60,6 +62,7 @@ Improved Hue error handling
         <disclaimer lang="hr_HR">Zahtijeva Hue Bridge V2 (Square). Ambijetalno svijtlo nije dostupno na svim hardverima.</disclaimer>
         <disclaimer lang="it_IT">Richiede un Bridge Hue V2 (quadrato). Ambilight non disponibile su tutto l&apos;hardware.</disclaimer>
         <disclaimer lang="ko_KR">Hue Bridge V2(정사각형)가 필요합니다. 모든 하드웨어에서 Ambilight를 사용할 수 있는 것은 아닙니다.</disclaimer>
+        <disclaimer lang="sk_SK">Vyžaduje Hue Bridge V2 (štvorcový). Ambilight nie je k dispozícii na všetkých zariadeniach.</disclaimer>
         <disclaimer lang="zh_CN">需要 Hue Bridge V2 桥接器（正方形）。并非所有硬件都支持环境光。</disclaimer>
     </extension>
 </addon>
