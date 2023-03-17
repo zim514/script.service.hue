@@ -9,3 +9,7 @@ exclude:
       - script.service.hue/resources/lib/rgbxy
 include:
   - name: CheckDependencyLicenses
+checks:
+  # Ignore the "line too long" warning
+  - id: line-too-long
+    disabled: true
