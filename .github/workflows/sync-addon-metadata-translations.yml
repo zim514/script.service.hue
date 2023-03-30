@@ -46,12 +46,8 @@ jobs:
           sync-addon-metadata-translations
         working-directory: ./project/script.service.hue
 
-      - name: Create PR for sync-addon-metadata-translations changes
-        uses: peter-evans/create-pull-request@v4.2.4
+      - name: Commit
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit-message: Sync of addon metadata translations
-          title: Sync of addon metadata translations
-          body: Sync of addon metadata translations triggered by ${{ github.sha }}
-          branch: amt-sync
-          delete-branch: true
-          path: ./project
+          commit_message: Sync of addon metadata translations triggered by ${{ github.sha }}
+          add_options: '--all'
