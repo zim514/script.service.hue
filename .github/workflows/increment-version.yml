@@ -5,7 +5,7 @@ on:
     branches: Main
     paths:
       - '**resource.language.**strings.po'
-  workflow_dispatch:
+
 
 jobs:
   default:
