@@ -2,7 +2,6 @@
 # Addon Name: Hue Service
 # Addon id: script.service.hue
 # Addon Provider: zim514
-
 msgid ""
 msgstr ""
 "Language: en\n"
