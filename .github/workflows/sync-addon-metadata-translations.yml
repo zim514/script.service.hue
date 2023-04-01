@@ -49,5 +49,6 @@ jobs:
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
+          repository: project
           commit_message: Sync of addon metadata translations triggered by ${{ github.sha }}
           add_options: '--all'
