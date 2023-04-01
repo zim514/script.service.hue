@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.4.12">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.4.13">
     
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
@@ -22,6 +22,9 @@
         <source>https://github.com/zim514/script.service.hue</source>
         <forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
         <news>
+v1.4.13
+- Translations updates from Weblate
+
 Remove dependency with SimpleCache
 Fix service not disabling correctly
 Fix reconnection
