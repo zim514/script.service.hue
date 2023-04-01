@@ -55,5 +55,6 @@ jobs:
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
+          repository: ${{ github.event.repository.name }}
           commit_message: Increment addon.xml version to ${{ steps.required-variables.outputs.version }}
           add_options: '--all'
