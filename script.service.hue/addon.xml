@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.4.13">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.4.14">
     
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
@@ -21,14 +21,17 @@
         </assets>
         <source>https://github.com/zim514/script.service.hue</source>
         <forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-        <news>
+        <news>v1.4.14
+- Fix daylight disable
+
 v1.4.13
 - Translations updates from Weblate
 
-Remove dependency with SimpleCache
-Fix service not disabling correctly
-Fix reconnection
-Improved Hue error handling
+v1.4
+- Remove dependency with SimpleCache
+- Fix service not disabling correctly
+- Fix reconnection
+- Improved Hue error handling
         </news>
         <summary lang="ca_ES">Automatitza les llums Hue amb la reproducció de Kodi</summary>
         <summary lang="cs_CZ">Automatizace Hue světel s přehráváním Kodi</summary>

@@ -154,7 +154,7 @@ class LightGroup(xbmc.Player):
     @staticmethod
     def check_active_time():
 
-        daylight = cache_get("script.service.hue.daylight")
+        daylight = cache_get("daylight")
         xbmc.log("[script.service.hue] Schedule: {}, daylightDisable: {}, daylight: {}, startTime: {}, endTime: {}".format(ADDON.getSettingBool("enableSchedule"), ADDON.getSettingBool("daylightDisable"), daylight,
                                                                                                                            ADDON.getSettingString("startTime"), ADDON.getSettingString("endTime")))
 
