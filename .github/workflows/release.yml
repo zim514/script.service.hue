@@ -98,7 +98,7 @@ jobs:
 
     steps:
       - name: Notify deploy to Rollbar
-        uses: rollbar/github-deploy-action@2.1.1
+        uses: rollbar/github-deploy-action@2.1.2
         id: rollbar_deploy
         with:
           environment: 'production'
