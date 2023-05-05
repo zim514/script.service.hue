@@ -1,4 +1,4 @@
-requests==2.28.1
+requests==2.30.0
 qhue~=2.0.1
 rollbar~=0.15.2
 polib
