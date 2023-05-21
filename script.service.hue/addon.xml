@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.4.16">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.4.17">
     
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
@@ -21,7 +21,10 @@
         </assets>
         <source>https://github.com/zim514/script.service.hue</source>
         <forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-        <news>
+        <news>v1.4.17
+- Fix ambilight crash on sunset / activation when no video is playing
+- Ignore Bridge throttle errors during discovery
+
 v1.4.16
 - Translations updates from Weblate
 
