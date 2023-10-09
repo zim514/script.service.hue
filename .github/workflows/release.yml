@@ -48,7 +48,7 @@ jobs:
         working-directory: ./
 
       - name: Commit
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Automated repo update ${{  github.ref_name }}
           add_options: '--all'
