@@ -53,7 +53,7 @@ jobs:
         working-directory: ${{ github.event.repository.name }}
 
       - name: Commit
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           repository: ${{ github.event.repository.name }}
           commit_message: Increment addon.xml version to ${{ steps.required-variables.outputs.version }}
