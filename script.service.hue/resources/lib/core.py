@@ -14,6 +14,7 @@ from . import ambigroup, lightgroup, kodiutils, hueconnection
 from .hueconnection import HueConnection
 from .kodiutils import validate_settings, notification, cache_set, cache_get
 from .language import get_string as _
+from .huev2 import HueAPIv2
 
 
 def core():
@@ -85,6 +86,13 @@ def _commands(monitor, command):
 def _service(monitor):
     hue_connection = HueConnection(monitor, silent=ADDON.getSettingBool("disableConnectionMessage"), discover=False)
     service_enabled = cache_get("service_enabled")
+
+    #### V2 Connection
+    bridge2 = HueAPIv2(ip=ADDON.getSetting("bridgeIP"), key=ADDON.getSetting("bridgeUser"))
+
+
+    #################
+
 
     if hue_connection.connected:
         light_groups = [lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO),
