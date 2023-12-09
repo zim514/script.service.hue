@@ -88,7 +88,7 @@ def _service(monitor):
     service_enabled = cache_get("service_enabled")
 
     #### V2 Connection
-    bridge2 = HueAPIv2(ip=ADDON.getSetting("bridgeIP"), key=ADDON.getSetting("bridgeUser"))
+    bridge2 = HueAPIv2(monitor, ip=ADDON.getSetting("bridgeIP"), key=ADDON.getSetting("bridgeUser"))
 
 
     #################

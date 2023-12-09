@@ -24,7 +24,6 @@
         <forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
         <news>v2.0
 - Initial support for Hue API V2
-- Support for dynamic and gradient scenes, but require reconfiguration
 - Rewrote sunset check
 </news>
         <summary lang="ca_ES">Automatitza les llums Hue amb la reproducció de Kodi</summary>
