@@ -82,7 +82,7 @@ def build_menu(base_url, addon_handle):
 
 def _get_status():
     enabled = cache_get("service_enabled")
-    daylight = cache_get("daylight")
+    daylight = cache_get("daylight") #TODO: get daylight from bridge v2
     daylight_disable = ADDON.getSettingBool("daylightDisable")
     xbmc.log(f"[script.service.hue] _get_status enabled: {enabled}   -  {type(enabled)}, daylight: {daylight}, daylight_disable: {daylight_disable}")
 
@@ -99,7 +99,7 @@ def _get_status():
 
 def _get_status_icon():
     enabled = cache_get("service_enabled")
-    daylight = cache_get("daylight")
+    daylight = cache_get("daylight") #TODO: get daylight from bridge v2
     daylight_disable = ADDON.getSettingBool("daylightDisable")
     # xbmc.log("[script.service.hue] Current status: {}".format(daylight_disable))
     if daylight and daylight_disable:

@@ -2,11 +2,11 @@
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
 #      See LICENSE.TXT for more information.
-
+import datetime
 import json
 import sys
+import threading
 
-import requests
 import xbmc
 
 from . import ADDON, SETTINGS_CHANGED, ADDONID, AMBI_RUNNING
@@ -41,7 +41,8 @@ def _commands(monitor, command):
             ADDON.openSettings()
 
     elif command == "createHueScene":
-        hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=False)  # don't rediscover, proceed silently
+        hue_connection = hueconnection.HueConnection(monitor, silent=True,
+                                                     discover=False)  # don't rediscover, proceed silently
         if hue_connection.connected:
             hue_connection.create_hue_scene()
         else:
@@ -49,7 +50,8 @@ def _commands(monitor, command):
             notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     elif command == "deleteHueScene":
-        hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=False)  # don't rediscover, proceed silently
+        hue_connection = hueconnection.HueConnection(monitor, silent=True,
+                                                     discover=False)  # don't rediscover, proceed silently
         if hue_connection.connected:
             hue_connection.delete_hue_scene()
         else:
@@ -61,7 +63,8 @@ def _commands(monitor, command):
         action = sys.argv[3]
         # xbmc.log(f"[script.service.hue] sceneSelect: light_group: {light_group}, action: {action}")
 
-        hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=False)  # don't rediscover, proceed silently
+        hue_connection = hueconnection.HueConnection(monitor, silent=True,
+                                                     discover=False)  # don't rediscover, proceed silently
         if hue_connection.connected:
             hue_connection.configure_scene(light_group, action)
         else:
@@ -72,7 +75,8 @@ def _commands(monitor, command):
         light_group = sys.argv[2]
         # xbmc.log(f"[script.service.hue] ambiLightSelect light_group_id: {light_group}")
 
-        hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=False)  # don't rediscover, proceed silently  # don't rediscover, proceed silently
+        hue_connection = hueconnection.HueConnection(monitor, silent=True,
+                                                     discover=False)  # don't rediscover, proceed silently  # don't rediscover, proceed silently
         if hue_connection.connected:
             hue_connection.configure_ambilights(light_group)
         else:
@@ -84,29 +88,26 @@ def _commands(monitor, command):
 
 
 def _service(monitor):
-    hue_connection = HueConnection(monitor, silent=ADDON.getSettingBool("disableConnectionMessage"), discover=False)
     service_enabled = cache_get("service_enabled")
 
-    #### V2 Connection
-    bridge2 = HueAPIv2(monitor, ip=ADDON.getSetting("bridgeIP"), key=ADDON.getSetting("bridgeUser"))
+    #### V1 Connection - reliable discovery and config
+    hue_connection = HueConnection(monitor, silent=ADDON.getSettingBool("disableConnectionMessage"), discover=False)
 
+    #### V2 Connection - this has no proper bridge discovery, and missing all kinds of error checking
+    bridge = HueAPIv2(monitor, ip=ADDON.getSetting("bridgeIP"), key=ADDON.getSetting("bridgeUser"))
 
-    #################
+    if bridge.connected and hue_connection.connected:
+        # light groups still expect a V1 bridge object
+        light_groups = [lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO), lightgroup.LightGroup(1, hue_connection, lightgroup.AUDIO), ambigroup.AmbiGroup(3, hue_connection)]
 
+        #start sunset and midnight timers
+        timers = Timers(monitor, bridge, light_groups)
+        timers.start()
 
-    if hue_connection.connected:
-        light_groups = [lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO),
-                        lightgroup.LightGroup(1, hue_connection, lightgroup.AUDIO),
-                        ambigroup.AmbiGroup(3, hue_connection)]
-
-        timer = 60
-        daylight = new_daylight = hue_connection.get_daylight()
-
-        cache_set("daylight", daylight)
         cache_set("service_enabled", True)
         # xbmc.log("[script.service.hue] Core service starting. Connected: {}".format(CONNECTED))
 
-        while hue_connection.connected and not monitor.abortRequested():
+        while hue_connection.connected and bridge.connected and not monitor.abortRequested():
 
             # check if service was just re-enabled and if so activate groups
             prev_service_enabled = service_enabled
@@ -114,7 +115,7 @@ def _service(monitor):
             if service_enabled and not prev_service_enabled:
                 activate(light_groups)
 
-            # if service disabled, stop ambilight._ambi_loop thread
+            # if service was disabled, stop ambilight thread
             if not service_enabled:
                 AMBI_RUNNING.clear()
 
@@ -125,35 +126,12 @@ def _service(monitor):
 
             # reload groups if settings changed, but keep player state
             if SETTINGS_CHANGED.is_set():
-                light_groups = [lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO, initial_state=light_groups[0].state, video_info_tag=light_groups[0].video_info_tag),
-                                lightgroup.LightGroup(1, hue_connection, lightgroup.AUDIO, initial_state=light_groups[1].state, video_info_tag=light_groups[1].video_info_tag),
-                                ambigroup.AmbiGroup(3, hue_connection, initial_state=light_groups[2].state, video_info_tag=light_groups[2].video_info_tag)]
+                light_groups = [
+                    lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO, initial_state=light_groups[0].state, video_info_tag=light_groups[0].video_info_tag),
+                    lightgroup.LightGroup(1, hue_connection, lightgroup.AUDIO, initial_state=light_groups[1].state, video_info_tag=light_groups[1].video_info_tag),
+                    ambigroup.AmbiGroup(3, hue_connection, initial_state=light_groups[2].state, video_info_tag=light_groups[2].video_info_tag)]
                 SETTINGS_CHANGED.clear()
 
-            # every minute, check for sunset & connection
-            if timer > 59:
-                timer = 0
-
-                # fetch daylight status, reconnect to Hue if it fails
-                try:
-                    new_daylight = hue_connection.get_daylight()
-                except requests.exceptions.RequestException:
-                    if hue_connection.reconnect(monitor):
-                        new_daylight = hue_connection.get_daylight()
-                    else:
-                        notification(_("Hue Service"), _("Connection lost. Check settings. Shutting down"))
-                        return
-
-                # check if sunset took place
-                if new_daylight != daylight:
-                    xbmc.log(f"[script.service.hue] Daylight change. current: {daylight}, new: {new_daylight}")
-                    daylight = new_daylight
-
-                    cache_set("daylight", daylight)
-                    if not daylight and service_enabled:
-                        xbmc.log("[script.service.hue] Sunset activate")
-                        activate(light_groups)
-            timer += 1
             monitor.waitForAbort(1)
         xbmc.log("[script.service.hue] Process exiting...")
         return
@@ -211,3 +189,53 @@ def activate(light_groups):
         xbmc.log(f"[script.service.hue] in activate g: {g}, light_group_id: {g.light_group_id}")
         if ADDON.getSettingBool(f"group{g.light_group_id}_enabled"):
             g.activate()
+
+
+class Timers(threading.Thread):
+    def __init__(self, monitor, bridge, light_groups):
+        super().__init__()
+        self.monitor = monitor
+        self.bridge = bridge
+        self.light_groups = light_groups
+
+    def run(self):
+        self._schedule()
+
+    def _run_midnight(self):
+        # get new day's sunset time after midnight
+        self.bridge.update_sunset()
+        xbmc.log(f"[script.service.hue] in run_midnight(): 1 minute past midnight, new sunset time: {self.bridge.sunset}")
+
+    def _run_sunset(self):
+        # The function you want to run at sunset
+        activate(self.light_groups)
+        xbmc.log(f"[script.service.hue] in run_sunset(): Sunset. ")
+
+    @staticmethod
+    def _calculate_initial_delay(target_time):
+        # Calculate the delay until the target time
+        now = datetime.datetime.now().time()
+        target_datetime = datetime.datetime.combine(datetime.date.today(), target_time)
+        if target_time < now:
+            target_datetime += datetime.timedelta(days=1)
+        delay = (target_datetime - datetime.datetime.now()).total_seconds()
+        return delay
+
+    def _schedule(self):
+        while not self.monitor.abortRequested():
+            # Calculate delay for sunset and wait
+            delay_sunset = self._calculate_initial_delay(self.bridge.sunset)
+            xbmc.log(f"[script.service.hue] in schedule(): Sunset will run in {delay_sunset} seconds")
+            if self.monitor.waitForAbort(delay_sunset):
+                # Abort was requested while waiting. We should exit
+                break
+            self._run_sunset()
+
+            # Calculate delay for midnight and wait
+            midnight_plus_one = (datetime.datetime.now() + datetime.timedelta(days=1)).replace(hour=0, minute=1, second=0, microsecond=0).time()
+            delay_midnight = self._calculate_initial_delay(midnight_plus_one)
+            xbmc.log(f"[script.service.hue] in schedule(): Midnight will run in {delay_midnight} seconds")
+            if self.monitor.waitForAbort(delay_midnight):
+                # Abort was requested while waiting. We should exit
+                break
+            self._run_midnight()

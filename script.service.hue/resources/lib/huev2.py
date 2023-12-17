@@ -2,11 +2,16 @@
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
 #      See LICENSE.TXT for more information.
-
+import threading
 
 import requests
+import urllib3
+
+
+
 import simplejson as json
 from simplejson import JSONDecodeError
+import datetime
 
 import xbmc
 import xbmcgui
@@ -18,6 +23,8 @@ from .language import get_string as _
 
 class HueAPIv2(object):
     def __init__(self, monitor, ip=None, key=None, discover=False):
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  # Old hue bridges use insecure https
+
         self.session = requests.Session()
         self.session.verify = False
         # session.headers.update({'hue-application-key': hue_application_key})
@@ -31,6 +38,7 @@ class HueAPIv2(object):
         self.ip = ip
         self.key = key
         self.base_url = None
+        self.sunset = None
         self.monitor = monitor
 
         if ip is not None and key is not None:
@@ -50,6 +58,7 @@ class HueAPIv2(object):
 
         if self._check_version():
             self.connected = True
+            self.update_sunset()
             return True
         else:
             self.connected = False
@@ -166,11 +175,14 @@ class HueAPIv2(object):
 
     def _check_version(self):
         try:
-            software_version = self.get_attribute_value(self.devices, self.bridge_id, ['product_data', 'software_version'])
+            software_version = self.get_attribute_value(self.devices, self.bridge_id,
+                                                        ['product_data', 'software_version'])
             api_split = software_version.split(".")
         except KeyError as error:
-            notification(_("Hue Service"), _("Bridge outdated. Please update your bridge."), icon=xbmcgui.NOTIFICATION_ERROR)
-            xbmc.log(f"[script.service.hue] in _version_check():  Connected! Bridge too old: {software_version}, error: {error}")
+            notification(_("Hue Service"), _("Bridge outdated. Please update your bridge."),
+                         icon=xbmcgui.NOTIFICATION_ERROR)
+            xbmc.log(
+                f"[script.service.hue] in _version_check():  Connected! Bridge too old: {software_version}, error: {error}")
             return False
         except Exception as exc:
             reporting.process_exception(exc)
@@ -180,9 +192,17 @@ class HueAPIv2(object):
             xbmc.log(f"[script.service.hue] v2 connect() software version: {software_version}")
             return True
 
-        notification(_("Hue Service"), _("Bridge outdated. Please update your bridge."), icon=xbmcgui.NOTIFICATION_ERROR)
+        notification(_("Hue Service"), _("Bridge outdated. Please update your bridge."),
+                     icon=xbmcgui.NOTIFICATION_ERROR)
         xbmc.log(f"[script.service.hue] v2 connect():  Connected! Bridge API too old: {software_version}")
         return False
+
+    def update_sunset(self):
+        geolocation = self.get("geolocation") # TODO: Support cases where geolocation is not configured on bridge.
+        xbmc.log(f"[script.service.hue] v2 update_sunset(): geolocation: {geolocation}")
+        sunset_str = self.search_dict(geolocation, "sunset_time")
+        self.sunset = datetime.datetime.strptime(sunset_str, '%H:%M:%S').time()
+        xbmc.log(f"[script.service.hue] v2 update_sunset(): sunset: {self.sunset}")
 
     def get(self, resource):
         url = f"{self.base_url}/{resource}"
@@ -285,3 +305,5 @@ class HueAPIv2(object):
                         item = HueAPIv2.search_dict(d, key)
                         if item is not None:
                             return item
+
+
