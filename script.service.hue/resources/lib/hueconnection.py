@@ -322,13 +322,7 @@ class HueConnection(object):
             xbmc.log(f"[script.service.hue] Username not found: {exc}")
             return False
 
-    def configure_scene(self, group_id, action):
-        scene = self.select_hue_scene()
-        if scene is not None:
-            # group0_startSceneID
-            ADDON.setSettingString(f"group{group_id}_{action}SceneID", scene[0])
-            ADDON.setSettingString(f"group{group_id}_{action}SceneName", scene[1])
-            ADDON.openSettings()
+
 
     def configure_ambilights(self, group_id):
         lights = self.select_hue_lights()

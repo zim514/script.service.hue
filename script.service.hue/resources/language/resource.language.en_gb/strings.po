@@ -22,12 +22,12 @@ msgid "Requires a Hue Bridge V2 (Square). Ambilight not available on all hardwar
 msgstr ""
 
 msgctxt "#32100"
-msgid "Video Actions"
-msgstr "Video Actions"
+msgid "Video Scenes"
+msgstr "Video Scenes"
 
 msgctxt "#32102"
-msgid "Audio Actions"
-msgstr "Audio Actions"
+msgid "Audio Scenes"
+msgstr "Audio Scenes"
 
 msgctxt "#32201"
 msgid "Start/Resume"
@@ -41,9 +41,9 @@ msgctxt "#32203"
 msgid "Stop"
 msgstr "Stop"
 
-msgctxt "#32510"
-msgid "Scene Name:"
-msgstr "Scene Name:"
+msgctxt "#30036"
+msgid "Scene:"
+msgstr "Scene:"
 
 msgctxt "#32511"
 msgid "Scene ID"
@@ -138,8 +138,8 @@ msgid "Advanced"
 msgstr "Advanced"
 
 msgctxt "#32106"
-msgid "Video Activation"
-msgstr "Video Activation"
+msgid "Video Activation Rules"
+msgstr "Video Activation Rules"
 
 msgctxt "#6101"
 msgid "Select Lights"
@@ -486,4 +486,9 @@ msgstr ""
 
 msgctxt "#31334"
 msgid "Re-enable time"
+msgstr ""
+
+msgctxt "#31335"
+#. Amount of time for the light scene transition to fade in, in milliseconds.
+msgid "Transition time (ms)"
 msgstr ""

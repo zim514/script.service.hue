@@ -43,11 +43,12 @@ def _commands(monitor, command):
     elif command == "sceneSelect":  # sceneSelect=light_group,action  / sceneSelect=0,play
         light_group = sys.argv[2]
         action = sys.argv[3]
-        # xbmc.log(f"[script.service.hue] sceneSelect: light_group: {light_group}, action: {action}")
+        xbmc.log(f"[script.service.hue] sceneSelect: light_group: {light_group}, action: {action}")
 
-        hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=False)  # don't rediscover, proceed silently
-        if hue_connection.connected:
-            hue_connection.configure_scene(light_group, action)
+        #hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=False)  # don't rediscover, proceed silently
+        bridge = HueAPIv2(monitor, ip=ADDON.getSetting("bridgeIP"), key=ADDON.getSetting("bridgeUser"))
+        if bridge.connected:
+            bridge.configure_scene(light_group, action)
         else:
             xbmc.log("[script.service.hue] No bridge found. sceneSelect cancelled.")
             notification(_("Hue Service"), _("Check Hue Bridge configuration"))
@@ -75,6 +76,7 @@ def _service(monitor):
 
     # V2 Connection - this has no proper bridge discovery, and missing all kinds of error checking
     bridge = HueAPIv2(monitor, ip=ADDON.getSetting("bridgeIP"), key=ADDON.getSetting("bridgeUser"))
+
 
     if bridge.connected and hue_connection.connected:
         # light groups still expect a V1 bridge object

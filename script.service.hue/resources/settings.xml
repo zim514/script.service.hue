@@ -60,10 +60,9 @@
                     <control type="toggle"/>
                 </setting>
 
-                <setting id="group0_startSceneName" type="string" label="30036" help="">
-                    <level>0</level>
-                    <default>Not selected</default>
-                    <enable>false</enable>
+                <setting id="group0_startTransition" type="integer" label="31335" help="">
+                    <level>1</level>
+                    <default>15000</default>
                     <dependencies>
                         <dependency type="visible">
                             <and>
@@ -72,10 +71,11 @@
                             </and>
                         </dependency>
                     </dependencies>
-                    <control type="edit" format="string">
-                        <heading>30036</heading>
-                    </control>
+                <control type="edit" format="integer">
+                    <heading>31335</heading>
+                </control>
                 </setting>
+
 
 
                 <setting id="group0_startSelectScene" type="action" label="32512" help="">
@@ -96,6 +96,25 @@
                         <close>true</close>
                     </control>
                 </setting>
+                <setting id="group0_startSceneName" type="string" label="30036" help="">
+                    <level>0</level>
+                    <default>Not selected</default>
+                    <enable>false</enable>
+                    <dependencies>
+                        <dependency type="visible">
+                            <and>
+                                <condition operator="is" setting="group0_startBehavior">true</condition>
+                                <condition operator="is" setting="group0_enabled">true</condition>
+                            </and>
+                        </dependency>
+                    </dependencies>
+                    <control type="edit" format="string">
+                        <heading>30036</heading>
+                    </control>
+                </setting>
+
+
+
 
                 <setting id="group0_startSceneID" type="string" label="32511" help="">
                     <level>4</level>
@@ -119,13 +138,9 @@
                     </dependencies>
                     <control type="toggle"/>
                 </setting>
-
-
-
-                <setting id="group0_pauseSceneName" type="string" label="30036" help="">
-                    <level>0</level>
-                    <default>Not selected</default>
-                    <enable>false</enable>
+                <setting id="group0_pauseTransition" type="integer" label="31335" help="">
+                    <level>1</level>
+                    <default>8000</default>
                     <dependencies>
                         <dependency type="visible">
                             <and>
@@ -134,12 +149,10 @@
                             </and>
                         </dependency>
                     </dependencies>
-                    <control type="edit" format="string">
-                        <heading>30036</heading>
-                    </control>
+                <control type="edit" format="integer">
+                    <heading>31335</heading>
+                </control>
                 </setting>
-
-
 
                 <setting id="group0_pauseSelectScene" type="action" label="32512" help="">
                     <level>0</level>
@@ -163,6 +176,28 @@
                 </setting>
 
 
+
+                <setting id="group0_pauseSceneName" type="string" label="30036" help="">
+                    <level>0</level>
+                    <default>Not selected</default>
+                    <enable>false</enable>
+                    <dependencies>
+                        <dependency type="visible">
+                            <and>
+                                <condition operator="is" setting="group0_pauseBehavior">true</condition>
+                                <condition operator="is" setting="group0_enabled">true</condition>
+                            </and>
+                        </dependency>
+                    </dependencies>
+                    <control type="edit" format="string">
+                        <heading>30036</heading>
+                    </control>
+                </setting>
+
+
+
+
+
                 <setting id="group0_pauseSceneID" type="string" label="32511" help="">
                     <level>4</level>
                     <default>-1</default>
@@ -172,6 +207,7 @@
                     </control>
                 </setting>
             </group>
+
 
 
             <group id="4">
@@ -185,6 +221,41 @@
                     </dependencies>
                     <control type="toggle"/>
                 </setting>
+                <setting id="group0_stopTransition" type="integer" label="31335" help="">
+                    <level>1</level>
+                    <default>8000</default>
+                    <dependencies>
+                        <dependency type="visible">
+                            <and>
+                                <condition operator="is" setting="group0_stopBehavior">true</condition>
+                                <condition operator="is" setting="group0_enabled">true</condition>
+                            </and>
+                        </dependency>
+                    </dependencies>
+                <control type="edit" format="integer">
+                    <heading>31335</heading>
+                </control>
+                </setting>
+                        <setting id="group0_stopSelectScene" type="action" label="32512" help="">
+                    <level>0</level>
+                    <data>RunScript(script.service.hue,sceneSelect,0,stop)</data>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <dependencies>
+
+                        <dependency type="visible">
+                            <and>
+                                <condition operator="is" setting="group0_stopBehavior">true</condition>
+                                <condition operator="is" setting="group0_enabled">true</condition>
+                    </and>
+                        </dependency>
+                    </dependencies>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
+
                 <setting id="group0_stopSceneName" type="string" label="30036" help="">
                     <level>0</level>
                     <default>Not selected</default>
@@ -204,25 +275,7 @@
                 </setting>
 
 
-                <setting id="group0_stopSelectScene" type="action" label="32512" help="">
-                    <level>0</level>
-                    <data>RunScript(script.service.hue,sceneSelect,0,stop)</data>
-                    <constraints>
-                        <allowempty>true</allowempty>
-                    </constraints>
-                    <dependencies>
 
-                        <dependency type="visible">
-                            <and>
-                                <condition operator="is" setting="group0_stopBehavior">true</condition>
-                                <condition operator="is" setting="group0_enabled">true</condition>
-                            </and>
-                        </dependency>
-                    </dependencies>
-                    <control type="button" format="action">
-                        <close>true</close>
-                    </control>
-                </setting>
 
 
                 <setting id="group0_stopSceneID" type="string" label="32511" help="">
@@ -295,12 +348,9 @@
                     </dependencies>
                     <control type="toggle"/>
                 </setting>
-
-
-                <setting id="group1_startSceneName" type="string" label="30036" help="">
-                    <level>0</level>
-                    <default>Not selected</default>
-                    <enable>false</enable>
+                <setting id="group1_startTransition" type="integer" label="31335" help="">
+                    <level>1</level>
+                    <default>5000</default>
                     <dependencies>
                         <dependency type="visible">
                             <and>
@@ -309,12 +359,10 @@
                             </and>
                         </dependency>
                     </dependencies>
-                    <control type="edit" format="string">
-                        <heading>30036</heading>
-                    </control>
+                <control type="edit" format="integer">
+                    <heading>31335</heading>
+                </control>
                 </setting>
-
-
                 <setting id="group1_startSelectScene" type="action" label="32512" help="">
                     <level>0</level>
                     <data>RunScript(script.service.hue,sceneSelect,1,start)</data>
@@ -335,6 +383,29 @@
                 </setting>
 
 
+
+
+                <setting id="group1_startSceneName" type="string" label="30036" help="">
+                    <level>0</level>
+                    <default>Not selected</default>
+                    <enable>false</enable>
+                    <dependencies>
+                        <dependency type="visible">
+                            <and>
+                                <condition operator="is" setting="group1_startBehavior">true</condition>
+                                <condition operator="is" setting="group1_enabled">true</condition>
+                            </and>
+                        </dependency>
+                    </dependencies>
+                    <control type="edit" format="string">
+                        <heading>30036</heading>
+                    </control>
+                </setting>
+
+
+
+
+
                 <setting id="group1_startSceneID" type="string" label="32511" help="">
                     <level>4</level>
                     <default>-1</default>
@@ -344,6 +415,12 @@
                     </control>
                 </setting>
             </group>
+
+
+
+
+
+
 
 
             <group id="3">
@@ -357,10 +434,10 @@
                     </dependencies>
                     <control type="toggle"/>
                 </setting>
-                <setting id="group1_pauseSceneName" type="string" label="30036" help="">
-                    <level>0</level>
-                    <default>Not selected</default>
-                    <enable>false</enable>
+
+         <setting id="group1_pauseTransition" type="integer" label="31335" help="">
+                    <level>1</level>
+                    <default>5000</default>
                     <dependencies>
                         <dependency type="visible">
                             <and>
@@ -369,12 +446,10 @@
                             </and>
                         </dependency>
                     </dependencies>
-                    <control type="edit" format="string">
-                        <heading>30036</heading>
-                    </control>
+                <control type="edit" format="integer">
+                    <heading>31335</heading>
+                </control>
                 </setting>
-
-
                 <setting id="group1_pauseSelectScene" type="action" label="32512" help="">
                     <level>0</level>
                     <data>RunScript(script.service.hue,sceneSelect,1,pause)</data>
@@ -393,6 +468,27 @@
                         <close>true</close>
                     </control>
                 </setting>
+
+
+                <setting id="group1_pauseSceneName" type="string" label="30036" help="">
+                    <level>0</level>
+                    <default>Not selected</default>
+                    <enable>false</enable>
+                    <dependencies>
+                        <dependency type="visible">
+                            <and>
+                                <condition operator="is" setting="group1_pauseBehavior">true</condition>
+                                <condition operator="is" setting="group1_enabled">true</condition>
+                            </and>
+                        </dependency>
+                    </dependencies>
+                    <control type="edit" format="string">
+                        <heading>30036</heading>
+                    </control>
+                </setting>
+
+
+
 
 
                 <setting id="group1_pauseSceneID" type="string" label="32511" help="">
@@ -417,12 +513,9 @@
                     </dependencies>
                     <control type="toggle"/>
                 </setting>
-
-
-                <setting id="group1_stopSceneName" type="string" label="30036" help="">
-                    <level>0</level>
-                    <default>Not selected</default>
-                    <enable>false</enable>
+                <setting id="group1_stopTransition" type="integer" label="31335" help="">
+                    <level>1</level>
+                    <default>5000</default>
                     <dependencies>
                         <dependency type="visible">
                             <and>
@@ -431,11 +524,10 @@
                             </and>
                         </dependency>
                     </dependencies>
-                    <control type="edit" format="string">
-                        <heading>30036</heading>
-                    </control>
+                <control type="edit" format="integer">
+                    <heading>31335</heading>
+                </control>
                 </setting>
-
                 <setting id="group1_stopSelectScene" type="action" label="32512" help="">
                     <level>0</level>
                     <data>RunScript(script.service.hue,sceneSelect,1,stop)</data>
@@ -454,6 +546,24 @@
                         <close>true</close>
                     </control>
                 </setting>
+
+                <setting id="group1_stopSceneName" type="string" label="30036" help="">
+                    <level>0</level>
+                    <default>Not selected</default>
+                    <enable>false</enable>
+                    <dependencies>
+                        <dependency type="visible">
+                            <and>
+                                <condition operator="is" setting="group1_stopBehavior">true</condition>
+                                <condition operator="is" setting="group1_enabled">true</condition>
+                            </and>
+                        </dependency>
+                    </dependencies>
+                    <control type="edit" format="string">
+                        <heading>30036</heading>
+                    </control>
+                </setting>
+
 
                 <setting id="group1_stopSceneID" type="string" label="32511" help="">
                     <level>4</level>
