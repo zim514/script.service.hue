@@ -5,7 +5,9 @@
 import threading
 
 import requests
+from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
 import urllib3
+from urllib.parse import urljoin
 
 import simplejson as json
 from simplejson import JSONDecodeError
@@ -13,7 +15,7 @@ import datetime
 
 import xbmc
 import xbmcgui
-from . import ADDON, reporting, ADDONSETTINGS
+from . import ADDON, reporting
 
 from .kodiutils import notification
 from .language import get_string as _
@@ -25,7 +27,6 @@ class HueAPIv2(object):
 
         self.session = requests.Session()
         self.session.verify = False
-        # session.headers.update({'hue-application-key': hue_application_key})
 
         self.connected = False
         self.devices = None
@@ -46,12 +47,15 @@ class HueAPIv2(object):
         else:
             raise ValueError("ip and key must be provided or discover must be True")
 
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.session.close()
+
     def connect(self):
         xbmc.log(f"[script.service.hue] v2 connect() ip: {self.ip}, key: {self.key}")
         self.base_url = f"https://{self.ip}/clip/v2/resource/"
         self.session.headers.update({'hue-application-key': self.key})
 
-        self.devices = self.get("device")
+        self.devices = self.make_request("GET", "device")
         self.bridge_id = self.get_device_by_archetype(self.devices, 'bridge_v2')
 
         if self._check_version():
@@ -201,47 +205,57 @@ class HueAPIv2(object):
         return False
 
     def update_sunset(self):
-        geolocation = self.get("geolocation")  # TODO: Support cases where geolocation is not configured on bridge.
+        geolocation = self.make_request("GET", "geolocation")  # TODO: Support cases where geolocation is not configured on bridge.
         xbmc.log(f"[script.service.hue] v2 update_sunset(): geolocation: {geolocation}")
         sunset_str = self.search_dict(geolocation, "sunset_time")
         self.sunset = datetime.datetime.strptime(sunset_str, '%H:%M:%S').time()
         xbmc.log(f"[script.service.hue] v2 update_sunset(): sunset: {self.sunset}")
 
-    def get(self, resource):
-        url = f"{self.base_url}/{resource}"
-
+    def make_request(self, method, resource, **kwargs):
+        url = urljoin(self.base_url, resource)
+        xbmc.log(f"[script.service.hue] v2 make_request(): url: {url}, method: {method}, kwargs: {kwargs}")
         try:
-            response = self.session.get(url)
+            response = self.session.request(method, url, **kwargs)
 
             if response.status_code == 200:
                 try:
-                    data = json.loads(response.text)
-                    return data
+                    return response.json()
                 except json.JSONDecodeError as x:
-                    xbmc.log(f"[script.service.hue] v2 get() JSONDecodeError: {x}")
+                    xbmc.log(f"[script.service.hue] v2 make_request() JSONDecodeError: {x}")
                     raise
-
-            elif response.status_code in [401, 403]:
-                xbmc.log(f"[script.service.hue] v2 get() Auth error: {response.status_code}")
-                raise requests.RequestException
-            elif response.status_code in [500, 502, 503, 504]:
-                xbmc.log(f"[script.service.hue] v2 get() Server error: {response.status_code}")
-                raise requests.RequestException
-            elif response.status_code in [400, 404]:
-                xbmc.log(f"[script.service.hue] v2 get() Client error: {response.status_code}")
-                raise requests.RequestException
-            elif response.status_code == 429:
-                xbmc.log(f"[script.service.hue] v2 get() Too many requests: {response.status_code}")
-                raise requests.RequestException
+            elif response.status_code == 404:
+                xbmc.log(f"[script.service.hue] v2 make_request() Not Found: 404")
+                return response.status_code  # let the calling function handle the error
+            else:
+                xbmc.log(f"[script.service.hue] v2 make_request() {method} error: {response.status_code}\n {response.json()}")
+                return response.status_code
 
         except requests.RequestException as x:
-            xbmc.log(f"[script.service.hue] v2 get() RequestException: {x}")
+            xbmc.log(f"[script.service.hue] v2 make_request() *** EXCEPTION *** RequestException: {x}")
             self.connected = False
+            reporting.process_exception(x)
+            return None  # Indicate that an exception occurred
+
+    def recall_scene(self, scene_id, duration=400):  # 400 is the default used by Hue, defaulting here for consistency
+
+        xbmc.log(f"[script.service.hue] v2 recall_scene(): scene_id: {scene_id}, transition_time: {duration}")
+
+        json_data = {
+            "recall": {
+                "action": "active",
+                "duration": int(duration)  # Hue API requires int
+            }
+        }
+        response = self.make_request("PUT", f"scene/{scene_id}", json=json_data)
+
+        xbmc.log(f"[script.service.hue] v2 recall_scene(): response: {response}")
+        return response
 
     def get_scenes(self):
-        scenes_data = self.get("scene")
-        rooms_data = self.get("room")
-        zones_data = self.get("zone")
+
+        scenes_data = self.make_request("GET", "scene")
+        rooms_data = self.make_request("GET", "room")
+        zones_data = self.make_request("GET", "zone")
 
         # xbmc.log(f"[script.service.hue] v2 get_scenes(): scenes: {scenes_json}")
 
@@ -272,10 +286,10 @@ class HueAPIv2(object):
         scene = self.select_hue_scene()
         xbmc.log(f"[script.service.hue] v2 selected scene: {scene}")
         if scene is not None:
-            # setting ID format example: group0_startSceneID
-            ADDONSETTINGS.setString(f"group{group_id}_{action}SceneID", scene[0])
-            ADDONSETTINGS.setString(f"group{group_id}_{action}SceneName", scene[1])
-            ADDON.openSettings()
+            # setting ID format example: group0_playSceneID
+            ADDON.setSettingString(f"group{group_id}_{action}SceneID", scene[0])
+            ADDON.setSettingString(f"group{group_id}_{action}SceneName", scene[1])
+        ADDON.openSettings()
 
     def select_hue_scene(self):
 
@@ -289,7 +303,7 @@ class HueAPIv2(object):
         selected_id = -1
 
         for scene in hue_scenes:
-            xbmc.log(f"[script.service.hue] In selectHueScene: scene: {scene}")
+            # xbmc.log(f"[script.service.hue] In selectHueScene: scene: {scene}")
 
             h_scene_name = hue_scenes[scene]['scene_name']
             h_room_name = hue_scenes[scene]['room_name']

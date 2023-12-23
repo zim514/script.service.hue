@@ -22,40 +22,51 @@ AUDIO = 1
 
 
 class LightGroup(xbmc.Player):
-    def __init__(self, light_group_id, hue_connection, media_type=VIDEO, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
+    def __init__(self, light_group_id, hue_connection, bridge2=None, media_type=VIDEO):
         self.light_group_id = light_group_id
         self.bridge = hue_connection.bridge
         self.hue_connection = hue_connection
-        self.state = initial_state
+        self.state = STATE_STOPPED
         self.media_type = media_type
-        self.video_info_tag = video_info_tag
+        self.video_info_tag = xbmc.InfoTagVideo
         self.last_media_type = self.media_type
         self.lights = self.bridge.lights
         self.group0 = self.bridge.groups[0]
+        self.bridge2 = bridge2
+        self.reload_settings()  # load settings at init
 
+        xbmc.log(f"[script.service.hue] LightGroup[{self.light_group_id}] Initialized {self}")
+        super().__init__()
+
+    def reload_settings(self):
         self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
 
         if not isinstance(self, ambigroup.AmbiGroup):
-            self.start_behavior = ADDON.getSettingBool(f"group{self.light_group_id}_startBehavior")
-            self.start_scene = ADDON.getSettingString(f"group{self.light_group_id}_startSceneID")
+            self.play_behavior = ADDON.getSettingBool(f"group{self.light_group_id}_playBehavior")
+            self.play_scene = ADDON.getSettingString(f"group{self.light_group_id}_playSceneID")
+            self.play_transition = int(ADDON.getSettingNumber(f"group{self.light_group_id}_playTransition") * 1000)  # Hue API v2 expects milliseconds (int), but we use seconds (float) in the settings because its precise enough and more user-friendly
 
             self.pause_behavior = ADDON.getSettingBool(f"group{self.light_group_id}_pauseBehavior")
             self.pause_scene = ADDON.getSettingString(f"group{self.light_group_id}_pauseSceneID")
+            self.pause_transition = int(ADDON.getSettingNumber(f"group{self.light_group_id}_pauseTransition") * 1000)
 
             self.stop_behavior = ADDON.getSettingBool(f"group{self.light_group_id}_stopBehavior")
             self.stop_scene = ADDON.getSettingString(f"group{self.light_group_id}_stopSceneID")
+            self.stop_transition = int(ADDON.getSettingNumber(f"group{self.light_group_id}_stopTransition") * 1000)
 
-        if self.enabled:
-            super().__init__()
+            self.minimum_duration = ADDON.getSettingInt("video_MinimumDuration")
+            self.movie_setting = ADDON.getSettingBool("video_Movie")
+            self.episode_setting = ADDON.getSettingBool("video_Episode")
+            self.music_video_setting = ADDON.getSettingBool("video_MusicVideo")
+            self.pvr_setting = ADDON.getSettingBool("video_PVR")
+            self.other_setting = ADDON.getSettingBool("video_Other")
 
     def __repr__(self):
         return f"light_group_id: {self.light_group_id}, enabled: {self.enabled}, state: {self.state}"
 
     def onAVStarted(self):
         if self.enabled:
-            xbmc.log(
-                f"[script.service.hue] In LightGroup[{self.light_group_id}], onPlaybackStarted. Group enabled: {self.enabled},startBehavior: {self.start_behavior} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.mediaType: {self.media_type},self.playbackType(): {self.playback_type()}"
-            )
+            xbmc.log(f"[script.service.hue] In LightGroup[{self.light_group_id}], onPlaybackStarted. Group enabled: {self.enabled},startBehavior: {self.play_behavior} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.mediaType: {self.media_type},self.playbackType(): {self.playback_type()}")
             self.state = STATE_PLAYING
             self.last_media_type = self.playback_type()
 
@@ -72,8 +83,8 @@ class LightGroup(xbmc.Player):
             else:
                 self.video_info_tag = None
 
-            xbmc.log(f"[script.service.hue] onAVStarted: check_active_time: {self.check_active_time()}, check_already_active: {self.check_already_active(self.start_scene)}")
-            if (self.check_active_time() or self.check_already_active(self.start_scene)) and self.check_keep_lights_off_rule(self.start_scene) and self.start_behavior and self.media_type == self.playback_type():
+            if (self.check_active_time() or self.check_already_active(self.play_scene)) and self.check_keep_lights_off_rule(self.play_scene) and self.play_behavior and self.media_type == self.playback_type():
+                xbmc.log(f"[script.service.hue] Run Play")
                 self.run_action("play")
 
     def onPlayBackPaused(self):
@@ -81,9 +92,7 @@ class LightGroup(xbmc.Player):
             xbmc.log(f"[script.service.hue] In LightGroup[{self.light_group_id}], onPlaybackPaused() , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}")
             self.state = STATE_PAUSED
 
-            if self.media_type == VIDEO and not self.check_video_activation(
-                    self.video_info_tag
-            ):  # If video group, check video activation. Otherwise it's audio so we ignore this and continue
+            if self.media_type == VIDEO and not self.check_video_activation(self.video_info_tag):  # If video group, check video activation. Otherwise it's audio so we ignore this and continue
                 return
 
             if (self.check_active_time() or self.check_already_active(self.pause_scene)) and self.check_keep_lights_off_rule(self.pause_scene) and self.pause_behavior and self.media_type == self.playback_type():
@@ -117,20 +126,33 @@ class LightGroup(xbmc.Player):
         self.onPlayBackStopped()
 
     def run_action(self, action):
-
+        xbmc.log(f"[script.service.hue] In LightGroup[{self.light_group_id}], run_action({action})")
         service_enabled = cache_get("service_enabled")
         if service_enabled:
             if action == "play":
-                scene = self.start_scene
+                scene = self.play_scene
+                duration = self.play_transition
             elif action == "pause":
                 scene = self.pause_scene
+                duration = self.pause_transition
             elif action == "stop":
                 scene = self.stop_scene
+                duration = self.stop_transition
             else:
                 xbmc.log(f"[script.service.hue] Unknown action type: {action}")
                 raise RuntimeError
             try:
-                self.group0.action(scene=scene)
+                if self.bridge2.recall_scene(scene, duration) == 404: #scene not found, clear settings and display error message
+                    ADDON.setSettingBool(f"group{self.light_group_id}_{action}Behavior", False)
+                    ADDON.setSettingString(f"group{self.light_group_id}_{action}SceneName", "Not Selected")
+                    ADDON.setSettingString(f"group{self.light_group_id}_{action}SceneID", "-1")
+                    xbmc.log(f"[script.service.hue] Scene {scene} not found - group{self.light_group_id}_{action}Behavior ")
+                    notification(header=_("Hue Service"), message=_("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+
+
+                else:
+                    xbmc.log(f"[script.service.hue] Scene {scene} recalled")
+
             except Exception as exc:
                 reporting.process_exception(exc)
 
@@ -157,10 +179,7 @@ class LightGroup(xbmc.Player):
     def check_active_time():
 
         daytime = cache_get("daytime")  # TODO: get daytime from HueAPIv2
-        xbmc.log("[script.service.hue] Schedule: {}, daylightDisable: {}, daytime: {}, startTime: {}, endTime: {}".format(ADDON.getSettingBool("enableSchedule"), ADDON.getSettingBool("daylightDisable"), daytime,
-                                                                                                                          ADDON.getSettingString("startTime"), ADDON.getSettingString("endTime")
-                                                                                                                          )
-                 )
+        xbmc.log("[script.service.hue] Schedule: {}, daylightDisable: {}, daytime: {}, startTime: {}, endTime: {}".format(ADDON.getSettingBool("enableSchedule"), ADDON.getSettingBool("daylightDisable"), daytime, ADDON.getSettingString("startTime"), ADDON.getSettingString("endTime")))
 
         if ADDON.getSettingBool("daylightDisable") and daytime:
             xbmc.log("[script.service.hue] Disabled by daytime")
@@ -185,11 +204,6 @@ class LightGroup(xbmc.Player):
             file_name = info_tag.getFile()
             if not file_name and self.isPlayingVideo():
                 file_name = self.getPlayingFile()
-            #
-            # if not fileName and previousFileName:
-            #     fileName = previousFileName
-            # elif fileName:
-            #     previousFileName = fileName
 
             # xbmc.log("[script.service.hue] InfoTag contents: duration: {}, mediaType: {}, file: {}".format(duration, mediaType, fileName))
         except (AttributeError, TypeError):
@@ -198,12 +212,12 @@ class LightGroup(xbmc.Player):
         # xbmc.log("Video Activation settings({}): minDuration: {}, Movie: {}, Episode: {}, MusicVideo: {}, PVR : {}, Other: {}".format(self.light_group_id, settings_storage['videoMinimumDuration'], settings_storage['video_enableMovie'],
         #                settings_storage['video_enableEpisode'], settings_storage['video_enableMusicVideo'], settings_storage['video_enablePVR'], settings_storage['video_enableOther']))
         # xbmc.log("[script.service.hue] Video Activation ({}): Duration: {}, mediaType: {}, ispvr: {}".format(self.light_group_id, duration, mediaType, fileName[0:3] == "pvr"))
-        if ((duration >= ADDON.getSettingInt("video_MinimumDuration") or file_name[0:3] == "pvr") and
-                ((ADDON.getSettingBool("video_Movie") and media_type == "movie") or
-                 (ADDON.getSettingBool("video_Episode") and media_type == "episode") or
-                 (ADDON.getSettingBool("video_MusicVideo") and media_type == "MusicVideo") or
-                 (ADDON.getSettingBool("video_PVR") and file_name[0:3] == "pvr") or
-                 (ADDON.getSettingBool("video_Other") and media_type != "movie" and media_type != "episode" and media_type != "MusicVideo" and file_name[0:3] != "pvr"))):
+        if ((duration >= self.minimum_duration or file_name[0:3] == "pvr") and
+                ((self.movie_setting and media_type == "movie") or
+                 (self.episode_setting and media_type == "episode") or
+                 (self.music_video_setting and media_type == "MusicVideo") or
+                 (self.pvr_setting and file_name[0:3] == "pvr") or
+                 (self.other_setting and media_type != "movie" and media_type != "episode" and media_type != "MusicVideo" and file_name[0:3] != "pvr"))):
             xbmc.log("[script.service.hue] Video activation: True")
             return True
         xbmc.log("[script.service.hue] Video activation: False")

@@ -16,20 +16,20 @@ from . import ADDON, MINIMUM_COLOR_DISTANCE, imageprocess, lightgroup
 from . import PROCESS_TIMES, reporting, AMBI_RUNNING
 from .kodiutils import notification
 from .language import get_string as _
-from .lightgroup import STATE_STOPPED, STATE_PAUSED, STATE_PLAYING
+from .lightgroup import STATE_STOPPED, STATE_PAUSED, STATE_PLAYING, VIDEO
 from .rgbxy import Converter, ColorHelper  # https://github.com/benknight/hue-python-rgb-converter
 from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
 
 class AmbiGroup(lightgroup.LightGroup):
-    def __init__(self, light_group_id, hue_connection, media_type=lightgroup.VIDEO, initial_state=STATE_STOPPED, video_info_tag=xbmc.InfoTagVideo):
+    def __init__(self, light_group_id, hue_connection):
 
         self.bridge = hue_connection.bridge
         self.light_group_id = light_group_id
-        self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
+
         self.monitor = hue_connection.monitor
-        self.state = initial_state
-        self.video_info_tag = video_info_tag
+        self.state = STATE_STOPPED
+        self.video_info_tag = xbmc.InfoTagVideo
 
         self.bridge_error500 = 0
         self.saved_light_states = {}
@@ -40,6 +40,25 @@ class AmbiGroup(lightgroup.LightGroup):
         self.converterB = Converter(GamutB)
         self.converterC = Converter(GamutC)
         self.helper = ColorHelper(GamutC)  # Gamut doesn't matter for this usage
+        self.reload_settings()
+
+        if self.enabled:
+            self.ambi_lights = {}
+            light_ids = ADDON.getSettingString(f"group{light_group_id}_Lights").split(",")
+
+            index = 0
+
+            if len(light_ids) > 0:
+                for L in light_ids:
+                    gamut = self._get_light_gamut(self.bridge, L)
+                    light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
+                    self.ambi_lights.update(light)
+                    index = index + 1
+
+            super().__init__(light_group_id, hue_connection, media_type=VIDEO)
+
+    def reload_settings(self):
+        self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
 
         self.transition_time = int(ADDON.getSettingInt(f"group{self.light_group_id}_TransitionTime") / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). transition_time:10 will make the transition last 1 second.
         self.force_on = ADDON.getSettingBool(f"group{self.light_group_id}_forceOn")
@@ -55,19 +74,6 @@ class AmbiGroup(lightgroup.LightGroup):
         if self.update_interval == 0:
             self.update_interval = 0.1
 
-        if self.enabled:
-            self.ambi_lights = {}
-            light_ids = ADDON.getSetting(f"group{light_group_id}_Lights").split(",")
-            index = 0
-
-            if len(light_ids) > 0:
-                for L in light_ids:
-                    gamut = self._get_light_gamut(self.bridge, L)
-                    light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
-                    self.ambi_lights.update(light)
-                    index = index + 1
-
-            super().__init__(light_group_id, hue_connection, media_type, initial_state, video_info_tag)
 
     @staticmethod
     def _force_on(ambi_lights, bridge, saved_light_states):
@@ -187,7 +193,7 @@ class AmbiGroup(lightgroup.LightGroup):
         if not self.monitor.abortRequested():  # ignore writing average process time if Kodi is shutting down
             average_process_time = self._perf_average(PROCESS_TIMES)
             xbmc.log(f"[script.service.hue] Average process time: {average_process_time}")
-            ADDON.setSetting("average_process_time", str(average_process_time))
+            ADDON.setSettingString("average_process_time", str(average_process_time))
             xbmc.log("[script.service.hue] _ambiLoop stopped")
 
     def _update_hue_rgb(self, r, g, b, light, transition_time, bri):

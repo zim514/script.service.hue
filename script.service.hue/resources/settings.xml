@@ -49,7 +49,7 @@
                 </setting>
             </group>
             <group id="2">
-                <setting id="group0_startBehavior" type="boolean" label="30513" help="">
+                <setting id="group0_playBehavior" type="boolean" label="30513" help="">
                     <level>0</level>
                     <default>false</default>
                     <dependencies>
@@ -60,34 +60,39 @@
                     <control type="toggle"/>
                 </setting>
 
-                <setting id="group0_startTransition" type="integer" label="31335" help="">
+                <setting id="group0_playTransition" type="number" label="31335" help="">
                     <level>1</level>
-                    <default>15000</default>
+                    <default>15</default>
                     <dependencies>
                         <dependency type="visible">
                             <and>
-                                <condition operator="is" setting="group0_startBehavior">true</condition>
+                                <condition operator="is" setting="group0_playBehavior">true</condition>
                                 <condition operator="is" setting="group0_enabled">true</condition>
                             </and>
                         </dependency>
                     </dependencies>
-                <control type="edit" format="integer">
-                    <heading>31335</heading>
+                <constraints>
+                    <minimum>0</minimum>
+                    <step>0.5</step>
+                    <maximum>60</maximum>
+                </constraints>
+                <control type="slider" format="number">
+                    <popup>false</popup>
                 </control>
                 </setting>
 
 
 
-                <setting id="group0_startSelectScene" type="action" label="32512" help="">
+                <setting id="group0_playSelectScene" type="action" label="32512" help="">
                     <level>0</level>
-                    <data>RunScript(script.service.hue,sceneSelect,0,start)</data>
+                    <data>RunScript(script.service.hue,sceneSelect,0,play)</data>
                     <constraints>
                         <allowempty>true</allowempty>
                     </constraints>
                     <dependencies>
                         <dependency type="visible">
                             <and>
-                                <condition operator="is" setting="group0_startBehavior">true</condition>
+                                <condition operator="is" setting="group0_playBehavior">true</condition>
                                 <condition operator="is" setting="group0_enabled">true</condition>
                             </and>
                         </dependency>
@@ -96,14 +101,14 @@
                         <close>true</close>
                     </control>
                 </setting>
-                <setting id="group0_startSceneName" type="string" label="30036" help="">
+                <setting id="group0_playSceneName" type="string" label="30036" help="">
                     <level>0</level>
                     <default>Not selected</default>
                     <enable>false</enable>
                     <dependencies>
                         <dependency type="visible">
                             <and>
-                                <condition operator="is" setting="group0_startBehavior">true</condition>
+                                <condition operator="is" setting="group0_playBehavior">true</condition>
                                 <condition operator="is" setting="group0_enabled">true</condition>
                             </and>
                         </dependency>
@@ -116,7 +121,7 @@
 
 
 
-                <setting id="group0_startSceneID" type="string" label="32511" help="">
+                <setting id="group0_playSceneID" type="string" label="32511" help="">
                     <level>4</level>
                     <default>-1</default>
                     <control type="edit" format="string">
@@ -138,9 +143,9 @@
                     </dependencies>
                     <control type="toggle"/>
                 </setting>
-                <setting id="group0_pauseTransition" type="integer" label="31335" help="">
+                <setting id="group0_pauseTransition" type="number" label="31335" help="">
                     <level>1</level>
-                    <default>8000</default>
+                    <default>8</default>
                     <dependencies>
                         <dependency type="visible">
                             <and>
@@ -149,9 +154,15 @@
                             </and>
                         </dependency>
                     </dependencies>
-                <control type="edit" format="integer">
-                    <heading>31335</heading>
+                <constraints>
+                    <minimum>0</minimum>
+                    <step>0.5</step>
+                    <maximum>60</maximum>
+                </constraints>
+                <control type="slider" format="number">
+                    <popup>false</popup>
                 </control>
+
                 </setting>
 
                 <setting id="group0_pauseSelectScene" type="action" label="32512" help="">
@@ -221,9 +232,9 @@
                     </dependencies>
                     <control type="toggle"/>
                 </setting>
-                <setting id="group0_stopTransition" type="integer" label="31335" help="">
+                <setting id="group0_stopTransition" type="number" label="31335" help="">
                     <level>1</level>
-                    <default>8000</default>
+                    <default>8</default>
                     <dependencies>
                         <dependency type="visible">
                             <and>
@@ -232,9 +243,15 @@
                             </and>
                         </dependency>
                     </dependencies>
-                <control type="edit" format="integer">
-                    <heading>31335</heading>
+                <constraints>
+                    <minimum>0</minimum>
+                    <step>0.5</step>
+                    <maximum>60</maximum>
+                </constraints>
+                <control type="slider" format="number">
+                    <popup>false</popup>
                 </control>
+
                 </setting>
                         <setting id="group0_stopSelectScene" type="action" label="32512" help="">
                     <level>0</level>
@@ -338,7 +355,7 @@
                 </setting>
             </group>
             <group id="2">
-                <setting id="group1_startBehavior" type="boolean" label="30513" help="">
+                <setting id="group1_playBehavior" type="boolean" label="30513" help="">
                     <level>0</level>
                     <default>false</default>
                     <dependencies>
@@ -348,31 +365,36 @@
                     </dependencies>
                     <control type="toggle"/>
                 </setting>
-                <setting id="group1_startTransition" type="integer" label="31335" help="">
+                <setting id="group1_playTransition" type="number" label="31335" help="">
                     <level>1</level>
-                    <default>5000</default>
+                    <default>8</default>
                     <dependencies>
                         <dependency type="visible">
                             <and>
-                                <condition operator="is" setting="group1_startBehavior">true</condition>
+                                <condition operator="is" setting="group1_playBehavior">true</condition>
                                 <condition operator="is" setting="group1_enabled">true</condition>
                             </and>
                         </dependency>
                     </dependencies>
-                <control type="edit" format="integer">
-                    <heading>31335</heading>
+                <constraints>
+                    <minimum>0</minimum>
+                    <step>0.5</step>
+                    <maximum>60</maximum>
+                </constraints>
+                <control type="slider" format="number">
+                    <popup>false</popup>
                 </control>
                 </setting>
-                <setting id="group1_startSelectScene" type="action" label="32512" help="">
+                <setting id="group1_playSelectScene" type="action" label="32512" help="">
                     <level>0</level>
-                    <data>RunScript(script.service.hue,sceneSelect,1,start)</data>
+                    <data>RunScript(script.service.hue,sceneSelect,1,play)</data>
                     <constraints>
                         <allowempty>true</allowempty>
                     </constraints>
                     <dependencies>
                         <dependency type="visible">
                             <and>
-                                <condition operator="is" setting="group1_startBehavior">true</condition>
+                                <condition operator="is" setting="group1_playBehavior">true</condition>
                                 <condition operator="is" setting="group1_enabled">true</condition>
                             </and>
                         </dependency>
@@ -385,14 +407,14 @@
 
 
 
-                <setting id="group1_startSceneName" type="string" label="30036" help="">
+                <setting id="group1_playSceneName" type="string" label="30036" help="">
                     <level>0</level>
                     <default>Not selected</default>
                     <enable>false</enable>
                     <dependencies>
                         <dependency type="visible">
                             <and>
-                                <condition operator="is" setting="group1_startBehavior">true</condition>
+                                <condition operator="is" setting="group1_playBehavior">true</condition>
                                 <condition operator="is" setting="group1_enabled">true</condition>
                             </and>
                         </dependency>
@@ -406,7 +428,7 @@
 
 
 
-                <setting id="group1_startSceneID" type="string" label="32511" help="">
+                <setting id="group1_playSceneID" type="string" label="32511" help="">
                     <level>4</level>
                     <default>-1</default>
 
@@ -435,9 +457,9 @@
                     <control type="toggle"/>
                 </setting>
 
-         <setting id="group1_pauseTransition" type="integer" label="31335" help="">
+         <setting id="group1_pauseTransition" type="number" label="31335" help="">
                     <level>1</level>
-                    <default>5000</default>
+                    <default>8</default>
                     <dependencies>
                         <dependency type="visible">
                             <and>
@@ -446,9 +468,15 @@
                             </and>
                         </dependency>
                     </dependencies>
-                <control type="edit" format="integer">
-                    <heading>31335</heading>
+                <constraints>
+                    <minimum>0</minimum>
+                    <step>0.5</step>
+                    <maximum>60</maximum>
+                </constraints>
+                <control type="slider" format="number">
+                    <popup>false</popup>
                 </control>
+
                 </setting>
                 <setting id="group1_pauseSelectScene" type="action" label="32512" help="">
                     <level>0</level>
@@ -513,9 +541,9 @@
                     </dependencies>
                     <control type="toggle"/>
                 </setting>
-                <setting id="group1_stopTransition" type="integer" label="31335" help="">
+                <setting id="group1_stopTransition" type="number" label="31335" help="">
                     <level>1</level>
-                    <default>5000</default>
+                    <default>8</default>
                     <dependencies>
                         <dependency type="visible">
                             <and>
@@ -524,9 +552,15 @@
                             </and>
                         </dependency>
                     </dependencies>
-                <control type="edit" format="integer">
-                    <heading>31335</heading>
+                <constraints>
+                    <minimum>0</minimum>
+                    <step>0.5</step>
+                    <maximum>60</maximum>
+                </constraints>
+                <control type="slider" format="number">
+                    <popup>false</popup>
                 </control>
+
                 </setting>
                 <setting id="group1_stopSelectScene" type="action" label="32512" help="">
                     <level>0</level>
@@ -779,7 +813,7 @@
                             <condition operator="is" setting="group3_enabled">true</condition>
                         </dependency>
                     </dependencies>
-                    <control type="slider" format="integer">
+                    <control type="slider" format="number">
                         <popup>false</popup>
                     </control>
                 </setting>
@@ -813,7 +847,7 @@
                             <condition operator="is" setting="group3_enabled">true</condition>
                         </dependency>
                     </dependencies>
-                    <control type="slider" format="integer">
+                    <control type="slider" format="number">
                         <popup>false</popup>
                     </control>
                 </setting>
@@ -847,7 +881,7 @@
                             <condition operator="is" setting="group3_enabled">true</condition>
                         </dependency>
                     </dependencies>
-                    <control type="slider" format="integer">
+                    <control type="slider" format="number">
                         <popup>false</popup>
                     </control>
                 </setting>

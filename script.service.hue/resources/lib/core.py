@@ -9,7 +9,7 @@ import threading
 
 import xbmc
 
-from . import ADDON, SETTINGS_CHANGED, ADDONID, AMBI_RUNNING, ADDONSETTINGS
+from . import ADDON, SETTINGS_CHANGED, ADDONID, AMBI_RUNNING
 from . import ambigroup, lightgroup, kodiutils, hueconnection
 from .hueconnection import HueConnection
 from .kodiutils import validate_settings, notification, cache_set, cache_get
@@ -45,7 +45,7 @@ def _commands(monitor, command):
         action = sys.argv[3]
         xbmc.log(f"[script.service.hue] sceneSelect: light_group: {light_group}, action: {action}")
 
-        #hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=False)  # don't rediscover, proceed silently
+        # hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=False)  # don't rediscover, proceed silently
         bridge = HueAPIv2(monitor, ip=ADDON.getSetting("bridgeIP"), key=ADDON.getSetting("bridgeUser"))
         if bridge.connected:
             bridge.configure_scene(light_group, action)
@@ -80,7 +80,9 @@ def _service(monitor):
 
     if bridge.connected and hue_connection.connected:
         # light groups still expect a V1 bridge object
-        light_groups = [lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO), lightgroup.LightGroup(1, hue_connection, lightgroup.AUDIO), ambigroup.AmbiGroup(3, hue_connection)]
+        light_groups = [lightgroup.LightGroup(0, hue_connection, bridge, lightgroup.VIDEO),
+                        lightgroup.LightGroup(1, hue_connection, bridge, lightgroup.AUDIO),
+                        ambigroup.AmbiGroup(3, hue_connection)]
 
         # start sunset and midnight timers
         timers = Timers(monitor, bridge, light_groups)
@@ -108,10 +110,8 @@ def _service(monitor):
 
             # reload groups if settings changed, but keep player state
             if SETTINGS_CHANGED.is_set():
-                light_groups = [
-                    lightgroup.LightGroup(0, hue_connection, lightgroup.VIDEO, initial_state=light_groups[0].state, video_info_tag=light_groups[0].video_info_tag),
-                    lightgroup.LightGroup(1, hue_connection, lightgroup.AUDIO, initial_state=light_groups[1].state, video_info_tag=light_groups[1].video_info_tag),
-                    ambigroup.AmbiGroup(3, hue_connection, initial_state=light_groups[2].state, video_info_tag=light_groups[2].video_info_tag)]
+                for group in light_groups:
+                    group.reload_settings()
                 SETTINGS_CHANGED.clear()
 
             monitor.waitForAbort(1)
@@ -136,7 +136,7 @@ class HueMonitor(xbmc.Monitor):
         super().__init__()
 
     def onSettingsChanged(self):
-        # xbmc.log("[script.service.hue] Settings changed")
+        xbmc.log("[script.service.hue] Settings changed")
         validate_settings()
         SETTINGS_CHANGED.set()
 
@@ -178,7 +178,7 @@ class Timers(threading.Thread):
         self.monitor = monitor
         self.bridge = bridge
         self.light_groups = light_groups
-        self.morning_time = datetime.datetime.strptime(ADDONSETTINGS.getString("morningTime"), "%H:%M").time()
+        self.morning_time = datetime.datetime.strptime(ADDON.getSettingString("morningTime"), "%H:%M").time()
         self._set_daytime()
         super().__init__()
 
@@ -209,7 +209,7 @@ class Timers(threading.Thread):
         while not self.monitor.abortRequested():
 
             now = datetime.datetime.now()
-            self.morning_time = datetime.datetime.strptime(ADDONSETTINGS.getString("morningTime"), "%H:%M").time()
+            self.morning_time = datetime.datetime.strptime(ADDON.getSettingString("morningTime"), "%H:%M").time()
 
             time_to_sunset = self._time_until(now, self.bridge.sunset)
             time_to_morning = self._time_until(now, self.morning_time)

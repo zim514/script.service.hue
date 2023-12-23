@@ -26,7 +26,6 @@ ADDONID = ADDON.getAddonInfo('id')
 # ADDONDIR = xbmcvfs.translatePath(ADDON.getAddonInfo('profile'))
 ADDONPATH = xbmcvfs.translatePath(ADDON.getAddonInfo("path"))
 ADDONVERSION = ADDON.getAddonInfo('version')
-ADDONSETTINGS = ADDON.getSettings()
 KODIVERSION = xbmc.getInfoLabel('System.BuildVersion')
 
 
