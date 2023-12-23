@@ -1,11 +1,11 @@
-[![Addon Checker](https://github.com/zim514/script.service.hue/actions/workflows/check.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/check.yml) [![Qodana](https://github.com/zim514/script.service.hue/actions/workflows/code_quality.yml/badge.svg?branch=main)](https://github.com/zim514/script.service.hue/actions/workflows/code_quality.yml) [![Sync addon metadata translations](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Translation Status](https://kodi.weblate.cloud/widgets/kodi-add-ons-scripts/-/script-service-hue/svg-badge.svg)](https://kodi.weblate.cloud/engage/kodi-add-ons-scripts/)
+[![Addon Checker](https://github.com/zim514/script.service.hue/actions/workflows/check.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/check.yml) [![Sync addon metadata translations](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml/badge.svg)](https://github.com/zim514/script.service.hue/actions/workflows/sync-addon-metadata-translations.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # **Kodi Service for Philips Hue**
 ## script.service.hue
 
 Automate your [Hue lights](https://www.meethue.com/) on audio or video playback with [Kodi Media Player](https://kodi.tv/)
 
 ## Requirements
-- Kodi Matrix 19 or higher
+- Kodi 21 or higher
 - Hue Bridge V2 (Square)
 
 ## Installation
@@ -18,28 +18,23 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
  2. [Install to Kodi from Zip](https://kodi.wiki/view/HOW-TO:Install_add-ons_from_zip_files)
 
 ## Features:
-- Create and delete multi-room scenes
-    - Adjust your lights' colour and brightness
-    - Optional transition time for scenes
-    - Supports lights in multiple rooms or zones
-    - Edit your scenes in 3rd party apps
-    - Apply selected scene on video or audio player actions
-    - Can be disabled based on video type or duration
- 
-- Ambilight Support
-    - **_Not supported with all hardware_**
-    - Lights synchronize with on-screen colour
+- Use standard Hue Scenes
+  - Configure scenes from the official Hue app and select them in the add-on settings
+  - Now supports dynamic scenes
 
-- Daylight detection
-    - Uses Hue's sunrise and sunset settings
-    - Disable during daylight hours
+
+- Daytime configuration
+    - Uses Hue's sunset and geolocation settings
+    - Disable until configured morning time (default 8:00 AM)
     - If sunset falls while watching media, optionally turn on lights
     - Add-on does nothing at sunset if there's no playback
+
  
 - Scheduling
     - Set a start and end time at which the add-on should be enabled
     - Time in 24h format (Eg: 22:00, not 10:00 PM)
-    - Disable during daylight setting takes precedence over active hours
+    - Disable during daytime setting takes precedence over active hours
+
 
 ## Experimental Ambilight Support
 You can now configure multiple lights to match playing video as closely as possible.  
@@ -118,8 +113,8 @@ Audio Group: 1
 - Make sure you update your Hue bridge to the latest version. This add-on assumes you have the latest
 - Turn on debug logging
 
-## Includes code from:
-
+## Includes code and contributions from:
+- [Kodi Volunteer Translators](https://kodi.weblate.cloud), contribute [here](https://kodi.wiki/view/Translations)
 - [ScreenBloom by Tyler Kershner](https://github.com/kershner/screenBloom) 
 - [Qhue by Quentin Stafford-Fraser](https://github.com/quentinsf/qhue)
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)

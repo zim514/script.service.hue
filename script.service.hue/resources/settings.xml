@@ -2,25 +2,7 @@
 <settings version="1">
     <section id="script.service.hue">
         <category id="general" label="30510" help="">
-            <group id="1" label="30512">
-                <setting id="createScene" type="action" label="9007" help="">
-                    <level>0</level>
-                    <data>RunScript(script.service.hue,createHueScene)</data>
-                    <constraints>
-                        <allowempty>true</allowempty>
-                    </constraints>
-                    <control type="button" format="action"/>
-                </setting>
-                <setting id="deleteScene" type="action" label="9008" help="">
-                    <level>0</level>
-                    <data>RunScript(script.service.hue,deleteHueScene)</data>
-                    <constraints>
-                        <allowempty>true</allowempty>
-                    </constraints>
-                    <control type="button" format="action"/>
-                </setting>
-            </group>
-            <group id="2" label="30500">
+            <group id="1" label="30500">
                 <setting id="discoverBridge" type="action" label="30501" help="">
                     <level>0</level>
                     <data>RunScript(script.service.hue,discover)</data>
@@ -483,16 +465,78 @@
                 </setting>
             </group>
         </category>
+        <category id="schedule" label="30511" help="">
+            <group id="1">
+                <setting id="forceOnSunset" type="boolean" label="30509" help="">
+                    <level>1</level>
+                    <default>True</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="daylightDisable" type="boolean" label="30508" help="">
+                    <level>1</level>
+                    <default>False</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="morningTime" type="time" label="31334" help="">
+                    <level>2</level>
+                    <default>08:00</default>
+                    <control type="button" format="time">
+                        <heading>31334</heading>
+                    </control>
 
+                </setting>
+                <setting id="enable_if_already_active" type="boolean" label="30516" help="">
+                    <level>1</level>
+                    <default>False</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="keep_lights_off" type="boolean" label="30517" help="">
+                    <level>1</level>
+                    <default>False</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+            <group id="2">
+                <setting id="enableSchedule" type="boolean" label="30505" help="">
+                    <level>1</level>
+                    <default>False</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="startTime" type="time" label="30506" help="">
+                    <level>1</level>
+                    <default>18:00</default>
+                    <dependencies>
+                        <dependency type="enable">
+                            <condition operator="is" setting="enableSchedule">true</condition>
+                        </dependency>
+                    </dependencies>
+                    <control type="button" format="time">
+                        <heading>30506</heading>
+                    </control>
+                </setting>
+                <setting id="endTime" type="time" label="30507" help="">
+                    <level>1</level>
+                    <default>22:00</default>
+                    <dependencies>
+                        <dependency type="enable">
+                            <condition operator="is" setting="enableSchedule">true</condition>
+                        </dependency>
+                    </dependencies>
+                    <control type="button" format="time">
+                        <heading>30507</heading>
+                    </control>
+                </setting>
+            </group>
+        </category>
         <category id="ambilight" label="30523" help="30521">
             <group id="1" label="30521">
                 <setting id="group3_enabled" type="boolean" label="30520" help="30521">
-                    <level>0</level>
+                    <level>2</level>
                     <default>false</default>
                     <control type="toggle"/>
                 </setting>
                 <setting id="group3_SelectLights" type="action" label="30015" help="30521">
-                    <level>0</level>
+                    <level>2</level>
                     <data>RunScript(script.service.hue,ambiLightSelect,3)</data>
                     <constraints>
                         <allowempty>true</allowempty>
@@ -507,7 +551,7 @@
                     </control>
                 </setting>
                 <setting id="group3_LightNames" type="string" label="30058" help="30521">
-                    <level>0</level>
+                    <level>2</level>
                     <default>Not configured</default>
                     <dependencies>
                         <dependency type="enable">
@@ -603,7 +647,7 @@
 
             <group id="3" label="30814">
                 <setting id="group3_ResumeState" type="boolean" label="30815" help="">
-                    <level>1</level>
+                    <level>2</level>
                     <default>true</default>
                     <dependencies>
                         <dependency type="visible">
@@ -613,7 +657,7 @@
                     <control type="toggle"/>
                 </setting>
                 <setting id="group3_ResumeTransition" type="integer" label="30816" help="">
-                    <level>1</level>
+                    <level>2</level>
                     <default>10</default>
                     <constraints>
                         <minimum>0</minimum>
@@ -630,7 +674,7 @@
                     </control>
                 </setting>
                 <setting id="group3_Lights" type="string" label="30035" help="">
-                    <level>0</level>
+                    <level>2</level>
                     <default>-1</default>
                     <dependencies>
                         <dependency type="enable">
@@ -719,69 +763,7 @@
 
 
         </category>
-        <category id="schedule" label="30511" help="">
-            <group id="1">
-                <setting id="forceOnSunset" type="boolean" label="30509" help="">
-                    <level>1</level>
-                    <default>True</default>
-                    <control type="toggle"/>
-                </setting>
-                <setting id="daylightDisable" type="boolean" label="30508" help="">
-                    <level>1</level>
-                    <default>False</default>
-                    <control type="toggle"/>
-                </setting>
-                <setting id="morningTime" type="time" label="31334" help="">
-                    <level>2</level>
-                    <default>08:00</default>
-                    <control type="button" format="time">
-                        <heading>31334</heading>
-                    </control>
 
-                </setting>
-                <setting id="enable_if_already_active" type="boolean" label="30516" help="">
-                    <level>1</level>
-                    <default>False</default>
-                    <control type="toggle"/>
-                </setting>
-                <setting id="keep_lights_off" type="boolean" label="30517" help="">
-                    <level>1</level>
-                    <default>False</default>
-                    <control type="toggle"/>
-                </setting>
-            </group>
-            <group id="2">
-                <setting id="enableSchedule" type="boolean" label="30505" help="">
-                    <level>1</level>
-                    <default>False</default>
-                    <control type="toggle"/>
-                </setting>
-                <setting id="startTime" type="time" label="30506" help="">
-                    <level>1</level>
-                    <default>18:00</default>
-                    <dependencies>
-                        <dependency type="enable">
-                            <condition operator="is" setting="enableSchedule">true</condition>
-                        </dependency>
-                    </dependencies>
-                    <control type="button" format="time">
-                        <heading>30506</heading>
-                    </control>
-                </setting>
-                <setting id="endTime" type="time" label="30507" help="">
-                    <level>1</level>
-                    <default>22:00</default>
-                    <dependencies>
-                        <dependency type="enable">
-                            <condition operator="is" setting="enableSchedule">true</condition>
-                        </dependency>
-                    </dependencies>
-                    <control type="button" format="time">
-                        <heading>30507</heading>
-                    </control>
-                </setting>
-            </group>
-        </category>
         <category id="advanced" label="32101" help="">
             <group id="1">
 

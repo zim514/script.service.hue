@@ -138,7 +138,7 @@ class HueAPIv2(object):
                         self.monitor.waitForAbort(5)
                         progress_bar.close()
                         xbmc.log("[script.service.hue] Bridge discovery complete")
-                        self.connect(True)
+                        self.connect()
                         return True
 
                     elif progress_bar.iscanceled():

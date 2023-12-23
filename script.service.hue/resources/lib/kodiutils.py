@@ -10,7 +10,7 @@ from json import JSONDecodeError
 import xbmc
 import xbmcgui
 
-from . import ADDON, ADDONID
+from . import ADDON, ADDONID, ADDONSETTINGS
 from .language import get_string as _
 
 cache_window = xbmcgui.Window(10000)
@@ -22,24 +22,24 @@ def validate_settings():
 
 
 def _validate_ambilight():
-    xbmc.log(f"[script.service.hue] Validate ambilight config. Enabled: {ADDON.getSettingBool('group3_enabled')}")
-    if ADDON.getSettingBool("group3_enabled"):
-        light_ids = ADDON.getSetting("group3_Lights")
+    xbmc.log(f"[script.service.hue] Validate ambilight config. Enabled: {ADDONSETTINGS.getBool('group3_enabled')}")
+    if ADDONSETTINGS.getBool("group3_enabled"):
+        light_ids = ADDONSETTINGS.getSetting("group3_Lights")
         if light_ids == "-1":
-            ADDON.setSettingBool("group3_enabled", False)
+            ADDONSETTINGS.setBool("group3_enabled", False)
             xbmc.log("[script.service.hue] No ambilights selected")
             notification(_("Hue Service"), _("No lights selected for Ambilight."), icon=xbmcgui.NOTIFICATION_ERROR)
 
 
 def _validate_schedule():
-    xbmc.log(f"[script.service.hue] Validate schedule. Schedule Enabled: {ADDON.getSettingBool('enableSchedule')}")
-    if ADDON.getSettingBool("enableSchedule"):
+    xbmc.log(f"[script.service.hue] Validate schedule. Schedule Enabled: {ADDONSETTINGS.getBool('enableSchedule')}")
+    if ADDONSETTINGS.getBool("enableSchedule"):
         try:
-            convert_time(ADDON.getSettingString("startTime"))
-            convert_time(ADDON.getSettingString("endTime"))
+            convert_time(ADDONSETTINGS.getString("startTime"))
+            convert_time(ADDONSETTINGS.getString("endTime"))
             # xbmc.log("[script.service.hue] Time looks valid")
         except ValueError as e:
-            ADDON.setSettingBool("EnableSchedule", False)
+            ADDONSETTINGS.setBool("EnableSchedule", False)
             xbmc.log(f"[script.service.hue] Invalid time settings: {e}")
             notification(_("Hue Service"), _("Invalid start or end time, schedule disabled"), icon=xbmcgui.NOTIFICATION_ERROR)
 

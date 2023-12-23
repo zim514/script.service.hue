@@ -40,22 +40,6 @@ def _commands(monitor, command):
         else:
             ADDON.openSettings()
 
-    elif command == "createHueScene":
-        hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=False)  # don't rediscover, proceed silently
-        if hue_connection.connected:
-            hue_connection.create_hue_scene()
-        else:
-            xbmc.log("[script.service.hue] No bridge found. createHueScene cancelled.")
-            notification(_("Hue Service"), _("Check Hue Bridge configuration"))
-
-    elif command == "deleteHueScene":
-        hue_connection = hueconnection.HueConnection(monitor, silent=True, discover=False)  # don't rediscover, proceed silently
-        if hue_connection.connected:
-            hue_connection.delete_hue_scene()
-        else:
-            xbmc.log("[script.service.hue] No bridge found. deleteHueScene cancelled.")
-            notification(_("Hue Service"), _("Check Hue Bridge configuration"))
-
     elif command == "sceneSelect":  # sceneSelect=light_group,action  / sceneSelect=0,play
         light_group = sys.argv[2]
         action = sys.argv[3]
