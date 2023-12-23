@@ -54,7 +54,8 @@ class LightGroup(xbmc.Player):
     def onAVStarted(self):
         if self.enabled:
             xbmc.log(
-                f"[script.service.hue] In LightGroup[{self.light_group_id}], onPlaybackStarted. Group enabled: {self.enabled},startBehavior: {self.start_behavior} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.mediaType: {self.media_type},self.playbackType(): {self.playback_type()}")
+                f"[script.service.hue] In LightGroup[{self.light_group_id}], onPlaybackStarted. Group enabled: {self.enabled},startBehavior: {self.start_behavior} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.mediaType: {self.media_type},self.playbackType(): {self.playback_type()}"
+            )
             self.state = STATE_PLAYING
             self.last_media_type = self.playback_type()
 
@@ -81,7 +82,8 @@ class LightGroup(xbmc.Player):
             self.state = STATE_PAUSED
 
             if self.media_type == VIDEO and not self.check_video_activation(
-                    self.video_info_tag):  # If video group, check video activation. Otherwise it's audio so we ignore this and continue
+                    self.video_info_tag
+            ):  # If video group, check video activation. Otherwise it's audio so we ignore this and continue
                 return
 
             if (self.check_active_time() or self.check_already_active(self.pause_scene)) and self.check_keep_lights_off_rule(self.pause_scene) and self.pause_behavior and self.media_type == self.playback_type():
@@ -154,12 +156,14 @@ class LightGroup(xbmc.Player):
     @staticmethod
     def check_active_time():
 
-        daylight = cache_get("daylight") #TODO: get daylight from HueAPIv2
-        xbmc.log("[script.service.hue] Schedule: {}, daylightDisable: {}, daylight: {}, startTime: {}, endTime: {}".format(ADDON.getSettingBool("enableSchedule"), ADDON.getSettingBool("daylightDisable"), daylight,
-                                                                                                                           ADDON.getSettingString("startTime"), ADDON.getSettingString("endTime")))
+        daytime = cache_get("daytime")  # TODO: get daytime from HueAPIv2
+        xbmc.log("[script.service.hue] Schedule: {}, daylightDisable: {}, daytime: {}, startTime: {}, endTime: {}".format(ADDON.getSettingBool("enableSchedule"), ADDON.getSettingBool("daylightDisable"), daytime,
+                                                                                                                          ADDON.getSettingString("startTime"), ADDON.getSettingString("endTime")
+                                                                                                                          )
+                 )
 
-        if ADDON.getSettingBool("daylightDisable") and daylight:
-            xbmc.log("[script.service.hue] Disabled by daylight")
+        if ADDON.getSettingBool("daylightDisable") and daytime:
+            xbmc.log("[script.service.hue] Disabled by daytime")
             return False
 
         if ADDON.getSettingBool("enableSchedule"):

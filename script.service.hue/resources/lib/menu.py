@@ -32,15 +32,15 @@ def menu():
             xbmc.executebuiltin('Container.Refresh')
 
         elif command == "toggle":
-            if cache_get("service_enabled") and _get_status() != "Disabled by daylight":
+            if cache_get("service_enabled") and _get_status() != "Disabled by daytime":
                 xbmc.log("[script.service.hue] Disable service")
                 cache_set("service_enabled", False)
 
-            elif _get_status() != "Disabled by daylight":
+            elif _get_status() != "Disabled by daytime":
                 xbmc.log("[script.service.hue] Enable service")
                 cache_set("service_enabled", True)
             else:
-                xbmc.log("[script.service.hue] Disabled by daylight, ignoring")
+                xbmc.log("[script.service.hue] Disabled by daytime, ignoring")
 
             xbmc.executebuiltin('Container.Refresh')
 
@@ -82,13 +82,13 @@ def build_menu(base_url, addon_handle):
 
 def _get_status():
     enabled = cache_get("service_enabled")
-    daylight = cache_get("daylight") #TODO: get daylight from bridge v2
-    daylight_disable = ADDON.getSettingBool("daylightDisable")
-    xbmc.log(f"[script.service.hue] _get_status enabled: {enabled}   -  {type(enabled)}, daylight: {daylight}, daylight_disable: {daylight_disable}")
+    daytime = cache_get("daytime") #TODO: get daytime from bridge v2
+    daytime_disable = ADDON.getSettingBool("daylightDisable") #Legacy setting name
+    xbmc.log(f"[script.service.hue] _get_status enabled: {enabled}   -  {type(enabled)}, daytime: {daytime}, daytime_disable: {daytime_disable}")
 
-    # xbmc.log("[script.service.hue] Current status: {}".format(daylight_disable))
-    if daylight and daylight_disable:
-        return _("Disabled by daylight")
+    # xbmc.log("[script.service.hue] Current status: {}".format(daytime_disable))
+    if daytime and daytime_disable:
+        return _("Disabled by daytime")
     if enabled:
         return _("Enabled")
     elif not enabled:
@@ -99,11 +99,11 @@ def _get_status():
 
 def _get_status_icon():
     enabled = cache_get("service_enabled")
-    daylight = cache_get("daylight") #TODO: get daylight from bridge v2
-    daylight_disable = ADDON.getSettingBool("daylightDisable")
-    # xbmc.log("[script.service.hue] Current status: {}".format(daylight_disable))
-    if daylight and daylight_disable:
-        return xbmcvfs.makeLegalFilename(ADDONPATH + "resources/icons/daylight.png")  # Disabled by Daylight
+    daytime = cache_get("daytime") #TODO: get daytime from bridge v2
+    daytime_disable = ADDON.getSettingBool("daylightDisable")
+    # xbmc.log("[script.service.hue] Current status: {}".format(daytime_disable))
+    if daytime and daytime_disable:
+        return xbmcvfs.makeLegalFilename(ADDONPATH + "resources/icons/daylight.png")  # Disabled by daytime, legacy icon name
     elif enabled:
         return xbmcvfs.makeLegalFilename(ADDONPATH + "resources/icons/enabled.png")  # Enabled
     return xbmcvfs.makeLegalFilename(ADDONPATH + "resources/icons/disabled.png")  # Disabled

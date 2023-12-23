@@ -82,8 +82,8 @@ msgid "End time:"
 msgstr "End time:"
 
 msgctxt "#30508"
-msgid "Disable during daylight"
-msgstr "Disable during daylight"
+msgid "Disable at sunset"
+msgstr "Disable at sunset"
 
 msgctxt "#30509"
 msgid "Activate during playback at sunset"
@@ -430,8 +430,8 @@ msgid "Settings"
 msgstr "Settings"
 
 msgctxt "#30063"
-msgid "Disabled by daylight"
-msgstr "Disabled by daylight"
+msgid "Disabled by daytime"
+msgstr "Disabled by daytime"
 
 msgctxt "#30064"
 msgid "ERROR: Scene not found"
@@ -551,4 +551,8 @@ msgstr ""
 
 msgctxt "#30033"
 msgid "Reconnected"
+msgstr ""
+
+msgctxt "#31334"
+msgid "Re-enable time"
 msgstr ""

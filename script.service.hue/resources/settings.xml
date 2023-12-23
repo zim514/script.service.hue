@@ -731,6 +731,14 @@
                     <default>False</default>
                     <control type="toggle"/>
                 </setting>
+                <setting id="morningTime" type="time" label="31334" help="">
+                    <level>2</level>
+                    <default>08:00</default>
+                    <control type="button" format="time">
+                        <heading>31334</heading>
+                    </control>
+
+                </setting>
                 <setting id="enable_if_already_active" type="boolean" label="30516" help="">
                     <level>1</level>
                     <default>False</default>
