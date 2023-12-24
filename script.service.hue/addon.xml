@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.5.0~alpha6">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.5.0~alpha7">
     
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
@@ -26,7 +26,7 @@
         <news>v1.5
 - Hue API V2 Scenes (requires reconfiguration)
 - Hue API V2 Sunset support. Sunrise is now manually configured (Default 8AM)
-- Refactor execution loop
+- Large refactoring
 </news>
         <summary lang="ca_ES">Automatitza les llums Hue amb la reproducció de Kodi</summary>
         <summary lang="cs_CZ">Automatizace Hue světel s přehráváním Kodi</summary>
