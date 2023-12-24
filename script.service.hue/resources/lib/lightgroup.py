@@ -69,7 +69,7 @@ class LightGroup(xbmc.Player):
         return self.bridge.make_api_request("GET", "lights")
 
     def onAVStarted(self):
-        if not self.enabled:
+        if not self.enabled or not self.bridge.connected:
             return
 
         xbmc.log(f"[script.service.hue] In LightGroup[{self.light_group_id}], onPlaybackStarted. Group enabled: {self.enabled}, startBehavior: {self.play_behavior}, isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.mediaType: {self.media_type}, self.playbackType(): {self.playback_type()}")
@@ -85,7 +85,7 @@ class LightGroup(xbmc.Player):
                 self.run_action("play")
 
     def onPlayBackPaused(self):
-        if not self.enabled:
+        if not self.enabled or not self.bridge.connected:
             return
 
         xbmc.log(f"[script.service.hue] In LightGroup[{self.light_group_id}], onPlaybackPaused()")
@@ -100,7 +100,7 @@ class LightGroup(xbmc.Player):
                 self.run_action("pause")
 
     def onPlayBackStopped(self):
-        if not self.enabled:
+        if not self.enabled or not self.bridge.connected:
             return
 
         xbmc.log(f"[script.service.hue] In LightGroup[{self.light_group_id}], onPlaybackStopped()")
@@ -127,9 +127,9 @@ class LightGroup(xbmc.Player):
         self.onPlayBackStopped()
 
     def run_action(self, action):
-        xbmc.log(f"[script.service.hue] In LightGroup[{self.light_group_id}], run_action({action})")
+        xbmc.log(f"[script.service.hue] LightGroup[{self.light_group_id}], run_action({action})")
         service_enabled = cache_get("service_enabled")
-        if service_enabled:
+        if service_enabled and self.bridge.connected:
             if action == "play":
                 scene = self.play_scene
                 duration = self.play_transition
@@ -156,6 +156,7 @@ class LightGroup(xbmc.Player):
 
             except Exception as exc:
                 reporting.process_exception(exc)
+        xbmc.log(f"[script.service.hue] LightGroup[{self.light_group_id}] run_action({action}), service_enabled: {service_enabled}, bridge_connected: {self.bridge.connected}")
 
     def activate(self):
         xbmc.log(f"[script.service.hue] Activate group [{self.light_group_id}]. State: {self.state}")

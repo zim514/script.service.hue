@@ -52,13 +52,13 @@ class CommandHandler:
             raise RuntimeError(f"Unknown Command: {command}")
 
     def discover(self):
-        hue_connection = HueConnection(self.monitor, silent=True, discover=True)
-        if hue_connection.connected:
-            xbmc.log("[script.service.hue] Found bridge. Starting service.")
+        bridge = HueAPIv2(self.monitor, discover=True)
+        if bridge.connected:
+            xbmc.log("[script.service.hue] Found bridge. Opening settings.")
             ADDON.openSettings()
-            service = HueService(self.monitor)
-            service.run()
+
         else:
+            xbmc.log("[script.service.hue] No bridge found. Opening settings.")
             ADDON.openSettings()
 
     def scene_select(self, light_group, action):
@@ -82,7 +82,7 @@ class CommandHandler:
 class HueService:
     def __init__(self, monitor):
         self.monitor = monitor
-        self.hue_connection = HueConnection(monitor, discover=False)
+        # self.hue_connection = None  # HueConnection(monitor, discover=False)
         self.bridge = HueAPIv2(monitor)
         self.light_groups = []
         self.timers = None
@@ -90,14 +90,12 @@ class HueService:
         cache_set("service_enabled", True)
 
     def run(self):
-        if not (self.bridge.connected and self.hue_connection.connected):
-            xbmc.log("[script.service.hue] Not connected, exiting...")
-            return
 
-        # Initialize light groups and timers only if the connection is successful
         self.light_groups = self.initialize_light_groups()
         self.timers = Timers(self.monitor, self.bridge, self)
-        self.timers.start()
+
+        if self.bridge.connected:
+            self.timers.start()
 
         # Track the previous state of the service
         prev_service_enabled = self.service_enabled
@@ -107,14 +105,22 @@ class HueService:
             self.service_enabled = cache_get("service_enabled")
 
             if self.service_enabled:
-                # If the service was previously disabled and is now enabled, activate light groups
-                if not prev_service_enabled:
-                    self.activate()
-
-                self._process_actions()
                 self._reload_settings_if_needed()
+                self._process_actions()
+
+                # If the service was previously disabled and is now enabled, activate light groups
+                if not prev_service_enabled and self.bridge.connected:
+                    self.activate()
             else:
                 AMBI_RUNNING.clear()
+
+            # If the bridge gets disconnected, stop the timers
+            if not self.bridge.connected and self.timers.is_alive():
+                self.timers.stop()
+
+            # If the bridge gets reconnected, restart the timers
+            if self.bridge.connected and not self.timers.is_alive():
+                self.timers.start()
 
             # Update the previous state for the next iteration
             prev_service_enabled = self.service_enabled
@@ -122,14 +128,14 @@ class HueService:
             if self.monitor.waitForAbort(1):
                 break
 
-        xbmc.log("[script.service.hue] Process exiting...")
+        xbmc.log("[script.service.hue] Abort requested...")
 
     def initialize_light_groups(self):
         # Initialize light groups
         return [
             lightgroup.LightGroup(0, self.bridge, lightgroup.VIDEO),
             lightgroup.LightGroup(1, self.bridge, lightgroup.AUDIO)
-            #ambigroup.AmbiGroup(3, self.hue_connection)
+            # ambigroup.AmbiGroup(3, self.hue_connection)
         ]
 
     def activate(self):
@@ -167,7 +173,8 @@ class HueService:
             self.bridge.reload_settings()
 
             # If IP or key has changed, attempt to reconnect
-            if old_ip != self.bridge.ip or old_key != self.bridge.key:
+            if (old_ip != self.bridge.ip or old_key != self.bridge.key) and self.bridge.ip and self.bridge.key:
+                xbmc.log("[script.service.hue] IP or key changed, reconnecting...")
                 self.bridge.connect()
             SETTINGS_CHANGED.clear()
 
@@ -208,11 +215,17 @@ class Timers(threading.Thread):
         self.bridge = bridge
         self.hue_service = hue_service
         self.morning_time = datetime.datetime.strptime(ADDON.getSettingString("morningTime"), "%H:%M").time()
-        self._set_daytime()
+
+        self.stop_timers = threading.Event()  # Flag to stop the thread
+
         super().__init__()
 
     def run(self):
+        self._set_daytime()
         self._task_loop()
+
+    def stop(self):
+        self.stop_timers.set()
 
     def _run_morning(self):
         cache_set("daytime", True)
@@ -234,7 +247,7 @@ class Timers(threading.Thread):
 
     def _task_loop(self):
 
-        while not self.monitor.abortRequested():
+        while not self.monitor.abortRequested() and not self.stop_timers.is_set():
 
             now = datetime.datetime.now()
             self.morning_time = datetime.datetime.strptime(ADDON.getSettingString("morningTime"), "%H:%M").time()
@@ -257,6 +270,7 @@ class Timers(threading.Thread):
                 if self.monitor.waitForAbort(wait_time):
                     break
                 self._run_morning()
+        xbmc.log("[script.service.hue] Timers stopped")
 
     @staticmethod
     def _time_until(current, target):

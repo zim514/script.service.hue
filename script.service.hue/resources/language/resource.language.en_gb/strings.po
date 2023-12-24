@@ -402,6 +402,13 @@ msgctxt "#30083"
 msgid "Unknown"
 msgstr ""
 
+msgctxt "#30084"
+msgid "User Found![CR]Saving settings..."
+msgstr ""
+
+msgctxt "#30086"
+msgid "User not found[CR]Check your bridge and network."
+msgstr ""
 
 msgctxt "#30073"
 msgid "Do not show again"

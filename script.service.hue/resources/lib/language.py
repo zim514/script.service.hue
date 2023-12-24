@@ -122,7 +122,7 @@ _strings['press link button on bridge. waiting for 90 seconds...'] = 30082
 _strings['unknown'] = 30083
 _strings['do not show again'] = 30073
 _strings['disable hue labs during playback'] = 30074
-_strings['hue bridge v1 (round) is unsupported. hue bridge v2 (square) is required.'] = 30001
+_strings['hue bridge discovery (round) is unsupported. hue bridge v2 (square) is required.'] = 30001
 _strings['unknown colour gamut for light:'] = 30012
 _strings['report errors'] = 30016
 _strings['never report errors'] = 30020
@@ -136,3 +136,5 @@ _strings['error: scene or light not found, it may have changed or been deleted. 
 _strings['reconnected'] = 30033
 _strings['re-enable time'] = 31334
 _strings['transition time (seconds):'] = 31335
+_strings['user found![cr]saving settings...'] = 30084
+_strings['user not found[cr]check your bridge and network.'] = 30086
