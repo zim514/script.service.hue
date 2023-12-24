@@ -186,17 +186,11 @@ class HueAPIv2(object):
 
     def _check_version(self):
         try:
-            software_version = self.get_attribute_value(self.devices, self.bridge_id,
-                                                        ['product_data', 'software_version']
-                                                        )
+            software_version = self.get_attribute_value(self.devices, self.bridge_id, ['product_data', 'software_version'])
             api_split = software_version.split(".")
         except KeyError as error:
-            notification(_("Hue Service"), _("Bridge outdated. Please update your bridge."),
-                         icon=xbmcgui.NOTIFICATION_ERROR
-                         )
-            xbmc.log(
-                f"[script.service.hue] in _version_check():  Connected! Bridge too old: {software_version}, error: {error}"
-            )
+            notification(_("Hue Service"), _("Bridge outdated. Please update your bridge."), icon=xbmcgui.NOTIFICATION_ERROR)
+            xbmc.log(f"[script.service.hue] in _version_check():  Connected! Bridge too old: {software_version}, error: {error}")
             return False
         except Exception as exc:
             reporting.process_exception(exc)
@@ -206,9 +200,7 @@ class HueAPIv2(object):
             xbmc.log(f"[script.service.hue] v2 connect() software version: {software_version}")
             return True
 
-        notification(_("Hue Service"), _("Bridge outdated. Please update your bridge."),
-                     icon=xbmcgui.NOTIFICATION_ERROR
-                     )
+        notification(_("Hue Service"), _("Bridge outdated. Please update your bridge."), icon=xbmcgui.NOTIFICATION_ERROR)
         xbmc.log(f"[script.service.hue] v2 connect():  Connected! Bridge API too old: {software_version}")
         return False
 

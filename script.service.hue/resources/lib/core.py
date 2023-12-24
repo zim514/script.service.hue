@@ -127,8 +127,8 @@ class HueService:
     def initialize_light_groups(self):
         # Initialize light groups
         return [
-            lightgroup.LightGroup(0, self.hue_connection, self.bridge, lightgroup.VIDEO),
-            lightgroup.LightGroup(1, self.hue_connection, self.bridge, lightgroup.AUDIO),
+            lightgroup.LightGroup(0, self.bridge, lightgroup.VIDEO),
+            lightgroup.LightGroup(1, self.bridge, lightgroup.AUDIO),
             ambigroup.AmbiGroup(3, self.hue_connection)
         ]
 
