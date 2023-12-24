@@ -63,10 +63,10 @@ class LightGroup(xbmc.Player):
         return f"light_group_id: {self.light_group_id}, enabled: {self.enabled}, state: {self.state}"
 
     def fetch_scene_data(self, scene):
-        return self.bridge.make_request("GET", f"scenes/{scene}")
+        return self.bridge.make_api_request("GET", f"scenes/{scene}")
 
     def fetch_all_light_states(self):
-        return self.bridge.make_request("GET", "lights")
+        return self.bridge.make_api_request("GET", "lights")
 
     def onAVStarted(self):
         if not self.enabled:

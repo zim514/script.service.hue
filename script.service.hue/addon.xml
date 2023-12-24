@@ -26,7 +26,7 @@
         <news>v1.5
 - Hue API V2 Scenes (requires reconfiguration)
 - Hue API V2 Sunset support. Sunrise is now manually configured (Default 8AM)
-- Large refactoring
+- Refactoring
 </news>
         <summary lang="ca_ES">Automatitza les llums Hue amb la reproducció de Kodi</summary>
         <summary lang="cs_CZ">Automatizace Hue světel s přehráváním Kodi</summary>

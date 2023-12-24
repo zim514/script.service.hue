@@ -233,10 +233,6 @@ msgctxt "#30047"
 msgid "Connection lost. Check settings. Shutting down"
 msgstr "Connection lost. Check settings. Shutting down"
 
-msgctxt "#30048"
-msgid "Connection lost. Trying again in 2 minutes"
-msgstr "Connection lost. Trying again in 2 minutes"
-
 
 msgctxt "#30050"
 msgid "N-UPnP discovery..."
@@ -406,13 +402,6 @@ msgctxt "#30083"
 msgid "Unknown"
 msgstr ""
 
-msgctxt "#30084"
-msgid "User Found![CR]Saving settings..."
-msgstr ""
-
-msgctxt "#30086"
-msgid "User not found[CR]Check your bridge and network."
-msgstr ""
 
 msgctxt "#30073"
 msgid "Do not show again"

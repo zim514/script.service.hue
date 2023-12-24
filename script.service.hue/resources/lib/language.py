@@ -77,8 +77,6 @@ _strings['lights:'] = 30035
 _strings['save'] = 30037
 _strings['fade time (seconds)'] = 30042
 _strings['error'] = 30043
-_strings['connection lost. check settings. shutting down'] = 30047
-_strings['connection lost. trying again in 2 minutes'] = 30048
 _strings['scene name'] = 30049
 _strings['n-upnp discovery...'] = 30050
 _strings['upnp discovery...'] = 30051
@@ -122,8 +120,6 @@ _strings['the hue bridge is over capacity. increase refresh rate or reduce the n
 _strings['bridge not found[cr]check your bridge and network.'] = 30078
 _strings['press link button on bridge. waiting for 90 seconds...'] = 30082
 _strings['unknown'] = 30083
-_strings['user found![cr]saving settings...'] = 30084
-_strings['user not found[cr]check your bridge and network.'] = 30086
 _strings['do not show again'] = 30073
 _strings['disable hue labs during playback'] = 30074
 _strings['hue bridge v1 (round) is unsupported. hue bridge v2 (square) is required.'] = 30001

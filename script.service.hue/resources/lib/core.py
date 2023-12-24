@@ -128,8 +128,8 @@ class HueService:
         # Initialize light groups
         return [
             lightgroup.LightGroup(0, self.bridge, lightgroup.VIDEO),
-            lightgroup.LightGroup(1, self.bridge, lightgroup.AUDIO),
-            ambigroup.AmbiGroup(3, self.hue_connection)
+            lightgroup.LightGroup(1, self.bridge, lightgroup.AUDIO)
+            #ambigroup.AmbiGroup(3, self.hue_connection)
         ]
 
     def activate(self):
@@ -158,9 +158,17 @@ class HueService:
 
     def _reload_settings_if_needed(self):
         if SETTINGS_CHANGED.is_set():
+            old_ip = self.bridge.ip
+            old_key = self.bridge.key
+            # Reload settings
+
             for group in self.light_groups:
                 group.reload_settings()
             self.bridge.reload_settings()
+
+            # If IP or key has changed, attempt to reconnect
+            if old_ip != self.bridge.ip or old_key != self.bridge.key:
+                self.bridge.connect()
             SETTINGS_CHANGED.clear()
 
 
