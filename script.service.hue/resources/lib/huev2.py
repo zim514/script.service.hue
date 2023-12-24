@@ -251,37 +251,6 @@ class HueAPIv2(object):
         xbmc.log(f"[script.service.hue] v2 recall_scene(): response: {response}")
         return response
 
-    def get_scenes(self):
-
-        scenes_data = self.make_request("GET", "scene")
-        rooms_data = self.make_request("GET", "room")
-        zones_data = self.make_request("GET", "zone")
-
-        # xbmc.log(f"[script.service.hue] v2 get_scenes(): scenes: {scenes_json}")
-
-        rooms_dict = {room['id']: room['metadata']['name'] for room in rooms_data['data']}
-        zones_dict = {zone['id']: zone['metadata']['name'] for zone in zones_data['data']}
-
-        # xbmc.log(f"[script.service.hue] v2 get_scenes(): room_dict: {rooms_dict}")
-        # xbmc.log(f"[script.service.hue] v2 get_scenes(): zones_dict: {zones_dict}")
-        scenes_dict = {}
-
-        for scene in scenes_data['data']:
-            scene_id = scene['id']
-            scene_name = scene['metadata']['name']
-            room_id = scene['group']['rid']
-            room_name = rooms_dict.get(room_id)
-            # If not found in room_dict, try to get it from zones_dict
-            if room_name is None:
-                room_name = zones_dict.get(room_id, _("Unknown Area"))
-
-            scenes_dict[scene_id] = {'scene_name': scene_name, 'room_name': room_name}
-
-        dict_items = "\n".join([f"{key}: {value}" for key, value in scenes_dict.items()])
-        xbmc.log(f"[script.service.hue] v2 get_scenes(): scenes_dict: {dict_items}")
-
-        return scenes_dict
-
     def configure_scene(self, group_id, action):
         scene = self.select_hue_scene()
         xbmc.log(f"[script.service.hue] v2 selected scene: {scene}")
@@ -291,35 +260,64 @@ class HueAPIv2(object):
             ADDON.setSettingString(f"group{group_id}_{action}SceneName", scene[1])
         ADDON.openSettings()
 
-    def select_hue_scene(self):
+    def get_scenes_and_areas(self):
+        scenes_data = self.make_request("GET", "scene")
+        rooms_data = self.make_request("GET", "room")
+        zones_data = self.make_request("GET", "zone")
 
-        h_scene_name = ""
+        # Create dictionaries for rooms and zones
+        rooms_dict = {room['id']: room['metadata']['name'] for room in rooms_data['data']}
+        zones_dict = {zone['id']: zone['metadata']['name'] for zone in zones_data['data']}
+
+        # Merge rooms and zones into areas
+        areas_dict = {**rooms_dict, **zones_dict}
+        xbmc.log(f"[script.service.hue] v2 get_scenes(): areas_dict: {areas_dict}")
+        # Create a dictionary for scenes
+        scenes_dict = {}
+        for scene in scenes_data['data']:
+            scene_id = scene['id']
+            scene_name = scene['metadata']['name']
+            area_id = scene['group']['rid']
+
+            scenes_dict[scene_id] = {'scene_name': scene_name, 'area_id': area_id}
+
+
+        # dict_items = "\n".join([f"{key}: {value}" for key, value in scenes_dict.items()])
+        # xbmc.log(f"[script.service.hue] v2 get_scenes(): scenes_dict:\n{dict_items}")
+
+        return scenes_dict, areas_dict
+
+
+
+    def select_hue_scene(self):
+        dialog_progress = xbmcgui.DialogProgress()
+        dialog_progress.create("Hue Service", "Searching for scenes...")
         xbmc.log("[script.service.hue] In selectHueScene{}")
 
-        hue_scenes = self.get_scenes()
+        hue_scenes, hue_areas = self.get_scenes_and_areas()
 
-        items = []
-        index = []
-        selected_id = -1
+        area_items = [xbmcgui.ListItem(label=name) for _, name in hue_areas.items()]
+        xbmc.log(f"[script.service.hue] In selectHueScene: area_items: {area_items}")
+        selected_area_index = xbmcgui.Dialog().select("Select Hue area...", area_items)
 
-        for scene in hue_scenes:
-            # xbmc.log(f"[script.service.hue] In selectHueScene: scene: {scene}")
+        if selected_area_index > -1:
+            selected_area_id = list(hue_areas.keys())[selected_area_index]
+            scene_items = [(scene_id, xbmcgui.ListItem(label=info['scene_name']))
+                           for scene_id, info in hue_scenes.items() if info['area_id'] == selected_area_id]
 
-            h_scene_name = hue_scenes[scene]['scene_name']
-            h_room_name = hue_scenes[scene]['room_name']
+            selected_scene_index = xbmcgui.Dialog().select("Select Hue scene...", [item[1] for item in scene_items])
 
-            index.append(scene)
-            items.append(xbmcgui.ListItem(label=h_scene_name, label2=h_room_name))
+            if selected_scene_index > -1:
+                selected_id, selected_scene_item = scene_items[selected_scene_index]
+                selected_scene_name = selected_scene_item.getLabel()
+                selected_area_name = area_items[selected_area_index].getLabel()
+                selected_name = f"{selected_scene_name} - {selected_area_name}"
+                xbmc.log(f"[script.service.hue] In selectHueScene: selected: {selected_id}, name: {selected_name}")
+                dialog_progress.close()
+                return selected_id, selected_name
 
-        selected = xbmcgui.Dialog().select("Select Hue scene...", items, useDetails=True)
-        if selected > -1:
-            selected_id = index[selected]
-            selected_scene_name = hue_scenes[selected_id]['scene_name']
-            selected_room_name = hue_scenes[selected_id]['room_name']
-            selected_name = f"{selected_scene_name} - {selected_room_name}"
-            xbmc.log(f"[script.service.hue] In selectHueScene: selected: {selected}")
-            return selected_id, selected_name
-        return None
+        dialog_progress.close()
+        return None, None
 
     def _discover_bridge_ip(self):
         # discover hue bridge IP silently for non-interactive discovery / bridge IP change.
