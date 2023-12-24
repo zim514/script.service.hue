@@ -15,14 +15,14 @@ import datetime
 
 import xbmc
 import xbmcgui
-from . import ADDON, reporting
+from . import ADDON, TIMEOUT, reporting
 
 from .kodiutils import notification
 from .language import get_string as _
 
 
 class HueAPIv2(object):
-    def __init__(self, monitor, ip=None, key=None, discover=False):
+    def __init__(self, monitor, discover=False):
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  # Old hue bridges use insecure https
 
         self.session = requests.Session()
@@ -34,18 +34,21 @@ class HueAPIv2(object):
         self.retries = 0
         self.max_retries = 5
         self.max_timeout = 5
-        self.ip = ip
-        self.key = key
         self.base_url = None
         self.sunset = None
         self.monitor = monitor
+        self.reload_settings()
 
-        if ip is not None and key is not None:
+        if self.ip is not None and self.key is not None:
             self.connected = self.connect()
         elif self.discover:
             self.discover()
         else:
             raise ValueError("ip and key must be provided or discover must be True")
+
+    def reload_settings(self):
+        self.ip = ADDON.getSetting("bridgeIP")
+        self.key = ADDON.getSetting("bridgeUser")
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.session.close()
@@ -56,15 +59,19 @@ class HueAPIv2(object):
         self.session.headers.update({'hue-application-key': self.key})
 
         self.devices = self.make_request("GET", "device")
-        self.bridge_id = self.get_device_by_archetype(self.devices, 'bridge_v2')
-
-        if self._check_version():
-            self.connected = True
-            self.update_sunset()
-            return True
-        else:
-            self.connected = False
-            return False
+        if self.devices is not None:
+            self.bridge_id = self.get_device_by_archetype(self.devices, 'bridge_v2')
+            if self._check_version():
+                self.connected = True
+                self.update_sunset()
+                return True
+            else:
+                self.connected = False
+                return False
+        xbmc.log(f"[script.service.hue] v2 connect() Bridge not found.")
+        notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
+        self.connected = False
+        return False
 
     def reconnect(self):
         xbmc.log(f"[script.service.hue] v2 reconnect() with settings: bridgeIP: {self.ip}, bridgeUser: {self.key}")
@@ -81,6 +88,7 @@ class HueAPIv2(object):
                     if self._check_version():
                         xbmc.log(f"[script.service.hue] in reconnect(): Version check successful. Saving bridge IP")
                         ADDON.setSettingString("bridgeIP", self.bridge_ip)
+                        self.connected = True
                         return True
                 else:
                     xbmc.log(f"[script.service.hue] Bridge not found. Attempt {retries}/10. Trying again in 2 minutes.")
@@ -215,7 +223,7 @@ class HueAPIv2(object):
         url = urljoin(self.base_url, resource)
         xbmc.log(f"[script.service.hue] v2 make_request(): url: {url}, method: {method}, kwargs: {kwargs}")
         try:
-            response = self.session.request(method, url, **kwargs)
+            response = self.session.request(method, url, timeout=TIMEOUT, **kwargs)
 
             if response.status_code == 200:
                 try:
@@ -230,11 +238,15 @@ class HueAPIv2(object):
                 xbmc.log(f"[script.service.hue] v2 make_request() {method} error: {response.status_code}\n {response.json()}")
                 return response.status_code
 
-        except requests.RequestException as x:
-            xbmc.log(f"[script.service.hue] v2 make_request() *** EXCEPTION *** RequestException: {x}")
+        except (ConnectionError, Timeout, HTTPError) as x:
+            xbmc.log(f"[script.service.hue] v2 make_request() ConnectionError/Timeout/HTTPError: {x}")
             self.connected = False
+            return None
+
+        except requests.RequestException as x:
+            # Report other kinds of RequestExceptions
             reporting.process_exception(x)
-            return None  # Indicate that an exception occurred
+            return None
 
     def recall_scene(self, scene_id, duration=400):  # 400 is the default used by Hue, defaulting here for consistency
 
@@ -281,13 +293,10 @@ class HueAPIv2(object):
 
             scenes_dict[scene_id] = {'scene_name': scene_name, 'area_id': area_id}
 
-
         # dict_items = "\n".join([f"{key}: {value}" for key, value in scenes_dict.items()])
         # xbmc.log(f"[script.service.hue] v2 get_scenes(): scenes_dict:\n{dict_items}")
 
         return scenes_dict, areas_dict
-
-
 
     def select_hue_scene(self):
         dialog_progress = xbmcgui.DialogProgress()
@@ -315,9 +324,9 @@ class HueAPIv2(object):
                 xbmc.log(f"[script.service.hue] In selectHueScene: selected: {selected_id}, name: {selected_name}")
                 dialog_progress.close()
                 return selected_id, selected_name
-
+        xbmc.log("[script.service.hue] In selectHueScene: cancelled")
         dialog_progress.close()
-        return None, None
+        return None
 
     def _discover_bridge_ip(self):
         # discover hue bridge IP silently for non-interactive discovery / bridge IP change.

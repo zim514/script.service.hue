@@ -911,12 +911,6 @@
         <category id="advanced" label="32101" help="">
             <group id="1">
 
-                <setting id="disableConnectionMessage" type="boolean" label="30812" help="">
-                    <level>3</level>
-                    <default>False</default>
-                    <control type="toggle"/>
-                </setting>
-
                 <setting id="error_reporting" type="boolean" label="30016" help="">
                     <level>3</level>
                     <default>True</default>

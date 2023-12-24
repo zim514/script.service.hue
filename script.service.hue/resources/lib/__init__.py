@@ -15,6 +15,7 @@ import xbmcvfs
 
 STRDEBUG = False  # Show string ID in UI
 QHUE_TIMEOUT = 1  # passed to requests, in seconds.
+TIMEOUT = 1 # requests default timeout
 MINIMUM_COLOR_DISTANCE = 0.005
 SETTINGS_CHANGED = Event()
 AMBI_RUNNING = Event()

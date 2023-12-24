@@ -72,8 +72,8 @@ def build_menu(base_url, addon_handle):
     settings_item = ListItem(_("Settings"))
     settings_item.setArt({"icon": xbmcvfs.makeLegalFilename(ADDONPATH + "resources/icons/settings.png")})
 
-    xbmcplugin.addDirectoryItem(addon_handle, base_url + "/actions?light_group_id=1&action=menu", ListItem(_("Video Actions")), True)
-    xbmcplugin.addDirectoryItem(addon_handle, base_url + "/actions?light_group_id=2&action=menu", ListItem(_("Audio Actions")), True)
+    xbmcplugin.addDirectoryItem(addon_handle, base_url + "/actions?light_group_id=1&action=menu", ListItem(_("Video Scenes")), True)
+    xbmcplugin.addDirectoryItem(addon_handle, base_url + "/actions?light_group_id=2&action=menu", ListItem(_("Audio Scenes")), True)
     xbmcplugin.addDirectoryItem(addon_handle, base_url + "?toggle", status_item)
     xbmcplugin.addDirectoryItem(addon_handle, base_url + "?settings", settings_item)
 

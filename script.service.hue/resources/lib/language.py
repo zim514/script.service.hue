@@ -26,12 +26,11 @@ def get_string(t):
 
 
 # GENERATED
-_strings['video actions'] = 32100
-_strings['audio actions'] = 32102
+_strings['video scenes'] = 32100
+_strings['audio scenes'] = 32102
 _strings['start/resume'] = 32201
 _strings['pause'] = 32202
 _strings['stop'] = 32203
-_strings['scene name:'] = 32510
 _strings['scene id'] = 32511
 _strings['select...'] = 32512
 _strings['bridge'] = 30500
@@ -55,7 +54,7 @@ _strings['[b][i]warning: not supported on all hardware[/b][/i]'] = 30521
 _strings['cpu & hue performance'] = 30522
 _strings['ambilight'] = 30523
 _strings['advanced'] = 32101
-_strings['video activation'] = 32106
+_strings['video activation rules'] = 32106
 _strings['select lights'] = 6101
 _strings['enabled'] = 30520
 _strings['press connect button on hue bridge'] = 9001
@@ -73,10 +72,8 @@ _strings['bridge connection failed'] = 30021
 _strings['discovery started'] = 30022
 _strings['bridge not configured'] = 30023
 _strings['check hue bridge configuration'] = 30024
-_strings['transition time:'] = 30031
 _strings['cancel'] = 30034
 _strings['lights:'] = 30035
-_strings['scene name:'] = 30036
 _strings['save'] = 30037
 _strings['fade time (seconds)'] = 30042
 _strings['error'] = 30043
@@ -103,7 +100,6 @@ _strings['enable for live tv'] = 30805
 _strings['saturation'] = 30809
 _strings['minimum brightness'] = 30810
 _strings['maximum brightness'] = 30811
-_strings['disable connection message'] = 30812
 _strings['average image processing time:'] = 30813
 _strings['on playback stop'] = 30814
 _strings['resume light state'] = 30815
@@ -143,3 +139,4 @@ _strings['bridge outdated. please update your bridge.'] = 30019
 _strings['error: scene or light not found, it may have changed or been deleted. check your configuration.'] = 30003
 _strings['reconnected'] = 30033
 _strings['re-enable time'] = 31334
+_strings['transition time (seconds):'] = 31335

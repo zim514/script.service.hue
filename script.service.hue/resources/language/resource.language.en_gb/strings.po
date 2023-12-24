@@ -209,10 +209,6 @@ msgctxt "#30024"
 msgid "Check Hue Bridge configuration"
 msgstr "Check Hue Bridge configuration"
 
-msgctxt "#30031"
-msgid "Transition Time:"
-msgstr "Transition Time:"
-
 msgctxt "#30034"
 msgid "Cancel"
 msgstr "Cancel"
@@ -241,9 +237,6 @@ msgctxt "#30048"
 msgid "Connection lost. Trying again in 2 minutes"
 msgstr "Connection lost. Trying again in 2 minutes"
 
-msgctxt "#30049"
-msgid "Scene Name"
-msgstr "Scene Name"
 
 msgctxt "#30050"
 msgid "N-UPnP discovery..."
@@ -324,10 +317,6 @@ msgstr "Minimum Brightness"
 msgctxt "#30811"
 msgid "Maximum Brightness"
 msgstr "Maximum Brightness"
-
-msgctxt "#30812"
-msgid "Disable connection message"
-msgstr "Disable connection message"
 
 msgctxt "#30813"
 msgid "Average image processing time:"
@@ -421,11 +410,9 @@ msgctxt "#30084"
 msgid "User Found![CR]Saving settings..."
 msgstr ""
 
-
 msgctxt "#30086"
 msgid "User not found[CR]Check your bridge and network."
 msgstr ""
-
 
 msgctxt "#30073"
 msgid "Do not show again"
@@ -470,7 +457,6 @@ msgstr ""
 msgctxt "#30009"
 msgid "Connecting..."
 msgstr ""
-
 
 msgctxt "#30019"
 msgid "Bridge outdated. Please update your bridge."

@@ -7,7 +7,6 @@ import platform
 import sys
 import traceback
 
-
 import rollbar
 import xbmc
 import xbmcgui
@@ -20,12 +19,12 @@ from .language import get_string as _
 
 
 def process_exception(exc, level="critical", error=""):
-    xbmc.log(f"[script.service.hue] Exception: {type(exc)}, {exc}, {error}, {traceback.format_exc()}")
+    xbmc.log(f"[script.service.hue] *** EXCEPTION ***:  Type: {type(exc)},\n Exception: {exc},\n Error: {error},\n Traceback: {traceback.format_exc()}")
 
-    if type(exc) == QhueException and exc.type_id in ["3", "7"]:  # 3: resource not found, 7: invalid value for parameter
+    if exc is QhueException and exc.type_id in ["3", "7"]:  # 3: resource not found, 7: invalid value for parameter
         xbmc.log("[script.service.hue] Qhue resource not found, not reporting to rollbar")
         notification(_("Hue Service"), _("ERROR: Scene or Light not found, it may have changed or been deleted. Check your configuration."), icon=xbmcgui.NOTIFICATION_ERROR)
-    elif type(exc) == RequestException:
+    elif exc is RequestException:
         xbmc.log("[script.service.hue] RequestException, not reporting to rollbar")
         notification(_("Hue Service"), _("Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
     else:
