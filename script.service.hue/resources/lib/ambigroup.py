@@ -87,7 +87,7 @@ class AmbiGroup(lightgroup.LightGroup):
                 notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
 
     def onAVStarted(self):
-        xbmc.log(f"Ambilight AV Started. Group enabled: {self.enabled} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.playbackType(): {self.playback_type()}")
+        xbmc.log(f"Ambilight AV Started. Group enabled: {self.enabled} , isPlayingVideo: {self.isPlayingVideo()}, isPlayingAudio: {self.isPlayingAudio()}, self.playbackType(): {self._playback_type()}")
         # xbmc.log(f"Ambilight Settings: Interval: {self.update_interval}, transitionTime: {self.transition_time}")
 
         if self.isPlayingVideo():
@@ -98,7 +98,7 @@ class AmbiGroup(lightgroup.LightGroup):
 
                 self.video_info_tag = self.getVideoInfoTag()
                 if self.isPlayingVideo():
-                    if self.enabled and self.check_active_time() and self.check_video_activation(self.video_info_tag):
+                    if self.enabled and self._check_schedule_time() and self._check_video_activation(self.video_info_tag):
 
                         if self.disable_labs:
                             self._stop_effects()

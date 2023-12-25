@@ -16,7 +16,7 @@ import xbmc
 import xbmcgui
 from . import ADDON, TIMEOUT, NOTIFICATION_THRESHOLD, MAX_RETRIES, reporting
 
-from .kodiutils import notification
+from .kodiutils import notification, convert_time
 from .language import get_string as _
 
 
@@ -309,7 +309,7 @@ class HueAPIv2(object):
         geolocation = self.make_api_request("GET", "geolocation")  # TODO: Support cases where geolocation is not configured on bridge.
         xbmc.log(f"[script.service.hue] v2 update_sunset(): geolocation: {geolocation}")
         sunset_str = self.search_dict(geolocation, "sunset_time")
-        self.sunset = datetime.datetime.strptime(sunset_str, '%H:%M:%S').time()
+        self.sunset = convert_time(sunset_str)
         xbmc.log(f"[script.service.hue] v2 update_sunset(): sunset: {self.sunset}")
 
     def recall_scene(self, scene_id, duration=400):  # 400 is the default used by Hue, defaulting here for consistency

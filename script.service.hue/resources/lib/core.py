@@ -2,7 +2,7 @@
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
 #      See LICENSE.TXT for more information.
-import datetime
+from datetime import datetime
 import json
 import sys
 import threading
@@ -10,11 +10,11 @@ import threading
 import xbmc
 
 from . import ADDON, SETTINGS_CHANGED, ADDONID, AMBI_RUNNING
-from . import ambigroup, lightgroup, kodiutils
+from . import lightgroup, kodiutils, ambigroup
 from .hueconnection import HueConnection
-from .kodiutils import validate_settings, notification, cache_set, cache_get
-from .language import get_string as _
 from .huev2 import HueAPIv2
+from .kodiutils import validate_settings, notification, cache_set, cache_get, convert_time
+from .language import get_string as _
 
 
 def core():
@@ -214,8 +214,7 @@ class Timers(threading.Thread):
         self.monitor = monitor
         self.bridge = bridge
         self.hue_service = hue_service
-        self.morning_time = datetime.datetime.strptime(ADDON.getSettingString("morningTime"), "%H:%M").time()
-
+        self.morning_time = convert_time(ADDON.getSettingString("morningTime"))
         self.stop_timers = threading.Event()  # Flag to stop the thread
 
         super().__init__()
@@ -238,7 +237,7 @@ class Timers(threading.Thread):
         self.hue_service.activate()
 
     def _set_daytime(self):
-        now = datetime.datetime.now()
+        now = datetime.now()
 
         if self.morning_time <= now.time() <= self.bridge.sunset:
             cache_set("daytime", True)
@@ -249,8 +248,8 @@ class Timers(threading.Thread):
 
         while not self.monitor.abortRequested() and not self.stop_timers.is_set():
 
-            now = datetime.datetime.now()
-            self.morning_time = datetime.datetime.strptime(ADDON.getSettingString("morningTime"), "%H:%M").time()
+            now = datetime.now()
+            self.morning_time = convert_time(ADDON.getSettingString("morningTime")) # Update morning time in case it has changed
 
             time_to_sunset = self._time_until(now, self.bridge.sunset)
             time_to_morning = self._time_until(now, self.morning_time)
@@ -275,6 +274,6 @@ class Timers(threading.Thread):
     @staticmethod
     def _time_until(current, target):
         # Calculates remaining time from current to target
-        now = datetime.datetime(1, 1, 1, current.hour, current.minute, current.second)
-        then = datetime.datetime(1, 1, 1, target.hour, target.minute, target.second)
+        now = datetime(1, 1, 1, current.hour, current.minute, current.second)
+        then = datetime(1, 1, 1, target.hour, target.minute, target.second)
         return (then - now).seconds
