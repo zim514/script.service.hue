@@ -133,7 +133,7 @@ class HueService:
         return [
             lightgroup.LightGroup(0, self.bridge, lightgroup.VIDEO),
             lightgroup.LightGroup(1, self.bridge, lightgroup.AUDIO),
-            ambigroup.AmbiGroup(3, self.bridge, self.monitor)
+            ambigroup.AmbiGroup(3, self.monitor, self.bridge)
         ]
 
     def activate(self):

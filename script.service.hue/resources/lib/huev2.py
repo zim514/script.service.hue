@@ -395,6 +395,26 @@ class HueAPIv2(object):
         dialog_progress.close()
         return None
 
+    def configure_ambilights(self, group_id):
+        lights = self._select_hue_lights()
+        if lights is not None:
+            light_names = [light['metadata']['name'] for light in lights]
+            color_lights = [light['id'] for light in lights]
+
+            ADDON.setSettingString(f"group{group_id}_Lights", ','.join(color_lights))
+            ADDON.setSettingString(f"group{group_id}_LightNames", ', '.join(light_names))
+            ADDON.setSettingBool(f"group{group_id}_enabled", True)
+            ADDON.openSettings()
+
+    def _select_hue_lights(self):
+        hue_lights = self.make_api_request("GET", "light")
+        if hue_lights is not None and 'data' in hue_lights:
+            items = [xbmcgui.ListItem(label=light['metadata']['name']) for light in hue_lights['data']]
+            selected = xbmcgui.Dialog().multiselect(_("Select Hue Lights..."), items)
+            if selected:
+                return [hue_lights['data'][i] for i in selected]
+        return None
+
     def _discover_nupnp(self):
         xbmc.log("[script.service.hue] v2 _discover_nupnp:")
         result = self.make_api_request('GET', 'https://discovery.meethue.com/')
