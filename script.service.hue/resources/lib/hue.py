@@ -20,8 +20,9 @@ from .kodiutils import notification, convert_time
 from .language import get_string as _
 
 
-class HueAPIv2(object):
+class Hue(object):
     def __init__(self, monitor, discover=False):
+        self.scene_data = None
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  # Old hue bridges use insecure https
 
         self.session = requests.Session()
@@ -45,7 +46,7 @@ class HueAPIv2(object):
             self.connected = self.connect()
         else:
             xbmc.log("[script.service.hue] No bridge IP or user key provided. Bridge not configured.")
-            notification(_("Hue Service"), _("Bridge not configured. Please check your settings."), icon=xbmcgui.NOTIFICATION_ERROR)
+            notification(_("Hue Service"), _("Bridge not configured"), icon=xbmcgui.NOTIFICATION_ERROR)
 
     def reload_settings(self):
         self.ip = ADDON.getSetting("bridgeIP")
@@ -85,24 +86,24 @@ class HueAPIv2(object):
                 # Handle HTTP errors
                 if x.response.status_code == 429:
                     # If a 429 status code is received, abort and log an error
-                    xbmc.log(f"[script.service.hue] v2 make_request: Too Many Requests: {x}. Aborting request.")
-                    notification(_("Hue Service"), _("Bridge not found. Please check your network or enter IP manually."), icon=xbmcgui.NOTIFICATION_ERROR)
+                    xbmc.log(f"[script.service.hue] v2 make_request: Too Many Requests: {x} \nResponse: {x.response.text}")
                     return 429
                 elif x.response.status_code in [401, 403]:
-                    xbmc.log(f"[script.service.hue] v2 make_request: Unauthorized: {x}")
+                    xbmc.log(f"[script.service.hue] v2 make_request: Unauthorized: {x}\nResponse: {x.response.text}")
                     notification(_("Hue Service"), _("Bridge unauthorized, please reconfigure."), icon=xbmcgui.NOTIFICATION_ERROR)
                     ADDON.setSettingString("bridgeUser", "")
-                    return None
+                    return 401
                 elif x.response.status_code == 404:
-                    xbmc.log(f"[script.service.hue] v2 make_request: Not Found: {x}")
+                    xbmc.log(f"[script.service.hue] v2 make_request: Not Found: {x}\nResponse: {x.response.text}")
                     return 404
                 elif x.response.status_code == 500:
-                    xbmc.log(f"[script.service.hue] v2 make_request: Internal Bridge Error: {x}")
+                    xbmc.log(f"[script.service.hue] v2 make_request: Internal Bridge Error: {x}\nResponse: {x.response.text}")
                     return 500
                 else:
-                    xbmc.log(f"[script.service.hue] v2 make_request: HTTPError: {x}")
+                    xbmc.log(f"[script.service.hue] v2 make_request: HTTPError: {x}\nResponse: {x.response.text}")
+                    return x.response.status_code
             except (Timeout, json.JSONDecodeError) as x:
-                xbmc.log(f"[script.service.hue] v2 make_request: Timeout/JSONDecodeError: {x}")
+                xbmc.log(f"[script.service.hue] v2 make_request: Timeout/JSONDecodeError: Response: {x.response.text}\n{x}")
             except requests.RequestException as x:
                 # Report other kinds of RequestExceptions
                 xbmc.log(f"[script.service.hue] v2 make_request: RequestException: {x}")
@@ -121,7 +122,7 @@ class HueAPIv2(object):
     def _discover_new_ip(self):
         if self._discover_nupnp():
             xbmc.log(f"[script.service.hue] v2 _discover_and_handle_new_ip: discover_nupnp SUCCESS, bridge IP: {self.ip}")
-            self.ip = self.bridge_ip
+            # TODO:  add new discovery methods here
             ADDON.setSettingString("bridgeIP", self.ip)
             if self.connect():
                 xbmc.log(f"[script.service.hue] v2 _discover_and_handle_new_ip: connect SUCCESS")
@@ -139,6 +140,8 @@ class HueAPIv2(object):
             xbmc.log(f"[script.service.hue] v2 connect: Connection attempts failed. Setting connected to False")
             self.connected = False
             return False
+
+        self.scene_data = self.make_api_request("GET", "scene")
 
         self.bridge_id = self.get_device_by_archetype(self.devices, 'bridge_v2')
         if self._check_version():
@@ -457,12 +460,12 @@ class HueAPIv2(object):
             return d[key]
         for k, v in d.items():
             if isinstance(v, dict):
-                item = HueAPIv2.search_dict(v, key)
+                item = Hue.search_dict(v, key)
                 if item is not None:
                     return item
             elif isinstance(v, list):
                 for d in v:
                     if isinstance(d, dict):
-                        item = HueAPIv2.search_dict(d, key)
+                        item = Hue.search_dict(d, key)
                         if item is not None:
                             return item

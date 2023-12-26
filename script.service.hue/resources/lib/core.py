@@ -11,7 +11,7 @@ import xbmc
 
 from . import ADDON, SETTINGS_CHANGED, ADDONID, AMBI_RUNNING
 from . import lightgroup, kodiutils, ambigroup
-from .huev2 import HueAPIv2
+from .hue import Hue
 from .kodiutils import validate_settings, notification, cache_set, cache_get, convert_time
 from .language import get_string as _
 
@@ -51,7 +51,7 @@ class CommandHandler:
             raise RuntimeError(f"Unknown Command: {command}")
 
     def discover(self):
-        bridge = HueAPIv2(self.monitor, discover=True)
+        bridge = Hue(self.monitor, discover=True)
         if bridge.connected:
             xbmc.log("[script.service.hue] Found bridge. Opening settings.")
             ADDON.openSettings()
@@ -62,7 +62,7 @@ class CommandHandler:
 
     def scene_select(self, light_group, action):
         xbmc.log(f"[script.service.hue] sceneSelect: light_group: {light_group}, action: {action}")
-        bridge = HueAPIv2(self.monitor)
+        bridge = Hue(self.monitor)
         if bridge.connected:
             bridge.configure_scene(light_group, action)
         else:
@@ -70,7 +70,7 @@ class CommandHandler:
             notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     def ambi_light_select(self, light_group):
-        bridge = HueAPIv2(self.monitor)
+        bridge = Hue(self.monitor)
         if bridge.connected:
             bridge.configure_ambilights(light_group)
         else:
@@ -81,7 +81,7 @@ class CommandHandler:
 class HueService:
     def __init__(self, monitor):
         self.monitor = monitor
-        self.bridge = HueAPIv2(monitor)
+        self.bridge = Hue(monitor)
         self.light_groups = []
         self.timers = None
         self.service_enabled = True
@@ -131,8 +131,8 @@ class HueService:
     def initialize_light_groups(self):
         # Initialize light groups
         return [
-            lightgroup.LightGroup(0, self.bridge, lightgroup.VIDEO),
-            lightgroup.LightGroup(1, self.bridge, lightgroup.AUDIO),
+            lightgroup.LightGroup(0, lightgroup.VIDEO, self.bridge),
+            lightgroup.LightGroup(1, lightgroup.AUDIO, self.bridge),
             ambigroup.AmbiGroup(3, self.monitor, self.bridge)
         ]
 

@@ -233,7 +233,6 @@ msgctxt "#30047"
 msgid "Connection lost. Check settings. Shutting down"
 msgstr "Connection lost. Check settings. Shutting down"
 
-
 msgctxt "#30050"
 msgid "N-UPnP discovery..."
 msgstr "N-UPnP discovery..."
@@ -253,10 +252,6 @@ msgstr "Invalid start or end time, schedule disabled"
 msgctxt "#30056"
 msgid "Set brightness on start"
 msgstr "Set brightness on start"
-
-msgctxt "#30057"
-msgid "Force on"
-msgstr "Force on"
 
 msgctxt "#30058"
 msgid "Light Names:"
@@ -414,10 +409,6 @@ msgctxt "#30073"
 msgid "Do not show again"
 msgstr ""
 
-msgctxt "#30074"
-msgid "Disable Hue Labs during playback"
-msgstr ""
-
 msgctxt "#30001"
 msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."
 msgstr ""
@@ -473,4 +464,16 @@ msgstr ""
 #. Amount of time for the light scene transition to fade in, in seconds.
 msgctxt "#31335"
 msgid "Transition time (seconds):"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Bridge overloaded, stopping ambilight"
+msgstr ""
+
+msgctxt "#30025"
+msgid "Bridge unauthorized, please reconfigure."
+msgstr ""
+
+msgctxt "#30026"
+msgid "Connection failed, retrying..."
 msgstr ""

@@ -3,7 +3,7 @@
 #      SPDX-License-Identifier: MIT
 #      See LICENSE.TXT for more information.
 
-import traceback
+
 from threading import Thread
 
 import requests
@@ -25,12 +25,9 @@ class AmbiGroup(lightgroup.LightGroup):
 
         self.bridge = bridge
         self.light_group_id = light_group_id
-
         self.monitor = monitor
-        self.state = STATE_STOPPED
-        self.video_info_tag = xbmc.InfoTagVideo
 
-        self.bridge_error500 = 0
+        self.capacity_error_count = 0
         self.saved_light_states = {}
 
         self.image_process = imageprocess.ImageProcess()
@@ -39,52 +36,40 @@ class AmbiGroup(lightgroup.LightGroup):
         self.converterB = Converter(GamutB)
         self.converterC = Converter(GamutC)
         self.helper = ColorHelper(GamutC)  # Gamut doesn't matter for this usage
+
+        super().__init__(light_group_id, media_type=VIDEO, bridge=bridge)
+
         self.reload_settings()
 
-        super().__init__(light_group_id, bridge, media_type=VIDEO)
-
     def reload_settings(self):
-        #load generic settings
-        super._reload_settings(self.light_group_id)
+        # load generic settings
+        super().reload_settings()
 
-        if type(self) == AmbiGroup:
-            #load ambigroup specific settings
-            self.transition_time = int(ADDON.getSettingInt(f"group{self.light_group_id}_TransitionTime") / 100)  # This is given as a multiple of 100ms and defaults to 4 (400ms). transition_time:10 will make the transition last 1 second.
-            self.force_on = ADDON.getSettingBool(f"group{self.light_group_id}_forceOn")
-            self.disable_labs = ADDON.getSettingBool(f"group{self.light_group_id}_disableLabs")
-            self.min_bri = ADDON.getSettingInt(f"group{self.light_group_id}_MinBrightness") * 255 / 100  # convert percentage to value 1-254
-            self.max_bri = ADDON.getSettingInt(f"group{self.light_group_id}_MaxBrightness") * 255 / 100  # convert percentage to value 1-254
-            self.saturation = ADDON.getSettingNumber(f"group{self.light_group_id}_Saturation")
-            self.capture_size_x = ADDON.getSettingInt(f"group{self.light_group_id}_CaptureSize")
-            self.resume_state = ADDON.getSettingBool(f"group{self.light_group_id}_ResumeState")
-            self.resume_transition = ADDON.getSettingInt(f"group{self.light_group_id}_ResumeTransition") * 10  # convert seconds to multiple of 100ms
+        # load ambigroup specific settings
+        self.transition_time = int(ADDON.getSettingInt(f"group{self.light_group_id}_TransitionTime"))  # Stored as ms in Kodi settings.
+        self.min_bri = ADDON.getSettingInt(f"group{self.light_group_id}_MinBrightness")
+        self.max_bri = ADDON.getSettingInt(f"group{self.light_group_id}_MaxBrightness")
+        self.saturation = ADDON.getSettingNumber(f"group{self.light_group_id}_Saturation")
+        self.capture_size_x = ADDON.getSettingInt(f"group{self.light_group_id}_CaptureSize")
+        self.resume_state = ADDON.getSettingBool(f"group{self.light_group_id}_ResumeState")
+        self.resume_transition = ADDON.getSettingInt(f"group{self.light_group_id}_ResumeTransition") * 10  # convert seconds to multiple of 100ms
 
-            if self.enabled and self.bridge.connected:
-                self.ambi_lights = {}
-                light_ids = ADDON.getSettingString(f"group{self.light_group_id}_Lights").split(",")
-                index = 0
+        if self.enabled and self.bridge.connected:
+            self.ambi_lights = {}
+            light_ids = ADDON.getSettingString(f"group{self.light_group_id}_Lights").split(",")
+            index = 0
 
-                if len(light_ids) > 0:
-                    for L in light_ids:
-                        gamut = self._get_light_gamut(self.bridge, L)
-                        light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
-                        self.ambi_lights.update(light)
-                        index = index + 1
+            if len(light_ids) > 0:
+                for L in light_ids:
+                    gamut = self._get_light_gamut(self.bridge, L)
+                    light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
+                    self.ambi_lights.update(light)
+                    index = index + 1
+            xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] Lights: {self.ambi_lights}")
+        self.update_interval = ADDON.getSettingInt(f"group{self.light_group_id}_Interval") / 1000  # convert MS to seconds
+        if self.update_interval == 0:
+            self.update_interval = 0.1
 
-            self.update_interval = ADDON.getSettingInt(f"group{self.light_group_id}_Interval") / 1000  # convert MS to seconds
-            if self.update_interval == 0:
-                self.update_interval = 0.1
-
-    @staticmethod
-    def _force_on(ambi_lights, bridge, saved_light_states):
-        for L in ambi_lights:
-            try:
-                if not saved_light_states[L]['state']['on']:
-                    xbmc.log("[script.service.hue] Forcing lights on")
-                    bridge.lights[L].state(on=True, bri=1)
-            except requests.RequestException as exc:
-                xbmc.log(f"[script.service.hue] Requests exception: {exc}")
-                notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
 
     def onAVStarted(self):
         self.state = STATE_PLAYING
@@ -94,8 +79,8 @@ class AmbiGroup(lightgroup.LightGroup):
         if not self.enabled or not self.bridge.connected:
             return
 
-        xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] onPlaybackStarted. play_behavior: {self.play_enabled}, media_type: {self.media_type} == playback_type: {self._playback_type()}")
-        if self.play_enabled and self.media_type == self._playback_type() and self._playback_type() == VIDEO:
+        xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] onPlaybackStarted. media_type: {self.media_type} == playback_type: {self._playback_type()}")
+        if self.media_type == self._playback_type() and self._playback_type() == VIDEO:
             try:
                 self.video_info_tag = self.getVideoInfoTag()
             except (AttributeError, TypeError) as x:
@@ -104,19 +89,11 @@ class AmbiGroup(lightgroup.LightGroup):
         else:
             self.video_info_tag = None
 
-        if self.activation_check.validate(self.play_scene):
+        if self.activation_check.validate():
             xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] Running Play action")
 
             # Save light states
-            #self.saved_light_states = self._get_and_save_light_states()
-
-            # Stop effects if disable_labs is True
-            #if self.disable_labs:
-            #    self._stop_effects()
-
-            # Force on lights if force_on is True
-            if self.force_on:
-                self._force_on(self.ambi_lights, self.bridge, self.saved_light_states)
+            # self.saved_light_states = self._get_and_save_light_states()
 
             # Start the Ambi loop
             ambi_loop_thread = Thread(target=self._ambi_loop, name="_ambi_loop", daemon=True)
@@ -128,12 +105,10 @@ class AmbiGroup(lightgroup.LightGroup):
         self.state = STATE_STOPPED
         AMBI_RUNNING.clear()
 
-        if self.enabled:
-            if self.resume_state:
-                self._resume_all_light_states(self.saved_light_states)
+#        if self.enabled:
+#            if self.resume_state:
+#                self._resume_all_light_states(self.saved_light_states)
 
-            if self.disable_labs:
-                self._resume_effects()
 
     def onPlayBackPaused(self):
         # always stop ambilight even if group is disabled or it'll run forever
@@ -141,12 +116,10 @@ class AmbiGroup(lightgroup.LightGroup):
         self.state = STATE_PAUSED
         AMBI_RUNNING.clear()
 
-        if self.enabled:
-            if self.resume_state:
-                self._resume_all_light_states(self.saved_light_states)
+#        if self.enabled:
+#            if self.resume_state:
+#                self._resume_all_light_states(self.saved_light_states)
 
-            if self.disable_labs:
-                self._resume_effects()
 
     def _ambi_loop(self):
         AMBI_RUNNING.set()
@@ -164,7 +137,7 @@ class AmbiGroup(lightgroup.LightGroup):
         for L in list(self.ambi_lights):
             self.ambi_lights[L].update(prev_xy=(0.0001, 0.0001))
 
-        while not self.monitor.abortRequested() and AMBI_RUNNING.is_set() and self.hue_connection.connected:  # loop until kodi tells add-on to stop or video playing flag is unset.
+        while not self.monitor.abortRequested() and AMBI_RUNNING.is_set() and self.bridge.connected:  # loop until kodi tells add-on to stop or video playing flag is unset.
             try:
 
                 cap_image = cap.getImage()  # timeout to wait for OS in ms, default 1000
@@ -209,128 +182,63 @@ class AmbiGroup(lightgroup.LightGroup):
         distance = self.helper.get_distance_between_two_points(XYPoint(xy[0], xy[1]), XYPoint(prev_xy[0], prev_xy[1]))  # only update hue if XY changed enough
 
         if distance > MINIMUM_COLOR_DISTANCE:
-            response = self.bridge.make_api_request('PUT', f'lights/{light}/state', json={'xy': xy, 'bri': bri, 'transitiontime': int(transition_time)})
+            request_body = {
+                'type': 'light',
+                'on': {
+                    'on': True
+                },
+                'dimming': {
+                    'brightness': bri
+                },
+                'color': {
+                    'xy': {
+                        'x': xy[0],
+                        'y': xy[1]
+                    }
+                },
+                'dynamics': {
+                    'duration': int(transition_time)
+                }
+            }
+            response = self.bridge.make_api_request('PUT', f'light/{light}', json=request_body)
+
             if response is not None:
                 self.ambi_lights[light].update(prev_xy=xy)
             elif response == 429 or response == 500:
                 xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] _update_hue_rgb: {response}: Too Many Requests. Aborting request.")
-                self._bridge_error500()
-                notification(_("Hue Service"), _("Bridge overloaded, aborting"), icon=xbmcgui.NOTIFICATION_ERROR)
+                self.bridge_capacity_error()
+                notification(_("Hue Service"), _("Bridge overloaded, stopping ambilight"), icon=xbmcgui.NOTIFICATION_ERROR)
             elif response == 404:
                 xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] Not Found")
                 AMBI_RUNNING.clear()
-                notification(header=_("Hue Service"), message=_(f"Error: Lights incompatible with Ambilight or not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+                notification(header=_("Hue Service"), message=_(f"ERROR: Scene or Light not found, it may have changed or been deleted. Check your configuration."), icon=xbmcgui.NOTIFICATION_ERROR)
+                AMBI_RUNNING.clear() # shut it down
             else:
                 xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] RequestException Hue call fail")
                 AMBI_RUNNING.clear()  # shut it down
                 reporting.process_exception(response)
 
-    def _bridge_error500(self):
-        self.bridge_error500 = self.bridge_error500 + 1  # increment counter
-        if self.bridge_error500 > 50 and ADDON.getSettingBool("show500Error"):
+    def bridge_capacity_error(self):
+        self.capacity_error_count = self.capacity_error_count + 1  # increment counter
+        xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] Bridge capacity error count: {self.capacity_error_count}")
+        if self.capacity_error_count > 50 and ADDON.getSettingBool("show500Error"):
             AMBI_RUNNING.clear()  # shut it down
             stop_showing_error = xbmcgui.Dialog().yesno(_("Hue Bridge over capacity"), _("The Hue Bridge is over capacity. Increase refresh rate or reduce the number of Ambilights."), yeslabel=_("Do not show again"), nolabel=_("Ok"))
             if stop_showing_error:
                 ADDON.setSettingBool("show500Error", False)
-            self.bridge_error500 = 0
-
-    def _stop_effects(self):
-        self.saved_effect_sensors = self._get_effect_sensors()
-
-        for sensor in self.saved_effect_sensors:
-            xbmc.log(f"[script.service.hue] Stopping effect sensor {sensor}")
-            self.bridge.sensors[sensor].state(status=0)
-
-    def _resume_effects(self):
-        if not hasattr(self, 'saved_effect_sensors'):
-            return
-
-        for sensor in self.saved_effect_sensors:
-            xbmc.log(f"[script.service.hue] Resuming effect sensor {sensor}")
-            self.bridge.sensors[sensor].state(status=1)
-
-        self.saved_effect_sensors = None
-
-    def _get_effect_sensors(self):
-        # Map light/group IDs to associated effect sensor IDs
-        lights = {}
-        groups = {}
-
-        # Find all sensor IDs for active Hue Labs effects
-        all_sensors = self.bridge.sensors()
-        effects = [effect_id
-                   for effect_id, sensor in list(all_sensors.items())
-                   if sensor['modelid'] == 'HUELABSVTOGGLE' and 'status' in sensor['state'] and sensor['state']['status'] == 1
-                   ]
-
-        # For each effect, find the linked lights or groups
-        all_links = self.bridge.resourcelinks()
-        for sensor in effects:
-            sensor_links = [sensorLink
-                            for link in list(all_links.values())
-                            for sensorLink in link['links']
-                            if '/sensors/' + sensor in link['links']
-                            ]
-
-            for link in sensor_links:
-
-                i = link.split('/')[-1]
-                if link.startswith('/lights/'):
-                    lights.setdefault(i, set())
-                    lights[i].add(sensor)
-                elif link.startswith('/groups/'):
-                    groups.setdefault(i, set())
-                    groups[i].add(sensor)
-
-        # For linked groups, find their associated lights
-        all_groups = self.bridge.groups()
-        for g, sensors in list(groups.items()):
-            for i in all_groups[g]['lights']:
-                lights.setdefault(i, set())
-                lights[i] |= sensors
-
-        if lights:
-            xbmc.log(f'[script.service.hue] Found active Hue Labs effects on lights: {lights}')
-            # Find all effect sensors that use the selected Ambilights.
-            #
-            # Only consider lights that are turned on, because enabling
-            # an effect will also power on its lights.
-            try:
-                sensors = set([sensor
-                               for sensor_id in list(self.ambi_lights.keys())
-                               for sensor in lights[sensor_id]
-                               if sensor_id in lights
-                               and sensor_id in self.saved_light_states
-                               and self.saved_light_states[sensor_id]['state']['on']
-                               ])
-                return sensors
-            except KeyError:
-                # Effects aren't running on any ambilights,
-                xbmc.log("[script.service.hue] KeyError: Active Hue Labs aren't on any ambilights")
-                return []
-
-        else:
-            xbmc.log('[script.service.hue] No active Hue Labs effects found')
-            return []
+            self.capacity_error_count = 0
 
     @staticmethod
     def _get_light_gamut(bridge, light):
         gamut = "C"  # default
-        try:
-            gamut = bridge.lights()[light]['capabilities']['control']['colorgamuttype']
-            # xbmc.log("[script.service.hue] Light: {}, gamut: {}".format(l, gamut))
-        except QhueException as exc:
-            xbmc.log(f"[script.service.hue] Can't get gamut for light, defaulting to Gamut C: {light}, error: {exc}")
-        except KeyError:
-            xbmc.log(f"[script.service.hue] Unknown gamut type, unsupported light: {light}")
-            notification(_("Hue Service"), _("Unknown colour gamut for light:") + f" {light}")
-        except requests.RequestException as exc:
-            xbmc.log(f"[script.service.hue] Get Light Gamut RequestsException: {exc}")
-            notification(header=_("Hue Service"), message=_(f"Connection Error"), icon=xbmcgui.NOTIFICATION_ERROR)
-
-        if gamut == "A" or gamut == "B" or gamut == "C":
-            return gamut
-        return "C"  # default to C if unknown gamut type
+        light_data = bridge.make_api_request("GET", f"light/{light}")
+        if light_data is not None and 'data' in light_data:
+            for item in light_data['data']:
+                if 'color' in item and 'gamut_type' in item['color']:
+                    gamut = item['color']['gamut_type']
+        if gamut not in ["A", "B", "C"]:
+            gamut = "C"  # default to C if unknown gamut type
+        return gamut
 
     @staticmethod
     def _perf_average(process_times):

@@ -22,10 +22,12 @@
         </assets>
         <source>https://github.com/zim514/script.service.hue</source>
         <forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-        <news>v1.5
-- Hue API V2 Scenes (requires reconfiguration)
-- Hue API V2 Sunset support. Sunrise is now manually configured (Default 8AM)
-- Refactoring
+        <news>v1.5 (beta)
+- Hue API V2 support
+- Now uses standard scenes (requires reconfiguration)
+- Sunrise is now manually configured (Default 8AM)
+- Removed some unnecessary settings
+- Refactoring and code improvements
 </news>
         <summary lang="ca_ES">Automatitza les llums Hue amb la reproducció de Kodi</summary>
         <summary lang="cs_CZ">Automatizace Hue světel s přehráváním Kodi</summary>

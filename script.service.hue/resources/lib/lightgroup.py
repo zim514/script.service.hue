@@ -21,7 +21,7 @@ AUDIO = 1
 
 
 class LightGroup(xbmc.Player):
-    def __init__(self, light_group_id, bridge=None, media_type=VIDEO):
+    def __init__(self, light_group_id, media_type, bridge=None):
         self.light_group_id = light_group_id
         self.state = STATE_STOPPED
         self.media_type = media_type
@@ -30,23 +30,34 @@ class LightGroup(xbmc.Player):
 
         self.activation_check = self.ActivationChecker(self)
         self.bridge = bridge
-        self.reload_settings()  # load settings at init
 
         xbmc.log(f"[script.service.hue] LightGroup[{self.light_group_id}] Initialized {self}")
+        self.reload_settings()  # load settings at init
         super().__init__()
 
     def reload_settings(self):
         # Load LightGroup and AmbiGroup settings
         self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
 
-        if self.enabled and self.bridge.connected:
-            self.scene_data = self.bridge.make_api_request("GET", "scene")
+        self.daylight_disable = ADDON.getSettingBool("daylightDisable")
+
+        self.schedule_enabled = ADDON.getSettingBool("enableSchedule")
+        self.schedule_start = convert_time(ADDON.getSettingString("startTime"))
+        self.schedule_end = convert_time(ADDON.getSettingString("endTime"))
+
+        self.minimum_duration = ADDON.getSettingInt("video_MinimumDuration")
+        self.movie_setting = ADDON.getSettingBool("video_Movie")
+        self.episode_setting = ADDON.getSettingBool("video_Episode")
+        self.music_video_setting = ADDON.getSettingBool("video_MusicVideo")
+        self.pvr_setting = ADDON.getSettingBool("video_PVR")
+        self.other_setting = ADDON.getSettingBool("video_Other")
+        self.enable_if_already_active = ADDON.getSettingBool('enable_if_already_active')
+        self.keep_lights_off = ADDON.getSettingBool('keep_lights_off')
+
 
         if type(self) is LightGroup:
-            #Load LightGroup specific settings
-            self.scene_data = self.bridge.make_api_request("GET", "scene")
-            self.enable_if_already_active = ADDON.getSettingBool('enable_if_already_active')
-            self.keep_lights_off = ADDON.getSettingBool('keep_lights_off')
+            # Load LightGroup specific settings
+
             self.play_enabled = ADDON.getSettingBool(f"group{self.light_group_id}_playBehavior")
             self.play_scene = ADDON.getSettingString(f"group{self.light_group_id}_playSceneID")
             self.play_transition = int(ADDON.getSettingNumber(f"group{self.light_group_id}_playTransition") * 1000)  # Hue API v2 expects milliseconds (int), but we use seconds (float) in the settings because its precise enough and more user-friendly
@@ -59,22 +70,7 @@ class LightGroup(xbmc.Player):
             self.stop_scene = ADDON.getSettingString(f"group{self.light_group_id}_stopSceneID")
             self.stop_transition = int(ADDON.getSettingNumber(f"group{self.light_group_id}_stopTransition") * 1000)
 
-            self.minimum_duration = ADDON.getSettingInt("video_MinimumDuration")
-            self.movie_setting = ADDON.getSettingBool("video_Movie")
-            self.episode_setting = ADDON.getSettingBool("video_Episode")
-            self.music_video_setting = ADDON.getSettingBool("video_MusicVideo")
-            self.pvr_setting = ADDON.getSettingBool("video_PVR")
-            self.other_setting = ADDON.getSettingBool("video_Other")
-
-            self.daylight_disable = ADDON.getSettingBool("daylightDisable")
-
-            self.schedule_enabled = ADDON.getSettingBool("enableSchedule")
-            self.schedule_start = convert_time(ADDON.getSettingString("startTime"))
-            self.schedule_end = convert_time(ADDON.getSettingString("endTime"))
-
-    def __repr__(self):
-        return f"light_group_id: {self.light_group_id}, enabled: {self.enabled}, state: {self.state}"
-
+            xbmc.log(f"[script.service.hue] LightGroup[{self.light_group_id}] Reloaded settings. Group enabled: {self.enabled}, Bridge connected: {self.bridge.connected}, mediaType: {self.media_type}")
     def onAVStarted(self):
         self.state = STATE_PLAYING
         self.last_media_type = self._playback_type()
@@ -82,6 +78,7 @@ class LightGroup(xbmc.Player):
 
         if not self.enabled or not self.bridge.connected:
             return
+
         xbmc.log(f"[script.service.hue] LightGroup[{self.light_group_id}] onPlaybackStarted. play_behavior: {self.play_enabled}, media_type: {self.media_type} == playback_type: {self._playback_type()}")
         if self.play_enabled and self.media_type == self._playback_type() and self._playback_type() == VIDEO:
 
@@ -244,7 +241,7 @@ class LightGroup(xbmc.Player):
             all_light_states = self.parent.bridge.make_api_request("GET", "light")
 
             # Find the current scene from the scene data
-            current_scene = next((scene for scene in self.parent.scene_data['data'] if scene['id'] == scene_id), None)
+            current_scene = next((scene for scene in self.parent.bridge.scene_data['data'] if scene['id'] == scene_id), None)
             if not current_scene:
                 xbmc.log("[script.service.hue] _is_scene_already_active: Current scene not found in scene data")
                 return False
@@ -260,10 +257,10 @@ class LightGroup(xbmc.Player):
             xbmc.log("[script.service.hue] _is_scene_already_active: No lights in the scene are on")
             return False
 
-        def validate(self, scene):
-            if self.parent.media_type == VIDEO:
-                return (self._is_within_schedule() and
-                        self._is_video_activation_valid() and
-                        self._is_scene_light_already_active(scene))
-            if self.parent.media_type == AUDIO:
+        def validate(self, scene=None):
+            if self.parent.media_type == VIDEO and scene:
+                return (self._is_within_schedule() and self._is_video_activation_valid()) or self._is_scene_light_already_active(scene)
+            elif self.parent.media_type == VIDEO:  # if no scene is set, use the default activation. This is the case for ambilight.
+                return self._is_within_schedule() and self._is_video_activation_valid()
+            elif self.parent.media_type == AUDIO:
                 return self._is_within_schedule() and self._is_scene_light_already_active(scene)
