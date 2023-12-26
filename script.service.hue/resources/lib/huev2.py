@@ -96,6 +96,9 @@ class HueAPIv2(object):
                 elif x.response.status_code == 404:
                     xbmc.log(f"[script.service.hue] v2 make_request: Not Found: {x}")
                     return 404
+                elif x.response.status_code == 500:
+                    xbmc.log(f"[script.service.hue] v2 make_request: Internal Bridge Error: {x}")
+                    return 500
                 else:
                     xbmc.log(f"[script.service.hue] v2 make_request: HTTPError: {x}")
             except (Timeout, json.JSONDecodeError) as x:

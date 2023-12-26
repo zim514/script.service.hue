@@ -36,9 +36,14 @@ class LightGroup(xbmc.Player):
         super().__init__()
 
     def reload_settings(self):
+        # Load LightGroup and AmbiGroup settings
         self.enabled = ADDON.getSettingBool(f"group{self.light_group_id}_enabled")
 
+        if self.enabled and self.bridge.connected:
+            self.scene_data = self.bridge.make_api_request("GET", "scene")
+
         if type(self) is LightGroup:
+            #Load LightGroup specific settings
             self.scene_data = self.bridge.make_api_request("GET", "scene")
             self.enable_if_already_active = ADDON.getSettingBool('enable_if_already_active')
             self.keep_lights_off = ADDON.getSettingBool('keep_lights_off')

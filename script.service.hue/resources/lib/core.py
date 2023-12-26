@@ -11,7 +11,6 @@ import xbmc
 
 from . import ADDON, SETTINGS_CHANGED, ADDONID, AMBI_RUNNING
 from . import lightgroup, kodiutils, ambigroup
-from .hueconnection import HueConnection
 from .huev2 import HueAPIv2
 from .kodiutils import validate_settings, notification, cache_set, cache_get, convert_time
 from .language import get_string as _
@@ -71,9 +70,9 @@ class CommandHandler:
             notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     def ambi_light_select(self, light_group):
-        hue_connection = HueConnection(self.monitor, silent=True, discover=False)
-        if hue_connection.connected:
-            hue_connection.configure_ambilights(light_group)
+        bridge = HueAPIv2(self.monitor)
+        if bridge.connected:
+            bridge.configure_ambilights(light_group)
         else:
             xbmc.log("[script.service.hue] No bridge found. Select ambi lights cancelled.")
             notification(_("Hue Service"), _("Check Hue Bridge configuration"))
@@ -82,7 +81,6 @@ class CommandHandler:
 class HueService:
     def __init__(self, monitor):
         self.monitor = monitor
-        # self.hue_connection = None  # HueConnection(monitor, discover=False)
         self.bridge = HueAPIv2(monitor)
         self.light_groups = []
         self.timers = None
@@ -134,8 +132,8 @@ class HueService:
         # Initialize light groups
         return [
             lightgroup.LightGroup(0, self.bridge, lightgroup.VIDEO),
-            lightgroup.LightGroup(1, self.bridge, lightgroup.AUDIO)
-            # ambigroup.AmbiGroup(3, self.hue_connection)
+            lightgroup.LightGroup(1, self.bridge, lightgroup.AUDIO),
+            ambigroup.AmbiGroup(3, self.bridge, self.monitor)
         ]
 
     def activate(self):

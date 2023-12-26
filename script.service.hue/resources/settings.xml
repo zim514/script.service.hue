@@ -71,16 +71,15 @@
                             </and>
                         </dependency>
                     </dependencies>
-                <constraints>
-                    <minimum>0</minimum>
-                    <step>0.5</step>
-                    <maximum>60</maximum>
-                </constraints>
-                <control type="slider" format="number">
-                    <popup>false</popup>
-                </control>
+                    <constraints>
+                        <minimum>0</minimum>
+                        <step>0.5</step>
+                        <maximum>60</maximum>
+                    </constraints>
+                    <control type="slider" format="number">
+                        <popup>false</popup>
+                    </control>
                 </setting>
-
 
 
                 <setting id="group0_playSelectScene" type="action" label="32512" help="">
@@ -119,8 +118,6 @@
                 </setting>
 
 
-
-
                 <setting id="group0_playSceneID" type="string" label="32511" help="">
                     <level>4</level>
                     <default>-1</default>
@@ -129,7 +126,6 @@
                     </control>
                 </setting>
             </group>
-
 
 
             <group id="3">
@@ -154,14 +150,14 @@
                             </and>
                         </dependency>
                     </dependencies>
-                <constraints>
-                    <minimum>0</minimum>
-                    <step>0.5</step>
-                    <maximum>60</maximum>
-                </constraints>
-                <control type="slider" format="number">
-                    <popup>false</popup>
-                </control>
+                    <constraints>
+                        <minimum>0</minimum>
+                        <step>0.5</step>
+                        <maximum>60</maximum>
+                    </constraints>
+                    <control type="slider" format="number">
+                        <popup>false</popup>
+                    </control>
 
                 </setting>
 
@@ -187,7 +183,6 @@
                 </setting>
 
 
-
                 <setting id="group0_pauseSceneName" type="string" label="30036" help="">
                     <level>0</level>
                     <default>Not selected</default>
@@ -206,9 +201,6 @@
                 </setting>
 
 
-
-
-
                 <setting id="group0_pauseSceneID" type="string" label="32511" help="">
                     <level>4</level>
                     <default>-1</default>
@@ -218,7 +210,6 @@
                     </control>
                 </setting>
             </group>
-
 
 
             <group id="4">
@@ -243,17 +234,17 @@
                             </and>
                         </dependency>
                     </dependencies>
-                <constraints>
-                    <minimum>0</minimum>
-                    <step>0.5</step>
-                    <maximum>60</maximum>
-                </constraints>
-                <control type="slider" format="number">
-                    <popup>false</popup>
-                </control>
+                    <constraints>
+                        <minimum>0</minimum>
+                        <step>0.5</step>
+                        <maximum>60</maximum>
+                    </constraints>
+                    <control type="slider" format="number">
+                        <popup>false</popup>
+                    </control>
 
                 </setting>
-                        <setting id="group0_stopSelectScene" type="action" label="32512" help="">
+                <setting id="group0_stopSelectScene" type="action" label="32512" help="">
                     <level>0</level>
                     <data>RunScript(script.service.hue,sceneSelect,0,stop)</data>
                     <constraints>
@@ -265,7 +256,7 @@
                             <and>
                                 <condition operator="is" setting="group0_stopBehavior">true</condition>
                                 <condition operator="is" setting="group0_enabled">true</condition>
-                    </and>
+                            </and>
                         </dependency>
                     </dependencies>
                     <control type="button" format="action">
@@ -290,9 +281,6 @@
                         <heading>30036</heading>
                     </control>
                 </setting>
-
-
-
 
 
                 <setting id="group0_stopSceneID" type="string" label="32511" help="">
@@ -345,7 +333,6 @@
         </category>
 
 
-
         <category id="audio actions" label="32102" help="">
             <group id="1">
                 <setting id="group1_enabled" type="boolean" label="30520" help="">
@@ -376,14 +363,14 @@
                             </and>
                         </dependency>
                     </dependencies>
-                <constraints>
-                    <minimum>0</minimum>
-                    <step>0.5</step>
-                    <maximum>60</maximum>
-                </constraints>
-                <control type="slider" format="number">
-                    <popup>false</popup>
-                </control>
+                    <constraints>
+                        <minimum>0</minimum>
+                        <step>0.5</step>
+                        <maximum>60</maximum>
+                    </constraints>
+                    <control type="slider" format="number">
+                        <popup>false</popup>
+                    </control>
                 </setting>
                 <setting id="group1_playSelectScene" type="action" label="32512" help="">
                     <level>0</level>
@@ -405,8 +392,6 @@
                 </setting>
 
 
-
-
                 <setting id="group1_playSceneName" type="string" label="30036" help="">
                     <level>0</level>
                     <default>Not selected</default>
@@ -425,9 +410,6 @@
                 </setting>
 
 
-
-
-
                 <setting id="group1_playSceneID" type="string" label="32511" help="">
                     <level>4</level>
                     <default>-1</default>
@@ -437,12 +419,6 @@
                     </control>
                 </setting>
             </group>
-
-
-
-
-
-
 
 
             <group id="3">
@@ -457,7 +433,7 @@
                     <control type="toggle"/>
                 </setting>
 
-         <setting id="group1_pauseTransition" type="number" label="31335" help="">
+                <setting id="group1_pauseTransition" type="number" label="31335" help="">
                     <level>1</level>
                     <default>8</default>
                     <dependencies>
@@ -468,14 +444,14 @@
                             </and>
                         </dependency>
                     </dependencies>
-                <constraints>
-                    <minimum>0</minimum>
-                    <step>0.5</step>
-                    <maximum>60</maximum>
-                </constraints>
-                <control type="slider" format="number">
-                    <popup>false</popup>
-                </control>
+                    <constraints>
+                        <minimum>0</minimum>
+                        <step>0.5</step>
+                        <maximum>60</maximum>
+                    </constraints>
+                    <control type="slider" format="number">
+                        <popup>false</popup>
+                    </control>
 
                 </setting>
                 <setting id="group1_pauseSelectScene" type="action" label="32512" help="">
@@ -516,9 +492,6 @@
                 </setting>
 
 
-
-
-
                 <setting id="group1_pauseSceneID" type="string" label="32511" help="">
                     <level>4</level>
                     <default>-1</default>
@@ -552,14 +525,14 @@
                             </and>
                         </dependency>
                     </dependencies>
-                <constraints>
-                    <minimum>0</minimum>
-                    <step>0.5</step>
-                    <maximum>60</maximum>
-                </constraints>
-                <control type="slider" format="number">
-                    <popup>false</popup>
-                </control>
+                    <constraints>
+                        <minimum>0</minimum>
+                        <step>0.5</step>
+                        <maximum>60</maximum>
+                    </constraints>
+                    <control type="slider" format="number">
+                        <popup>false</popup>
+                    </control>
 
                 </setting>
                 <setting id="group1_stopSelectScene" type="action" label="32512" help="">
