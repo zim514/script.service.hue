@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.5.0">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.5.1">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.27.1"/>
@@ -22,8 +22,8 @@
         <forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
         <news>
 v1.5 (beta)
-- Hue API V2 support
-- Now uses standard scenes (requires reconfiguration)
+- Hue API V2 support (requires reconfiguration of scenes and ambilight)
+- Now uses standard scenes
 - Sunrise is now manually configured (Default 8AM)
 - Removed some unnecessary settings
 - Refactoring and code improvements
