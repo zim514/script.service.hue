@@ -361,8 +361,8 @@ msgid "Disabled by daytime"
 msgstr "Disabled by daytime"
 
 msgctxt "#30064"
-msgid "ERROR: Scene not found"
-msgstr "CHYBA: Scéna nebola nájdená"
+msgid "ERROR: Scene not found, it may have been deleted"
+msgstr "ERROR: Scene not found, it may have been deleted"
 
 msgctxt "#30080"
 msgid "The following error occurred:"
@@ -456,10 +456,6 @@ msgctxt "#30019"
 msgid "Bridge outdated. Please update your bridge."
 msgstr "Bridge je zastaralý. Prosím, aktualizujte svoj bridge."
 
-msgctxt "#30003"
-msgid "ERROR: Scene or Light not found, it may have changed or been deleted. Check your configuration."
-msgstr "CHYBA: Scéna alebo svetlo sa nenašli, možno sa zmenili alebo boli odstránené. Skontrolujte svoju konfiguráciu."
-
 msgctxt "#30033"
 msgid "Reconnected"
 msgstr "Znovu pripojené"
@@ -484,6 +480,22 @@ msgstr ""
 msgctxt "#30026"
 msgid "Connection failed, retrying..."
 msgstr ""
+
+msgctxt "#30003"
+msgid "Not selected"
+msgstr ""
+
+msgctxt "#30027"
+msgid "ERROR: Light not found, it may have been deleted"
+msgstr ""
+
+#~ msgctxt "#30064"
+#~ msgid "ERROR: Scene not found"
+#~ msgstr "CHYBA: Scéna nebola nájdená"
+
+#~ msgctxt "#30003"
+#~ msgid "ERROR: Scene or Light not found, it may have changed or been deleted. Check your configuration."
+#~ msgstr "CHYBA: Scéna alebo svetlo sa nenašli, možno sa zmenili alebo boli odstránené. Skontrolujte svoju konfiguráciu."
 
 #~ msgctxt "Addon Description"
 #~ msgid "Automate your Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
