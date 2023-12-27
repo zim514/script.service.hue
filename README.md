@@ -116,5 +116,4 @@ Audio Group: 1
 ## Includes code and contributions from:
 - [Kodi Volunteer Translators](https://kodi.weblate.cloud), contribute [here](https://kodi.wiki/view/Translations)
 - [ScreenBloom by Tyler Kershner](https://github.com/kershner/screenBloom) 
-- [Qhue by Quentin Stafford-Fraser](https://github.com/quentinsf/qhue)
 - [hue-python-rgb-converter (rgbxy) by  Benjamin Knight](https://github.com/benknight/hue-python-rgb-converter)

@@ -61,9 +61,15 @@ class AmbiGroup(lightgroup.LightGroup):
             if len(light_ids) > 0:
                 for L in light_ids:
                     gamut = self._get_light_gamut(self.bridge, L)
-                    light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
-                    self.ambi_lights.update(light)
-                    index = index + 1
+                    if gamut == 404:
+                        notification(header=_("Hue Service"), message=_(f"ERROR: Light not found, it may have been deleted"), icon=xbmcgui.NOTIFICATION_ERROR)
+                        AMBI_RUNNING.clear()
+                        ADDON.setSettingString(f"group{self.light_group_id}_Lights", "-1")
+                        ADDON.setSettingString(f"group{self.light_group_id}_LightNames", _("Not selected"))
+                    else:
+                        light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
+                        self.ambi_lights.update(light)
+                        index = index + 1
             xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] Lights: {self.ambi_lights}")
         self.update_interval = ADDON.getSettingInt(f"group{self.light_group_id}_Interval") / 1000  # convert MS to seconds
         if self.update_interval == 0:
@@ -210,7 +216,7 @@ class AmbiGroup(lightgroup.LightGroup):
             elif response == 404:
                 xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] Not Found")
                 AMBI_RUNNING.clear()
-                notification(header=_("Hue Service"), message=_(f"ERROR: Scene or Light not found, it may have changed or been deleted. Check your configuration."), icon=xbmcgui.NOTIFICATION_ERROR)
+                notification(header=_("Hue Service"), message=_(f"ERROR: Light not found, it may have been deleted"), icon=xbmcgui.NOTIFICATION_ERROR)
                 AMBI_RUNNING.clear() # shut it down
             else:
                 xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] RequestException Hue call fail")
@@ -231,7 +237,10 @@ class AmbiGroup(lightgroup.LightGroup):
     def _get_light_gamut(bridge, light):
         gamut = "C"  # default
         light_data = bridge.make_api_request("GET", f"light/{light}")
-        if light_data is not None and 'data' in light_data:
+        if light_data == 404:
+            xbmc.log(f"[script.service.hue] _get_light_gamut: Light[{light}] not found or ID invalid")
+            return 404
+        elif light_data is not None and 'data' in light_data:
             for item in light_data['data']:
                 if 'color' in item and 'gamut_type' in item['color']:
                     gamut = item['color']['gamut_type']

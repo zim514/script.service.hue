@@ -152,7 +152,7 @@ class LightGroup(xbmc.Player):
                     ADDON.setSettingString(f"group{self.light_group_id}_{action}SceneName", "Not Selected")
                     ADDON.setSettingString(f"group{self.light_group_id}_{action}SceneID", "-1")
                     xbmc.log(f"[script.service.hue] Scene {scene} not found - group{self.light_group_id}_{action}Behavior ")
-                    notification(header=_("Hue Service"), message=_("ERROR: Scene not found"), icon=xbmcgui.NOTIFICATION_ERROR)
+                    notification(header=_("Hue Service"), message=_("ERROR: Scene not found, it may have been deleted"), icon=xbmcgui.NOTIFICATION_ERROR)
 
 
                 else:
