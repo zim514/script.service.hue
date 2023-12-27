@@ -242,12 +242,14 @@ class LightGroup(xbmc.Player):
 
             # Find the current scene from the scene data
             current_scene = next((scene for scene in self.parent.bridge.scene_data['data'] if scene['id'] == scene_id), None)
+            #xbmc.log(f"[script.service.hue] _is_scene_already_active: Current scene: {current_scene}")
             if not current_scene:
                 xbmc.log("[script.service.hue] _is_scene_already_active: Current scene not found in scene data")
                 return False
 
             # Check if any light in the current scene is on
             for action in current_scene['actions']:
+                #xbmc.log(f"[script.service.hue] _is_scene_already_active: Checking light {action['target']['rid']} in the scene")
                 light_id = action['target']['rid']
                 light_state = next((state for state in all_light_states['data'] if state['id'] == light_id), None)
                 if light_state and 'on' in light_state and light_state['on']['on']:
