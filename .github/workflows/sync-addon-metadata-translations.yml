@@ -24,6 +24,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: project
+          fetch-depth: 0
 
       - name: Checkout sync_addon_metadata_translations repository
         uses: actions/checkout@v4
