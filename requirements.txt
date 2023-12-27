@@ -3,5 +3,5 @@ rollbar~=0.15.2
 polib~=1.2.0
 Pillow~=10.1.0
 Kodistubs~=20.0.1
-six~=1.16.0
 urllib3~=2.1.0
+
