@@ -13,7 +13,9 @@ import xbmcaddon
 import xbmcvfs
 
 STRDEBUG = False  # Show string ID in UI
-QHUE_TIMEOUT = 1  # passed to requests, in seconds.
+TIMEOUT = 1 # requests default timeout
+MAX_RETRIES = 7
+NOTIFICATION_THRESHOLD = 2
 MINIMUM_COLOR_DISTANCE = 0.005
 SETTINGS_CHANGED = Event()
 AMBI_RUNNING = Event()

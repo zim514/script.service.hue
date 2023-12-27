@@ -45,9 +45,11 @@ def _validate_schedule():
 
 
 def convert_time(time):
-    hour = int(time.split(":")[0])
-    minute = int(time.split(":")[1])
-    return datetime.time(hour, minute)
+    parts = list(map(int, time.split(":")))
+    if len(parts) == 2:
+        return datetime.time(parts[0], parts[1])
+    elif len(parts) == 3:
+        return datetime.time(parts[0], parts[1], parts[2])
 
 
 def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), sound=False):

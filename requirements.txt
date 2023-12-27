@@ -1,6 +1,7 @@
 requests==2.31.0
-qhue~=2.0.1
-rollbar~=1.0.0
-polib
-Pillow
-Kodistubs
+rollbar~=0.15.2
+polib~=1.2.0
+Pillow~=10.1.0
+Kodistubs~=20.0.1
+urllib3~=2.1.0
+

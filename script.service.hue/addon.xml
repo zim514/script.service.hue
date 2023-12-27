@@ -1,16 +1,16 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.4.18">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.5.0~beta2">
     
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.27.1"/>
         <import addon="script.module.pil"/>
         <import addon="script.module.pyrollbar" version="0.15.2"/>
-        <import addon="script.module.qhue" version="2.0.1"/>
     </requires>
     <extension point="xbmc.service" name="service.hue" library="service.py"/>
     <extension point="xbmc.python.pluginsource" library="plugin.py">
         <provides>executable</provides>
     </extension>
+
     <extension point="xbmc.addon.metadata">
         <reuselanguageinvoker>true</reuselanguageinvoker>
         <platform>all</platform>
@@ -21,18 +21,12 @@
         </assets>
         <source>https://github.com/zim514/script.service.hue</source>
         <forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-        <news>v1.4.17
-- Fix ambilight crash on sunset / activation when no video is playing
-- Ignore Bridge throttle errors during discovery
-
-v1.4.16
-- Translations updates from Weblate
-
-v1.4.15
-- Fix 'disable during daylight' option
-- Localisation updates from Weblate
-- Improved connection error handling
-- Fix crash on ambilight initialization and settings changes
+        <news>v1.5 (beta)
+- Hue API V2 support
+- Now uses standard scenes (requires reconfiguration)
+- Sunrise is now manually configured (Default 8AM)
+- Removed some unnecessary settings
+- Refactoring and code improvements
 </news>
         <summary lang="ca_ES">Automatitza les llums Hue amb la reproducció de Kodi</summary>
         <summary lang="cs_CZ">Automatizace Hue světel s přehráváním Kodi</summary>

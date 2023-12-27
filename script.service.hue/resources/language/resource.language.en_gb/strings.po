@@ -14,7 +14,7 @@ msgid "Automate Hue lights with Kodi playback"
 msgstr ""
 
 msgctxt "Addon Description"
-msgid "Automate your Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
+msgid "Automate your Hue lights with Kodi. Use scenes configured in the official Hue app. Can use Hue's sunset time to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
 msgstr ""
 
 msgctxt "Addon Disclaimer"
@@ -22,12 +22,12 @@ msgid "Requires a Hue Bridge V2 (Square). Ambilight not available on all hardwar
 msgstr ""
 
 msgctxt "#32100"
-msgid "Video Actions"
-msgstr "Video Actions"
+msgid "Video Scenes"
+msgstr "Video Scenes"
 
 msgctxt "#32102"
-msgid "Audio Actions"
-msgstr "Audio Actions"
+msgid "Audio Scenes"
+msgstr "Audio Scenes"
 
 msgctxt "#32201"
 msgid "Start/Resume"
@@ -41,9 +41,9 @@ msgctxt "#32203"
 msgid "Stop"
 msgstr "Stop"
 
-msgctxt "#32510"
-msgid "Scene Name:"
-msgstr "Scene Name:"
+msgctxt "#30036"
+msgid "Scene:"
+msgstr "Scene:"
 
 msgctxt "#32511"
 msgid "Scene ID"
@@ -82,8 +82,8 @@ msgid "End time:"
 msgstr "End time:"
 
 msgctxt "#30508"
-msgid "Disable during daylight"
-msgstr "Disable during daylight"
+msgid "Disable during daytime"
+msgstr "Disable during daytime"
 
 msgctxt "#30509"
 msgid "Activate during playback at sunset"
@@ -138,8 +138,8 @@ msgid "Advanced"
 msgstr "Advanced"
 
 msgctxt "#32106"
-msgid "Video Activation"
-msgstr "Video Activation"
+msgid "Video Activation Rules"
+msgstr "Video Activation Rules"
 
 msgctxt "#6101"
 msgid "Select Lights"
@@ -152,14 +152,6 @@ msgstr "Enabled"
 msgctxt "#9001"
 msgid "Press connect button on Hue bridge"
 msgstr "Press connect button on Hue bridge"
-
-msgctxt "#9007"
-msgid "Create Scene"
-msgstr "Create Scene"
-
-msgctxt "#9008"
-msgid "Delete Scene"
-msgstr "Delete Scene"
 
 msgctxt "#30000"
 msgid "Hue Service"
@@ -217,26 +209,6 @@ msgctxt "#30024"
 msgid "Check Hue Bridge configuration"
 msgstr "Check Hue Bridge configuration"
 
-msgctxt "#30025"
-msgid "ERROR: Scene not deleted"
-msgstr "ERROR: Scene not deleted"
-
-msgctxt "#30026"
-msgid "Scene Created"
-msgstr "Scene Created"
-
-msgctxt "#30028"
-msgid "Delete Hue Scene"
-msgstr "Delete Hue Scene"
-
-msgctxt "#30030"
-msgid "Enter Scene Name"
-msgstr "Enter Scene Name"
-
-msgctxt "#30031"
-msgid "Transition Time:"
-msgstr "Transition Time:"
-
 msgctxt "#30034"
 msgid "Cancel"
 msgstr "Cancel"
@@ -245,33 +217,9 @@ msgctxt "#30035"
 msgid "Lights:"
 msgstr "Lights:"
 
-msgctxt "#30036"
-msgid "Scene Name:"
-msgstr "Scene Name:"
-
 msgctxt "#30037"
 msgid "Save"
 msgstr "Save"
-
-msgctxt "#30038"
-msgid "Create Hue Scene"
-msgstr "Create Hue Scene"
-
-msgctxt "#30002"
-msgid "ERROR: Scene not created"
-msgstr "ERROR: Scene not created"
-
-msgctxt "#30039"
-msgid "Set a fade time in seconds, or 0 for an instant transition."
-msgstr "Set a fade time in seconds, or 0 for an instant transition."
-
-msgctxt "#30040"
-msgid "Scene deleted"
-msgstr "Scene deleted"
-
-msgctxt "#30041"
-msgid "You may now assign your Scene to player actions."
-msgstr "You may now assign your Scene to player actions."
 
 msgctxt "#30042"
 msgid "Fade Time (Seconds)"
@@ -281,29 +229,9 @@ msgctxt "#30043"
 msgid "Error"
 msgstr "Error"
 
-msgctxt "#30044"
-msgid "Create New Scene"
-msgstr "Create New Scene"
-
-msgctxt "#30045"
-msgid "Scene successfully created!"
-msgstr "Scene successfully created!"
-
-msgctxt "#30046"
-msgid "Adjust lights to desired state in the Hue App to save as new scene."
-msgstr "Adjust lights to desired state in the Hue App to save as new scene."
-
 msgctxt "#30047"
 msgid "Connection lost. Check settings. Shutting down"
 msgstr "Connection lost. Check settings. Shutting down"
-
-msgctxt "#30048"
-msgid "Connection lost. Trying again in 2 minutes"
-msgstr "Connection lost. Trying again in 2 minutes"
-
-msgctxt "#30049"
-msgid "Scene Name"
-msgstr "Scene Name"
 
 msgctxt "#30050"
 msgid "N-UPnP discovery..."
@@ -324,10 +252,6 @@ msgstr "Invalid start or end time, schedule disabled"
 msgctxt "#30056"
 msgid "Set brightness on start"
 msgstr "Set brightness on start"
-
-msgctxt "#30057"
-msgid "Force on"
-msgstr "Force on"
 
 msgctxt "#30058"
 msgid "Light Names:"
@@ -385,10 +309,6 @@ msgctxt "#30811"
 msgid "Maximum Brightness"
 msgstr "Maximum Brightness"
 
-msgctxt "#30812"
-msgid "Disable connection message"
-msgstr "Disable connection message"
-
 msgctxt "#30813"
 msgid "Average image processing time:"
 msgstr "Average image processing time:"
@@ -430,8 +350,8 @@ msgid "Settings"
 msgstr "Settings"
 
 msgctxt "#30063"
-msgid "Disabled by daylight"
-msgstr "Disabled by daylight"
+msgid "Disabled by daytime"
+msgstr "Disabled by daytime"
 
 msgctxt "#30064"
 msgid "ERROR: Scene not found"
@@ -481,24 +401,12 @@ msgctxt "#30084"
 msgid "User Found![CR]Saving settings..."
 msgstr ""
 
-msgctxt "#30085"
-msgid "Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or 0 for an instant transition."
-msgstr ""
-
 msgctxt "#30086"
 msgid "User not found[CR]Check your bridge and network."
 msgstr ""
 
-msgctxt "#30087"
-msgid "Scene successfully created![CR]You may now assign your scene to player actions."
-msgstr ""
-
 msgctxt "#30073"
 msgid "Do not show again"
-msgstr ""
-
-msgctxt "#30074"
-msgid "Disable Hue Labs during playback"
 msgstr ""
 
 msgctxt "#30001"
@@ -537,10 +445,6 @@ msgctxt "#30009"
 msgid "Connecting..."
 msgstr ""
 
-msgctxt "#30027"
-msgid "Are you sure you want to delete this scene:"
-msgstr ""
-
 msgctxt "#30019"
 msgid "Bridge outdated. Please update your bridge."
 msgstr ""
@@ -551,4 +455,25 @@ msgstr ""
 
 msgctxt "#30033"
 msgid "Reconnected"
+msgstr ""
+
+msgctxt "#31334"
+msgid "Re-enable time"
+msgstr ""
+
+#. Amount of time for the light scene transition to fade in, in seconds.
+msgctxt "#31335"
+msgid "Transition time (seconds):"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Bridge overloaded, stopping ambilight"
+msgstr ""
+
+msgctxt "#30025"
+msgid "Bridge unauthorized, please reconfigure."
+msgstr ""
+
+msgctxt "#30026"
+msgid "Connection failed, retrying..."
 msgstr ""
