@@ -2,20 +2,18 @@
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
 #      See LICENSE.TXT for more information.
+import json
 from socket import getfqdn
-
+from urllib.parse import urljoin
 import requests
 from requests.exceptions import HTTPError, ConnectionError, Timeout
 import urllib3
-from urllib.parse import urljoin
-
-import simplejson as json
-import datetime
 
 import xbmc
 import xbmcgui
-from . import ADDON, TIMEOUT, NOTIFICATION_THRESHOLD, MAX_RETRIES, reporting
 
+
+from . import ADDON, TIMEOUT, NOTIFICATION_THRESHOLD, MAX_RETRIES, reporting
 from .kodiutils import notification, convert_time
 from .language import get_string as _
 

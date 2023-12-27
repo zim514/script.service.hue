@@ -2,10 +2,10 @@
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
 #      See LICENSE.TXT for more information.
-from datetime import datetime
 import json
 import sys
 import threading
+from datetime import datetime
 
 import xbmc
 

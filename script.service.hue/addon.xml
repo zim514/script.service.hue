@@ -5,7 +5,6 @@
         <import addon="script.module.requests" version="2.27.1"/>
         <import addon="script.module.pil"/>
         <import addon="script.module.pyrollbar" version="0.15.2"/>
-        <import addon="script.module.simplejson" version="3.19.1"/>
     </requires>
     <extension point="xbmc.service" name="service.hue" library="service.py"/>
     <extension point="xbmc.python.pluginsource" library="plugin.py">

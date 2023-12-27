@@ -6,7 +6,6 @@
 
 from threading import Thread
 
-import requests
 import xbmc
 import xbmcgui
 from PIL import Image
