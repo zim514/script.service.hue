@@ -21,20 +21,20 @@ msgid "Automate Hue lights with Kodi playback"
 msgstr "Automatiza las luces Hue con la reproducción de Kodi"
 
 msgctxt "Addon Description"
-msgid "Automate your Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
-msgstr "Automatiza tus luces Hue con Kodi. Crea escenas multihabitación que se ejecutan al Reproducir, Pausar o Detener la reproducción multimedia. Cree y elimine escenas multihabitación desde los ajustes del add-on y, a continuación, seleccionar cuáles se aplicarán a los diferentes eventos de reproducción. Puede usar las horas de salida y puesta del sol de Hue para desactivar automáticamente el servicio durante el día y encender las luces al atardecer durante la reproducción. Incluye compatibilidad con Ambilight."
+msgid "Automate your Hue lights with Kodi. Use scenes configured in the official Hue app. Can use Hue's sunset time to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
+msgstr ""
 
 msgctxt "Addon Disclaimer"
 msgid "Requires a Hue Bridge V2 (Square). Ambilight not available on all hardware."
 msgstr "Requiere un Hue Bridge V2 (cuadrado). Ambilight no está disponible en todos los equipos."
 
 msgctxt "#32100"
-msgid "Video Actions"
-msgstr "Acciones de vídeo"
+msgid "Video Scenes"
+msgstr "Video Scenes"
 
 msgctxt "#32102"
-msgid "Audio Actions"
-msgstr "Acciones de audio"
+msgid "Audio Scenes"
+msgstr "Audio Scenes"
 
 msgctxt "#32201"
 msgid "Start/Resume"
@@ -48,9 +48,9 @@ msgctxt "#32203"
 msgid "Stop"
 msgstr "Parar"
 
-msgctxt "#32510"
-msgid "Scene Name:"
-msgstr "Nombre de la escena:"
+msgctxt "#30036"
+msgid "Scene:"
+msgstr "Scene:"
 
 msgctxt "#32511"
 msgid "Scene ID"
@@ -89,8 +89,8 @@ msgid "End time:"
 msgstr "Hora de fin:"
 
 msgctxt "#30508"
-msgid "Disable during daylight"
-msgstr "Desactivar con luz diurna"
+msgid "Disable during daytime"
+msgstr "Disable during daytime"
 
 msgctxt "#30509"
 msgid "Activate during playback at sunset"
@@ -145,8 +145,8 @@ msgid "Advanced"
 msgstr "Avanzado"
 
 msgctxt "#32106"
-msgid "Video Activation"
-msgstr "Activación de vídeo"
+msgid "Video Activation Rules"
+msgstr "Video Activation Rules"
 
 msgctxt "#6101"
 msgid "Select Lights"
@@ -159,14 +159,6 @@ msgstr "Activado"
 msgctxt "#9001"
 msgid "Press connect button on Hue bridge"
 msgstr "Pulsa el botón de conexión del Hue bridge"
-
-msgctxt "#9007"
-msgid "Create Scene"
-msgstr "Crear escena"
-
-msgctxt "#9008"
-msgid "Delete Scene"
-msgstr "Borrar escena"
 
 msgctxt "#30000"
 msgid "Hue Service"
@@ -224,26 +216,6 @@ msgctxt "#30024"
 msgid "Check Hue Bridge configuration"
 msgstr "Comprobar la configuración del Hue Bridge"
 
-msgctxt "#30025"
-msgid "ERROR: Scene not deleted"
-msgstr "ERROR: Escena no eliminada"
-
-msgctxt "#30026"
-msgid "Scene Created"
-msgstr "Escena creada"
-
-msgctxt "#30028"
-msgid "Delete Hue Scene"
-msgstr "Borrar Escena Hue"
-
-msgctxt "#30030"
-msgid "Enter Scene Name"
-msgstr "Introducir nombre de escena"
-
-msgctxt "#30031"
-msgid "Transition Time:"
-msgstr "Hora de transición:"
-
 msgctxt "#30034"
 msgid "Cancel"
 msgstr "Cancelar"
@@ -252,33 +224,9 @@ msgctxt "#30035"
 msgid "Lights:"
 msgstr "Luces:"
 
-msgctxt "#30036"
-msgid "Scene Name:"
-msgstr "Nombre de la escena:"
-
 msgctxt "#30037"
 msgid "Save"
 msgstr "Guardar"
-
-msgctxt "#30038"
-msgid "Create Hue Scene"
-msgstr "Crear escena Hue"
-
-msgctxt "#30002"
-msgid "ERROR: Scene not created"
-msgstr "ERROR: Escena no creada"
-
-msgctxt "#30039"
-msgid "Set a fade time in seconds, or 0 for an instant transition."
-msgstr "Ajustar un tiempo de atenuación en segundos, o 0 para una transición instantánea."
-
-msgctxt "#30040"
-msgid "Scene deleted"
-msgstr "Escena eliminada"
-
-msgctxt "#30041"
-msgid "You may now assign your Scene to player actions."
-msgstr "Ahora puedes asignar tu Escena a las acciones de los reproductores."
 
 msgctxt "#30042"
 msgid "Fade Time (Seconds)"
@@ -288,29 +236,9 @@ msgctxt "#30043"
 msgid "Error"
 msgstr "Error"
 
-msgctxt "#30044"
-msgid "Create New Scene"
-msgstr "Crear nueva escena"
-
-msgctxt "#30045"
-msgid "Scene successfully created!"
-msgstr "¡Escena creada con éxito!"
-
-msgctxt "#30046"
-msgid "Adjust lights to desired state in the Hue App to save as new scene."
-msgstr "Ajustar las luces al estado deseado en la App Hue para guardar como nueva escena."
-
 msgctxt "#30047"
 msgid "Connection lost. Check settings. Shutting down"
 msgstr "Conexión perdida. Comprobar los ajustes. Apagando"
-
-msgctxt "#30048"
-msgid "Connection lost. Trying again in 2 minutes"
-msgstr "Conexión perdida. Nuevo intento en 2 minutos"
-
-msgctxt "#30049"
-msgid "Scene Name"
-msgstr "Nombre de la escena"
 
 msgctxt "#30050"
 msgid "N-UPnP discovery..."
@@ -331,10 +259,6 @@ msgstr "Hora de inicio o fin no válida, programación desactivada"
 msgctxt "#30056"
 msgid "Set brightness on start"
 msgstr "Ajustar el brillo al encender"
-
-msgctxt "#30057"
-msgid "Force on"
-msgstr "Fuerza sobre"
 
 msgctxt "#30058"
 msgid "Light Names:"
@@ -392,10 +316,6 @@ msgctxt "#30811"
 msgid "Maximum Brightness"
 msgstr "Brillo máximo"
 
-msgctxt "#30812"
-msgid "Disable connection message"
-msgstr "Desactivar mensaje de conexión"
-
 msgctxt "#30813"
 msgid "Average image processing time:"
 msgstr "Tiempo medio de procesamiento de la imagen:"
@@ -437,8 +357,8 @@ msgid "Settings"
 msgstr "Ajustes"
 
 msgctxt "#30063"
-msgid "Disabled by daylight"
-msgstr "Desactivado por la luz del día"
+msgid "Disabled by daytime"
+msgstr "Disabled by daytime"
 
 msgctxt "#30064"
 msgid "ERROR: Scene not found"
@@ -488,25 +408,13 @@ msgctxt "#30084"
 msgid "User Found![CR]Saving settings..."
 msgstr "¡Usuario encontrado![CR]Guardando ajustes..."
 
-msgctxt "#30085"
-msgid "Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or 0 for an instant transition."
-msgstr "Ajustar las luces al estado deseado en la aplicación Hue para guardar como nueva escena.[CR]Ajustar un tiempo de atenuación en segundos, o 0 para una transición instantánea."
-
 msgctxt "#30086"
 msgid "User not found[CR]Check your bridge and network."
 msgstr "Usuario no encontrado[CR]Comprobar el bridge y la red."
 
-msgctxt "#30087"
-msgid "Scene successfully created![CR]You may now assign your scene to player actions."
-msgstr "¡Escena creada con éxito![CR]Ahora puedes asignar tu escena a las acciones de los reproductores."
-
 msgctxt "#30073"
 msgid "Do not show again"
 msgstr "No volver a mostrar"
-
-msgctxt "#30074"
-msgid "Disable Hue Labs during playback"
-msgstr "Desactivar Hue Labs durante la reproducción"
 
 msgctxt "#30001"
 msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."
@@ -544,10 +452,6 @@ msgctxt "#30009"
 msgid "Connecting..."
 msgstr "Conectando..."
 
-msgctxt "#30027"
-msgid "Are you sure you want to delete this scene:"
-msgstr "Estás seguro de que quieres borrar esta escena:"
-
 msgctxt "#30019"
 msgid "Bridge outdated. Please update your bridge."
 msgstr "Bridge obsoleto. Por favor, actualice su bridge."
@@ -559,3 +463,148 @@ msgstr "ERROR: Escena o Luz no encontrada, puede que haya cambiado o se haya bor
 msgctxt "#30033"
 msgid "Reconnected"
 msgstr "Reconectado"
+
+msgctxt "#31334"
+msgid "Re-enable time"
+msgstr ""
+
+#. Amount of time for the light scene transition to fade in, in seconds.
+msgctxt "#31335"
+msgid "Transition time (seconds):"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Bridge overloaded, stopping ambilight"
+msgstr ""
+
+msgctxt "#30025"
+msgid "Bridge unauthorized, please reconfigure."
+msgstr ""
+
+msgctxt "#30026"
+msgid "Connection failed, retrying..."
+msgstr ""
+
+#~ msgctxt "Addon Description"
+#~ msgid "Automate your Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
+#~ msgstr "Automatiza tus luces Hue con Kodi. Crea escenas multihabitación que se ejecutan al Reproducir, Pausar o Detener la reproducción multimedia. Cree y elimine escenas multihabitación desde los ajustes del add-on y, a continuación, seleccionar cuáles se aplicarán a los diferentes eventos de reproducción. Puede usar las horas de salida y puesta del sol de Hue para desactivar automáticamente el servicio durante el día y encender las luces al atardecer durante la reproducción. Incluye compatibilidad con Ambilight."
+
+#~ msgctxt "#32100"
+#~ msgid "Video Actions"
+#~ msgstr "Acciones de vídeo"
+
+#~ msgctxt "#32102"
+#~ msgid "Audio Actions"
+#~ msgstr "Acciones de audio"
+
+#~ msgctxt "#32510"
+#~ msgid "Scene Name:"
+#~ msgstr "Nombre de la escena:"
+
+#~ msgctxt "#30508"
+#~ msgid "Disable during daylight"
+#~ msgstr "Desactivar con luz diurna"
+
+#~ msgctxt "#32106"
+#~ msgid "Video Activation"
+#~ msgstr "Activación de vídeo"
+
+#~ msgctxt "#9007"
+#~ msgid "Create Scene"
+#~ msgstr "Crear escena"
+
+#~ msgctxt "#9008"
+#~ msgid "Delete Scene"
+#~ msgstr "Borrar escena"
+
+#~ msgctxt "#30025"
+#~ msgid "ERROR: Scene not deleted"
+#~ msgstr "ERROR: Escena no eliminada"
+
+#~ msgctxt "#30026"
+#~ msgid "Scene Created"
+#~ msgstr "Escena creada"
+
+#~ msgctxt "#30028"
+#~ msgid "Delete Hue Scene"
+#~ msgstr "Borrar Escena Hue"
+
+#~ msgctxt "#30030"
+#~ msgid "Enter Scene Name"
+#~ msgstr "Introducir nombre de escena"
+
+#~ msgctxt "#30031"
+#~ msgid "Transition Time:"
+#~ msgstr "Hora de transición:"
+
+#~ msgctxt "#30036"
+#~ msgid "Scene Name:"
+#~ msgstr "Nombre de la escena:"
+
+#~ msgctxt "#30038"
+#~ msgid "Create Hue Scene"
+#~ msgstr "Crear escena Hue"
+
+#~ msgctxt "#30002"
+#~ msgid "ERROR: Scene not created"
+#~ msgstr "ERROR: Escena no creada"
+
+#~ msgctxt "#30039"
+#~ msgid "Set a fade time in seconds, or 0 for an instant transition."
+#~ msgstr "Ajustar un tiempo de atenuación en segundos, o 0 para una transición instantánea."
+
+#~ msgctxt "#30040"
+#~ msgid "Scene deleted"
+#~ msgstr "Escena eliminada"
+
+#~ msgctxt "#30041"
+#~ msgid "You may now assign your Scene to player actions."
+#~ msgstr "Ahora puedes asignar tu Escena a las acciones de los reproductores."
+
+#~ msgctxt "#30044"
+#~ msgid "Create New Scene"
+#~ msgstr "Crear nueva escena"
+
+#~ msgctxt "#30045"
+#~ msgid "Scene successfully created!"
+#~ msgstr "¡Escena creada con éxito!"
+
+#~ msgctxt "#30046"
+#~ msgid "Adjust lights to desired state in the Hue App to save as new scene."
+#~ msgstr "Ajustar las luces al estado deseado en la App Hue para guardar como nueva escena."
+
+#~ msgctxt "#30048"
+#~ msgid "Connection lost. Trying again in 2 minutes"
+#~ msgstr "Conexión perdida. Nuevo intento en 2 minutos"
+
+#~ msgctxt "#30049"
+#~ msgid "Scene Name"
+#~ msgstr "Nombre de la escena"
+
+#~ msgctxt "#30057"
+#~ msgid "Force on"
+#~ msgstr "Fuerza sobre"
+
+#~ msgctxt "#30812"
+#~ msgid "Disable connection message"
+#~ msgstr "Desactivar mensaje de conexión"
+
+#~ msgctxt "#30063"
+#~ msgid "Disabled by daylight"
+#~ msgstr "Desactivado por la luz del día"
+
+#~ msgctxt "#30085"
+#~ msgid "Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or 0 for an instant transition."
+#~ msgstr "Ajustar las luces al estado deseado en la aplicación Hue para guardar como nueva escena.[CR]Ajustar un tiempo de atenuación en segundos, o 0 para una transición instantánea."
+
+#~ msgctxt "#30087"
+#~ msgid "Scene successfully created![CR]You may now assign your scene to player actions."
+#~ msgstr "¡Escena creada con éxito![CR]Ahora puedes asignar tu escena a las acciones de los reproductores."
+
+#~ msgctxt "#30074"
+#~ msgid "Disable Hue Labs during playback"
+#~ msgstr "Desactivar Hue Labs durante la reproducción"
+
+#~ msgctxt "#30027"
+#~ msgid "Are you sure you want to delete this scene:"
+#~ msgstr "Estás seguro de que quieres borrar esta escena:"

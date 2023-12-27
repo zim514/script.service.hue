@@ -21,20 +21,20 @@ msgid "Automate Hue lights with Kodi playback"
 msgstr "Ohjaa Hue-valoja automaattisesti Kodin toistolla"
 
 msgctxt "Addon Description"
-msgid "Automate your Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
-msgstr "Automatisoi Hue-valosi Kodilla. Luo monihuonevalaistusasetuksia, jotka suoritetaan median toiston alkaessa, tauotessa tai päättyessä. Luo ja poista valaistusasetuksia lisäosan asetuksista ja valitse niiden käyttö ei toistotapahtumissa. Huen auringonnousu- ja -laskuaikoja voidaan hyödyntää palvelun automaattiseen käytöstä poistoon päiväsaikaan ja valojen sytytykseen auringon laskiessa toiston aikana. Sisältää myös Ambilight-tuen."
+msgid "Automate your Hue lights with Kodi. Use scenes configured in the official Hue app. Can use Hue's sunset time to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
+msgstr ""
 
 msgctxt "Addon Disclaimer"
 msgid "Requires a Hue Bridge V2 (Square). Ambilight not available on all hardware."
 msgstr "Vaatii Hue Silta V2 (nelikulmainen) -laitteen. Ambilight ei ole käytettävissä kaikilla laitteilla."
 
 msgctxt "#32100"
-msgid "Video Actions"
-msgstr "Videotoiminnot"
+msgid "Video Scenes"
+msgstr "Video Scenes"
 
 msgctxt "#32102"
-msgid "Audio Actions"
-msgstr "Äänitoiminnot"
+msgid "Audio Scenes"
+msgstr "Audio Scenes"
 
 msgctxt "#32201"
 msgid "Start/Resume"
@@ -48,9 +48,9 @@ msgctxt "#32203"
 msgid "Stop"
 msgstr "Pysäytä"
 
-msgctxt "#32510"
-msgid "Scene Name:"
-msgstr "Valaistusasetus:"
+msgctxt "#30036"
+msgid "Scene:"
+msgstr "Scene:"
 
 msgctxt "#32511"
 msgid "Scene ID"
@@ -89,8 +89,8 @@ msgid "End time:"
 msgstr "Päättymisaika:"
 
 msgctxt "#30508"
-msgid "Disable during daylight"
-msgstr "Poista päivänvalon aikana käytöstä"
+msgid "Disable during daytime"
+msgstr "Disable during daytime"
 
 msgctxt "#30509"
 msgid "Activate during playback at sunset"
@@ -145,8 +145,8 @@ msgid "Advanced"
 msgstr "Lisäasetukset"
 
 msgctxt "#32106"
-msgid "Video Activation"
-msgstr "Videoaktivointi"
+msgid "Video Activation Rules"
+msgstr "Video Activation Rules"
 
 msgctxt "#6101"
 msgid "Select Lights"
@@ -159,14 +159,6 @@ msgstr "Käytössä"
 msgctxt "#9001"
 msgid "Press connect button on Hue bridge"
 msgstr "Paina Hue Sillan yhdistyspainiketta"
-
-msgctxt "#9007"
-msgid "Create Scene"
-msgstr "Luo valaistusasetus"
-
-msgctxt "#9008"
-msgid "Delete Scene"
-msgstr "Poista valaistusasetus"
 
 msgctxt "#30000"
 msgid "Hue Service"
@@ -224,26 +216,6 @@ msgctxt "#30024"
 msgid "Check Hue Bridge configuration"
 msgstr "Tarkista Hue Sillan määritykset"
 
-msgctxt "#30025"
-msgid "ERROR: Scene not deleted"
-msgstr "VIRHE: Valaistusasetusta ei poistettu"
-
-msgctxt "#30026"
-msgid "Scene Created"
-msgstr "Valaistusasetus luotiin"
-
-msgctxt "#30028"
-msgid "Delete Hue Scene"
-msgstr "Poista Hue-valaistusasetus"
-
-msgctxt "#30030"
-msgid "Enter Scene Name"
-msgstr "Syötä valaistusasetuksen nimi"
-
-msgctxt "#30031"
-msgid "Transition Time:"
-msgstr "Siirtymän kesto:"
-
 msgctxt "#30034"
 msgid "Cancel"
 msgstr "Peruuta"
@@ -252,33 +224,9 @@ msgctxt "#30035"
 msgid "Lights:"
 msgstr "Valot:"
 
-msgctxt "#30036"
-msgid "Scene Name:"
-msgstr "Valaistusasetuksen nimi:"
-
 msgctxt "#30037"
 msgid "Save"
 msgstr "Tallenna"
-
-msgctxt "#30038"
-msgid "Create Hue Scene"
-msgstr "Luo Hue-valaistusasetus"
-
-msgctxt "#30002"
-msgid "ERROR: Scene not created"
-msgstr "VIRHE: Valaistusasetusta ei luotu"
-
-msgctxt "#30039"
-msgid "Set a fade time in seconds, or 0 for an instant transition."
-msgstr "Määritä pehmeän siirtymän kesto sekunteina tai \"0\" viiveettömälle siirtymälle."
-
-msgctxt "#30040"
-msgid "Scene deleted"
-msgstr "Valaistusasetus poistettiin"
-
-msgctxt "#30041"
-msgid "You may now assign your Scene to player actions."
-msgstr "Voit nyt liittää valaistusasetuksen toiston ohjaukseen."
 
 msgctxt "#30042"
 msgid "Fade Time (Seconds)"
@@ -288,29 +236,9 @@ msgctxt "#30043"
 msgid "Error"
 msgstr "Virhe"
 
-msgctxt "#30044"
-msgid "Create New Scene"
-msgstr "Luo uusi valaistusasetus"
-
-msgctxt "#30045"
-msgid "Scene successfully created!"
-msgstr "Valaistusasetus on luotu!"
-
-msgctxt "#30046"
-msgid "Adjust lights to desired state in the Hue App to save as new scene."
-msgstr "Säädä valot Hue-sovelluksesta siihen tilaan, jonka haluat tallentaan uudeksi valaistusasetukseksi."
-
 msgctxt "#30047"
 msgid "Connection lost. Check settings. Shutting down"
 msgstr "Yhteys katkesi. Tarkista asetukset. Sammutetaan."
-
-msgctxt "#30048"
-msgid "Connection lost. Trying again in 2 minutes"
-msgstr "Yhteys katkesi. Yritetään 2 minuutin kuluttua uudelleen."
-
-msgctxt "#30049"
-msgid "Scene Name"
-msgstr "Valaistusasetuksen nimi"
 
 msgctxt "#30050"
 msgid "N-UPnP discovery..."
@@ -331,10 +259,6 @@ msgstr "Ajastus poistettu käytöstä virheellisen aloitus- tai päättymisajan 
 msgctxt "#30056"
 msgid "Set brightness on start"
 msgstr "Aseta kirkkaus käynnistettäessä"
-
-msgctxt "#30057"
-msgid "Force on"
-msgstr "Pakota päälle"
 
 msgctxt "#30058"
 msgid "Light Names:"
@@ -392,10 +316,6 @@ msgctxt "#30811"
 msgid "Maximum Brightness"
 msgstr "Enimmäiskirkkaus"
 
-msgctxt "#30812"
-msgid "Disable connection message"
-msgstr "Älä ilmoita yhteyden muodostuksesta"
-
 msgctxt "#30813"
 msgid "Average image processing time:"
 msgstr "Kuvien keskimääräinen käsittelyaika:"
@@ -437,8 +357,8 @@ msgid "Settings"
 msgstr "Asetukset"
 
 msgctxt "#30063"
-msgid "Disabled by daylight"
-msgstr "Poistettu päivänvalon vuoksi käytöstä"
+msgid "Disabled by daytime"
+msgstr "Disabled by daytime"
 
 msgctxt "#30064"
 msgid "ERROR: Scene not found"
@@ -488,25 +408,13 @@ msgctxt "#30084"
 msgid "User Found![CR]Saving settings..."
 msgstr "Käyttäjä löytyi![CR]Tallennetaan asetuksia..."
 
-msgctxt "#30085"
-msgid "Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or 0 for an instant transition."
-msgstr "Säädä valot Hue-sovelluksesta siihen tilaan, jonka haluat tallentaan uutena valaistusasetuksena.[CR]Määritä pehmeän siirtymän kesto sekunteina tai \"0\" viiveettömälle siirtymälle."
-
 msgctxt "#30086"
 msgid "User not found[CR]Check your bridge and network."
 msgstr "Käyttäjää ei löytynyt![CR]Tarkista silta ja verkkoyhteys."
 
-msgctxt "#30087"
-msgid "Scene successfully created![CR]You may now assign your scene to player actions."
-msgstr "Valaistusasetus on luotu![CR]Voit nyt liittää sen toiston ohjaukseen."
-
 msgctxt "#30073"
 msgid "Do not show again"
 msgstr "Älä näytä uudelleen"
-
-msgctxt "#30074"
-msgid "Disable Hue Labs during playback"
-msgstr "Poista Hue Labs -asetukset käytöstä toiston ajaksi"
 
 msgctxt "#30001"
 msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."
@@ -544,10 +452,6 @@ msgctxt "#30009"
 msgid "Connecting..."
 msgstr "Yhdistetään..."
 
-msgctxt "#30027"
-msgid "Are you sure you want to delete this scene:"
-msgstr "Haluatko varmasti poistaa seuraavan valaistusasetuksen:"
-
 msgctxt "#30019"
 msgid "Bridge outdated. Please update your bridge."
 msgstr "Silta ei ole ajan tasalla. Päivitä sen laiteohjelmisto."
@@ -559,6 +463,151 @@ msgstr "VIRHE: Valaistusasetusta tai valoa ei löytyny ja se on saattanut muuttu
 msgctxt "#30033"
 msgid "Reconnected"
 msgstr "Yhdistetty uudelleen"
+
+msgctxt "#31334"
+msgid "Re-enable time"
+msgstr ""
+
+#. Amount of time for the light scene transition to fade in, in seconds.
+msgctxt "#31335"
+msgid "Transition time (seconds):"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Bridge overloaded, stopping ambilight"
+msgstr ""
+
+msgctxt "#30025"
+msgid "Bridge unauthorized, please reconfigure."
+msgstr ""
+
+msgctxt "#30026"
+msgid "Connection failed, retrying..."
+msgstr ""
+
+#~ msgctxt "Addon Description"
+#~ msgid "Automate your Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
+#~ msgstr "Automatisoi Hue-valosi Kodilla. Luo monihuonevalaistusasetuksia, jotka suoritetaan median toiston alkaessa, tauotessa tai päättyessä. Luo ja poista valaistusasetuksia lisäosan asetuksista ja valitse niiden käyttö ei toistotapahtumissa. Huen auringonnousu- ja -laskuaikoja voidaan hyödyntää palvelun automaattiseen käytöstä poistoon päiväsaikaan ja valojen sytytykseen auringon laskiessa toiston aikana. Sisältää myös Ambilight-tuen."
+
+#~ msgctxt "#32100"
+#~ msgid "Video Actions"
+#~ msgstr "Videotoiminnot"
+
+#~ msgctxt "#32102"
+#~ msgid "Audio Actions"
+#~ msgstr "Äänitoiminnot"
+
+#~ msgctxt "#32510"
+#~ msgid "Scene Name:"
+#~ msgstr "Valaistusasetus:"
+
+#~ msgctxt "#30508"
+#~ msgid "Disable during daylight"
+#~ msgstr "Poista päivänvalon aikana käytöstä"
+
+#~ msgctxt "#32106"
+#~ msgid "Video Activation"
+#~ msgstr "Videoaktivointi"
+
+#~ msgctxt "#9007"
+#~ msgid "Create Scene"
+#~ msgstr "Luo valaistusasetus"
+
+#~ msgctxt "#9008"
+#~ msgid "Delete Scene"
+#~ msgstr "Poista valaistusasetus"
+
+#~ msgctxt "#30025"
+#~ msgid "ERROR: Scene not deleted"
+#~ msgstr "VIRHE: Valaistusasetusta ei poistettu"
+
+#~ msgctxt "#30026"
+#~ msgid "Scene Created"
+#~ msgstr "Valaistusasetus luotiin"
+
+#~ msgctxt "#30028"
+#~ msgid "Delete Hue Scene"
+#~ msgstr "Poista Hue-valaistusasetus"
+
+#~ msgctxt "#30030"
+#~ msgid "Enter Scene Name"
+#~ msgstr "Syötä valaistusasetuksen nimi"
+
+#~ msgctxt "#30031"
+#~ msgid "Transition Time:"
+#~ msgstr "Siirtymän kesto:"
+
+#~ msgctxt "#30036"
+#~ msgid "Scene Name:"
+#~ msgstr "Valaistusasetuksen nimi:"
+
+#~ msgctxt "#30038"
+#~ msgid "Create Hue Scene"
+#~ msgstr "Luo Hue-valaistusasetus"
+
+#~ msgctxt "#30002"
+#~ msgid "ERROR: Scene not created"
+#~ msgstr "VIRHE: Valaistusasetusta ei luotu"
+
+#~ msgctxt "#30039"
+#~ msgid "Set a fade time in seconds, or 0 for an instant transition."
+#~ msgstr "Määritä pehmeän siirtymän kesto sekunteina tai \"0\" viiveettömälle siirtymälle."
+
+#~ msgctxt "#30040"
+#~ msgid "Scene deleted"
+#~ msgstr "Valaistusasetus poistettiin"
+
+#~ msgctxt "#30041"
+#~ msgid "You may now assign your Scene to player actions."
+#~ msgstr "Voit nyt liittää valaistusasetuksen toiston ohjaukseen."
+
+#~ msgctxt "#30044"
+#~ msgid "Create New Scene"
+#~ msgstr "Luo uusi valaistusasetus"
+
+#~ msgctxt "#30045"
+#~ msgid "Scene successfully created!"
+#~ msgstr "Valaistusasetus on luotu!"
+
+#~ msgctxt "#30046"
+#~ msgid "Adjust lights to desired state in the Hue App to save as new scene."
+#~ msgstr "Säädä valot Hue-sovelluksesta siihen tilaan, jonka haluat tallentaan uudeksi valaistusasetukseksi."
+
+#~ msgctxt "#30048"
+#~ msgid "Connection lost. Trying again in 2 minutes"
+#~ msgstr "Yhteys katkesi. Yritetään 2 minuutin kuluttua uudelleen."
+
+#~ msgctxt "#30049"
+#~ msgid "Scene Name"
+#~ msgstr "Valaistusasetuksen nimi"
+
+#~ msgctxt "#30057"
+#~ msgid "Force on"
+#~ msgstr "Pakota päälle"
+
+#~ msgctxt "#30812"
+#~ msgid "Disable connection message"
+#~ msgstr "Älä ilmoita yhteyden muodostuksesta"
+
+#~ msgctxt "#30063"
+#~ msgid "Disabled by daylight"
+#~ msgstr "Poistettu päivänvalon vuoksi käytöstä"
+
+#~ msgctxt "#30085"
+#~ msgid "Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or 0 for an instant transition."
+#~ msgstr "Säädä valot Hue-sovelluksesta siihen tilaan, jonka haluat tallentaan uutena valaistusasetuksena.[CR]Määritä pehmeän siirtymän kesto sekunteina tai \"0\" viiveettömälle siirtymälle."
+
+#~ msgctxt "#30087"
+#~ msgid "Scene successfully created![CR]You may now assign your scene to player actions."
+#~ msgstr "Valaistusasetus on luotu![CR]Voit nyt liittää sen toiston ohjaukseen."
+
+#~ msgctxt "#30074"
+#~ msgid "Disable Hue Labs during playback"
+#~ msgstr "Poista Hue Labs -asetukset käytöstä toiston ajaksi"
+
+#~ msgctxt "#30027"
+#~ msgid "Are you sure you want to delete this scene:"
+#~ msgstr "Haluatko varmasti poistaa seuraavan valaistusasetuksen:"
 
 #~ msgctxt "#30501"
 #~ msgid "Discover Hue Bridge"

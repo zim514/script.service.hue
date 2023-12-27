@@ -21,20 +21,20 @@ msgid "Automate Hue lights with Kodi playback"
 msgstr "Automatski Hue svjetla s Kodi reprodukcijom"
 
 msgctxt "Addon Description"
-msgid "Automate your Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
-msgstr "Automatizirajte svoja Hue svjetla s Kodijem. Stvorite višesobnu scenu koja se pokreće kada Reproducirate, Pauzirate ili Zaustavite medijsku reprodukciju. Stvorite i obrišite višesobne scene iz postavki dodatka tada odaberite koju primijeniti za drugačiji događaj reprodukcije. Može se koristiti zasićenje vremena izlaska i zalaska sunca za automatsko onemogućavanje usluge tijekom dana i uključivanje svjetla pri zalasku sunca tijekom reprodukcije."
+msgid "Automate your Hue lights with Kodi. Use scenes configured in the official Hue app. Can use Hue's sunset time to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
+msgstr ""
 
 msgctxt "Addon Disclaimer"
 msgid "Requires a Hue Bridge V2 (Square). Ambilight not available on all hardware."
 msgstr "Zahtijeva Hue Bridge V2 (Square). Ambijetalno svijtlo nije dostupno na svim hardverima."
 
 msgctxt "#32100"
-msgid "Video Actions"
-msgstr "Video radnje"
+msgid "Video Scenes"
+msgstr "Video Scenes"
 
 msgctxt "#32102"
-msgid "Audio Actions"
-msgstr "Zvučne radnje"
+msgid "Audio Scenes"
+msgstr "Audio Scenes"
 
 msgctxt "#32201"
 msgid "Start/Resume"
@@ -48,9 +48,9 @@ msgctxt "#32203"
 msgid "Stop"
 msgstr "Zaustavi"
 
-msgctxt "#32510"
-msgid "Scene Name:"
-msgstr "Naziv scene:"
+msgctxt "#30036"
+msgid "Scene:"
+msgstr "Scene:"
 
 msgctxt "#32511"
 msgid "Scene ID"
@@ -89,8 +89,8 @@ msgid "End time:"
 msgstr "Završno vrijeme:"
 
 msgctxt "#30508"
-msgid "Disable during daylight"
-msgstr "Onemogući tijekom dnevnog svjetla"
+msgid "Disable during daytime"
+msgstr "Disable during daytime"
 
 msgctxt "#30509"
 msgid "Activate during playback at sunset"
@@ -145,8 +145,8 @@ msgid "Advanced"
 msgstr "Napredno"
 
 msgctxt "#32106"
-msgid "Video Activation"
-msgstr "Video aktivacija"
+msgid "Video Activation Rules"
+msgstr "Video Activation Rules"
 
 msgctxt "#6101"
 msgid "Select Lights"
@@ -159,14 +159,6 @@ msgstr "Omogućeno"
 msgctxt "#9001"
 msgid "Press connect button on Hue bridge"
 msgstr "Pritisni tipku povezivanja na Hue mostu"
-
-msgctxt "#9007"
-msgid "Create Scene"
-msgstr "Stvori scenu"
-
-msgctxt "#9008"
-msgid "Delete Scene"
-msgstr "Obriši scenu"
 
 msgctxt "#30000"
 msgid "Hue Service"
@@ -224,26 +216,6 @@ msgctxt "#30024"
 msgid "Check Hue Bridge configuration"
 msgstr "Provjeri podešavanje Hue mosta"
 
-msgctxt "#30025"
-msgid "ERROR: Scene not deleted"
-msgstr "GREŠKA: Scena nije obrisana"
-
-msgctxt "#30026"
-msgid "Scene Created"
-msgstr "Scena je stvorena"
-
-msgctxt "#30028"
-msgid "Delete Hue Scene"
-msgstr "Obriši Hue scenu"
-
-msgctxt "#30030"
-msgid "Enter Scene Name"
-msgstr "Upiši naziv scene"
-
-msgctxt "#30031"
-msgid "Transition Time:"
-msgstr "Vrijeme prijelaza:"
-
 msgctxt "#30034"
 msgid "Cancel"
 msgstr "Odustani"
@@ -252,33 +224,9 @@ msgctxt "#30035"
 msgid "Lights:"
 msgstr "Svjetla:"
 
-msgctxt "#30036"
-msgid "Scene Name:"
-msgstr "Naziv scene:"
-
 msgctxt "#30037"
 msgid "Save"
 msgstr "Spremi"
-
-msgctxt "#30038"
-msgid "Create Hue Scene"
-msgstr "Stvori Hue scenu"
-
-msgctxt "#30002"
-msgid "ERROR: Scene not created"
-msgstr "GREŠKA: Scena nije stvorena"
-
-msgctxt "#30039"
-msgid "Set a fade time in seconds, or 0 for an instant transition."
-msgstr "Postavi vrijeme zatamnjenja u sekundama ili 0 za trenutni prijelaz."
-
-msgctxt "#30040"
-msgid "Scene deleted"
-msgstr "Scena je obrisana"
-
-msgctxt "#30041"
-msgid "You may now assign your Scene to player actions."
-msgstr "Sada možete dodijeliti vašu Scenu u radnju reprodukcije."
 
 msgctxt "#30042"
 msgid "Fade Time (Seconds)"
@@ -288,29 +236,9 @@ msgctxt "#30043"
 msgid "Error"
 msgstr "Greška"
 
-msgctxt "#30044"
-msgid "Create New Scene"
-msgstr "Stvori novu scenu"
-
-msgctxt "#30045"
-msgid "Scene successfully created!"
-msgstr "Scena je uspješno stvorena!"
-
-msgctxt "#30046"
-msgid "Adjust lights to desired state in the Hue App to save as new scene."
-msgstr "Prilagodi svjetla na željeno stanje u Hue aplikaciji za spremanje kao nove scene."
-
 msgctxt "#30047"
 msgid "Connection lost. Check settings. Shutting down"
 msgstr "Povezivanje je izgubljeno. Provjerite postavke. Isključivanje"
-
-msgctxt "#30048"
-msgid "Connection lost. Trying again in 2 minutes"
-msgstr "Povezivanje izgubljeno. Ponovni pokušaj za 2 minute"
-
-msgctxt "#30049"
-msgid "Scene Name"
-msgstr "Naziv scene"
 
 msgctxt "#30050"
 msgid "N-UPnP discovery..."
@@ -331,10 +259,6 @@ msgstr "Nevaljano početno ili završno vrijeme, raspored je onemogućen"
 msgctxt "#30056"
 msgid "Set brightness on start"
 msgstr "Postavi svjetlinu pri početku"
-
-msgctxt "#30057"
-msgid "Force on"
-msgstr "Prisli"
 
 msgctxt "#30058"
 msgid "Light Names:"
@@ -392,10 +316,6 @@ msgctxt "#30811"
 msgid "Maximum Brightness"
 msgstr "Najveća svjetlost"
 
-msgctxt "#30812"
-msgid "Disable connection message"
-msgstr "Onemogući poruku povezivanja"
-
 msgctxt "#30813"
 msgid "Average image processing time:"
 msgstr "Prosječno vrijeme obrade slike:"
@@ -437,8 +357,8 @@ msgid "Settings"
 msgstr "Postavke"
 
 msgctxt "#30063"
-msgid "Disabled by daylight"
-msgstr "Onemogućeno dnevnom svjetlošću"
+msgid "Disabled by daytime"
+msgstr "Disabled by daytime"
 
 msgctxt "#30064"
 msgid "ERROR: Scene not found"
@@ -488,25 +408,13 @@ msgctxt "#30084"
 msgid "User Found![CR]Saving settings..."
 msgstr "Korisnik je pronađen![CR]Spremanje postavki..."
 
-msgctxt "#30085"
-msgid "Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or 0 for an instant transition."
-msgstr "Prilagodite svjetla na željeno stanje u Hue aplikaciji kako bi spremili kao novu scenu.[CR]Postavite vrijeme zatamnjenja u sekundama, ili 0 za trenutni prijelaz."
-
 msgctxt "#30086"
 msgid "User not found[CR]Check your bridge and network."
 msgstr "Korisnik nije pronađen[CR]Provjerite svoj most i mrežu."
 
-msgctxt "#30087"
-msgid "Scene successfully created![CR]You may now assign your scene to player actions."
-msgstr "Scena je uspješno stvorena![CR]Sada možete dodijeliti svoju scenu radnjama reproduktora."
-
 msgctxt "#30073"
 msgid "Do not show again"
 msgstr "Ne prikazuj ponovno"
-
-msgctxt "#30074"
-msgid "Disable Hue Labs during playback"
-msgstr "Onemogući Hue Labs tijekom reprodukcije"
 
 msgctxt "#30001"
 msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."
@@ -544,10 +452,6 @@ msgctxt "#30009"
 msgid "Connecting..."
 msgstr "Povezivanje..."
 
-msgctxt "#30027"
-msgid "Are you sure you want to delete this scene:"
-msgstr "Sigurno želite obrisati ovu scenu:"
-
 msgctxt "#30019"
 msgid "Bridge outdated. Please update your bridge."
 msgstr "Most je zastario. Nadopunite svoj most."
@@ -559,3 +463,148 @@ msgstr ""
 msgctxt "#30033"
 msgid "Reconnected"
 msgstr ""
+
+msgctxt "#31334"
+msgid "Re-enable time"
+msgstr ""
+
+#. Amount of time for the light scene transition to fade in, in seconds.
+msgctxt "#31335"
+msgid "Transition time (seconds):"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Bridge overloaded, stopping ambilight"
+msgstr ""
+
+msgctxt "#30025"
+msgid "Bridge unauthorized, please reconfigure."
+msgstr ""
+
+msgctxt "#30026"
+msgid "Connection failed, retrying..."
+msgstr ""
+
+#~ msgctxt "Addon Description"
+#~ msgid "Automate your Hue lights with Kodi. Create multi-room scenes that run when you Play, Pause or Stop media playback. Create and delete multi-room scenes from add-on settings then select which to apply for different Playback events. Can use Hue's sunrise and sunset times to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
+#~ msgstr "Automatizirajte svoja Hue svjetla s Kodijem. Stvorite višesobnu scenu koja se pokreće kada Reproducirate, Pauzirate ili Zaustavite medijsku reprodukciju. Stvorite i obrišite višesobne scene iz postavki dodatka tada odaberite koju primijeniti za drugačiji događaj reprodukcije. Može se koristiti zasićenje vremena izlaska i zalaska sunca za automatsko onemogućavanje usluge tijekom dana i uključivanje svjetla pri zalasku sunca tijekom reprodukcije."
+
+#~ msgctxt "#32100"
+#~ msgid "Video Actions"
+#~ msgstr "Video radnje"
+
+#~ msgctxt "#32102"
+#~ msgid "Audio Actions"
+#~ msgstr "Zvučne radnje"
+
+#~ msgctxt "#32510"
+#~ msgid "Scene Name:"
+#~ msgstr "Naziv scene:"
+
+#~ msgctxt "#30508"
+#~ msgid "Disable during daylight"
+#~ msgstr "Onemogući tijekom dnevnog svjetla"
+
+#~ msgctxt "#32106"
+#~ msgid "Video Activation"
+#~ msgstr "Video aktivacija"
+
+#~ msgctxt "#9007"
+#~ msgid "Create Scene"
+#~ msgstr "Stvori scenu"
+
+#~ msgctxt "#9008"
+#~ msgid "Delete Scene"
+#~ msgstr "Obriši scenu"
+
+#~ msgctxt "#30025"
+#~ msgid "ERROR: Scene not deleted"
+#~ msgstr "GREŠKA: Scena nije obrisana"
+
+#~ msgctxt "#30026"
+#~ msgid "Scene Created"
+#~ msgstr "Scena je stvorena"
+
+#~ msgctxt "#30028"
+#~ msgid "Delete Hue Scene"
+#~ msgstr "Obriši Hue scenu"
+
+#~ msgctxt "#30030"
+#~ msgid "Enter Scene Name"
+#~ msgstr "Upiši naziv scene"
+
+#~ msgctxt "#30031"
+#~ msgid "Transition Time:"
+#~ msgstr "Vrijeme prijelaza:"
+
+#~ msgctxt "#30036"
+#~ msgid "Scene Name:"
+#~ msgstr "Naziv scene:"
+
+#~ msgctxt "#30038"
+#~ msgid "Create Hue Scene"
+#~ msgstr "Stvori Hue scenu"
+
+#~ msgctxt "#30002"
+#~ msgid "ERROR: Scene not created"
+#~ msgstr "GREŠKA: Scena nije stvorena"
+
+#~ msgctxt "#30039"
+#~ msgid "Set a fade time in seconds, or 0 for an instant transition."
+#~ msgstr "Postavi vrijeme zatamnjenja u sekundama ili 0 za trenutni prijelaz."
+
+#~ msgctxt "#30040"
+#~ msgid "Scene deleted"
+#~ msgstr "Scena je obrisana"
+
+#~ msgctxt "#30041"
+#~ msgid "You may now assign your Scene to player actions."
+#~ msgstr "Sada možete dodijeliti vašu Scenu u radnju reprodukcije."
+
+#~ msgctxt "#30044"
+#~ msgid "Create New Scene"
+#~ msgstr "Stvori novu scenu"
+
+#~ msgctxt "#30045"
+#~ msgid "Scene successfully created!"
+#~ msgstr "Scena je uspješno stvorena!"
+
+#~ msgctxt "#30046"
+#~ msgid "Adjust lights to desired state in the Hue App to save as new scene."
+#~ msgstr "Prilagodi svjetla na željeno stanje u Hue aplikaciji za spremanje kao nove scene."
+
+#~ msgctxt "#30048"
+#~ msgid "Connection lost. Trying again in 2 minutes"
+#~ msgstr "Povezivanje izgubljeno. Ponovni pokušaj za 2 minute"
+
+#~ msgctxt "#30049"
+#~ msgid "Scene Name"
+#~ msgstr "Naziv scene"
+
+#~ msgctxt "#30057"
+#~ msgid "Force on"
+#~ msgstr "Prisli"
+
+#~ msgctxt "#30812"
+#~ msgid "Disable connection message"
+#~ msgstr "Onemogući poruku povezivanja"
+
+#~ msgctxt "#30063"
+#~ msgid "Disabled by daylight"
+#~ msgstr "Onemogućeno dnevnom svjetlošću"
+
+#~ msgctxt "#30085"
+#~ msgid "Adjust lights to desired state in the Hue App to save as new scene.[CR]Set a fade time in seconds, or 0 for an instant transition."
+#~ msgstr "Prilagodite svjetla na željeno stanje u Hue aplikaciji kako bi spremili kao novu scenu.[CR]Postavite vrijeme zatamnjenja u sekundama, ili 0 za trenutni prijelaz."
+
+#~ msgctxt "#30087"
+#~ msgid "Scene successfully created![CR]You may now assign your scene to player actions."
+#~ msgstr "Scena je uspješno stvorena![CR]Sada možete dodijeliti svoju scenu radnjama reproduktora."
+
+#~ msgctxt "#30074"
+#~ msgid "Disable Hue Labs during playback"
+#~ msgstr "Onemogući Hue Labs tijekom reprodukcije"
+
+#~ msgctxt "#30027"
+#~ msgid "Are you sure you want to delete this scene:"
+#~ msgstr "Sigurno želite obrisati ovu scenu:"
