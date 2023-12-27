@@ -1,7 +1,7 @@
 <addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.5.0~beta2">
     
     <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="xbmc.python" version="3.0.1"/>
         <import addon="script.module.requests" version="2.27.1"/>
         <import addon="script.module.pil"/>
         <import addon="script.module.pyrollbar" version="0.15.2"/>
@@ -21,7 +21,11 @@
         </assets>
         <source>https://github.com/zim514/script.service.hue</source>
         <forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-        <news>v1.5 (beta)
+        <news>
+v3.0.1
+- Translations updates from Weblate
+
+v1.5 (beta)
 - Hue API V2 support
 - Now uses standard scenes (requires reconfiguration)
 - Sunrise is now manually configured (Default 8AM)
