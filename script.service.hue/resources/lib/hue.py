@@ -99,6 +99,7 @@ class Hue(object):
                     return 500
                 else:
                     xbmc.log(f"[script.service.hue] v2 make_request: HTTPError: {x}\nResponse: {x.response.text}")
+                    reporting.process_exception(f"Response: {x.response.text}, Exception: {x}", logging=True)
                     return x.response.status_code
             except (Timeout, json.JSONDecodeError) as x:
                 xbmc.log(f"[script.service.hue] v2 make_request: Timeout/JSONDecodeError: Response: {x.response.text}\n{x}")
@@ -313,6 +314,10 @@ class Hue(object):
         geolocation = self.make_api_request("GET", "geolocation")  # TODO: Support cases where geolocation is not configured on bridge.
         xbmc.log(f"[script.service.hue] v2 update_sunset(): geolocation: {geolocation}")
         sunset_str = self.search_dict(geolocation, "sunset_time")
+        if sunset_str is None:
+            reporting.process_exception(f"Sunset time not found in geolocation response: {geolocation}", logging=True)
+            return
+
         self.sunset = convert_time(sunset_str)
         xbmc.log(f"[script.service.hue] v2 update_sunset(): sunset: {self.sunset}")
 
