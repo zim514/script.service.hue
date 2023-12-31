@@ -118,6 +118,7 @@ class HueService:
 
             # If the bridge gets reconnected, restart the timers
             if self.bridge.connected and not self.timers.is_alive():
+                self.timers = Timers(self.monitor, self.bridge, self)
                 self.timers.start()
 
             # Update the previous state for the next iteration

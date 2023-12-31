@@ -102,7 +102,7 @@ class Hue(object):
                     reporting.process_exception(f"Response: {x.response.text}, Exception: {x}", logging=True)
                     return x.response.status_code
             except (Timeout, json.JSONDecodeError) as x:
-                xbmc.log(f"[script.service.hue] v2 make_request: Timeout/JSONDecodeError: Response: {x.response.text}\n{x}")
+                xbmc.log(f"[script.service.hue] v2 make_request: Timeout/JSONDecodeError: Response: {x.response}\n{x}")
             except requests.RequestException as x:
                 # Report other kinds of RequestExceptions
                 xbmc.log(f"[script.service.hue] v2 make_request: RequestException: {x}")
