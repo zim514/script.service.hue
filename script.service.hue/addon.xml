@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.5.4">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.5.5">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.27.1"/>
@@ -21,11 +21,9 @@
         <source>https://github.com/zim514/script.service.hue</source>
         <forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
         <news>
-v1.5.3
+v1.5.5
 - Translations updates from Weblate
-
-v1.5.2
-- Translations updates from Weblate
+- Various bug fixes
 
 v1.5 (beta)
 - Hue API V2 support (requires reconfiguration of scenes and ambilight)
