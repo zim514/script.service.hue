@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-04-01 16:21+0000\n"
+"PO-Revision-Date: 2024-01-01 18:05+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-scripts/script-service-hue/it_it/>\n"
 "Language: it_it\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15.2\n"
+"X-Generator: Weblate 5.3\n"
 
 msgctxt "Addon Summary"
 msgid "Automate Hue lights with Kodi playback"
@@ -22,7 +22,7 @@ msgstr "Automatizza le luci Hue con la riproduzione di Kodi"
 
 msgctxt "Addon Description"
 msgid "Automate your Hue lights with Kodi. Use scenes configured in the official Hue app. Can use Hue's sunset time to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
-msgstr ""
+msgstr "Automatizza le luci Hue con Kodi. Usa le scene configurate nell'app Hue ufficiale. È possibile utilizzare l'ora del tramonto di Hue per disattivare automaticamente il servizio durante il giorno e accendere le luci al tramonto durante la riproduzione. Include il supporto Ambilight."
 
 msgctxt "Addon Disclaimer"
 msgid "Requires a Hue Bridge V2 (Square). Ambilight not available on all hardware."
@@ -30,11 +30,11 @@ msgstr "Richiede un Bridge Hue V2 (quadrato). Ambilight non disponibile su tutto
 
 msgctxt "#32100"
 msgid "Video Scenes"
-msgstr "Video Scenes"
+msgstr "Scene video"
 
 msgctxt "#32102"
 msgid "Audio Scenes"
-msgstr "Audio Scenes"
+msgstr "Scene audio"
 
 msgctxt "#32201"
 msgid "Start/Resume"
@@ -50,7 +50,7 @@ msgstr "Stop"
 
 msgctxt "#30036"
 msgid "Scene:"
-msgstr "Scene:"
+msgstr "Scena:"
 
 msgctxt "#32511"
 msgid "Scene ID"
@@ -90,7 +90,7 @@ msgstr "Ora di fine:"
 
 msgctxt "#30508"
 msgid "Disable during daytime"
-msgstr "Disable during daytime"
+msgstr "Disabilita durante il giorno"
 
 msgctxt "#30509"
 msgid "Activate during playback at sunset"
@@ -146,7 +146,7 @@ msgstr "Avanzate"
 
 msgctxt "#32106"
 msgid "Video Activation Rules"
-msgstr "Video Activation Rules"
+msgstr "Regole di attivazione video"
 
 msgctxt "#6101"
 msgid "Select Lights"
@@ -346,7 +346,7 @@ msgstr "Disabilitato"
 
 msgctxt "#30060"
 msgid "Play"
-msgstr "Play"
+msgstr "Riproduci"
 
 msgctxt "#30061"
 msgid "Hue Status: "
@@ -358,11 +358,11 @@ msgstr "Impostazioni"
 
 msgctxt "#30063"
 msgid "Disabled by daytime"
-msgstr "Disabled by daytime"
+msgstr "Disabilitato di giorno"
 
 msgctxt "#30064"
 msgid "ERROR: Scene not found, it may have been deleted"
-msgstr "ERROR: Scene not found, it may have been deleted"
+msgstr "ERRORE: scena non trovata, potrebbe essere stata eliminata"
 
 msgctxt "#30080"
 msgid "The following error occurred:"
@@ -446,7 +446,7 @@ msgstr "Errore: luci incompatibili con Ambilight"
 
 msgctxt "#30007"
 msgid "Bridge not found automatically. Please make sure your bridge is up to date and has access to the internet. [CR]Would you like to enter your bridge IP manually?"
-msgstr "Bridge non trovato automaticamente. Assicurati che il tuo bridge sia aggiornato e abbia accesso a Internet. [CR]Vuoi inserire manualmente il tuo IP bridge?"
+msgstr "Bridge non trovato automaticamente. Assicurati che il bridge sia aggiornato e abbia accesso a Internet. [CR]Vuoi inserire manualmente l'IP del bridge?"
 
 msgctxt "#30009"
 msgid "Connecting..."
@@ -460,34 +460,39 @@ msgctxt "#30033"
 msgid "Reconnected"
 msgstr "Ricollegato"
 
+#. Time at which the service should be disabled in the morning, paired with "Disable during daytime", until sunset
 msgctxt "#31334"
-msgid "Re-enable time"
+msgid "Morning disable time:"
 msgstr ""
 
 #. Amount of time for the light scene transition to fade in, in seconds.
 msgctxt "#31335"
 msgid "Transition time (seconds):"
-msgstr ""
+msgstr "Tempo di transizione (secondi):"
 
 msgctxt "#30002"
 msgid "Bridge overloaded, stopping ambilight"
-msgstr ""
+msgstr "Bridge sovraccarico, arresto di Ambilight"
 
 msgctxt "#30025"
 msgid "Bridge unauthorized, please reconfigure."
-msgstr ""
+msgstr "Bridge non autorizzato, riconfiguralo."
 
 msgctxt "#30026"
 msgid "Connection failed, retrying..."
-msgstr ""
+msgstr "Connessione non riuscita, nuovo tentativo in corso..."
 
 msgctxt "#30003"
 msgid "Not selected"
-msgstr ""
+msgstr "Non selezionato"
 
 msgctxt "#30027"
 msgid "ERROR: Light not found, it may have been deleted"
-msgstr ""
+msgstr "ERRORE: luce non trovata, potrebbe essere stata eliminata"
+
+#~ msgctxt "#31334"
+#~ msgid "Re-enable time"
+#~ msgstr "Riattiva orario"
 
 #~ msgctxt "#30064"
 #~ msgid "ERROR: Scene not found"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-02-05 08:15+0000\n"
+"PO-Revision-Date: 2024-01-01 18:05+0000\n"
 "Last-Translator: Minho Park <parkmino@gmail.com>\n"
 "Language-Team: Korean <https://kodi.weblate.cloud/projects/kodi-add-ons-scripts/script-service-hue/ko_kr/>\n"
 "Language: ko_kr\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.15.2\n"
+"X-Generator: Weblate 5.3\n"
 
 msgctxt "Addon Summary"
 msgid "Automate Hue lights with Kodi playback"
@@ -22,7 +22,7 @@ msgstr "Kodi 재생으로 Hue 조명 자동화"
 
 msgctxt "Addon Description"
 msgid "Automate your Hue lights with Kodi. Use scenes configured in the official Hue app. Can use Hue's sunset time to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
-msgstr ""
+msgstr "Kodi로 Hue 자동 조명을 사용합니다. 공식 Hue 앱에서 구성된 장면을 사용합니다. Hue의 해지는 시간을 사용하여 낮에는 서비스를 사용하지 않고 해진 후 재생에는 조명을 켤 수 있습니다. Ambilight 지원이 포함됩니다."
 
 msgctxt "Addon Disclaimer"
 msgid "Requires a Hue Bridge V2 (Square). Ambilight not available on all hardware."
@@ -460,34 +460,39 @@ msgctxt "#30033"
 msgid "Reconnected"
 msgstr "다시 연결됨"
 
+#. Time at which the service should be disabled in the morning, paired with "Disable during daytime", until sunset
 msgctxt "#31334"
-msgid "Re-enable time"
+msgid "Morning disable time:"
 msgstr ""
 
 #. Amount of time for the light scene transition to fade in, in seconds.
 msgctxt "#31335"
 msgid "Transition time (seconds):"
-msgstr ""
+msgstr "전환 시간 (초):"
 
 msgctxt "#30002"
 msgid "Bridge overloaded, stopping ambilight"
-msgstr ""
+msgstr "브리지에 과부하가 걸려 앰비라이트가 멈췄습니다"
 
 msgctxt "#30025"
 msgid "Bridge unauthorized, please reconfigure."
-msgstr ""
+msgstr "브리지가 승인되지 않았습니다. 다시 설정해야 합니다."
 
 msgctxt "#30026"
 msgid "Connection failed, retrying..."
-msgstr ""
+msgstr "연결에 실패했습니다. 다시 시도하는 중..."
 
 msgctxt "#30003"
 msgid "Not selected"
-msgstr ""
+msgstr "선택되지 않음"
 
 msgctxt "#30027"
 msgid "ERROR: Light not found, it may have been deleted"
-msgstr ""
+msgstr "오류: 라이트를 찾을 수 없습니다. 지워졌을 수 있습니다"
+
+#~ msgctxt "#31334"
+#~ msgid "Re-enable time"
+#~ msgstr "시간을 다시 사용"
 
 #~ msgctxt "#30064"
 #~ msgid "ERROR: Scene not found"
