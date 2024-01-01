@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 jobs:
   kodi-addon-checker:
+    if: github.repository == 'zim514/script.service.hue'
     runs-on: ubuntu-latest
     name: Kodi addon checker
     steps:

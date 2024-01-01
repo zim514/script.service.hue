@@ -9,6 +9,7 @@ jobs:
   kodi-addon-checker:
     runs-on: ubuntu-latest
     name: Kodi addon checker
+    if: github.repository == 'zim514/script.service.hue'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
