@@ -134,7 +134,7 @@ _strings['bridge not found automatically. please make sure your bridge is up to 
 _strings['connecting...'] = 30009
 _strings['bridge outdated. please update your bridge.'] = 30019
 _strings['reconnected'] = 30033
-_strings['re-enable time'] = 31334
+_strings['morning disable time:'] = 31334
 _strings['transition time (seconds):'] = 31335
 _strings['bridge overloaded, stopping ambilight'] = 30002
 _strings['bridge unauthorized, please reconfigure.'] = 30025
