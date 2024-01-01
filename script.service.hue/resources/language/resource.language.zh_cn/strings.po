@@ -460,8 +460,9 @@ msgctxt "#30033"
 msgid "Reconnected"
 msgstr "重新连接"
 
+#. Time at which the service should be disabled in the morning, paired with "Disable during daytime", until sunset
 msgctxt "#31334"
-msgid "Re-enable time"
+msgid "Morning disable time:"
 msgstr ""
 
 #. Amount of time for the light scene transition to fade in, in seconds.
