@@ -271,7 +271,7 @@ msgctxt "#30068"
 msgid "Show Hue bridge capacity errors"
 msgstr "Zobrazenie chýb kapacity Hue bridge"
 
-#. Minimum furation of the movie or tv show at which to activate a light scene
+#. Minimum duration of the media before activating light scene
 msgctxt "#30800"
 msgid "Minimum duration (Minutes)"
 msgstr "Minimálne trvanie (v minutách)"
