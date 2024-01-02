@@ -92,6 +92,7 @@ msgctxt "#30508"
 msgid "Disable during daytime"
 msgstr "Disable during daytime"
 
+#. If watching a movie or TV show, and sunset occurs, activate the scene in that moment
 msgctxt "#30509"
 msgid "Activate during playback at sunset"
 msgstr "Aktiver under afspilning ved solnedgang"
@@ -120,10 +121,12 @@ msgctxt "#30515"
 msgid "Stop Scene Enabled"
 msgstr "Stop med aktiveret scene"
 
+#. If any light in the selected scene is on, ignore the schedule restrictions
 msgctxt "#30516"
 msgid "Disable time check if any light already on"
 msgstr "Deaktiver tidskontrol hvis der allerede er lys"
 
+#. If any of the lights in the scene are off, don't activate the related scene
 msgctxt "#30517"
 msgid "Don't enable scene if any light is off"
 msgstr "Aktiver ikke scene hvis noget lys er slukket"
@@ -228,10 +231,6 @@ msgctxt "#30037"
 msgid "Save"
 msgstr "Gem"
 
-msgctxt "#30042"
-msgid "Fade Time (Seconds)"
-msgstr "Overgangstid (sekunder)"
-
 msgctxt "#30043"
 msgid "Error"
 msgstr "Fejl"
@@ -244,10 +243,6 @@ msgctxt "#30050"
 msgid "N-UPnP discovery..."
 msgstr "Søg efter N-UPnP..."
 
-msgctxt "#30051"
-msgid "UPnP discovery..."
-msgstr "Søg efter UPnP..."
-
 msgctxt "#30005"
 msgid "Searching for bridge..."
 msgstr "Søger efter bridge..."
@@ -255,10 +250,6 @@ msgstr "Søger efter bridge..."
 msgctxt "#30052"
 msgid "Invalid start or end time, schedule disabled"
 msgstr "Ugyldigt start- eller sluttidspunkt, tidsplan deaktiveret"
-
-msgctxt "#30056"
-msgid "Set brightness on start"
-msgstr "Indstil lysstyrken ved start"
 
 msgctxt "#30058"
 msgid "Light Names:"
@@ -280,6 +271,7 @@ msgctxt "#30068"
 msgid "Show Hue bridge capacity errors"
 msgstr "Vis kapacitetsfejl i Hue bridge"
 
+#. Minimum furation of the movie or tv show at which to activate a light scene
 msgctxt "#30800"
 msgid "Minimum duration (Minutes)"
 msgstr "Minimum varighed (minutter)"
@@ -336,6 +328,7 @@ msgctxt "#30071"
 msgid "Only colour lights are supported"
 msgstr "Kun farvet lys understøttes"
 
+#. Old or deperacted bridge firmware or hardware
 msgctxt "#30072"
 msgid "Unsupported Hue Bridge"
 msgstr "Hu Bridge er ikke understøttet"
@@ -348,6 +341,7 @@ msgctxt "#30060"
 msgid "Play"
 msgstr "Afspil"
 
+#. Must end with a space, status string is appended
 msgctxt "#30061"
 msgid "Hue Status: "
 msgstr "Hue status: "
@@ -420,6 +414,7 @@ msgctxt "#30001"
 msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."
 msgstr "Hue Bridge V1 (rund) understøttes ikke. Hue Bridge V2 (kvadrat) er påkrævet."
 
+#. For ambilight, different color gamuts are supported. This means the colour gamut could not be fetched and the light is probably not compatible with ambilight.
 msgctxt "#30012"
 msgid "Unknown colour gamut for light:"
 msgstr "Ukendt farveskala for lys:"
@@ -482,6 +477,7 @@ msgctxt "#30026"
 msgid "Connection failed, retrying..."
 msgstr ""
 
+#. Default status in an empty configuration field; eg. scene/lights are not selected
 msgctxt "#30003"
 msgid "Not selected"
 msgstr ""
@@ -489,6 +485,18 @@ msgstr ""
 msgctxt "#30027"
 msgid "ERROR: Light not found, it may have been deleted"
 msgstr ""
+
+#~ msgctxt "#30042"
+#~ msgid "Fade Time (Seconds)"
+#~ msgstr "Overgangstid (sekunder)"
+
+#~ msgctxt "#30051"
+#~ msgid "UPnP discovery..."
+#~ msgstr "Søg efter UPnP..."
+
+#~ msgctxt "#30056"
+#~ msgid "Set brightness on start"
+#~ msgstr "Indstil lysstyrken ved start"
 
 #~ msgctxt "#30064"
 #~ msgid "ERROR: Scene not found"

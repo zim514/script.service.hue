@@ -92,6 +92,7 @@ msgctxt "#30508"
 msgid "Disable during daytime"
 msgstr "Disable during daytime"
 
+#. If watching a movie or TV show, and sunset occurs, activate the scene in that moment
 msgctxt "#30509"
 msgid "Activate during playback at sunset"
 msgstr ""
@@ -120,10 +121,12 @@ msgctxt "#30515"
 msgid "Stop Scene Enabled"
 msgstr ""
 
+#. If any light in the selected scene is on, ignore the schedule restrictions
 msgctxt "#30516"
 msgid "Disable time check if any light already on"
 msgstr ""
 
+#. If any of the lights in the scene are off, don't activate the related scene
 msgctxt "#30517"
 msgid "Don't enable scene if any light is off"
 msgstr ""
@@ -228,10 +231,6 @@ msgctxt "#30037"
 msgid "Save"
 msgstr ""
 
-msgctxt "#30042"
-msgid "Fade Time (Seconds)"
-msgstr ""
-
 msgctxt "#30043"
 msgid "Error"
 msgstr "பிழை"
@@ -244,20 +243,12 @@ msgctxt "#30050"
 msgid "N-UPnP discovery..."
 msgstr ""
 
-msgctxt "#30051"
-msgid "UPnP discovery..."
-msgstr ""
-
 msgctxt "#30005"
 msgid "Searching for bridge..."
 msgstr ""
 
 msgctxt "#30052"
 msgid "Invalid start or end time, schedule disabled"
-msgstr ""
-
-msgctxt "#30056"
-msgid "Set brightness on start"
 msgstr ""
 
 msgctxt "#30058"
@@ -280,6 +271,7 @@ msgctxt "#30068"
 msgid "Show Hue bridge capacity errors"
 msgstr ""
 
+#. Minimum furation of the movie or tv show at which to activate a light scene
 msgctxt "#30800"
 msgid "Minimum duration (Minutes)"
 msgstr ""
@@ -336,6 +328,7 @@ msgctxt "#30071"
 msgid "Only colour lights are supported"
 msgstr ""
 
+#. Old or deperacted bridge firmware or hardware
 msgctxt "#30072"
 msgid "Unsupported Hue Bridge"
 msgstr ""
@@ -348,6 +341,7 @@ msgctxt "#30060"
 msgid "Play"
 msgstr "வாசி"
 
+#. Must end with a space, status string is appended
 msgctxt "#30061"
 msgid "Hue Status: "
 msgstr ""
@@ -420,6 +414,7 @@ msgctxt "#30001"
 msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."
 msgstr ""
 
+#. For ambilight, different color gamuts are supported. This means the colour gamut could not be fetched and the light is probably not compatible with ambilight.
 msgctxt "#30012"
 msgid "Unknown colour gamut for light:"
 msgstr ""
@@ -482,6 +477,7 @@ msgctxt "#30026"
 msgid "Connection failed, retrying..."
 msgstr ""
 
+#. Default status in an empty configuration field; eg. scene/lights are not selected
 msgctxt "#30003"
 msgid "Not selected"
 msgstr ""
