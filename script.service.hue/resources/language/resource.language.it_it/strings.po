@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-01-01 18:05+0000\n"
+"PO-Revision-Date: 2024-01-02 12:40+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-scripts/script-service-hue/it_it/>\n"
 "Language: it_it\n"
@@ -92,6 +92,7 @@ msgctxt "#30508"
 msgid "Disable during daytime"
 msgstr "Disabilita durante il giorno"
 
+#. If watching a movie or TV show, and sunset occurs, activate the scene in that moment
 msgctxt "#30509"
 msgid "Activate during playback at sunset"
 msgstr "Attiva durante la riproduzione al tramonto"
@@ -120,10 +121,12 @@ msgctxt "#30515"
 msgid "Stop Scene Enabled"
 msgstr "Interrompi scena abilitata"
 
+#. If any light in the selected scene is on, ignore the schedule restrictions
 msgctxt "#30516"
 msgid "Disable time check if any light already on"
 msgstr "Disabilita controllo tempo se qualche luce è già accesa"
 
+#. If any of the lights in the scene are off, don't activate the related scene
 msgctxt "#30517"
 msgid "Don't enable scene if any light is off"
 msgstr "Non abilitare scena se qualche luce è spenta"
@@ -228,10 +231,6 @@ msgctxt "#30037"
 msgid "Save"
 msgstr "Salva"
 
-msgctxt "#30042"
-msgid "Fade Time (Seconds)"
-msgstr "Tempo di dissolvenza (secondi)"
-
 msgctxt "#30043"
 msgid "Error"
 msgstr "Errore"
@@ -244,10 +243,6 @@ msgctxt "#30050"
 msgid "N-UPnP discovery..."
 msgstr "Rilevamento N-UPnP..."
 
-msgctxt "#30051"
-msgid "UPnP discovery..."
-msgstr "Rilevamento UPnP..."
-
 msgctxt "#30005"
 msgid "Searching for bridge..."
 msgstr "Sto cercando il bridge..."
@@ -255,10 +250,6 @@ msgstr "Sto cercando il bridge..."
 msgctxt "#30052"
 msgid "Invalid start or end time, schedule disabled"
 msgstr "Ora di inizio o fine non valida, pianificazione disabilitata"
-
-msgctxt "#30056"
-msgid "Set brightness on start"
-msgstr "Imposta la luminosità all'avvio"
 
 msgctxt "#30058"
 msgid "Light Names:"
@@ -280,6 +271,7 @@ msgctxt "#30068"
 msgid "Show Hue bridge capacity errors"
 msgstr "Mostra errori di capienza del Bridge Hue"
 
+#. Minimum furation of the movie or tv show at which to activate a light scene
 msgctxt "#30800"
 msgid "Minimum duration (Minutes)"
 msgstr "Durata minima (minuti)"
@@ -336,6 +328,7 @@ msgctxt "#30071"
 msgid "Only colour lights are supported"
 msgstr "Sono supportate solo le luci colorate"
 
+#. Old or deperacted bridge firmware or hardware
 msgctxt "#30072"
 msgid "Unsupported Hue Bridge"
 msgstr "Bridge Hue non supportato"
@@ -348,6 +341,7 @@ msgctxt "#30060"
 msgid "Play"
 msgstr "Riproduci"
 
+#. Must end with a space, status string is appended
 msgctxt "#30061"
 msgid "Hue Status: "
 msgstr "Stao Hue; "
@@ -420,6 +414,7 @@ msgctxt "#30001"
 msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."
 msgstr "Il Bridge Hue V1 (rotondo) non è supportato. È richiesto il Bridge l'Hue V2 (quadrato)."
 
+#. For ambilight, different color gamuts are supported. This means the colour gamut could not be fetched and the light is probably not compatible with ambilight.
 msgctxt "#30012"
 msgid "Unknown colour gamut for light:"
 msgstr "Gamma colori sconosciuta per la luce:"
@@ -463,7 +458,7 @@ msgstr "Ricollegato"
 #. Time at which the service should be disabled in the morning, paired with "Disable during daytime", until sunset
 msgctxt "#31334"
 msgid "Morning disable time:"
-msgstr ""
+msgstr "Orario disattivazione mattutino:"
 
 #. Amount of time for the light scene transition to fade in, in seconds.
 msgctxt "#31335"
@@ -482,6 +477,7 @@ msgctxt "#30026"
 msgid "Connection failed, retrying..."
 msgstr "Connessione non riuscita, nuovo tentativo in corso..."
 
+#. Default status in an empty configuration field; eg. scene/lights are not selected
 msgctxt "#30003"
 msgid "Not selected"
 msgstr "Non selezionato"
@@ -489,6 +485,18 @@ msgstr "Non selezionato"
 msgctxt "#30027"
 msgid "ERROR: Light not found, it may have been deleted"
 msgstr "ERRORE: luce non trovata, potrebbe essere stata eliminata"
+
+#~ msgctxt "#30042"
+#~ msgid "Fade Time (Seconds)"
+#~ msgstr "Tempo di dissolvenza (secondi)"
+
+#~ msgctxt "#30051"
+#~ msgid "UPnP discovery..."
+#~ msgstr "Rilevamento UPnP..."
+
+#~ msgctxt "#30056"
+#~ msgid "Set brightness on start"
+#~ msgstr "Imposta la luminosità all'avvio"
 
 #~ msgctxt "#31334"
 #~ msgid "Re-enable time"

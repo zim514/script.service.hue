@@ -92,6 +92,7 @@ msgctxt "#30508"
 msgid "Disable during daytime"
 msgstr "Disable during daytime"
 
+#. If watching a movie or TV show, and sunset occurs, activate the scene in that moment
 msgctxt "#30509"
 msgid "Activate during playback at sunset"
 msgstr "일몰 재생 중 사용함"
@@ -120,10 +121,12 @@ msgctxt "#30515"
 msgid "Stop Scene Enabled"
 msgstr "정지 장면 사용함"
 
+#. If any light in the selected scene is on, ignore the schedule restrictions
 msgctxt "#30516"
 msgid "Disable time check if any light already on"
 msgstr "조명이 이미 켜져 있으면 시간 확인 안 함"
 
+#. If any of the lights in the scene are off, don't activate the related scene
 msgctxt "#30517"
 msgid "Don't enable scene if any light is off"
 msgstr "조명이 꺼져 있으면 장면 사용 안 함"
@@ -228,10 +231,6 @@ msgctxt "#30037"
 msgid "Save"
 msgstr "저장"
 
-msgctxt "#30042"
-msgid "Fade Time (Seconds)"
-msgstr "페이드 타임(초)"
-
 msgctxt "#30043"
 msgid "Error"
 msgstr "오류"
@@ -244,10 +243,6 @@ msgctxt "#30050"
 msgid "N-UPnP discovery..."
 msgstr "N-UPnP 검색..."
 
-msgctxt "#30051"
-msgid "UPnP discovery..."
-msgstr "UPnP 검색..."
-
 msgctxt "#30005"
 msgid "Searching for bridge..."
 msgstr "브리지를 찾는 중..."
@@ -255,10 +250,6 @@ msgstr "브리지를 찾는 중..."
 msgctxt "#30052"
 msgid "Invalid start or end time, schedule disabled"
 msgstr "잘못된 시작 또는 종료 시간으로 일정 사용 안 함"
-
-msgctxt "#30056"
-msgid "Set brightness on start"
-msgstr "시작할 때 밝기 설정"
 
 msgctxt "#30058"
 msgid "Light Names:"
@@ -280,6 +271,7 @@ msgctxt "#30068"
 msgid "Show Hue bridge capacity errors"
 msgstr "Hue 브리지 용량 오류 표시"
 
+#. Minimum furation of the movie or tv show at which to activate a light scene
 msgctxt "#30800"
 msgid "Minimum duration (Minutes)"
 msgstr "최소 기간 (분)"
@@ -336,6 +328,7 @@ msgctxt "#30071"
 msgid "Only colour lights are supported"
 msgstr "색상 조명만 지원됨"
 
+#. Old or deperacted bridge firmware or hardware
 msgctxt "#30072"
 msgid "Unsupported Hue Bridge"
 msgstr "지원되지 않는 색조 브리지"
@@ -348,6 +341,7 @@ msgctxt "#30060"
 msgid "Play"
 msgstr "재생"
 
+#. Must end with a space, status string is appended
 msgctxt "#30061"
 msgid "Hue Status: "
 msgstr "색조 상태: "
@@ -420,6 +414,7 @@ msgctxt "#30001"
 msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."
 msgstr "색조 브리지 V1(원형)은 지원되지 않습니다. 색조 브리지 V2(사각)가 필요합니다."
 
+#. For ambilight, different color gamuts are supported. This means the colour gamut could not be fetched and the light is probably not compatible with ambilight.
 msgctxt "#30012"
 msgid "Unknown colour gamut for light:"
 msgstr "빛에 대해 알 수 없는 색 영역:"
@@ -482,6 +477,7 @@ msgctxt "#30026"
 msgid "Connection failed, retrying..."
 msgstr "연결에 실패했습니다. 다시 시도하는 중..."
 
+#. Default status in an empty configuration field; eg. scene/lights are not selected
 msgctxt "#30003"
 msgid "Not selected"
 msgstr "선택되지 않음"
@@ -489,6 +485,18 @@ msgstr "선택되지 않음"
 msgctxt "#30027"
 msgid "ERROR: Light not found, it may have been deleted"
 msgstr "오류: 라이트를 찾을 수 없습니다. 지워졌을 수 있습니다"
+
+#~ msgctxt "#30042"
+#~ msgid "Fade Time (Seconds)"
+#~ msgstr "페이드 타임(초)"
+
+#~ msgctxt "#30051"
+#~ msgid "UPnP discovery..."
+#~ msgstr "UPnP 검색..."
+
+#~ msgctxt "#30056"
+#~ msgid "Set brightness on start"
+#~ msgstr "시작할 때 밝기 설정"
 
 #~ msgctxt "#31334"
 #~ msgid "Re-enable time"
