@@ -42,9 +42,21 @@ try:
     print(r)
     print("End grep")
 
-    strings = re.compile('_\(f?["\'](.*?)["\']\)', re.IGNORECASE).findall(r)
+    # Read the language.py file
+    with open(f"{dir_path}/script.service.hue/resources/lib/language.py", "r") as f:
+        lang_file_text = f.read()
+
+    # Parse existing IDs
+    existing_mapping = dict(re.findall(r"_strings\['(.*?)'\] = (\d+)", lang_file_text))
+
+    strings = re.compile(r"_\(f?[\"'](.*?)[\"']\)", re.IGNORECASE).findall(r)
     translated = [m.msgid.lower().replace("'", "\\'") for m in po]
-    missing = set([s for s in strings if s.lower() not in translated])
+    mapped = {s.lower(): existing_mapping.get(s.lower()) for s in strings}
+    missing = set([s for s, i in mapped.items() if s.lower() not in translated and i is None])
+
+    # strings = re.compile('_\(f?["\'](.*?)["\']\)', re.IGNORECASE).findall(r)
+    # translated = [m.msgid.lower().replace("'", "\\'") for m in po]
+    # missing = set([s for s in strings if s.lower() not in translated])
 
     ids_range = list(range(30000, 35000))
     # ids_reserved = [int(m.msgctxt[1:]) for m in po]
@@ -72,10 +84,17 @@ except Exception as e:
 
 with open(code_file, "r") as me:
     content = me.readlines()
-    content = content[:content.index("# GENERATED\n") + 1]
+    try:
+        generated_index = next(i for i, s in enumerate(content) if '# GENERATED' in s)
+        content = content[:generated_index + 1]
+    except StopIteration:
+        print("'# GENERATED' was not found in content")
+
 with open(code_file, "w", newline="\n") as f:
     f.writelines(content)
     for m in po:
         if m.msgctxt.startswith("#"):
-            line = "_strings['{0}'] = {1}\n".format(m.msgid.lower().replace("'", "\\'"), m.msgctxt.replace("#", "").strip())
+            # If the string is already mapped, use existing mapping else create new.
+            string_id = mapped.get(m.msgid.lower(), m.msgctxt.replace("#", "").strip())
+            line = '_strings[\'%s\'] = %s\n' % (m.msgid.lower().replace("'", "\\'"), string_id)
             f.write(line)
