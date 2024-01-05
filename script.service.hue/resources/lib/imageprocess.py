@@ -8,7 +8,6 @@
 # http://www.screenbloom.com/
 
 from PIL import ImageEnhance
-
 from . import timer
 
 
@@ -23,7 +22,7 @@ class ImageProcess(object):
     def img_avg(self, img, min_bri, max_bri, saturation):
         dark_pixels = 1
         mid_range_pixels = 1
-        total_pixels = 1
+        total_pixels = img.width * img.height
         r = 1
         g = 1
         b = 1
@@ -38,10 +37,7 @@ class ImageProcess(object):
         # img.save(savepath)
         # =======================================================================
 
-        # Create list of pixels
-        pixels = list(img.getdata())
-
-        for red, green, blue, alpha in pixels:
+        for red, green, blue, alpha in img.getdata():
             # Don't count pixels that are too dark
             if red < self.LOW_THRESHOLD and green < self.LOW_THRESHOLD and blue < self.LOW_THRESHOLD:
                 dark_pixels += 1
@@ -55,12 +51,10 @@ class ImageProcess(object):
                 r += red
                 g += green
                 b += blue
-            total_pixels += 1
 
-        n = len(pixels)
-        r_avg = r / n
-        g_avg = g / n
-        b_avg = b / n
+        r_avg = r / total_pixels
+        g_avg = g / total_pixels
+        b_avg = b / total_pixels
         rgb = [r_avg, g_avg, b_avg]
 
         # If computed average below darkness threshold, set to the threshold
