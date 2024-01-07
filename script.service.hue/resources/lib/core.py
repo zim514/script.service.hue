@@ -2,6 +2,7 @@
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
 #      See LICENSE.TXT for more information.
+
 import json
 import sys
 import threading

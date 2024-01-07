@@ -75,7 +75,6 @@ class AmbiGroup(lightgroup.LightGroup):
         if self.update_interval == 0:
             self.update_interval = 0.1
 
-
     def onAVStarted(self):
         self.state = STATE_PLAYING
         self.last_media_type = self._playback_type()
@@ -97,9 +96,6 @@ class AmbiGroup(lightgroup.LightGroup):
         if self.activation_check.validate():
             xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] Running Play action")
 
-            # Save light states
-            # self.saved_light_states = self._get_and_save_light_states()
-
             # Start the Ambi loop
             ambi_loop_thread = Thread(target=self._ambi_loop, name="_ambi_loop", daemon=True)
             ambi_loop_thread.start()
@@ -110,21 +106,11 @@ class AmbiGroup(lightgroup.LightGroup):
         self.state = STATE_STOPPED
         AMBI_RUNNING.clear()
 
-#        if self.enabled:
-#            if self.resume_state:
-#                self._resume_all_light_states(self.saved_light_states)
-
-
     def onPlayBackPaused(self):
         # always stop ambilight even if group is disabled or it'll run forever
         xbmc.log(f"[script.service.hue] In ambiGroup[{self.light_group_id}], onPlaybackPaused()")
         self.state = STATE_PAUSED
         AMBI_RUNNING.clear()
-
-#        if self.enabled:
-#            if self.resume_state:
-#                self._resume_all_light_states(self.saved_light_states)
-
 
     def _ambi_loop(self):
         AMBI_RUNNING.set()
@@ -217,7 +203,7 @@ class AmbiGroup(lightgroup.LightGroup):
                 xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] Not Found")
                 AMBI_RUNNING.clear()
                 notification(header=_("Hue Service"), message=_(f"ERROR: Light not found, it may have been deleted"), icon=xbmcgui.NOTIFICATION_ERROR)
-                AMBI_RUNNING.clear() # shut it down
+                AMBI_RUNNING.clear()  # shut it down
             else:
                 xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] RequestException Hue call fail")
                 AMBI_RUNNING.clear()  # shut it down
