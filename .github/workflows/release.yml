@@ -6,96 +6,81 @@ on:
       - v*
 
 jobs:
-  kodi-addon-checker:
+  release:
     runs-on: ubuntu-latest
-    name: Kodi addon checker
+    name: Release addon
     if: github.repository == 'zim514/script.service.hue'
+
     steps:
-      - name: Checkout
+
+      - name: Checkout addon
         uses: actions/checkout@v4
-
-      - name: Kodi addon checker validation
-        id: kodi-addon-checker
-        uses: xbmc/action-kodi-addon-checker@v1.2
         with:
-          kodi-version: matrix
-          addon-id: ${{ github.event.repository.name }}
+          path: 'addon'
 
-  repo_update:
-    name: Update Kodi Dev Repo
-    if: github.repository == 'zim514/script.service.hue'
-    runs-on: ubuntu-latest
-    needs: kodi-addon-checker
-
-    steps:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
+          path: 'repo'
           repository: 'zim514/zim514.github.io'
-          token: ${{secrets.ACTIONS_TOKEN}}
+          token: ${{secrets.GITHUB_TOKEN}}
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.11'
+          cache: 'pip'
 
       - name: Install dependencies
-        run: pip install gitpython
-
-      - name: Generate repo
         run: |
-          git rm -rf *.md5 *.zip
-          ./create_repository.py --datadir=docs/repo https://github.com/zim514/script.service.hue.git:script.service.hue https://github.com/zim514/zim514.github.io.git:repository.snapcase
-        working-directory: ./
+          python -m pip install --upgrade pip
+          pip install kodi-addon-checker gitpython
+
+      - name: Kodi addon checker validation
+        id: kodi-addon-check
+        run: kodi-addon-checker --branch=matrix ./addon/script.service.hue
+
+
+      - name: Clean & Generate repo
+        run: |
+          git --git-dir=./repo/.git/ --work-tree=./repo/ rm -rf --ignore-unmatch *.md5 *.zip
+          echo "pwd: $(pwd)"
+          ./repo/create_repository.py --datadir=repo/docs/repo ./addon/script.service.hue ./repo/repository.snapcase
+
+      - name: Output debug
+        shell: bash
+        run: |
+          echo "****************************************"
+          find . -name .git -prune -o -print
+
+      - name : Find addon zip
+        id: zip_filename
+        run: |
+          file=$(find . -type f -name "script.service.hue-*.zip")
+          echo "File: $file"
+          echo "::set-output name=zip_filename::$file"
+
+      - name: Create Github Release
+        id: create_release
+        uses: ncipollo/release-action@v1.13.0
+        with:
+          allowUpdates: true
+          artifacts: "${{ steps.zip_filename.outputs.zip_filename }}"
+          artifactContentType: application/zip
 
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Automated repo update ${{  github.ref_name }}
+          repository: ./repo
           add_options: '--all'
 
-  release:
-    name: Build and release addon
-    if: github.repository == 'zim514/script.service.hue'
-    runs-on: ubuntu-latest
-    needs: kodi-addon-checker
-
-    steps:
-
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Install dependencies
-        run: |
-          pip install pipenv
-          pip install git+https://github.com/xbmc/kodi-addon-submitter.git
-          pipenv install --dev
-
-      - name: Build zip
-        id: build_zip
-        run: |
-          pipenv run submit-addon -z -s script.service.hue
-          ls *.zip
-          echo "zip_filename=$(ls *.zip)" >> $GITHUB_ENV
-
-      - name: Create Github Release
-        id: create_release
-        uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          artifacts: "${{ env.zip_filename }}"
-          artifactContentType: application/zip
 
   rollbar:
     name: Notify deploy to Rollbar
     if: github.repository == 'zim514/script.service.hue'
     runs-on: ubuntu-latest
-    needs: [ release, repo_update ]
+    needs: [ release ]
 
     steps:
       - name: Notify deploy to Rollbar

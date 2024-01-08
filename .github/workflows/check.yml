@@ -8,11 +8,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Kodi addon checker
     steps:
+
     - name: Checkout
       uses: actions/checkout@v4
+
     - name: Kodi addon checker validation
       id: kodi-addon-checker
-      uses: xbmc/action-kodi-addon-checker@v1.2
+      uses: zim514/action-kodi-addon-checker@latest
+      #uses: xbmc/action-kodi-addon-checker@v1.2
       with:
         kodi-version: matrix
         addon-id: ${{ github.event.repository.name }}
