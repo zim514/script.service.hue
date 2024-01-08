@@ -4,3 +4,7 @@
 # pycharm
 /.idea
 /venv
+
+#workflow testing
+act-ref.json
+workflow.env
