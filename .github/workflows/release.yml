@@ -47,17 +47,18 @@ jobs:
           echo "pwd: $(pwd)"
           ./repo/create_repository.py --datadir=repo/docs/repo ./addon/script.service.hue ./repo/repository.snapcase
 
-      - name: Output debug
-        shell: bash
-        run: |
-          echo "****************************************"
-          find . -name .git -prune -o -print
+#      - name: Output debug
+#        shell: bash
+#        run: |
+#          echo "****************************************"
+#          find . -name .git -prune -o -print
 
       - name : Find addon zip
         id: zip_filename
         run: |
           file=$(find . -type f -name "script.service.hue-*.zip")
           echo "File: $file"
+          echo "zip_filename=$file" >> $GITHUB_OUTPUT
           echo "::set-output name=zip_filename::$file"
 
       - name: Create Github Release
@@ -65,7 +66,7 @@ jobs:
         uses: ncipollo/release-action@v1.13.0
         with:
           allowUpdates: true
-          artifacts: "${{ steps.zip_filename.outputs.zip_filename }}"
+          artifacts: "${{ $GITHUB_OUTPUT.zip_filename }}"
           artifactContentType: application/zip
 
       - name: Update hosted repo
