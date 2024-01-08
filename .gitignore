@@ -8,3 +8,4 @@
 #workflow testing
 act-ref.json
 workflow.env
+release.cmd
