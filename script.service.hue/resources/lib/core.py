@@ -239,7 +239,7 @@ class Timers(threading.Thread):
     def _set_daytime(self):
         now = datetime.now()
 
-        if self.morning_time <= now.time() <= self.bridge.sunset:
+        if self.morning_time <= now.time() < self.bridge.sunset:
             cache_set("daytime", True)
         else:
             cache_set("daytime", False)
@@ -249,26 +249,25 @@ class Timers(threading.Thread):
         while not self.monitor.abortRequested() and not self.stop_timers.is_set():
 
             now = datetime.now()
-            self.morning_time = convert_time(ADDON.getSettingString("morningTime")) # Update morning time in case it has changed
+            self.morning_time = convert_time(ADDON.getSettingString("morningTime"))  # Update morning time in case it has changed
 
             time_to_sunset = self._time_until(now, self.bridge.sunset)
             time_to_morning = self._time_until(now, self.morning_time)
 
-            if time_to_sunset < time_to_morning:
-                # Sunset is next
-                wait_time = time_to_sunset
-                xbmc.log(f"[script.service.hue] Timers: Sunset is next. wait_time: {wait_time}")
-                if self.monitor.waitForAbort(wait_time):
-                    break
-                self._run_sunset()
+            if time_to_sunset <= 0 or time_to_sunset > time_to_morning:
 
-            else:
                 # Morning is next
-                wait_time = time_to_morning
-                xbmc.log(f"[script.service.hue] Timers: Morning is next. wait_time: {wait_time}")
-                if self.monitor.waitForAbort(wait_time):
+                xbmc.log(f"[script.service.hue] Timers: Morning is next. wait_time: {time_to_morning}")
+                if self.monitor.waitForAbort(time_to_morning):
                     break
                 self._run_morning()
+
+            else:
+                # Sunset is next
+                xbmc.log(f"[script.service.hue] Timers: Sunset is next. wait_time: {time_to_sunset}")
+                if self.monitor.waitForAbort(time_to_sunset):
+                    break
+                self._run_sunset()
         xbmc.log("[script.service.hue] Timers stopped")
 
     @staticmethod
