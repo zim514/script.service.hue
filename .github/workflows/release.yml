@@ -23,7 +23,7 @@ jobs:
         with:
           path: 'repo'
           repository: 'zim514/zim514.github.io'
-          token: ${{secrets.GITHUB_TOKEN}}
+          token: ${{secrets.ACTIONHOSTEDREPO}}
 
       - name: Setup Python
         uses: actions/setup-python@v5
