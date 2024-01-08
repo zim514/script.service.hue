@@ -58,7 +58,7 @@ jobs:
         run: |
           file=$(find . -type f -name "script.service.hue-*.zip")
           echo "File: $file"
-          echo "zip_filename=$file" >> $GITHUB_OUTPUT
+          echo "zip_filename=$file" >> $GITHUB_ENV
           echo "::set-output name=zip_filename::$file"
 
       - name: Create Github Release
@@ -66,7 +66,7 @@ jobs:
         uses: ncipollo/release-action@v1.13.0
         with:
           allowUpdates: true
-          artifacts: "${{ $GITHUB_OUTPUT.zip_filename }}"
+          artifacts: "${{ env.zip_filename }}"
           artifactContentType: application/zip
 
       - name: Update hosted repo
