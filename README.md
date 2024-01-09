@@ -14,8 +14,9 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 - [Install from official Kodi repo](https://kodi.wiki/view/Add-on_manager#How_to_install_add-ons_from_a_repository)
 
 **Development version**
- 1. [Repo with auto-updates](https://zim514.github.io/repo/repository.snapcase/repository.snapcase-1.0.11.zip) **(Recommended)** or [Download latest .zip version](https://github.com/zim514/script.service.hue/releases/latest)
- 2. [Install to Kodi from Zip](https://kodi.wiki/view/HOW-TO:Install_add-ons_from_zip_files)
+
+1. [Repo with auto-updates](https://zim514.github.io/repo/repository.snapcase/repository.snapcase-1.0.11.zip) **(Recommended)** or [Download latest .zip version](https://github.com/zim514/script.service.hue/releases/latest)
+2. [Install to Kodi from Zip](https://kodi.wiki/view/HOW-TO:Install_add-ons_from_zip_files)
 
 ## Features:
 - Use standard Hue Scenes
@@ -29,7 +30,7 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
     - If sunset falls while watching media, optionally turn on lights
     - Add-on does nothing at sunset if there's no playback
 
- 
+
 - Scheduling
     - Set a start and end time at which the add-on should be enabled
     - Time in 24h format (Eg: 22:00, not 10:00 PM)
@@ -57,36 +58,13 @@ Every selected light increases the number of necessary commands therefore influe
 - **Capture size:** CPU impact. Size at which frames are captured, in pixels of X by X. Colour calculation time is too slow with full sized frames, so they are resized first. May affect colour precision as some pixels are lost in the resize process.
 - **Average image processing time:** Shows the average time it took to process the colours before updating the Hue bulbs, in milliseconds. This value is updated whenever a video is stopped.
 
-
+<!-- I don't think anyone is using this and I removed it. 
 ## JSON RPC Commands
 This addon supports Kodi JSON RPC commands that can be sent by HTTP, other add-ons or skins. These commands simulate the same result as the commands in the plugin menu.
 
 **Disable**:
 Temporarily disable service. Service will be re-enabled when Kodi restarts. 
-```json
-    {
-        "jsonrpc": "2.0",
-        "method": "JSONRPC.NotifyAll",
-        "params": {
-            "sender": "script.service.hue",
-            "message": "disable"
-        },
-        "id": 1
-    }
-```
 **Enable**
-```json
-    {
-        "jsonrpc": "2.0",
-        "method": "JSONRPC.NotifyAll",
-        "params": {
-            "sender": "script.service.hue",
-            "message": "enable"
-        },
-        "id": 1
-    }
-```
-
 **Actions**:
 
 Available commands: play, pause, stop
@@ -94,19 +72,7 @@ Available commands: play, pause, stop
 Video Group: 0
 
 Audio Group: 1
-
-```json
-    {
-        "jsonrpc": "2.0",
-        "method": "JSONRPC.NotifyAll",
-        "params": {
-            "sender": "script.service.hue",
-            "message": "actions",
-            "data": {"command": "stop","group": "1"}
-        },
-        "id": 1
-    }
-```
+-->
 
 ## Problems?
 

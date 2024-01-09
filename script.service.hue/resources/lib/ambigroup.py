@@ -20,14 +20,25 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
 
 class AmbiGroup(lightgroup.LightGroup):
-    def __init__(self, light_group_id, monitor, bridge):
+    def __init__(self, light_group_id, settings_monitor, bridge):
 
         self.bridge = bridge
         self.light_group_id = light_group_id
-        self.monitor = monitor
+        self.settings_monitor = settings_monitor
+        super().__init__(light_group_id, VIDEO, self.settings_monitor, self.bridge)
+
+        self.enabled = getattr(self.settings_monitor, f"group{self.light_group_id}_enabled", False)
+        self.update_interval = getattr(self.settings_monitor, f"group{self.light_group_id}_update_interval")
+        self.light_ids = getattr(self.settings_monitor, f"group{self.light_group_id}_lights").split(",")
+        self.capture_size_x = getattr(self.settings_monitor, f"group{self.light_group_id}_capture_size")
+        self.transition_time = getattr(self.settings_monitor, f"group{self.light_group_id}_transition_time")
+        self.min_bri = getattr(self.settings_monitor, f"group{self.light_group_id}_min_bri")
+        self.max_bri = getattr(self.settings_monitor, f"group{self.light_group_id}_max_bri")
+        self.saturation = getattr(self.settings_monitor, f"group{self.light_group_id}_saturation")
 
         self.capacity_error_count = 0
         self.saved_light_states = {}
+        self.ambi_lights = {}
 
         self.image_process = imageprocess.ImageProcess()
 
@@ -36,30 +47,12 @@ class AmbiGroup(lightgroup.LightGroup):
         self.converterC = Converter(GamutC)
         self.helper = ColorHelper(GamutC)  # Gamut doesn't matter for this usage
 
-        super().__init__(light_group_id, media_type=VIDEO, bridge=bridge)
-
-        self.reload_settings()
-
-    def reload_settings(self):
-        # load generic settings
-        super().reload_settings()
-
-        # load ambigroup specific settings
-        self.transition_time = int(ADDON.getSettingInt(f"group{self.light_group_id}_TransitionTime"))  # Stored as ms in Kodi settings.
-        self.min_bri = ADDON.getSettingInt(f"group{self.light_group_id}_MinBrightness")
-        self.max_bri = ADDON.getSettingInt(f"group{self.light_group_id}_MaxBrightness")
-        self.saturation = ADDON.getSettingNumber(f"group{self.light_group_id}_Saturation")
-        self.capture_size_x = ADDON.getSettingInt(f"group{self.light_group_id}_CaptureSize")
-        self.resume_state = ADDON.getSettingBool(f"group{self.light_group_id}_ResumeState")
-        self.resume_transition = ADDON.getSettingInt(f"group{self.light_group_id}_ResumeTransition") * 10  # convert seconds to multiple of 100ms
-
         if self.enabled and self.bridge.connected:
-            self.ambi_lights = {}
-            light_ids = ADDON.getSettingString(f"group{self.light_group_id}_Lights").split(",")
+
             index = 0
 
-            if len(light_ids) > 0:
-                for L in light_ids:
+            if len(self.light_ids) > 0:
+                for L in self.light_ids:
                     gamut = self._get_light_gamut(self.bridge, L)
                     if gamut == 404:
                         notification(header=_("Hue Service"), message=_(f"ERROR: Light not found, it may have been deleted"), icon=xbmcgui.NOTIFICATION_ERROR)
@@ -71,7 +64,7 @@ class AmbiGroup(lightgroup.LightGroup):
                         self.ambi_lights.update(light)
                         index = index + 1
             xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] Lights: {self.ambi_lights}")
-        self.update_interval = ADDON.getSettingInt(f"group{self.light_group_id}_Interval") / 1000  # convert MS to seconds
+        # convert MS to seconds
         if self.update_interval == 0:
             self.update_interval = 0.1
 
@@ -128,37 +121,37 @@ class AmbiGroup(lightgroup.LightGroup):
         for L in list(self.ambi_lights):
             self.ambi_lights[L].update(prev_xy=(0.0001, 0.0001))
 
-        while not self.monitor.abortRequested() and AMBI_RUNNING.is_set() and self.bridge.connected:  # loop until kodi tells add-on to stop or video playing flag is unset.
+        while not self.settings_monitor.abortRequested() and AMBI_RUNNING.is_set() and self.bridge.connected:  # loop until kodi tells add-on to stop or video playing flag is unset.
             try:
 
                 cap_image = cap.getImage()  # timeout to wait for OS in ms, default 1000
 
                 if cap_image is None or len(cap_image) < expected_capture_size:
                     xbmc.log("[script.service.hue] capImage is none or < expected. captured: {}, expected: {}".format(len(cap_image), expected_capture_size))
-                    self.monitor.waitForAbort(0.25)  # pause before trying again
+                    self.settings_monitor.waitForAbort(0.25)  # pause before trying again
                     continue  # no image captured, try again next iteration
                 image = Image.frombytes("RGBA", (self.capture_size_x, self.capture_size_y), bytes(cap_image), "raw", "BGRA", 0, 1)  # Kodi always returns a BGRA image.
 
             except ValueError:
                 xbmc.log(f"[script.service.hue] capImage: {len(cap_image)}")
                 xbmc.log("[script.service.hue] Value Error")
-                self.monitor.waitForAbort(0.25)
+                self.settings_monitor.waitForAbort(0.25)
                 continue  # returned capture is smaller than expected, but this happens when player is stopping so fail silently. give up this loop.
 
             colors = self.image_process.img_avg(image, self.min_bri, self.max_bri, self.saturation)
             for L in list(self.ambi_lights):
-                t = Thread(target=self._update_hue_rgb, name="_update_hue_rgb", args=(colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, self.transition_time, colors['bri']), daemon=True)
+                t = Thread(target=self._update_hue_rgb, name="_update_hue_rgb", args=(colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, colors['bri']), daemon=True)
                 t.start()
 
-            self.monitor.waitForAbort(self.update_interval)  # seconds
+            self.settings_monitor.waitForAbort(self.update_interval)  # seconds
 
-        if not self.monitor.abortRequested():  # ignore writing average process time if Kodi is shutting down
+        if not self.settings_monitor.abortRequested():  # ignore writing average process time if Kodi is shutting down
             average_process_time = self._perf_average(PROCESS_TIMES)
             xbmc.log(f"[script.service.hue] Average process time: {average_process_time}")
             ADDON.setSettingString("average_process_time", str(average_process_time))
             xbmc.log("[script.service.hue] _ambiLoop stopped")
 
-    def _update_hue_rgb(self, r, g, b, light, transition_time, bri):
+    def _update_hue_rgb(self, r, g, b, light, bri):
         gamut = self.ambi_lights[light].get('gamut')
         prev_xy = self.ambi_lights[light].get('prev_xy')
 
@@ -188,7 +181,7 @@ class AmbiGroup(lightgroup.LightGroup):
                     }
                 },
                 'dynamics': {
-                    'duration': int(transition_time)
+                    'duration': int(self.transition_time)
                 }
             }
             response = self.bridge.make_api_request('PUT', f'light/{light}', json=request_body)
@@ -212,7 +205,7 @@ class AmbiGroup(lightgroup.LightGroup):
     def bridge_capacity_error(self):
         self.capacity_error_count = self.capacity_error_count + 1  # increment counter
         xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] Bridge capacity error count: {self.capacity_error_count}")
-        if self.capacity_error_count > 50 and ADDON.getSettingBool("show500Error"):
+        if self.capacity_error_count > 50 and self.settings_monitor.show500errors:
             AMBI_RUNNING.clear()  # shut it down
             stop_showing_error = xbmcgui.Dialog().yesno(_("Hue Bridge over capacity"), _("The Hue Bridge is over capacity. Increase refresh rate or reduce the number of Ambilights."), yeslabel=_("Do not show again"), nolabel=_("Ok"))
             if stop_showing_error:

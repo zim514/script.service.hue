@@ -10,10 +10,8 @@ import traceback
 import rollbar
 import xbmc
 import xbmcgui
-from requests import RequestException
 
 from . import ADDONVERSION, ROLLBAR_API_KEY, KODIVERSION, ADDONPATH, ADDON
-from .kodiutils import notification
 from .language import get_string as _
 
 
