@@ -108,19 +108,19 @@ class SettingsMonitor(xbmc.Monitor):
         self._validate_ambilight()
 
     def _validate_ambilight(self):
-        xbmc.log(f"[script.service.hue] Validate ambilight config. Enabled: {self.group3_enabled}, Lights: {self.group3_lights}")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] Validate ambilight config. Enabled: {self.group3_enabled}, Lights: {self.group3_lights}")
         if self.group3_enabled:
             if self.group3_lights == '-1':
                 ADDON.setSettingBool('group3_enabled', False)
-                xbmc.log('[script.service.hue] _validate_ambilights: No ambilights selected')
+                xbmc.log('[SCRIPT.SERVICE.HUE] _validate_ambilights: No ambilights selected')
                 notification(_('Hue Service'), _('No lights selected for Ambilight.'), icon=xbmcgui.NOTIFICATION_ERROR)
 
     def _validate_schedule(self):
-        xbmc.log(f"[script.service.hue] Validate schedule. Schedule Enabled: {self.schedule_enabled}, Start time: {self.schedule_start}, End time: {self.schedule_end}")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] Validate schedule. Schedule Enabled: {self.schedule_enabled}, Start time: {self.schedule_start}, End time: {self.schedule_end}")
         if self.schedule_enabled:
             start_time = convert_time(self.schedule_start)
             end_time = convert_time(self.schedule_end)
             if start_time > end_time:  # checking if start time is after the end time
                 ADDON.setSettingBool('EnableSchedule', False)
-                xbmc.log('[script.service.hue] _validate_schedule: Start time is after end time, schedule disabled')
+                xbmc.log('[SCRIPT.SERVICE.HUE] _validate_schedule: Start time is after end time, schedule disabled')
                 notification(_('Hue Service'), _('Invalid start or end time, schedule disabled'), icon=xbmcgui.NOTIFICATION_ERROR)

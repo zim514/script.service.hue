@@ -41,32 +41,32 @@ class CommandHandler:
         }
 
     def handle_command(self, command, *args):
-        xbmc.log(f"[script.service.hue] Started with {command}")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] Started with {command}")
         command_func = self.commands.get(command)
 
         if command_func:
             command_func(*args)
         else:
-            xbmc.log(f"[script.service.hue] Unknown command: {command}")
+            xbmc.log(f"[SCRIPT.SERVICE.HUE] Unknown command: {command}")
             raise RuntimeError(f"Unknown Command: {command}")
 
     def discover(self):
         bridge = Hue(self.settings_monitor, discover=True)
         if bridge.connected:
-            xbmc.log("[script.service.hue] Found bridge. Opening settings.")
+            xbmc.log("[SCRIPT.SERVICE.HUE] Found bridge. Opening settings.")
             ADDON.openSettings()
 
         else:
-            xbmc.log("[script.service.hue] No bridge found. Opening settings.")
+            xbmc.log("[SCRIPT.SERVICE.HUE] No bridge found. Opening settings.")
             ADDON.openSettings()
 
     def scene_select(self, light_group, action):
-        xbmc.log(f"[script.service.hue] sceneSelect: light_group: {light_group}, action: {action}")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] sceneSelect: light_group: {light_group}, action: {action}")
         bridge = Hue(self.settings_monitor)
         if bridge.connected:
             bridge.configure_scene(light_group, action)
         else:
-            xbmc.log("[script.service.hue] No bridge found. sceneSelect cancelled.")
+            xbmc.log("[SCRIPT.SERVICE.HUE] No bridge found. sceneSelect cancelled.")
             notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
     def ambi_light_select(self, light_group):
@@ -74,7 +74,7 @@ class CommandHandler:
         if bridge.connected:
             bridge.configure_ambilights(light_group)
         else:
-            xbmc.log("[script.service.hue] No bridge found. Select ambi lights cancelled.")
+            xbmc.log("[SCRIPT.SERVICE.HUE] No bridge found. Select ambi lights cancelled.")
             notification(_("Hue Service"), _("Check Hue Bridge configuration"))
 
 
@@ -130,7 +130,7 @@ class HueService:
             if self.settings_monitor.waitForAbort(1):
                 break
 
-        xbmc.log("[script.service.hue] Abort requested...")
+        xbmc.log("[SCRIPT.SERVICE.HUE] Abort requested...")
 
     def initialize_light_groups(self):
         # Initialize light groups
@@ -142,7 +142,7 @@ class HueService:
 
     def activate(self):
         # Activates play action as appropriate for all groups. Used at sunset and when service is re-enabled via Actions.
-        xbmc.log(f"[script.service.hue] Activating scenes")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] Activating scenes")
 
         for g in self.light_groups:
             if ADDON.getSettingBool(f"group{g.light_group_id}_enabled"):
@@ -156,7 +156,7 @@ class HueService:
         if action:
             action_action = action[0]
             action_light_group_id = int(action[1]) - 1
-            xbmc.log(f"[script.service.hue] Action command: {action}, action_action: {action_action}, action_light_group_id: {action_light_group_id}")
+            xbmc.log(f"[SCRIPT.SERVICE.HUE] Action command: {action}, action_action: {action_action}, action_light_group_id: {action_light_group_id}")
 
             # Run the action
             self.light_groups[action_light_group_id].run_action(action_action)
@@ -185,10 +185,10 @@ class Timers(threading.Thread):
     def _run_morning(self):
         cache_set("daytime", True)
         self.bridge.update_sunset()
-        xbmc.log(f"[script.service.hue] run_morning(): new sunset: {self.bridge.sunset}")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] run_morning(): new sunset: {self.bridge.sunset}")
 
     def _run_sunset(self):
-        xbmc.log(f"[script.service.hue] in run_sunset(): Sunset. ")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] in run_sunset(): Sunset. ")
         cache_set("daytime", False)
         self.hue_service.activate()
 
@@ -213,18 +213,18 @@ class Timers(threading.Thread):
             if time_to_sunset <= 0 or time_to_sunset > time_to_morning:
 
                 # Morning is next
-                xbmc.log(f"[script.service.hue] Timers: Morning is next. wait_time: {time_to_morning}")
+                xbmc.log(f"[SCRIPT.SERVICE.HUE] Timers: Morning is next. wait_time: {time_to_morning}")
                 if self.settings_monitor.waitForAbort(time_to_morning):
                     break
                 self._run_morning()
 
             else:
                 # Sunset is next
-                xbmc.log(f"[script.service.hue] Timers: Sunset is next. wait_time: {time_to_sunset}")
+                xbmc.log(f"[SCRIPT.SERVICE.HUE] Timers: Sunset is next. wait_time: {time_to_sunset}")
                 if self.settings_monitor.waitForAbort(time_to_sunset):
                     break
                 self._run_sunset()
-        xbmc.log("[script.service.hue] Timers stopped")
+        xbmc.log("[SCRIPT.SERVICE.HUE] Timers stopped")
 
     @staticmethod
     def _time_until(current, target):

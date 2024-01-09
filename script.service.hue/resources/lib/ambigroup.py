@@ -63,7 +63,7 @@ class AmbiGroup(lightgroup.LightGroup):
                         light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
                         self.ambi_lights.update(light)
                         index = index + 1
-            xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] Lights: {self.ambi_lights}")
+            xbmc.log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] Lights: {self.ambi_lights}")
         # convert MS to seconds
         if self.update_interval == 0:
             self.update_interval = 0.1
@@ -71,23 +71,23 @@ class AmbiGroup(lightgroup.LightGroup):
     def onAVStarted(self):
         self.state = STATE_PLAYING
         self.last_media_type = self._playback_type()
-        xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] onPlaybackStarted. Group enabled: {self.enabled}, Bridge connected: {self.bridge.connected}, mediaType: {self.media_type}")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] onPlaybackStarted. Group enabled: {self.enabled}, Bridge connected: {self.bridge.connected}, mediaType: {self.media_type}")
 
         if not self.enabled or not self.bridge.connected:
             return
 
-        xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] onPlaybackStarted. media_type: {self.media_type} == playback_type: {self._playback_type()}")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] onPlaybackStarted. media_type: {self.media_type} == playback_type: {self._playback_type()}")
         if self.media_type == self._playback_type() and self._playback_type() == VIDEO:
             try:
                 self.video_info_tag = self.getVideoInfoTag()
             except (AttributeError, TypeError) as x:
-                xbmc.log(f"[script.service.hue] AmbiGroup{self.light_group_id}: OnAV Started: Can't read infoTag")
+                xbmc.log(f"[SCRIPT.SERVICE.HUE] AmbiGroup{self.light_group_id}: OnAV Started: Can't read infoTag")
                 reporting.process_exception(x)
         else:
             self.video_info_tag = None
 
         if self.activation_check.validate():
-            xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] Running Play action")
+            xbmc.log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] Running Play action")
 
             # Start the Ambi loop
             ambi_loop_thread = Thread(target=self._ambi_loop, name="_ambi_loop", daemon=True)
@@ -95,13 +95,13 @@ class AmbiGroup(lightgroup.LightGroup):
 
     def onPlayBackStopped(self):
         # always stop ambilight even if group is disabled or it'll run forever
-        xbmc.log(f"[script.service.hue] In ambiGroup[{self.light_group_id}], onPlaybackStopped()")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] In ambiGroup[{self.light_group_id}], onPlaybackStopped()")
         self.state = STATE_STOPPED
         AMBI_RUNNING.clear()
 
     def onPlayBackPaused(self):
         # always stop ambilight even if group is disabled or it'll run forever
-        xbmc.log(f"[script.service.hue] In ambiGroup[{self.light_group_id}], onPlaybackPaused()")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] In ambiGroup[{self.light_group_id}], onPlaybackPaused()")
         self.state = STATE_PAUSED
         AMBI_RUNNING.clear()
 
@@ -109,12 +109,12 @@ class AmbiGroup(lightgroup.LightGroup):
         AMBI_RUNNING.set()
         cap = xbmc.RenderCapture()
         cap_image = bytes
-        xbmc.log("[script.service.hue] _ambiLoop started")
+        xbmc.log("[SCRIPT.SERVICE.HUE] _ambiLoop started")
         aspect_ratio = cap.getAspectRatio()
 
         self.capture_size_y = int(self.capture_size_x / aspect_ratio)
         expected_capture_size = self.capture_size_x * self.capture_size_y * 4  # size * 4 bytes - RGBA
-        xbmc.log(f"[script.service.hue] aspect_ratio: {aspect_ratio}, Capture Size: ({self.capture_size_x},{self.capture_size_y}), expected_capture_size: {expected_capture_size}")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] aspect_ratio: {aspect_ratio}, Capture Size: ({self.capture_size_x},{self.capture_size_y}), expected_capture_size: {expected_capture_size}")
 
         cap.capture(self.capture_size_x, self.capture_size_y)  # start the capture process https://github.com/xbmc/xbmc/pull/8613#issuecomment-165699101
 
@@ -127,14 +127,14 @@ class AmbiGroup(lightgroup.LightGroup):
                 cap_image = cap.getImage()  # timeout to wait for OS in ms, default 1000
 
                 if cap_image is None or len(cap_image) < expected_capture_size:
-                    xbmc.log("[script.service.hue] capImage is none or < expected. captured: {}, expected: {}".format(len(cap_image), expected_capture_size))
+                    xbmc.log("[SCRIPT.SERVICE.HUE] capImage is none or < expected. captured: {}, expected: {}".format(len(cap_image), expected_capture_size))
                     self.settings_monitor.waitForAbort(0.25)  # pause before trying again
                     continue  # no image captured, try again next iteration
                 image = Image.frombytes("RGBA", (self.capture_size_x, self.capture_size_y), bytes(cap_image), "raw", "BGRA", 0, 1)  # Kodi always returns a BGRA image.
 
             except ValueError:
-                xbmc.log(f"[script.service.hue] capImage: {len(cap_image)}")
-                xbmc.log("[script.service.hue] Value Error")
+                xbmc.log(f"[SCRIPT.SERVICE.HUE] capImage: {len(cap_image)}")
+                xbmc.log("[SCRIPT.SERVICE.HUE] Value Error")
                 self.settings_monitor.waitForAbort(0.25)
                 continue  # returned capture is smaller than expected, but this happens when player is stopping so fail silently. give up this loop.
 
@@ -147,9 +147,9 @@ class AmbiGroup(lightgroup.LightGroup):
 
         if not self.settings_monitor.abortRequested():  # ignore writing average process time if Kodi is shutting down
             average_process_time = self._perf_average(PROCESS_TIMES)
-            xbmc.log(f"[script.service.hue] Average process time: {average_process_time}")
+            xbmc.log(f"[SCRIPT.SERVICE.HUE] Average process time: {average_process_time}")
             ADDON.setSettingString("average_process_time", str(average_process_time))
-            xbmc.log("[script.service.hue] _ambiLoop stopped")
+            xbmc.log("[SCRIPT.SERVICE.HUE] _ambiLoop stopped")
 
     def _update_hue_rgb(self, r, g, b, light, bri):
         gamut = self.ambi_lights[light].get('gamut')
@@ -189,22 +189,22 @@ class AmbiGroup(lightgroup.LightGroup):
             if response is not None:
                 self.ambi_lights[light].update(prev_xy=xy)
             elif response == 429 or response == 500:
-                xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] _update_hue_rgb: {response}: Too Many Requests. Aborting request.")
+                xbmc.log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] _update_hue_rgb: {response}: Too Many Requests. Aborting request.")
                 self.bridge_capacity_error()
                 notification(_("Hue Service"), _("Bridge overloaded, stopping ambilight"), icon=xbmcgui.NOTIFICATION_ERROR)
             elif response == 404:
-                xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] Not Found")
+                xbmc.log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] Not Found")
                 AMBI_RUNNING.clear()
                 notification(header=_("Hue Service"), message=_(f"ERROR: Light not found, it may have been deleted"), icon=xbmcgui.NOTIFICATION_ERROR)
                 AMBI_RUNNING.clear()  # shut it down
             else:
-                xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] RequestException Hue call fail")
+                xbmc.log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] RequestException Hue call fail")
                 AMBI_RUNNING.clear()  # shut it down
                 reporting.process_exception(response)
 
     def bridge_capacity_error(self):
         self.capacity_error_count = self.capacity_error_count + 1  # increment counter
-        xbmc.log(f"[script.service.hue] AmbiGroup[{self.light_group_id}] Bridge capacity error count: {self.capacity_error_count}")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] Bridge capacity error count: {self.capacity_error_count}")
         if self.capacity_error_count > 50 and self.settings_monitor.show500errors:
             AMBI_RUNNING.clear()  # shut it down
             stop_showing_error = xbmcgui.Dialog().yesno(_("Hue Bridge over capacity"), _("The Hue Bridge is over capacity. Increase refresh rate or reduce the number of Ambilights."), yeslabel=_("Do not show again"), nolabel=_("Ok"))
@@ -217,7 +217,7 @@ class AmbiGroup(lightgroup.LightGroup):
         gamut = "C"  # default
         light_data = bridge.make_api_request("GET", f"light/{light}")
         if light_data == 404:
-            xbmc.log(f"[script.service.hue] _get_light_gamut: Light[{light}] not found or ID invalid")
+            xbmc.log(f"[SCRIPT.SERVICE.HUE] _get_light_gamut: Light[{light}] not found or ID invalid")
             return 404
         elif light_data is not None and 'data' in light_data:
             for item in light_data['data']:
@@ -255,7 +255,7 @@ class AmbiGroup(lightgroup.LightGroup):
                 }
             return states
         else:
-            xbmc.log(f"[script.service.hue] Failed to get light states.")
+            xbmc.log(f"[SCRIPT.SERVICE.HUE] Failed to get light states.")
             return None
 
     def _resume_all_light_states(self, states):
@@ -275,6 +275,6 @@ class AmbiGroup(lightgroup.LightGroup):
                 data["color_temperature"] = {"mirek": state['color_temperature']}
             response = self.bridge.make_api_request('PUT', f'lights/{light_id}', json=data)
             if response is not None:
-                xbmc.log(f"[script.service.hue] Light[{light_id}] state resumed successfully.")
+                xbmc.log(f"[SCRIPT.SERVICE.HUE] Light[{light_id}] state resumed successfully.")
             else:
-                xbmc.log(f"[script.service.hue] Failed to resume Light[{light_id}] state.")
+                xbmc.log(f"[SCRIPT.SERVICE.HUE] Failed to resume Light[{light_id}] state.")
