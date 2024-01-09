@@ -12,10 +12,15 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Kodi addon checker validation
-      id: kodi-addon-checker
-      uses: zim514/action-kodi-addon-checker@latest
-      #uses: xbmc/action-kodi-addon-checker@v1.2
+    - name: Setup Python
+      uses: actions/setup-python@v5
       with:
-        kodi-version: matrix
-        addon-id: ${{ github.event.repository.name }}
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: pip install kodi-addon-checker
+
+    - name: Kodi addon checker validation
+      id: kodi-addon-check
+      run: kodi-addon-checker --branch=matrix ./script.service.hue
