@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-01-01 18:05+0000\n"
+"PO-Revision-Date: 2024-01-14 08:13+0000\n"
 "Last-Translator: Minho Park <parkmino@gmail.com>\n"
 "Language-Team: Korean <https://kodi.weblate.cloud/projects/kodi-add-ons-scripts/script-service-hue/ko_kr/>\n"
 "Language: ko_kr\n"
@@ -458,7 +458,7 @@ msgstr "다시 연결됨"
 #. Time at which the service should be disabled in the morning, paired with "Disable during daytime", until sunset
 msgctxt "#31334"
 msgid "Morning disable time:"
-msgstr ""
+msgstr "아침 비활성화 시간:"
 
 #. Amount of time for the light scene transition to fade in, in seconds.
 msgctxt "#31335"
