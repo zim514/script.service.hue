@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-04-01 16:21+0000\n"
+"PO-Revision-Date: 2024-02-21 16:13+0000\n"
 "Last-Translator: skypichat <skypichat@hotmail.fr>\n"
 "Language-Team: French (France) <https://kodi.weblate.cloud/projects/kodi-add-ons-scripts/script-service-hue/fr_fr/>\n"
 "Language: fr_fr\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.15.2\n"
+"X-Generator: Weblate 5.4\n"
 
 msgctxt "Addon Summary"
 msgid "Automate Hue lights with Kodi playback"
@@ -30,11 +30,11 @@ msgstr "Nécessite un bridge Hue V2 (carré). Ambilight n'est pas disponible sur
 
 msgctxt "#32100"
 msgid "Video Scenes"
-msgstr "Video Scenes"
+msgstr ""
 
 msgctxt "#32102"
 msgid "Audio Scenes"
-msgstr "Audio Scenes"
+msgstr ""
 
 msgctxt "#32201"
 msgid "Start/Resume"
@@ -50,7 +50,7 @@ msgstr "Stop"
 
 msgctxt "#30036"
 msgid "Scene:"
-msgstr "Scene:"
+msgstr ""
 
 msgctxt "#32511"
 msgid "Scene ID"
@@ -90,7 +90,7 @@ msgstr "Heure de fin :"
 
 msgctxt "#30508"
 msgid "Disable during daytime"
-msgstr "Disable during daytime"
+msgstr ""
 
 #. If watching a movie or TV show, and sunset occurs, activate the scene in that moment
 msgctxt "#30509"
@@ -149,7 +149,7 @@ msgstr "Avancé"
 
 msgctxt "#32106"
 msgid "Video Activation Rules"
-msgstr "Video Activation Rules"
+msgstr ""
 
 msgctxt "#6101"
 msgid "Select Lights"
@@ -352,11 +352,11 @@ msgstr "Paramètres"
 
 msgctxt "#30063"
 msgid "Disabled by daytime"
-msgstr "Disabled by daytime"
+msgstr ""
 
 msgctxt "#30064"
 msgid "ERROR: Scene not found, it may have been deleted"
-msgstr "ERROR: Scene not found, it may have been deleted"
+msgstr ""
 
 msgctxt "#30080"
 msgid "The following error occurred:"
