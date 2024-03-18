@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-01-14 08:13+0000\n"
+"PO-Revision-Date: 2024-03-12 18:56+0000\n"
 "Last-Translator: Minho Park <parkmino@gmail.com>\n"
 "Language-Team: Korean <https://kodi.weblate.cloud/projects/kodi-add-ons-scripts/script-service-hue/ko_kr/>\n"
 "Language: ko_kr\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.3\n"
+"X-Generator: Weblate 5.4\n"
 
 msgctxt "Addon Summary"
 msgid "Automate Hue lights with Kodi playback"
@@ -30,11 +30,11 @@ msgstr "Hue Bridge V2(정사각형)가 필요합니다. 모든 하드웨어에�
 
 msgctxt "#32100"
 msgid "Video Scenes"
-msgstr "Video Scenes"
+msgstr "비디오 장면"
 
 msgctxt "#32102"
 msgid "Audio Scenes"
-msgstr "Audio Scenes"
+msgstr "오디오 장면"
 
 msgctxt "#32201"
 msgid "Start/Resume"
@@ -50,7 +50,7 @@ msgstr "중지"
 
 msgctxt "#30036"
 msgid "Scene:"
-msgstr "Scene:"
+msgstr "장면:"
 
 msgctxt "#32511"
 msgid "Scene ID"
@@ -90,7 +90,7 @@ msgstr "종료 시간:"
 
 msgctxt "#30508"
 msgid "Disable during daytime"
-msgstr "Disable during daytime"
+msgstr "낮에는 사용 안 함"
 
 #. If watching a movie or TV show, and sunset occurs, activate the scene in that moment
 msgctxt "#30509"
@@ -149,7 +149,7 @@ msgstr "고급"
 
 msgctxt "#32106"
 msgid "Video Activation Rules"
-msgstr "Video Activation Rules"
+msgstr "비디오 사용 규칙"
 
 msgctxt "#6101"
 msgid "Select Lights"
@@ -352,11 +352,11 @@ msgstr "설정"
 
 msgctxt "#30063"
 msgid "Disabled by daytime"
-msgstr "Disabled by daytime"
+msgstr "낮에는 사용 안 함"
 
 msgctxt "#30064"
 msgid "ERROR: Scene not found, it may have been deleted"
-msgstr "ERROR: Scene not found, it may have been deleted"
+msgstr "오류: 장면을 찾을 수 없습니다. 삭제되었을 수 있습니다"
 
 msgctxt "#30080"
 msgid "The following error occurred:"
