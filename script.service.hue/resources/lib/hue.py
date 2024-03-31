@@ -53,10 +53,10 @@ class Hue(object):
             xbmc.log(f"[SCRIPT.SERVICE.HUE] v2 make_request: discovery mode")
         for attempt in range(MAX_RETRIES):
             # Prepare the URL for the request
-            xbmc.log(f"[SCRIPT.SERVICE.HUE] v2 ip: {self.settings_monitor.ip}, key: {self.settings_monitor.key}")
+            #xbmc.log(f"[SCRIPT.SERVICE.HUE] v2 ip: {self.settings_monitor.ip}, key: {self.settings_monitor.key}")
             base_url = self.base_url if not discovery else f"http://{self.settings_monitor.ip}/api/"
             url = urljoin(base_url, resource)
-            xbmc.log(f"[SCRIPT.SERVICE.HUE] v2 make_request: base_url: {base_url}, url: {url}, method: {method}, kwargs: {kwargs}")
+            #xbmc.log(f"[SCRIPT.SERVICE.HUE] v2 make_request: base_url: {base_url}, url: {url}, method: {method}, kwargs: {kwargs}")
             try:
                 # Make the request
                 response = self.session.request(method, url, timeout=TIMEOUT, **kwargs)

@@ -5,6 +5,7 @@
 
 
 from threading import Thread
+from concurrent.futures import ThreadPoolExecutor
 
 import xbmc
 import xbmcgui
@@ -21,6 +22,7 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 
 class AmbiGroup(lightgroup.LightGroup):
     def __init__(self, light_group_id, settings_monitor, bridge):
+
 
         self.bridge = bridge
         self.light_group_id = light_group_id
@@ -107,6 +109,7 @@ class AmbiGroup(lightgroup.LightGroup):
 
     def _ambi_loop(self):
         AMBI_RUNNING.set()
+        executor = ThreadPoolExecutor(max_workers=len(self.ambi_lights)*2)
         cap = xbmc.RenderCapture()
         cap_image = bytes
         xbmc.log("[SCRIPT.SERVICE.HUE] _ambiLoop started")
@@ -140,10 +143,13 @@ class AmbiGroup(lightgroup.LightGroup):
 
             colors = self.image_process.img_avg(image, self.min_bri, self.max_bri, self.saturation)
             for L in list(self.ambi_lights):
-                t = Thread(target=self._update_hue_rgb, name="_update_hue_rgb", args=(colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, colors['bri']), daemon=True)
-                t.start()
+                executor.submit(self._update_hue_rgb, colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, colors['bri'])
+                #t = Thread(target=self._update_hue_rgb, name="_update_hue_rgb", args=(colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, colors['bri']), daemon=True)
+                #t.start()
 
             self.settings_monitor.waitForAbort(self.update_interval)  # seconds
+
+        executor.shutdown(wait = False)
 
         if not self.settings_monitor.abortRequested():  # ignore writing average process time if Kodi is shutting down
             average_process_time = self._perf_average(PROCESS_TIMES)
