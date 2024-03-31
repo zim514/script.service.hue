@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="1.5.9">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="2.0.0">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.27.1"/>
@@ -20,7 +20,7 @@
         </assets>
         <source>https://github.com/zim514/script.service.hue</source>
         <forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-        <news>v1.5.8
+        <news>v2.0.0
 - Hue API V2 support (requires reconfiguration of scenes and ambilight)
 - Now uses standard scenes
 - Sunrise is now manually configured (Default 8AM)
@@ -29,7 +29,6 @@
             - Fix morning / sunset timers
             - Various bug fixes
             - Localisation updates from Weblate
-
 
 </news>
         <summary lang="ca_ES">Automatitza les llums Hue amb la reproducció de Kodi</summary>

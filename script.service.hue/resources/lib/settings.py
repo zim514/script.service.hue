@@ -45,9 +45,9 @@ class SettingsMonitor(xbmc.Monitor):
         self.daylight_disable = ADDON.getSettingBool("daylightDisable")
         self.schedule_enabled = ADDON.getSettingBool("enableSchedule")
 
-        self.morning_time = ADDON.getSettingString("morningTime")
-        self.schedule_start = ADDON.getSettingString("startTime")
-        self.schedule_end = ADDON.getSettingString("endTime")
+        self.morning_time = convert_time(ADDON.getSettingString("morningTime"))
+        self.schedule_start = convert_time(ADDON.getSettingString("startTime"))
+        self.schedule_end = convert_time(ADDON.getSettingString("endTime"))
 
         # video activation settings
         self.minimum_duration = ADDON.getSettingInt("video_MinimumDuration")
@@ -118,9 +118,7 @@ class SettingsMonitor(xbmc.Monitor):
     def _validate_schedule(self):
         xbmc.log(f"[SCRIPT.SERVICE.HUE] Validate schedule. Schedule Enabled: {self.schedule_enabled}, Start time: {self.schedule_start}, End time: {self.schedule_end}")
         if self.schedule_enabled:
-            start_time = convert_time(self.schedule_start)
-            end_time = convert_time(self.schedule_end)
-            if start_time > end_time:  # checking if start time is after the end time
+            if self.schedule_start > self.schedule_end:  # checking if start time is after the end time
                 ADDON.setSettingBool('EnableSchedule', False)
                 xbmc.log('[SCRIPT.SERVICE.HUE] _validate_schedule: Start time is after end time, schedule disabled')
                 notification(_('Hue Service'), _('Invalid start or end time, schedule disabled'), icon=xbmcgui.NOTIFICATION_ERROR)

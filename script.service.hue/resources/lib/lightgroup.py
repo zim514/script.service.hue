@@ -228,6 +228,7 @@ class ActivationChecker:
         # Check if schedule setting is enabled
         if schedule_enabled:
             xbmc.log(f"[SCRIPT.SERVICE.HUE] Schedule enabled: {schedule_enabled}, start: {schedule_start}, end: {schedule_end}")
+            xbmc.log(f"[SCRIPT.SERVICE.HUE] Schedule enabled: {schedule_enabled}, start: {schedule_start}, end: {schedule_end}")
             # Check if current time is within start and end times
             if schedule_start < datetime.now().time() < schedule_end:
                 xbmc.log("[SCRIPT.SERVICE.HUE] _is_within_schedule: True, Enabled by schedule")

@@ -194,7 +194,8 @@ class Timers(threading.Thread):
 
     def _set_daytime(self):
         now = datetime.now()
-
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] _set_daytime(): Morning Time: {self.morning_time}, Now: {now.time()}, bridge.sunset: {self.bridge.sunset}")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] _set_daytime(): Morning Time: {type(self.morning_time)}, Now: {type(now.time())}, bridge.sunset: {type(self.bridge.sunset)}")
         if self.morning_time <= now.time() < self.bridge.sunset:
             cache_set("daytime", True)
         else:
