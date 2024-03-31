@@ -305,11 +305,13 @@ class Hue(object):
         return False
 
     def update_sunset(self):
-        geolocation = self.make_api_request("GET", "geolocation")  # TODO: Support cases where geolocation is not configured on bridge.
+        geolocation = self.make_api_request("GET", "geolocation")
         xbmc.log(f"[SCRIPT.SERVICE.HUE] v2 update_sunset(): geolocation: {geolocation}")
         sunset_str = self.search_dict(geolocation, "sunset_time")
         if sunset_str is None:
-            reporting.process_exception(f"Sunset time not found in geolocation response: {geolocation}", logging=True)
+            xbmc.log(f"[SCRIPT.SERVICE.HUE] Sunset not found; configure Hue geolocalisation")
+            notification(_("Hue Service"), _("Configure Hue Home location to use Sunset time, defaulting to 19:00"), icon=xbmcgui.NOTIFICATION_ERROR)
+            self.sunset = convert_time("19:00")
             return
 
         self.sunset = convert_time(sunset_str)
