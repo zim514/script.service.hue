@@ -100,6 +100,7 @@ class Hue(object):
             except requests.RequestException as x:
                 # Report other kinds of RequestExceptions
                 xbmc.log(f"[SCRIPT.SERVICE.HUE] v2 make_request: RequestException: {x}")
+                reporting.process_exception(x)
             # Calculate the retry time and log the retry attempt
             retry_time = 2 ** attempt
             if retry_time >= 7 and attempt >= NOTIFICATION_THRESHOLD:

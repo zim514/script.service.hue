@@ -6,7 +6,6 @@
 import datetime
 import json
 from json import JSONDecodeError
-from .reporting import process_exception
 
 import xbmcgui
 
@@ -19,17 +18,13 @@ def notification(header, message, time=5000, icon=ADDON.getAddonInfo('icon'), so
     xbmcgui.Dialog().notification(header, message, icon, time, sound)
 
 
-def convert_time(time_string):
-    try:
-        parts = list(map(int, time_string.split(':')))
-        if len(parts) == 2:
-            return datetime.time(parts[0], parts[1])
-        elif len(parts) == 3:
-            return datetime.time(parts[0], parts[1], parts[2])
-    except ValueError:
-        raise
-    except Exception as x:
-        process_exception(x)
+def convert_time(time_string: str) -> datetime.time:
+    parts = list(map(int, time_string.split(':')))
+    if len(parts) == 2:
+        return datetime.time(parts[0], parts[1])
+    elif len(parts) == 3:
+        return datetime.time(parts[0], parts[1], parts[2])
+
 
 
 def cache_get(key: str):
