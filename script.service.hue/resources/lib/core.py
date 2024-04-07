@@ -98,7 +98,7 @@ class HueService:
         # Track the previous state of the service
         prev_service_enabled = self.service_enabled
 
-        while not self.settings_monitor.abortRequested():
+        while not self.settings_monitor.abortRequested(): # main loop, once per second
             # Update the current state of the service
             self.service_enabled = cache_get("service_enabled")
 
@@ -106,9 +106,10 @@ class HueService:
             if BRIDGE_SETTINGS_CHANGED.is_set():
                 self.bridge.connect()
 
-            if self.service_enabled:
-                self._process_actions()
+            #Process pending action commands
+            self._process_action()
 
+            if self.service_enabled:
                 # If the service was previously disabled and is now enabled, activate light groups
                 if not prev_service_enabled and self.bridge.connected:
                     self.activate()
@@ -148,7 +149,7 @@ class HueService:
             if ADDON.getSettingBool(f"group{g.light_group_id}_enabled"):
                 g.activate()
 
-    def _process_actions(self):
+    def _process_action(self):
         # Retrieve an action command stored in the CACHE.
         action = cache_get("action")
 
