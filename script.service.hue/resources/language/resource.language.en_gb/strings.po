@@ -244,7 +244,6 @@ msgctxt "#30052"
 msgid "Invalid start or end time, schedule disabled"
 msgstr ""
 
-
 msgctxt "#30058"
 msgid "Light Names:"
 msgstr ""
@@ -478,4 +477,8 @@ msgstr ""
 
 msgctxt "#30027"
 msgid "ERROR: Light not found, it may have been deleted"
+msgstr ""
+
+msgctxt "#30028"
+msgid "configure hue home location to use sunset time, defaulting to 19:00"
 msgstr ""
