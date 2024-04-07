@@ -25,8 +25,8 @@ class Hue(object):
         self.session = requests.Session()
         self.session.verify = False
 
-        self.connected = False
-        self.devices = None
+        self.connected: bool = False
+        self.devices: dict = None
         self.bridge_id = None
         self.retries = 0
         self.max_retries = 5
@@ -410,7 +410,7 @@ class Hue(object):
             ADDON.openSettings()
 
     def _select_hue_lights(self):
-        hue_lights = self.make_api_request("GET", "light")
+        hue_lights: dict = self.make_api_request("GET", "light")
         if hue_lights is not None and 'data' in hue_lights:
             items = [xbmcgui.ListItem(label=light['metadata']['name']) for light in hue_lights['data']]
             selected = xbmcgui.Dialog().multiselect(_("Select Hue Lights..."), items)
@@ -420,7 +420,7 @@ class Hue(object):
 
     def _discover_nupnp(self):
         xbmc.log("[SCRIPT.SERVICE.HUE] v2 _discover_nupnp:")
-        result = self.make_api_request('GET', 'https://discovery.meethue.com/')
+        result: dict = self.make_api_request('GET', 'https://discovery.meethue.com/')
         if result is None or isinstance(result, int):
             xbmc.log(f"[SCRIPT.SERVICE.HUE] v2 _discover_nupnp: make_request failed, result: {result}")
             return None
