@@ -41,7 +41,7 @@ class CommandHandler:
         }
 
     def handle_command(self, command, *args):
-        xbmc.log(f"[SCRIPT.SERVICE.HUE] Started with {command}")
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] Started with {command}, Python: {sys.version}")
         command_func = self.commands.get(command)
 
         if command_func:
@@ -88,7 +88,7 @@ class HueService:
         cache_set("service_enabled", True)
 
     def run(self):
-
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] Starting Hue Service, Python: {sys.version}")
         self.light_groups = self.initialize_light_groups()
         self.timers = Timers(self.settings_monitor, self.bridge, self)
 

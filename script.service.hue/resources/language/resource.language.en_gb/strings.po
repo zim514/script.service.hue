@@ -480,5 +480,5 @@ msgid "ERROR: Light not found, it may have been deleted"
 msgstr ""
 
 msgctxt "#30028"
-msgid "configure hue home location to use sunset time, defaulting to 19:00"
+msgid "Configure Hue Home location to use Sunset time, defaulting to 19:00"
 msgstr ""
