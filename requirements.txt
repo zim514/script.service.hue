@@ -1,7 +1,7 @@
 requests==2.31.0
 rollbar~=0.15.2
 polib~=1.2.0
-Pillow~=10.2.0
-Kodistubs~=20.0.1
+pillow~=6.2.1
+Kodistubs~=21.0.0
 urllib3~=2.2.1
 
