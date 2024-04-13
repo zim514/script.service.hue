@@ -49,9 +49,9 @@ def _report_error(level="critical", error="", exc="", logging=False):
         'platform': platform.system(),
         'kodi': KODIVERSION,
         'error': error,
-        'exc': exc
+        'exc': traceback.format_exc()
     }
-    rollbar.init(ROLLBAR_API_KEY, capture_ip=False, code_version="v" + ADDONVERSION, root=ADDONPATH, scrub_fields='bridgeUser, bridgeIP, bridge_user, bridge_ip, server.host', environment=env)
+    rollbar.init(ROLLBAR_API_KEY, capture_ip=False, code_version="v" + ADDONVERSION, root=ADDONPATH, scrub_fields='bridgeUser, bridgeIP, bridge_user, bridge_ip, server.host', environment=env, handler="thread")
     if logging:
         rollbar.report_message(exc, extra_data=data, level=level)
     else:
