@@ -584,35 +584,52 @@
         </category>
         <category id="schedule" label="30511" help="">
             <group id="1">
-                <setting id="forceOnSunset" type="boolean" label="30509" help="">
+                <setting id="forceOnSunset" type="boolean" label="30509" help="31340">
                     <level>1</level>
                     <default>True</default>
                     <control type="toggle"/>
                 </setting>
-                <setting id="daylightDisable" type="boolean" label="30508" help="">
+                <setting id="daylightDisable" type="boolean" label="30508" help="31339">
                     <level>1</level>
                     <default>False</default>
                     <control type="toggle"/>
                 </setting>
-                <setting id="morningTime" type="time" label="31334" help="">
+                <setting id="morningTime" type="time" label="31334" help="31338">
                     <level>2</level>
                     <default>08:00</default>
                     <control type="button" format="time">
                         <heading>31334</heading>
                     </control>
+                    <dependencies>
+                        <dependency type="enable">
+                            <condition operator="is" setting="daylightDisable">true</condition>
+                        </dependency>
+                    </dependencies>
 
                 </setting>
-                <setting id="enable_if_already_active" type="boolean" label="30516" help="">
+
+
+                <setting id="sunsetOffset" type="number" label="31336" help="31337">
                     <level>1</level>
-                    <default>False</default>
-                    <control type="toggle"/>
+                    <default>-30</default>
+                    <constraints>
+                        <minimum>-120</minimum>
+                        <step>1</step>
+                        <maximum>120</maximum>
+                    </constraints>
+                    <control type="slider" format="number">
+                        <popup>false</popup>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable">
+                            <condition operator="is" setting="daylightDisable">true</condition>
+                        </dependency>
+                    </dependencies>
                 </setting>
-                <setting id="keep_lights_off" type="boolean" label="30517" help="">
-                    <level>1</level>
-                    <default>False</default>
-                    <control type="toggle"/>
-                </setting>
+
+
             </group>
+
             <group id="2">
                 <setting id="enableSchedule" type="boolean" label="30505" help="">
                     <level>1</level>
@@ -644,6 +661,20 @@
                     </control>
                 </setting>
             </group>
+
+            <group id="3">
+                <setting id="enable_if_already_active" type="boolean" label="30516" help="">
+                    <level>1</level>
+                    <default>False</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="keep_lights_off" type="boolean" label="30517" help="">
+                    <level>1</level>
+                    <default>False</default>
+                    <control type="toggle"/>
+                </setting>
+            </group>
+
         </category>
         <category id="ambilight" label="30523" help="30521">
             <group id="1" label="30521">

@@ -6,7 +6,7 @@
 
 import sys
 import threading
-from datetime import datetime
+from datetime import datetime, timedelta, date
 
 import xbmc
 
@@ -191,29 +191,43 @@ class Timers(threading.Thread):
     def _run_sunset(self):
         xbmc.log(f"[SCRIPT.SERVICE.HUE] in run_sunset(): Sunset. ")
         cache_set("daytime", False)
-        self.hue_service.activate()
+        if self.settings_monitor.force_on_sunset:
+            self.hue_service.activate()
+
 
     def _set_daytime(self):
         now = datetime.now()
-        xbmc.log(f"[SCRIPT.SERVICE.HUE] _set_daytime(): Morning Time: {self.morning_time}, Now: {now.time()}, bridge.sunset: {self.bridge.sunset}")
-        xbmc.log(f"[SCRIPT.SERVICE.HUE] _set_daytime(): Morning Time: {type(self.morning_time)}, Now: {type(now.time())}, bridge.sunset: {type(self.bridge.sunset)}")
-        if self.morning_time <= now.time() < self.bridge.sunset:
-            cache_set("daytime", True)
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] _set_daytime(): Morning Time: {self.morning_time}, Now: {now.time()}, bridge.sunset: {self.bridge.sunset}, Sunset offset: {self.settings_monitor.sunset_offset}")
+
+        # Convert self.bridge.sunset to a datetime object by combining it with today's date
+        sunset_datetime = datetime.combine(datetime.today(), self.bridge.sunset)
+
+        # Apply the sunset offset
+        sunset_with_offset = sunset_datetime + timedelta(minutes=self.settings_monitor.sunset_offset)
+
+        # Compare times
+        if self.morning_time <= now.time() < sunset_with_offset.time():
+            daytime=True
         else:
-            cache_set("daytime", False)
+            daytime = False
+        cache_set("daytime", daytime)
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] in _set_daytime(): Sunset with offset: {sunset_with_offset}, Daytime: {daytime} ")
 
     def _task_loop(self):
 
-        while not self.settings_monitor.abortRequested() and not self.stop_timers.is_set():
+        while not self.settings_monitor.abortRequested() and not self.stop_timers.is_set(): #todo: Update timers if sunset offset changes.
 
             now = datetime.now()
-            self.morning_time = self.settings_monitor.morning_time
+            today = date.today()
+            # Convert self.morning_time to a datetime object #todo: Do this in settings.py, or something
+            morning_datetime = datetime.combine(today, self.settings_monitor.morning_time)
+            # Convert self.bridge.sunset to a datetime object and apply the sunset offset
+            sunset_datetime = datetime.combine(today, self.bridge.sunset) + timedelta(minutes=self.settings_monitor.sunset_offset)
 
-            time_to_sunset = self._time_until(now, self.bridge.sunset)
-            time_to_morning = self._time_until(now, self.morning_time)
+            time_to_sunset = self._time_until(now, sunset_datetime)
+            time_to_morning = self._time_until(now, morning_datetime)
 
             if time_to_sunset <= 0 or time_to_sunset > time_to_morning:
-
                 # Morning is next
                 xbmc.log(f"[SCRIPT.SERVICE.HUE] Timers: Morning is next. wait_time: {time_to_morning}")
                 if self.settings_monitor.waitForAbort(time_to_morning):
@@ -234,3 +248,33 @@ class Timers(threading.Thread):
         now = datetime(1, 1, 1, current.hour, current.minute, current.second)
         then = datetime(1, 1, 1, target.hour, target.minute, target.second)
         return (then - now).seconds
+
+'''
+    def _task_loop(self):
+
+        while not self.settings_monitor.abortRequested() and not self.stop_timers.is_set():
+
+            now = datetime.now()
+            self.morning_time = self.settings_monitor.morning_time
+
+            time_to_sunset = self._time_until(now, self.bridge.sunset + timedelta(minutes=self.settings_monitor.sunset_offset))
+            time_to_morning = self._time_until(now, self.morning_time)
+
+            if time_to_sunset <= 0 or time_to_sunset > time_to_morning:
+
+                # Morning is next
+                xbmc.log(f"[SCRIPT.SERVICE.HUE] Timers: Morning is next. wait_time: {time_to_morning}")
+                if self.settings_monitor.waitForAbort(time_to_morning):
+                    break
+                self._run_morning()
+
+            else:
+                # Sunset is next
+                xbmc.log(f"[SCRIPT.SERVICE.HUE] Timers: Sunset is next. wait_time: {time_to_sunset}")
+                if self.settings_monitor.waitForAbort(time_to_sunset):
+                    break
+                self._run_sunset()
+        xbmc.log("[SCRIPT.SERVICE.HUE] Timers stopped")
+'''
+
+

@@ -43,9 +43,11 @@ class SettingsMonitor(xbmc.Monitor):
         # scheduling settings
 
         self.daylight_disable = ADDON.getSettingBool("daylightDisable")
-        self.schedule_enabled = ADDON.getSettingBool("enableSchedule")
-
+        self.force_on_sunset = ADDON.getSettingBool("forceOnSunset")
         self.morning_time = convert_time(ADDON.getSettingString("morningTime"))
+        self.sunset_offset = ADDON.getSettingNumber("sunsetOffset")
+
+        self.schedule_enabled = ADDON.getSettingBool("enableSchedule")
         self.schedule_start = convert_time(ADDON.getSettingString("startTime"))
         self.schedule_end = convert_time(ADDON.getSettingString("endTime"))
 
