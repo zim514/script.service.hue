@@ -465,6 +465,31 @@ msgctxt "#31335"
 msgid "Transition time (seconds):"
 msgstr ""
 
+#. Number of minutes before or after sunset to consider as sunset
+msgctxt "#31336"
+msgid "Sunset Offset:"
+msgstr ""
+
+#. Help text for sunset offset setting
+msgctxt "#31337"
+msgid "Adjust sunset back or forwards by this many minutes"
+msgstr ""
+
+#. Help text for "morning disable time" setting
+msgctxt "#31338"
+msgid "Time at which to disable the service in the morning"
+msgstr ""
+
+#. Help text for 'Disable during daytime'
+msgctxt "#31339"
+msgid "Disable the service between configured time and sunset"
+msgstr ""
+
+#. Help text for 'activate at sunset'
+msgctxt "#31340"
+msgid "Activate scenes at sunset, during playback"
+msgstr ""
+
 msgctxt "#30002"
 msgid "Bridge overloaded, stopping ambilight"
 msgstr ""
@@ -484,6 +509,10 @@ msgstr ""
 
 msgctxt "#30027"
 msgid "ERROR: Light not found, it may have been deleted"
+msgstr ""
+
+msgctxt "#30028"
+msgid "Configure Hue Home location to use Sunset time, defaulting to 19:00"
 msgstr ""
 
 #~ msgctxt "#30042"
