@@ -510,4 +510,3 @@ msgstr ""
 msgctxt "#30028"
 msgid "Configure Hue Home location to use Sunset time, defaulting to 19:00"
 msgstr ""
-
