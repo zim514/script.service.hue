@@ -23,20 +23,10 @@ from .rgbxy import XYPoint, GamutA, GamutB, GamutC
 class AmbiGroup(lightgroup.LightGroup):
     def __init__(self, light_group_id, settings_monitor, bridge):
 
-
         self.bridge = bridge
         self.light_group_id = light_group_id
         self.settings_monitor = settings_monitor
         super().__init__(light_group_id, VIDEO, self.settings_monitor, self.bridge)
-
-        self.enabled = getattr(self.settings_monitor, f"group{self.light_group_id}_enabled", False)
-        self.update_interval = getattr(self.settings_monitor, f"group{self.light_group_id}_update_interval")
-        self.light_ids = getattr(self.settings_monitor, f"group{self.light_group_id}_lights").split(",")
-        self.capture_size_x = getattr(self.settings_monitor, f"group{self.light_group_id}_capture_size")
-        self.transition_time = getattr(self.settings_monitor, f"group{self.light_group_id}_transition_time")
-        self.min_bri = getattr(self.settings_monitor, f"group{self.light_group_id}_min_bri")
-        self.max_bri = getattr(self.settings_monitor, f"group{self.light_group_id}_max_bri")
-        self.saturation = getattr(self.settings_monitor, f"group{self.light_group_id}_saturation")
 
         self.capacity_error_count = 0
         self.saved_light_states = {}
@@ -49,12 +39,12 @@ class AmbiGroup(lightgroup.LightGroup):
         self.converterC = Converter(GamutC)
         self.helper = ColorHelper(GamutC)  # Gamut doesn't matter for this usage
 
-        if self.enabled and self.bridge.connected:
+        if getattr(self.settings_monitor, f"group{self.light_group_id}_enabled", False) and self.bridge.connected:
 
             index = 0
-
-            if len(self.light_ids) > 0:
-                for L in self.light_ids:
+            lights = getattr(self.settings_monitor, f"group{self.light_group_id}_lights")
+            if len(lights) > 0:
+                for L in lights:
                     gamut = self._get_light_gamut(self.bridge, L)
                     if gamut == 404:
                         notification(header=_("Hue Service"), message=_(f"ERROR: Light not found, it may have been deleted"), icon=xbmcgui.NOTIFICATION_ERROR)
@@ -67,15 +57,15 @@ class AmbiGroup(lightgroup.LightGroup):
                         index = index + 1
             xbmc.log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] Lights: {self.ambi_lights}")
         # convert MS to seconds
-        if self.update_interval == 0:
-            self.update_interval = 0.1
 
     def onAVStarted(self):
         self.state = STATE_PLAYING
         self.last_media_type = self._playback_type()
-        xbmc.log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] onPlaybackStarted. Group enabled: {self.enabled}, Bridge connected: {self.bridge.connected}, mediaType: {self.media_type}")
+        enabled = getattr(self.settings_monitor, f"group{self.light_group_id}_enabled", False)
 
-        if not self.enabled or not self.bridge.connected:
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] onPlaybackStarted. Group enabled: {enabled}, Bridge connected: {self.bridge.connected}, mediaType: {self.media_type}")
+
+        if not enabled or not self.bridge.connected:
             return
 
         xbmc.log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] onPlaybackStarted. media_type: {self.media_type} == playback_type: {self._playback_type()}")
@@ -109,17 +99,26 @@ class AmbiGroup(lightgroup.LightGroup):
 
     def _ambi_loop(self):
         AMBI_RUNNING.set()
-        executor = ThreadPoolExecutor(max_workers=len(self.ambi_lights)*2)
+        executor = ThreadPoolExecutor(max_workers=len(self.ambi_lights) * 2)
         cap = xbmc.RenderCapture()
         cap_image = bytes
         xbmc.log("[SCRIPT.SERVICE.HUE] _ambiLoop started")
         aspect_ratio = cap.getAspectRatio()
 
-        self.capture_size_y = int(self.capture_size_x / aspect_ratio)
-        expected_capture_size = self.capture_size_x * self.capture_size_y * 4  # size * 4 bytes - RGBA
-        xbmc.log(f"[SCRIPT.SERVICE.HUE] aspect_ratio: {aspect_ratio}, Capture Size: ({self.capture_size_x},{self.capture_size_y}), expected_capture_size: {expected_capture_size}")
+        # These settings require restarting ambilight video to update:
+        capture_size_x = getattr(self.settings_monitor, f"group{self.light_group_id}_capture_size")
+        transition_time = getattr(self.settings_monitor, f"group{self.light_group_id}_transition_time")
+        min_bri = getattr(self.settings_monitor, f"group{self.light_group_id}_min_bri")
+        max_bri = getattr(self.settings_monitor, f"group{self.light_group_id}_max_bri")
+        saturation = getattr(self.settings_monitor, f"group{self.light_group_id}_saturation")
+        update_interval = getattr(self.settings_monitor, f"group{self.light_group_id}_update_interval")
 
-        cap.capture(self.capture_size_x, self.capture_size_y)  # start the capture process https://github.com/xbmc/xbmc/pull/8613#issuecomment-165699101
+        capture_size_y = int(capture_size_x / aspect_ratio)
+        expected_capture_size = capture_size_x * capture_size_y * 4  # size * 4 bytes - RGBA
+
+        xbmc.log(f"[SCRIPT.SERVICE.HUE] aspect_ratio: {aspect_ratio}, Capture Size: ({capture_size_x}, {capture_size_y}), expected_capture_size: {expected_capture_size}")
+
+        cap.capture(capture_size_x, capture_size_y)  # start the capture process https://github.com/xbmc/xbmc/pull/8613#issuecomment-165699101
 
         for L in list(self.ambi_lights):
             self.ambi_lights[L].update(prev_xy=(0.0001, 0.0001))
@@ -133,7 +132,7 @@ class AmbiGroup(lightgroup.LightGroup):
                     xbmc.log("[SCRIPT.SERVICE.HUE] capImage is none or < expected. captured: {}, expected: {}".format(len(cap_image), expected_capture_size))
                     self.settings_monitor.waitForAbort(0.25)  # pause before trying again
                     continue  # no image captured, try again next iteration
-                image = Image.frombytes("RGBA", (self.capture_size_x, self.capture_size_y), bytes(cap_image), "raw", "BGRA", 0, 1)  # Kodi always returns a BGRA image.
+                image = Image.frombytes("RGBA", (capture_size_x, capture_size_y), bytes(cap_image), "raw", "BGRA", 0, 1)  # Kodi always returns a BGRA image.
 
             except ValueError:
                 xbmc.log(f"[SCRIPT.SERVICE.HUE] capImage: {len(cap_image)}")
@@ -141,15 +140,13 @@ class AmbiGroup(lightgroup.LightGroup):
                 self.settings_monitor.waitForAbort(0.25)
                 continue  # returned capture is smaller than expected, but this happens when player is stopping so fail silently. give up this loop.
 
-            colors = self.image_process.img_avg(image, self.min_bri, self.max_bri, self.saturation)
+            colors = self.image_process.img_avg(image, min_bri, max_bri, saturation)
             for L in list(self.ambi_lights):
-                executor.submit(self._update_hue_rgb, colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, colors['bri'])
-                #t = Thread(target=self._update_hue_rgb, name="_update_hue_rgb", args=(colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, colors['bri']), daemon=True)
-                #t.start()
+                executor.submit(self._update_hue_rgb, colors['rgb'][0], colors['rgb'][1], colors['rgb'][2], L, colors['bri'], transition_time)
 
-            self.settings_monitor.waitForAbort(self.update_interval)  # seconds
+            self.settings_monitor.waitForAbort(update_interval)  # seconds
 
-        executor.shutdown(wait = False)
+        executor.shutdown(wait=False)
 
         if not self.settings_monitor.abortRequested():  # ignore writing average process time if Kodi is shutting down
             average_process_time = self._perf_average(PROCESS_TIMES)
@@ -157,7 +154,7 @@ class AmbiGroup(lightgroup.LightGroup):
             ADDON.setSettingString("average_process_time", str(average_process_time))
             xbmc.log("[SCRIPT.SERVICE.HUE] _ambiLoop stopped")
 
-    def _update_hue_rgb(self, r, g, b, light, bri):
+    def _update_hue_rgb(self, r, g, b, light, bri, transition_time):
         gamut = self.ambi_lights[light].get('gamut')
         prev_xy = self.ambi_lights[light].get('prev_xy')
 
@@ -187,7 +184,7 @@ class AmbiGroup(lightgroup.LightGroup):
                     }
                 },
                 'dynamics': {
-                    'duration': int(self.transition_time)
+                    'duration': int(transition_time)
                 }
             }
             response = self.bridge.make_api_request('PUT', f'light/{light}', json=request_body)

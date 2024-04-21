@@ -25,7 +25,7 @@ class SettingsMonitor(xbmc.Monitor):
         self.reload_settings()
 
     def reload_settings(self):
-
+        xbmc.log("[SCRIPT.SERVICE.HUE] Reloading settings...")
         old_ip = self.ip
         old_key = self.key
 
@@ -93,7 +93,6 @@ class SettingsMonitor(xbmc.Monitor):
 
         # light group 3 / ambigroup
         self.group3_enabled = ADDON.getSettingBool("group3_enabled")
-
         self.group3_lights = ADDON.getSettingString("group3_Lights")
         self.group3_transition_time = int(ADDON.getSettingInt("group3_TransitionTime"))  # Stored as ms in Kodi settings.
         self.group3_min_bri = ADDON.getSettingInt("group3_MinBrightness")
@@ -103,6 +102,11 @@ class SettingsMonitor(xbmc.Monitor):
         self.group3_resume_state = ADDON.getSettingBool("group3_ResumeState")
         self.group3_resume_transition = ADDON.getSettingInt("group3_ResumeTransition") * 10  # convert seconds to multiple of 100ms
         self.group3_update_interval = ADDON.getSettingInt("group3_Interval") / 1000
+
+        if self.group3_update_interval == 0: #Never allow a 0 value for update interval
+            self.group3_update_interval = 0.1
+
+        self.group3_lights = self.group3_lights.split(",") #split lights on comma
 
         xbmc.log("[SCRIPT.SERVICE.HUE] SettingsMonitor: Settings loaded, validating")
 

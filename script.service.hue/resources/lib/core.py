@@ -248,33 +248,3 @@ class Timers(threading.Thread):
         now = datetime(1, 1, 1, current.hour, current.minute, current.second)
         then = datetime(1, 1, 1, target.hour, target.minute, target.second)
         return (then - now).seconds
-
-'''
-    def _task_loop(self):
-
-        while not self.settings_monitor.abortRequested() and not self.stop_timers.is_set():
-
-            now = datetime.now()
-            self.morning_time = self.settings_monitor.morning_time
-
-            time_to_sunset = self._time_until(now, self.bridge.sunset + timedelta(minutes=self.settings_monitor.sunset_offset))
-            time_to_morning = self._time_until(now, self.morning_time)
-
-            if time_to_sunset <= 0 or time_to_sunset > time_to_morning:
-
-                # Morning is next
-                xbmc.log(f"[SCRIPT.SERVICE.HUE] Timers: Morning is next. wait_time: {time_to_morning}")
-                if self.settings_monitor.waitForAbort(time_to_morning):
-                    break
-                self._run_morning()
-
-            else:
-                # Sunset is next
-                xbmc.log(f"[SCRIPT.SERVICE.HUE] Timers: Sunset is next. wait_time: {time_to_sunset}")
-                if self.settings_monitor.waitForAbort(time_to_sunset):
-                    break
-                self._run_sunset()
-        xbmc.log("[SCRIPT.SERVICE.HUE] Timers stopped")
-'''
-
-
