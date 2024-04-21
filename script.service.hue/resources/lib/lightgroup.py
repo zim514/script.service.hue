@@ -2,7 +2,7 @@
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
 #      See LICENSE.TXT for more information.
-
+import inspect
 from datetime import datetime
 
 import xbmc
@@ -61,6 +61,10 @@ class LightGroup(xbmc.Player):
             self.video_info_tag = None
 
         if self.activation_check.validate(play_scene):
+            contents = inspect.getmembers(self.video_info_tag)
+            xbmc.log(f"[SCRIPT.SERVICE.HUE] Start InfoTag: {contents}")
+
+            xbmc.log(f"[SCRIPT.SERVICE.HUE] InfoTag: {self.video_info_tag}, {self.video_info_tag.getDuration()}")
             xbmc.log(f"[SCRIPT.SERVICE.HUE] LightGroup[{self.light_group_id}] Running Play action")
             self.run_action("play")
 
@@ -88,10 +92,20 @@ class LightGroup(xbmc.Player):
 
         xbmc.log(f"[SCRIPT.SERVICE.HUE] LightGroup[{self.light_group_id}] onPlaybackStopped. Group enabled: {enabled}, Bridge connected: {self.bridge.connected}")
 
+
         if not enabled or not self.bridge.connected:
             return
 
         if stop_enabled and (self.media_type == self.last_media_type or self.media_type == self._playback_type()):
+            ########### TODO: Remove debug block
+            #xbmc.sleep(5000)
+            contents = inspect.getmembers(self.video_info_tag)
+            xbmc.log(f"[SCRIPT.SERVICE.HUE] Stop[{self.light_group_id}] InfoTag Inspect Contents: {contents}")
+
+            duration = self.video_info_tag.getDuration()
+            xbmc.log(f"[SCRIPT.SERVICE.HUE] Stop[{self.light_group_id}]: {self.video_info_tag}, {duration}")
+            ############
+
             if self.activation_check.validate(stop_scene):
                 xbmc.log(f"[SCRIPT.SERVICE.HUE] LightGroup[{self.light_group_id}] Running Stop action")
                 self.run_action("stop")
