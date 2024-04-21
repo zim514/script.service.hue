@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-01-02 12:40+0000\n"
+"PO-Revision-Date: 2024-04-17 05:18+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-scripts/script-service-hue/it_it/>\n"
 "Language: it_it\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.3\n"
+"X-Generator: Weblate 5.4.3\n"
 
 msgctxt "Addon Summary"
 msgid "Automate Hue lights with Kodi playback"
@@ -465,6 +465,31 @@ msgctxt "#31335"
 msgid "Transition time (seconds):"
 msgstr "Tempo di transizione (secondi):"
 
+#. Number of minutes before or after sunset to consider as sunset
+msgctxt "#31336"
+msgid "Sunset Offset:"
+msgstr "Sfasamento tramonto:"
+
+#. Help text for sunset offset setting
+msgctxt "#31337"
+msgid "Adjust sunset back or forwards by this many minutes"
+msgstr "Regola il tramonto avanti o indietro di questo numero di minuti"
+
+#. Help text for "morning disable time" setting
+msgctxt "#31338"
+msgid "Time at which to disable the service in the morning"
+msgstr "Orario in cui disattivare il servizio al mattino"
+
+#. Help text for 'Disable during daytime'
+msgctxt "#31339"
+msgid "Disable the service between configured time and sunset"
+msgstr "Disabilita il servizio tra l'ora configurata e il tramonto"
+
+#. Help text for 'activate at sunset'
+msgctxt "#31340"
+msgid "Activate scenes at sunset, during playback"
+msgstr "Attiva le scene al tramonto, durante la riproduzione"
+
 msgctxt "#30002"
 msgid "Bridge overloaded, stopping ambilight"
 msgstr "Bridge sovraccarico, arresto di Ambilight"
@@ -485,6 +510,14 @@ msgstr "Non selezionato"
 msgctxt "#30027"
 msgid "ERROR: Light not found, it may have been deleted"
 msgstr "ERRORE: luce non trovata, potrebbe essere stata eliminata"
+
+msgctxt "#30028"
+msgid "Configure Hue Home location to use Sunset time, defaulting to 19:00"
+msgstr "Configura la posizione di Hue Home per usare l'ora del tramonto, che per impostazione predefinita è alle 19:00"
+
+#~ msgctxt "#30028"
+#~ msgid "configure hue home location to use sunset time, defaulting to 19:00"
+#~ msgstr "configura la posizione home di Hue per usare l'ora del tramonto, che è predefinita alle 19:00"
 
 #~ msgctxt "#30042"
 #~ msgid "Fade Time (Seconds)"
