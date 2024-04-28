@@ -50,11 +50,11 @@ class Hue(object):
     def make_api_request(self, method, resource, discovery=False, **kwargs):
         # Discovery and account creation not yet supported on API V2. This flag uses a V1 URL and supports new IPs.
         if discovery:
-            log(f"[SCRIPT.SERVICE.HUE] v2 make_request: discovery mode")
+            log(f"[SCRIPT.SERVICE.HUE] v2 make_request: discovery mode. DiscoveredIP: {self.discoveredIP}")
         for attempt in range(MAX_RETRIES):
             # Prepare the URL for the request
-            #log(f"[SCRIPT.SERVICE.HUE] v2 ip: {self.settings_monitor.ip}, key: {self.settings_monitor.key}")
-            base_url = self.base_url if not discovery else f"http://{self.settings_monitor.ip}/api/"
+            log(f"[SCRIPT.SERVICE.HUE] v2 ip: {self.settings_monitor.ip}, key: {self.settings_monitor.key}")
+            base_url = self.base_url if not discovery else f"http://{self.discoveredIP}/api/"
             url = urljoin(base_url, resource)
             #log(f"[SCRIPT.SERVICE.HUE] v2 make_request: base_url: {base_url}, url: {url}, method: {method}, kwargs: {kwargs}")
             try:
@@ -117,7 +117,7 @@ class Hue(object):
         if self._discover_nupnp():
             log(f"[SCRIPT.SERVICE.HUE] v2 _discover_and_handle_new_ip: discover_nupnp SUCCESS, bridge IP: {self.settings_monitor.ip}")
             # TODO:  add new discovery methods here
-            ADDON.setSettingString("bridgeIP", self.settings_monitor.ip)
+            ADDON.setSettingString("bridgeIP", self.discoveredIP)
             if self.connect():
                 log(f"[SCRIPT.SERVICE.HUE] v2 _discover_and_handle_new_ip: connect SUCCESS")
                 return True
@@ -151,8 +151,8 @@ class Hue(object):
     def discover(self):
         log("[SCRIPT.SERVICE.HUE] v2 Start discover")
         # Reset settings
-        self.settings_monitor.ip = ""
-        self.settings_monitor.key = ""
+        self.discoveredIP = ""
+        self.key = ""
         self.connected = False
 
         ADDON.setSettingString("bridgeIP", "")
@@ -176,31 +176,31 @@ class Hue(object):
                 manual_entry = xbmcgui.Dialog().yesno(_("Bridge not found"), _("Bridge not found automatically. Please make sure your bridge is up to date and has access to the internet. [CR]Would you like to enter your bridge IP manually?")
                                                       )
                 if manual_entry:
-                    self.settings_monitor.ip = xbmcgui.Dialog().numeric(3, _("Bridge IP"))
-                    log(f"[SCRIPT.SERVICE.HUE] v2 discover: Manual entry: {self.settings_monitor.ip}")
+                    self.discoveredIP = xbmcgui.Dialog().numeric(3, _("Bridge IP"))
+                    log(f"[SCRIPT.SERVICE.HUE] v2 discover: Manual entry: {self.discoveredIP}")
 
-            if self.settings_monitor.ip:
+            if self.discoveredIP:
                 progress_bar.update(percent=50, message=_("Connecting..."))
                 # Set the base URL for the API
-                self.base_url = f"https://{self.settings_monitor.ip}/clip/v2/resource/"
+                self.base_url = f"https://{self.discoveredIP}/clip/v2/resource/"
                 # Try to connect to the bridge
                 log(f"[SCRIPT.SERVICE.HUE] v2 discover: Attempt connection")
                 config = self.make_api_request("GET", "0/config", discovery=True)  # bypass some checks in discovery mode, and use Hue API V1 until Philipps provides a V2 method
                 log(f"[SCRIPT.SERVICE.HUE] v2 discover: config: {config}")
                 if config is not None and isinstance(config, dict) and not progress_bar.iscanceled():
-                    progress_bar.update(percent=100, message=_("Found bridge: ") + self.settings_monitor.ip)
+                    progress_bar.update(percent=100, message=_("Found bridge: ") + self.discoveredIP)
                     self.settings_monitor.waitForAbort(1)
 
                     # Try to create a user
                     bridge_user_created = self._create_user(progress_bar)
 
                     if bridge_user_created:
-                        log(f"[SCRIPT.SERVICE.HUE] v2 discover: User created: {self.settings_monitor.key}")
+                        log(f"[SCRIPT.SERVICE.HUE] v2 discover: User created: {bridge_user_created}")
                         progress_bar.update(percent=90, message=_("User Found![CR]Saving settings..."))
 
                         # Save the IP and user key to the settings
-                        ADDON.setSettingString("bridgeIP", self.settings_monitor.ip)
-                        ADDON.setSettingString("bridgeUser", self.settings_monitor.key)
+                        ADDON.setSettingString("bridgeIP", self.discoveredIP)
+                        ADDON.setSettingString("bridgeUser", bridge_user_created)
 
                         progress_bar.update(percent=100, message=_("Complete!"))
                         self.settings_monitor.waitForAbort(5)
@@ -278,9 +278,9 @@ class Hue(object):
         try:
             # Extract and save username from response
             username = response[0]['success']['username']
-            self.settings_monitor.key = username
+
             log(f"[SCRIPT.SERVICE.HUE] v2 _create_user: User created: {username}")
-            return True
+            return username
         except (KeyError, TypeError) as exc:
             log(f"[SCRIPT.SERVICE.HUE] v2 _create_user: Username not found: {exc}")
             return False
@@ -432,7 +432,7 @@ class Hue(object):
             except KeyError:
                 log("[SCRIPT.SERVICE.HUE] v2 _discover_nupnp: No IP found in response")
                 return None
-        self.settings_monitor.ip = bridge_ip
+        self.discoveredIP = bridge_ip
         return True
 
     @staticmethod
