@@ -9,7 +9,7 @@ import xbmcgui
 
 from . import ADDON, BRIDGE_SETTINGS_CHANGED
 from .language import get_string as _
-from .kodiutils import convert_time, notification
+from .kodiutils import convert_time, notification, log
 
 
 class SettingsMonitor(xbmc.Monitor):
@@ -25,7 +25,7 @@ class SettingsMonitor(xbmc.Monitor):
         self.reload_settings()
 
     def reload_settings(self):
-        xbmc.log("[SCRIPT.SERVICE.HUE] Reloading settings...")
+        log("[SCRIPT.SERVICE.HUE] Reloading settings...")
         old_ip = self.ip
         old_key = self.key
 
@@ -35,7 +35,7 @@ class SettingsMonitor(xbmc.Monitor):
 
         # If IP or key has changed, set flag so core loop knows to try reconnecting
         if (old_ip != self.ip or old_key != self.key) and self.ip and self.key:
-            xbmc.log(f"[SCRIPT.SERVICE.HUE] SettingsMonitor: Bridge settings changed: {self.ip} and {self.key}")
+            log(f"[SCRIPT.SERVICE.HUE] SettingsMonitor: Bridge settings changed: {self.ip} and {self.key}")
             BRIDGE_SETTINGS_CHANGED.set()
 
         self.show500error = ADDON.getSettingBool("show500Error")
@@ -108,23 +108,23 @@ class SettingsMonitor(xbmc.Monitor):
 
         self.group3_lights = self.group3_lights.split(",") #split lights on comma
 
-        xbmc.log("[SCRIPT.SERVICE.HUE] SettingsMonitor: Settings loaded, validating")
+        log("[SCRIPT.SERVICE.HUE] SettingsMonitor: Settings loaded, validating")
 
         self._validate_schedule()
         self._validate_ambilight()
 
     def _validate_ambilight(self):
-        xbmc.log(f"[SCRIPT.SERVICE.HUE] Validate ambilight config. Enabled: {self.group3_enabled}, Lights: {self.group3_lights}")
+        log(f"[SCRIPT.SERVICE.HUE] Validate ambilight config. Enabled: {self.group3_enabled}, Lights: {self.group3_lights}")
         if self.group3_enabled:
             if self.group3_lights == '-1':
                 ADDON.setSettingBool('group3_enabled', False)
-                xbmc.log('[SCRIPT.SERVICE.HUE] _validate_ambilights: No ambilights selected')
+                log('[SCRIPT.SERVICE.HUE] _validate_ambilights: No ambilights selected')
                 notification(_('Hue Service'), _('No lights selected for Ambilight.'), icon=xbmcgui.NOTIFICATION_ERROR)
 
     def _validate_schedule(self):
-        xbmc.log(f"[SCRIPT.SERVICE.HUE] Validate schedule. Schedule Enabled: {self.schedule_enabled}, Start time: {self.schedule_start}, End time: {self.schedule_end}")
+        log(f"[SCRIPT.SERVICE.HUE] Validate schedule. Schedule Enabled: {self.schedule_enabled}, Start time: {self.schedule_start}, End time: {self.schedule_end}")
         if self.schedule_enabled:
             if self.schedule_start > self.schedule_end:  # checking if start time is after the end time
                 ADDON.setSettingBool('EnableSchedule', False)
-                xbmc.log('[SCRIPT.SERVICE.HUE] _validate_schedule: Start time is after end time, schedule disabled')
+                log('[SCRIPT.SERVICE.HUE] _validate_schedule: Start time is after end time, schedule disabled')
                 notification(_('Hue Service'), _('Invalid start or end time, schedule disabled'), icon=xbmcgui.NOTIFICATION_ERROR)

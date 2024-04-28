@@ -8,8 +8,9 @@ import json
 from json import JSONDecodeError
 
 import xbmcgui
+import xbmc
 
-from . import ADDON, ADDONID
+from . import ADDON, ADDONID, FORCEDEBUGLOG
 
 cache_window = xbmcgui.Window(10000)
 
@@ -26,7 +27,6 @@ def convert_time(time_string: str) -> datetime.time:
         return datetime.time(parts[0], parts[1], parts[2])
 
 
-
 def cache_get(key: str):
     data_str = cache_window.getProperty(f"{ADDONID}.{key}]")
     try:
@@ -40,3 +40,10 @@ def cache_set(key: str, data):
     data_str = json.dumps(data)
     cache_window.setProperty(f"{ADDONID}.{key}]", data_str)
     return
+
+
+def log(message, level=xbmc.LOGDEBUG):
+    if FORCEDEBUGLOG:
+        xbmc.log(message, xbmc.LOGWARNING)
+    else:
+        xbmc.log(message, level)

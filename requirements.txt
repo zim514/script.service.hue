@@ -4,4 +4,5 @@ polib
 pillow
 Kodistubs~=21.0.0
 urllib3
+kodi-addon-checker
 
