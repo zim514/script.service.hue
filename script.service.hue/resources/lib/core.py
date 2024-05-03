@@ -217,7 +217,7 @@ class Timers(threading.Thread):
 
         while not self.settings_monitor.abortRequested() and not self.stop_timers.is_set(): #todo: Update timers if sunset offset changes.
 
-            now = datetime.now()
+            now = datetime.now() + timedelta(seconds=1)
             today = date.today()
             # Convert self.morning_time to a datetime object #todo: Do this in settings.py, or something
             morning_datetime = datetime.combine(today, self.settings_monitor.morning_time)
