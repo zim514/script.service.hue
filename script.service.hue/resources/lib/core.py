@@ -217,23 +217,31 @@ class Timers(threading.Thread):
 
         while not self.settings_monitor.abortRequested() and not self.stop_timers.is_set(): #todo: Update timers if sunset offset changes.
 
-            now = datetime.now() + timedelta(seconds=1)
+            now = datetime.now() #+ timedelta(seconds=5)
             today = date.today()
-            # Convert self.morning_time to a datetime object #todo: Do this in settings.py, or something
+
             morning_datetime = datetime.combine(today, self.settings_monitor.morning_time)
             # Convert self.bridge.sunset to a datetime object and apply the sunset offset
             sunset_datetime = datetime.combine(today, self.bridge.sunset) + timedelta(minutes=self.settings_monitor.sunset_offset)
 
-            time_to_sunset = self._time_until(now, sunset_datetime)
-            time_to_morning = self._time_until(now, morning_datetime)
+            if sunset_datetime < now:
+                sunset_datetime += timedelta(days=1)
+            if morning_datetime < now:
+                morning_datetime += timedelta(days=1)
 
-            if time_to_sunset <= 0 or time_to_sunset > time_to_morning:
+            time_to_sunset = (sunset_datetime - now).total_seconds()
+            time_to_morning = (morning_datetime - now).total_seconds()
+
+            # Log the calculated times
+            log(f"[SCRIPT.SERVICE.HUE] Time to sunset: {time_to_sunset}, Time to morning: {time_to_morning}")
+
+            # Determine which event is next based on the time calculations
+            if time_to_morning < time_to_sunset:
                 # Morning is next
                 log(f"[SCRIPT.SERVICE.HUE] Timers: Morning is next. wait_time: {time_to_morning}")
                 if self.settings_monitor.waitForAbort(time_to_morning):
                     break
                 self._run_morning()
-
             else:
                 # Sunset is next
                 log(f"[SCRIPT.SERVICE.HUE] Timers: Sunset is next. wait_time: {time_to_sunset}")
