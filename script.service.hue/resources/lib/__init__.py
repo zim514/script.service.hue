@@ -13,7 +13,7 @@ import xbmcaddon
 import xbmcvfs
 
 STRDEBUG = False  # Show string ID in UI
-FORCEDEBUGLOG = True # Force output of debug logs regardless of Kodi logging setting #TODO: Change to false before shipping
+FORCEDEBUGLOG = False # Force output of debug logs regardless of Kodi logging setting
 TIMEOUT = 1 # requests default timeout
 MAX_RETRIES = 7
 NOTIFICATION_THRESHOLD = 2
