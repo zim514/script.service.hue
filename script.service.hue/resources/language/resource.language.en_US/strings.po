@@ -4,122 +4,115 @@
 # Addon Provider: zim514
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-05-18 21:31+0000\n"
-"Last-Translator: Havok Dan <havokdan@yahoo.com.br>\n"
-"Language-Team: Portuguese (Brazil) <https://kodi.weblate.cloud/projects/kodi-add-ons-scripts/script-service-hue/pt_br/>\n"
-"Language: pt_br\n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.5.4\n"
 
 msgctxt "Addon Summary"
 msgid "Automate Hue lights with Kodi playback"
-msgstr "Automatize as luzes Hue com reprodução Kodi"
+msgstr ""
 
 msgctxt "Addon Description"
 msgid "Automate your Hue lights with Kodi. Use scenes configured in the official Hue app. Can use Hue's sunset time to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
-msgstr "Automatize suas luzes Hue com Kodi. Use cenas configuradas no aplicativo oficial do Hue. Pode usar o horário do pôr do sol do Hue para desativar automaticamente o serviço durante o dia e acender as luzes ao pôr do sol durante a reprodução. Inclui suporte Ambilight."
+msgstr ""
 
 msgctxt "Addon Disclaimer"
 msgid "Requires a Hue Bridge V2 (Square). Ambilight not available on all hardware."
-msgstr "Requer um Hue Bridge V2 (quadrado). Ambilight não está disponível em todos os hardwares."
+msgstr ""
 
 msgctxt "#32100"
 msgid "Video Scenes"
-msgstr "Video Scenes"
+msgstr ""
 
 msgctxt "#32102"
 msgid "Audio Scenes"
-msgstr "Audio Scenes"
+msgstr ""
 
 msgctxt "#32201"
 msgid "Start/Resume"
-msgstr "Iniciar/Resumir"
+msgstr ""
 
 msgctxt "#32202"
 msgid "Pause"
-msgstr "Pausar"
+msgstr ""
 
 msgctxt "#32203"
 msgid "Stop"
-msgstr "Parar"
+msgstr ""
 
 msgctxt "#30036"
 msgid "Scene:"
-msgstr "Scene:"
+msgstr ""
 
 msgctxt "#32511"
 msgid "Scene ID"
-msgstr "ID da Cena"
+msgstr ""
 
 msgctxt "#32512"
 msgid "Select..."
-msgstr "Selecionar..."
+msgstr ""
 
 msgctxt "#30500"
 msgid "Bridge"
-msgstr "Ponte"
+msgstr ""
 
 msgctxt "#30501"
 msgid "Discover Hue Bridge / Enter IP"
-msgstr "Discover Hue Bridge / Enter IP"
+msgstr ""
 
 msgctxt "#30502"
 msgid "Bridge IP"
-msgstr "IP da Ponte"
+msgstr ""
 
 msgctxt "#30503"
 msgid "Bridge User"
-msgstr "Usuário da Ponte"
+msgstr ""
 
 msgctxt "#30505"
 msgid "Enable Schedule (24h format)"
-msgstr "Ativar agendamento (formato 24h)"
+msgstr ""
 
 msgctxt "#30506"
 msgid "Start time:"
-msgstr "Hora de início:"
+msgstr ""
 
 msgctxt "#30507"
 msgid "End time:"
-msgstr "Fim do tempo:"
+msgstr ""
 
 msgctxt "#30508"
 msgid "Disable during daytime"
-msgstr "Disable during daytime"
+msgstr ""
 
 #. If watching a movie or TV show, and sunset occurs, activate the scene in that moment
 msgctxt "#30509"
 msgid "Activate during playback at sunset"
-msgstr "Ativar durante a reprodução ao pôr do sol"
+msgstr ""
 
 msgctxt "#30510"
 msgid "General"
-msgstr "Geral"
+msgstr ""
 
 msgctxt "#30511"
 msgid "Schedule"
-msgstr "Agenda"
+msgstr ""
 
 msgctxt "#30512"
 msgid "Scenes"
-msgstr "Cenas"
+msgstr ""
 
 msgctxt "#30513"
 msgid "Play Scene Enabled"
-msgstr "Reproduzir Cena Habilitado"
+msgstr ""
 
 msgctxt "#30514"
 msgid "Pause Scene Enabled"
-msgstr "Pausar Cena Habilitado"
+msgstr ""
 
 msgctxt "#30515"
 msgid "Stop Scene Enabled"
-msgstr "Parar Cena Habilitado"
+msgstr ""
 
 #. If any light in the selected scene is on, ignore the schedule restrictions
 msgctxt "#30516"
@@ -145,11 +138,11 @@ msgstr ""
 
 msgctxt "#32101"
 msgid "Advanced"
-msgstr "Avançado"
+msgstr ""
 
 msgctxt "#32106"
 msgid "Video Activation Rules"
-msgstr "Video Activation Rules"
+msgstr ""
 
 msgctxt "#6101"
 msgid "Select Lights"
@@ -233,7 +226,7 @@ msgstr ""
 
 msgctxt "#30043"
 msgid "Error"
-msgstr "Erro"
+msgstr ""
 
 msgctxt "#30047"
 msgid "Connection lost. Check settings. Shutting down"
@@ -339,7 +332,7 @@ msgstr ""
 
 msgctxt "#30060"
 msgid "Play"
-msgstr "Reproduzir"
+msgstr ""
 
 #. Must end with a space, status string is appended
 msgctxt "#30061"
@@ -352,11 +345,11 @@ msgstr ""
 
 msgctxt "#30063"
 msgid "Disabled by daytime"
-msgstr "Disabled by daytime"
+msgstr ""
 
 msgctxt "#30064"
 msgid "ERROR: Scene not found, it may have been deleted"
-msgstr "ERROR: Scene not found, it may have been deleted"
+msgstr ""
 
 msgctxt "#30080"
 msgid "The following error occurred:"
@@ -514,7 +507,3 @@ msgstr ""
 msgctxt "#30028"
 msgid "Configure Hue Home location to use Sunset time, defaulting to 19:00"
 msgstr ""
-
-#~ msgctxt "#30002"
-#~ msgid "ERROR: Scene not created"
-#~ msgstr "ERROR: Scene not created"
