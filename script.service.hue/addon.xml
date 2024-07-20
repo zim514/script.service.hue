@@ -26,9 +26,8 @@
 - Sunrise is now manually configured (Default 8AM)
 - Removed some unnecessary settings
 - Refactoring and code improvements
-            - Fix morning / sunset timers
-            - Various bug fixes
-            - Localisation updates from Weblate
+- Many bug fixes
+- Localisation updates from Weblate
 
 </news>
         <summary lang="ca_ES">Automatitza les llums Hue amb la reproducció de Kodi</summary>

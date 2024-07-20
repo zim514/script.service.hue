@@ -105,6 +105,7 @@ class HueService:
             # Check if the bridge settings have changed, if so, reconnect the bridge
             if BRIDGE_SETTINGS_CHANGED.is_set():
                 self.bridge.connect()
+                BRIDGE_SETTINGS_CHANGED.clear()
 
             #Process pending action commands
             self._process_action()
