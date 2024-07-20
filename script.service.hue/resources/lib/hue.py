@@ -126,26 +126,30 @@ class Hue(object):
 
     def connect(self):
         log(f"[SCRIPT.SERVICE.HUE] v2 connect: ip: {self.settings_monitor.ip}, key: {self.settings_monitor.key}")
-        self.base_url = f"https://{self.settings_monitor.ip}/clip/v2/resource/"
-        self.session.headers.update({'hue-application-key': self.settings_monitor.key})
+        if self.settings_monitor.ip and self.settings_monitor.key:
+            self.base_url = f"https://{self.settings_monitor.ip}/clip/v2/resource/"
+            self.session.headers.update({'hue-application-key': self.settings_monitor.key})
 
-        self.devices = self.make_api_request("GET", "device")
-        if self.devices is None:
+            self.devices = self.make_api_request("GET", "device")
+            if self.devices is None:
+                log(f"[SCRIPT.SERVICE.HUE] v2 connect: Connection attempts failed. Setting connected to False")
+                self.connected = False
+                return False
+
+            self.scene_data = self.make_api_request("GET", "scene")
+
+            self.bridge_id = self.get_device_by_archetype(self.devices, 'bridge_v2')
+            if self._check_version():
+                self.connected = True
+                self.update_sunset()
+                log(f"[SCRIPT.SERVICE.HUE] v2 connect: Connection successful")
+                return True
             log(f"[SCRIPT.SERVICE.HUE] v2 connect: Connection attempts failed. Setting connected to False")
             self.connected = False
             return False
 
-        self.scene_data = self.make_api_request("GET", "scene")
-
-        self.bridge_id = self.get_device_by_archetype(self.devices, 'bridge_v2')
-        if self._check_version():
-            self.connected = True
-            self.update_sunset()
-            log(f"[SCRIPT.SERVICE.HUE] v2 connect: Connection successful")
-            return True
-
-        log(f"[SCRIPT.SERVICE.HUE] v2 connect: Connection attempts failed. Setting connected to False")
-        self.connected = False
+        log("[SCRIPT.SERVICE.HUE] No bridge IP or user key provided. Bridge not configured.")
+        notification(_("Hue Service"), _("Bridge not configured"), icon=xbmcgui.NOTIFICATION_ERROR)
         return False
 
     def discover(self):
