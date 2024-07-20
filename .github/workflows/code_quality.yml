@@ -6,25 +6,19 @@ on:
     branches:
       - main
 
-
 jobs:
-  Qodana:
+  qodana:
     runs-on: ubuntu-latest
-    if: github.repository == 'zim514/script.service.hue'
     permissions:
       contents: write
       pull-requests: write
       checks: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}  # to check out the actual pull request commit, not the merge commit
-          fetch-depth: 0
+          fetch-depth: 0  # a full history is required for pull request analysis
       - name: 'Qodana Scan'
-        uses: JetBrains/qodana-action@latest
-        with:
-          use-caches: true
-          cache-default-branch-only: true
-          args: --baseline,qodana.sarif.json
+        uses: JetBrains/qodana-action@v2024.1
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
