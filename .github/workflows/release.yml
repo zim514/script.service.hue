@@ -28,7 +28,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
           cache: 'pip'
 
       - name: Install dependencies
@@ -47,11 +47,6 @@ jobs:
           echo "pwd: $(pwd)"
           ./repo/create_repository.py --datadir=repo/docs/repo ./addon/script.service.hue ./repo/repository.snapcase
 
-#      - name: Output debug
-#        shell: bash
-#        run: |
-#          echo "****************************************"
-#          find . -name .git -prune -o -print
 
       - name : Find addon zip
         id: zip_filename

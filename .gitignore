@@ -9,3 +9,5 @@
 act-ref.json
 workflow.env
 release.cmd
+check.cmd
+

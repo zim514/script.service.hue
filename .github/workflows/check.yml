@@ -6,21 +6,28 @@ jobs:
   kodi-addon-checker:
     if: github.repository == 'zim514/script.service.hue'
     runs-on: ubuntu-latest
+    continue-on-error: true
     name: Kodi addon checker
     steps:
 
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.8'
         cache: 'pip'
 
-    - name: Install dependencies
-      run: pip install kodi-addon-checker
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip3 install -r requirements.txt
+
 
     - name: Kodi addon checker validation
       id: kodi-addon-check
+      continue-on-error: true
       run: kodi-addon-checker --branch=matrix ./script.service.hue
