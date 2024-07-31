@@ -41,22 +41,25 @@
         <summary lang="hr_HR">Automatski Hue svjetla s Kodi reprodukcijom</summary>
         <summary lang="it_IT">Automatizza le luci Hue con la riproduzione di Kodi</summary>
         <summary lang="ko_KR">Kodi 재생으로 Hue 조명 자동화</summary>
+        <summary lang="pt_BR">Automatize as luzes Hue com reprodução Kodi</summary>
         <summary lang="sk_SK">Automatizácia svetiel Hue s prehrávaním v Kodi</summary>
         <summary lang="zh_CN">Kodi 播放时自动调整 Hue 灯光</summary>
         <description lang="en_GB">Automate your Hue lights with Kodi. Use scenes configured in the official Hue app. Can use Hue&apos;s sunset time to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support.</description>
         <description lang="es_ES">Automatiza tus luces Hue con Kodi. Utiliza escenas configuradas en la app oficial de Hue. Puede utilizar la hora de puesta de sol de Hue para desactivar automáticamente el servicio durante el día y encender las luces al atardecer durante la reproducción. Incluye soporte para Ambilight.</description>
         <description lang="it_IT">Automatizza le luci Hue con Kodi. Usa le scene configurate nell&apos;app Hue ufficiale. È possibile utilizzare l&apos;ora del tramonto di Hue per disattivare automaticamente il servizio durante il giorno e accendere le luci al tramonto durante la riproduzione. Include il supporto Ambilight.</description>
         <description lang="ko_KR">Kodi로 Hue 자동 조명을 사용합니다. 공식 Hue 앱에서 구성된 장면을 사용합니다. Hue의 해지는 시간을 사용하여 낮에는 서비스를 사용하지 않고 해진 후 재생에는 조명을 켤 수 있습니다. Ambilight 지원이 포함됩니다.</description>
+        <description lang="pt_BR">Automatize suas luzes Hue com Kodi. Use cenas configuradas no aplicativo oficial do Hue. Pode usar o horário do pôr do sol do Hue para desativar automaticamente o serviço durante o dia e acender as luzes ao pôr do sol durante a reprodução. Inclui suporte Ambilight.</description>
         <disclaimer lang="cs_CZ">Vyžaduje Hue Bridge V2 (čtvercový). Ambilight není podporován na všech zařízeních.</disclaimer>
         <disclaimer lang="da_DK">Kræver en Hue Bridge V2 (firkant). Ambilight er ikke tilgængelig på al hardware.</disclaimer>
         <disclaimer lang="de_DE">Erfordert eine Hue Bridge V2 (quadratisch). Ambilight-Unterstützung nicht mit jeder Hardware verfügbar.</disclaimer>
         <disclaimer lang="en_GB">Requires a Hue Bridge V2 (Square). Ambilight not available on all hardware.</disclaimer>
-        <disclaimer lang="es_ES">Requiere un Hue Bridge V2 (cuadrado). Ambilight no está disponible en todos los equipos.</disclaimer>
+        <disclaimer lang="es_ES">Requiere un Hue Bridge V2 (cuadrado). Ambilight no está disponible en todos los dispositivos.</disclaimer>
         <disclaimer lang="fi_FI">Vaatii Hue Silta V2 (nelikulmainen) -laitteen. Ambilight ei ole käytettävissä kaikilla laitteilla.</disclaimer>
         <disclaimer lang="fr_FR">Nécessite un bridge Hue V2 (carré). Ambilight n&apos;est pas disponible sur tous les matériels.</disclaimer>
         <disclaimer lang="hr_HR">Zahtijeva Hue Bridge V2 (Square). Ambijetalno svijtlo nije dostupno na svim hardverima.</disclaimer>
         <disclaimer lang="it_IT">Richiede un Bridge Hue V2 (quadrato). Ambilight non disponibile su tutto l&apos;hardware.</disclaimer>
         <disclaimer lang="ko_KR">Hue Bridge V2(정사각형)가 필요합니다. 모든 하드웨어에서 Ambilight를 사용할 수 있는 것은 아닙니다.</disclaimer>
+        <disclaimer lang="pt_BR">Requer um Hue Bridge V2 (quadrado). Ambilight não está disponível em todos os hardwares.</disclaimer>
         <disclaimer lang="sk_SK">Vyžaduje Hue Bridge V2 (štvorcový). Ambilight nie je k dispozícii na všetkých zariadeniach.</disclaimer>
         <disclaimer lang="zh_CN">需要 Hue Bridge V2 桥接器（正方形）。并非所有硬件都支持环境光。</disclaimer>
     </extension>
