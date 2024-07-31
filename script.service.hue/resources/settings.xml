@@ -141,7 +141,7 @@
                 </setting>
                 <setting id="group0_pauseTransition" type="number" label="31335" help="">
                     <level>1</level>
-                    <default>8</default>
+                    <default>5</default>
                     <dependencies>
                         <dependency type="visible">
                             <and>

@@ -6,15 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-04-17 05:18+0000\n"
-"Last-Translator: José Antonio Alvarado <jalvarado0.eses@gmail.com>\n"
+"PO-Revision-Date: 2024-07-29 15:26+0000\n"
+"Last-Translator: roliverosc <roliverosc@hotmail.com>\n"
 "Language-Team: Spanish (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-scripts/script-service-hue/es_es/>\n"
 "Language: es_es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.4.3\n"
+"X-Generator: Weblate 5.6.2\n"
 
 msgctxt "Addon Summary"
 msgid "Automate Hue lights with Kodi playback"
@@ -26,7 +26,7 @@ msgstr "Automatiza tus luces Hue con Kodi. Utiliza escenas configuradas en la ap
 
 msgctxt "Addon Disclaimer"
 msgid "Requires a Hue Bridge V2 (Square). Ambilight not available on all hardware."
-msgstr "Requiere un Hue Bridge V2 (cuadrado). Ambilight no está disponible en todos los equipos."
+msgstr "Requiere un Hue Bridge V2 (cuadrado). Ambilight no está disponible en todos los dispositivos."
 
 msgctxt "#32100"
 msgid "Video Scenes"
@@ -111,11 +111,11 @@ msgstr "Escenas"
 
 msgctxt "#30513"
 msgid "Play Scene Enabled"
-msgstr "Reproducción de escena activada"
+msgstr "Reproducir escena activado"
 
 msgctxt "#30514"
 msgid "Pause Scene Enabled"
-msgstr "Pausa de escena activada"
+msgstr "Pausar escena activado"
 
 msgctxt "#30515"
 msgid "Stop Scene Enabled"
@@ -124,7 +124,7 @@ msgstr "Detener escena activado"
 #. If any light in the selected scene is on, ignore the schedule restrictions
 msgctxt "#30516"
 msgid "Disable time check if any light already on"
-msgstr "Desactivar comprobar la hora si alguna luz ya está encendida"
+msgstr "Desactivar control de tiempo si ya hay alguna luz encendida"
 
 #. If any of the lights in the scene are off, don't activate the related scene
 msgctxt "#30517"
@@ -161,7 +161,7 @@ msgstr "Activado"
 
 msgctxt "#9001"
 msgid "Press connect button on Hue bridge"
-msgstr "Pulsa el botón de conexión del Hue bridge"
+msgstr "Pulse el botón de conexión del Hue bridge"
 
 msgctxt "#30000"
 msgid "Hue Service"
@@ -169,7 +169,7 @@ msgstr "Servicio Hue"
 
 msgctxt "#30004"
 msgid "Check your bridge and network"
-msgstr "Comprobar el bridge y la red"
+msgstr "Comprobar bridge y red"
 
 msgctxt "#30006"
 msgid "Hue connected"
@@ -201,7 +201,7 @@ msgstr "Bridge encontrado: "
 
 msgctxt "#30018"
 msgid "Discover bridge..."
-msgstr "Descubrir el bridge..."
+msgstr "Descubrir bridge..."
 
 msgctxt "#30021"
 msgid "Bridge connection failed"
@@ -326,7 +326,7 @@ msgstr "Tiempo de transición de reanudación (seg.)"
 
 msgctxt "#30071"
 msgid "Only colour lights are supported"
-msgstr "Sólo se admiten luces de color"
+msgstr "Solo se admiten luces de color"
 
 #. Old or deperacted bridge firmware or hardware
 msgctxt "#30072"
@@ -356,7 +356,7 @@ msgstr "Desactivado durante el día"
 
 msgctxt "#30064"
 msgid "ERROR: Scene not found, it may have been deleted"
-msgstr "ERROR: Escena no encontrada, puede haber sido borrada"
+msgstr "ERROR: Escena no encontrada, puede haber sido eliminada"
 
 msgctxt "#30080"
 msgid "The following error occurred:"
@@ -372,7 +372,7 @@ msgstr "No hay luces seleccionadas para Ambilight."
 
 msgctxt "#30070"
 msgid "Ok"
-msgstr "Ok"
+msgstr "Aceptar"
 
 msgctxt "#30075"
 msgid "Hue Bridge over capacity"
@@ -388,7 +388,7 @@ msgstr "El Hue Bridge está por encima de su capacidad. Aumentar la frecuencia d
 
 msgctxt "#30078"
 msgid "Bridge not found[CR]Check your bridge and network."
-msgstr "Puente no encontrado[CR]Comprobar el bridge y la red."
+msgstr "Bridge no encontrado[CR]Comprobar el bridge y la red."
 
 msgctxt "#30082"
 msgid "Press link button on bridge. Waiting for 90 seconds..."
@@ -412,7 +412,7 @@ msgstr "No volver a mostrar"
 
 msgctxt "#30001"
 msgid "Hue Bridge V1 (Round) is unsupported. Hue Bridge V2 (Square) is required."
-msgstr "Hue Bridge V1 (Redondo) no es compatible. Se requiere Hue Bridge V2 (Cuadrado)."
+msgstr "Hue Bridge v1 (Redondo) no es compatible. Se requiere Hue Bridge v2 (Cuadrado)."
 
 #. For ambilight, different color gamuts are supported. This means the colour gamut could not be fetched and the light is probably not compatible with ambilight.
 msgctxt "#30012"
@@ -441,7 +441,7 @@ msgstr "Error: Luces incompatibles con Ambilight"
 
 msgctxt "#30007"
 msgid "Bridge not found automatically. Please make sure your bridge is up to date and has access to the internet. [CR]Would you like to enter your bridge IP manually?"
-msgstr "Bridge no encontrado automáticamente. Por favor, asegúrese de que su bridge está actualizado y tiene acceso a internet. [CR]¿Desea introducir manualmente la IP de su bridge?"
+msgstr "Bridge no encontrado automáticamente. Por favor, asegúrese de que su bridge está actualizado y tiene acceso a internet.[CR]¿Desea introducir manualmente la IP de su bridge?"
 
 msgctxt "#30009"
 msgid "Connecting..."
@@ -473,7 +473,7 @@ msgstr "Compensación al atardecer:"
 #. Help text for sunset offset setting
 msgctxt "#31337"
 msgid "Adjust sunset back or forwards by this many minutes"
-msgstr "Ajustar el atardecer hacia atrás o hacia adelante en esta cantidad de minutos"
+msgstr "Ajusta la puesta de sol hacia atrás o hacia adelante en esta cantidad de minutos"
 
 #. Help text for "morning disable time" setting
 msgctxt "#31338"
@@ -483,12 +483,12 @@ msgstr "Hora a la que se desactiva el servicio por la mañana"
 #. Help text for 'Disable during daytime'
 msgctxt "#31339"
 msgid "Disable the service between configured time and sunset"
-msgstr "Desactivar el servicio entre la hora configurada y el atardecer"
+msgstr "Desactiva el servicio entre la hora configurada y el atardecer"
 
 #. Help text for 'activate at sunset'
 msgctxt "#31340"
 msgid "Activate scenes at sunset, during playback"
-msgstr "Activar escenas al atardecer, durante la reproducción"
+msgstr "Activa escenas al atardecer, durante la reproducción"
 
 msgctxt "#30002"
 msgid "Bridge overloaded, stopping ambilight"

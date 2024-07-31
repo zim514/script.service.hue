@@ -6,27 +6,27 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-03-30 09:46+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2024-05-18 21:31+0000\n"
+"Last-Translator: Havok Dan <havokdan@yahoo.com.br>\n"
 "Language-Team: Portuguese (Brazil) <https://kodi.weblate.cloud/projects/kodi-add-ons-scripts/script-service-hue/pt_br/>\n"
 "Language: pt_br\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 5.5.4\n"
 
 msgctxt "Addon Summary"
 msgid "Automate Hue lights with Kodi playback"
-msgstr ""
+msgstr "Automatize as luzes Hue com reprodução Kodi"
 
 msgctxt "Addon Description"
 msgid "Automate your Hue lights with Kodi. Use scenes configured in the official Hue app. Can use Hue's sunset time to automatically disable the service during daytime and turn on the lights at sunset during playback. Includes Ambilight support."
-msgstr ""
+msgstr "Automatize suas luzes Hue com Kodi. Use cenas configuradas no aplicativo oficial do Hue. Pode usar o horário do pôr do sol do Hue para desativar automaticamente o serviço durante o dia e acender as luzes ao pôr do sol durante a reprodução. Inclui suporte Ambilight."
 
 msgctxt "Addon Disclaimer"
 msgid "Requires a Hue Bridge V2 (Square). Ambilight not available on all hardware."
-msgstr ""
+msgstr "Requer um Hue Bridge V2 (quadrado). Ambilight não está disponível em todos os hardwares."
 
 msgctxt "#32100"
 msgid "Video Scenes"
@@ -38,15 +38,15 @@ msgstr "Audio Scenes"
 
 msgctxt "#32201"
 msgid "Start/Resume"
-msgstr ""
+msgstr "Iniciar/Resumir"
 
 msgctxt "#32202"
 msgid "Pause"
-msgstr ""
+msgstr "Pausar"
 
 msgctxt "#32203"
 msgid "Stop"
-msgstr ""
+msgstr "Parar"
 
 msgctxt "#30036"
 msgid "Scene:"
@@ -54,15 +54,15 @@ msgstr "Scene:"
 
 msgctxt "#32511"
 msgid "Scene ID"
-msgstr ""
+msgstr "ID da Cena"
 
 msgctxt "#32512"
 msgid "Select..."
-msgstr ""
+msgstr "Selecionar..."
 
 msgctxt "#30500"
 msgid "Bridge"
-msgstr ""
+msgstr "Ponte"
 
 msgctxt "#30501"
 msgid "Discover Hue Bridge / Enter IP"
@@ -70,23 +70,23 @@ msgstr "Discover Hue Bridge / Enter IP"
 
 msgctxt "#30502"
 msgid "Bridge IP"
-msgstr ""
+msgstr "IP da Ponte"
 
 msgctxt "#30503"
 msgid "Bridge User"
-msgstr ""
+msgstr "Usuário da Ponte"
 
 msgctxt "#30505"
 msgid "Enable Schedule (24h format)"
-msgstr ""
+msgstr "Ativar agendamento (formato 24h)"
 
 msgctxt "#30506"
 msgid "Start time:"
-msgstr ""
+msgstr "Hora de início:"
 
 msgctxt "#30507"
 msgid "End time:"
-msgstr ""
+msgstr "Fim do tempo:"
 
 msgctxt "#30508"
 msgid "Disable during daytime"
@@ -95,7 +95,7 @@ msgstr "Disable during daytime"
 #. If watching a movie or TV show, and sunset occurs, activate the scene in that moment
 msgctxt "#30509"
 msgid "Activate during playback at sunset"
-msgstr ""
+msgstr "Ativar durante a reprodução ao pôr do sol"
 
 msgctxt "#30510"
 msgid "General"
@@ -103,23 +103,23 @@ msgstr "Geral"
 
 msgctxt "#30511"
 msgid "Schedule"
-msgstr ""
+msgstr "Agenda"
 
 msgctxt "#30512"
 msgid "Scenes"
-msgstr ""
+msgstr "Cenas"
 
 msgctxt "#30513"
 msgid "Play Scene Enabled"
-msgstr ""
+msgstr "Reproduzir Cena Habilitado"
 
 msgctxt "#30514"
 msgid "Pause Scene Enabled"
-msgstr ""
+msgstr "Pausar Cena Habilitado"
 
 msgctxt "#30515"
 msgid "Stop Scene Enabled"
-msgstr ""
+msgstr "Parar Cena Habilitado"
 
 #. If any light in the selected scene is on, ignore the schedule restrictions
 msgctxt "#30516"
