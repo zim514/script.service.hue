@@ -95,7 +95,6 @@ class LightGroup(xbmc.Player):
 
         log(f"[SCRIPT.SERVICE.HUE] LightGroup[{self.light_group_id}] onPlaybackStopped. Group enabled: {enabled}, Bridge connected: {self.bridge.connected}")
 
-
         if not enabled or not self.bridge.connected:
             return
 
@@ -258,10 +257,8 @@ class ActivationChecker:
         log("[SCRIPT.SERVICE.HUE] _is_within_schedule: True, Schedule not enabled")
         return True
 
-    def skip_time_check_if_light_on(self, scene_id, all_light_states):
-        if not self.settings_monitor.enable_if_already_active:
-            log("[SCRIPT.SERVICE.HUE] _is_scene_already_active: Not enabled")
-            return False
+    def _check_any_lights_on(self, scene_id, all_light_states):
+        """ Checks if ANY light in the current scene is on"""
 
         # Find the current scene from the scene data
         current_scene = next((scene for scene in self.light_group.bridge.scene_data['data'] if scene['id'] == scene_id), None)
@@ -280,7 +277,8 @@ class ActivationChecker:
         log("[SCRIPT.SERVICE.HUE] _is_scene_already_active: No lights in the scene are on")
         return False
 
-    def skip_scene_if_all_off(self, scene_id, all_light_states):
+    def _check_all_lights_off(self, scene_id, all_light_states):
+        """ Checks if ALL the lights in the given scene are off"""
         # Find the current scene from the scene data
         current_scene = next((scene for scene in self.light_group.bridge.scene_data['data'] if scene['id'] == scene_id), None)
         if not current_scene:
@@ -292,9 +290,9 @@ class ActivationChecker:
             light_id = action['target']['rid']
             light_state = next((state for state in all_light_states['data'] if state['id'] == light_id), None)
             if light_state and 'on' in light_state and light_state['on']['on']:
-                log(f"[SCRIPT.SERVICE.HUE] _is_any_light_off: Light {light_id} in the scene is on")
+                log(f"[SCRIPT.SERVICE.HUE] _check_all_lights_off: Light {light_id} in the scene is on")
                 return True
-
+        log(f"[SCRIPT.SERVICE.HUE] _check_all_lights_off: All in scene {scene_id} are off")
         return False
 
     def validate(self, scene=None):
@@ -303,7 +301,7 @@ class ActivationChecker:
         skip_time_check_if_light_on = self.settings_monitor.skip_time_check_if_light_on
         skip_scene_if_all_off = self.settings_monitor.skip_scene_if_all_off
 
-        log(f"[SCRIPT.SERVICE.HUE] LightGroup[{self.light_group_id}] ActivationChecker.validate(): scene: {scene}, media_type: {self.light_group.media_type}, skip_time_check_if_light_on: {skip_time_check_if_light_on}, skip_scene_if_all_off: {skip_scene_if_all_off}")
+        log(f"[SCRIPT.SERVICE.HUE] Validate Activation LightGroup[{self.light_group_id}] Scene: {scene}, media_type: {self.light_group.media_type}, skip_time_check_if_light_on: {skip_time_check_if_light_on}, skip_scene_if_all_off: {skip_scene_if_all_off}")
 
         all_light_states = None
         if scene and (skip_time_check_if_light_on or skip_scene_if_all_off):
@@ -312,35 +310,40 @@ class ActivationChecker:
             # log(f"[SCRIPT.SERVICE.HUE] validate: all_light_states {all_light_states}")
 
         if self.light_group.media_type == VIDEO and scene:
-            if skip_scene_if_all_off and not skip_scene_if_all_off(scene, all_light_states):
-                log("[SCRIPT.SERVICE.HUE] validate: All lights are off, not activating scene")
+            # Check video activation rules with a Scene
+            if skip_scene_if_all_off and not self._check_all_lights_off(scene, all_light_states):
+                log("[SCRIPT.SERVICE.HUE] Validate video: All lights are off, not activating scene")
                 return False
-            if not (self._is_within_schedule() and self._video_activation_rules()):
-                log("[SCRIPT.SERVICE.HUE] validate: Not within schedule or video activation rules not met, not activating scene")
-                return False
-            log("[SCRIPT.SERVICE.HUE] validate: Activating scene for VIDEO")
-            return True
+            elif (skip_time_check_if_light_on and self._check_any_lights_on(scene, all_light_states)) and self._video_activation_rules():
+                log("[SCRIPT.SERVICE.HUE] Validate video: Some lights are on, skipping schedule check")
+                return True
+            elif self._is_within_schedule() and self._video_activation_rules():
+                log("[SCRIPT.SERVICE.HUE] Validate video: Scene selected, within schedule and video activation rules, activate")
+                return True
 
-        elif self.light_group.media_type == VIDEO:  # if no scene is set, use the default activation. This is the case for ambilight.
-            if not (self._is_within_schedule() and self._video_activation_rules()):
-                log("[SCRIPT.SERVICE.HUE] validate: Not within schedule or video activation rules not met, not activating scene")
+            log("[SCRIPT.SERVICE.HUE] Validate Video: No valid checks passed, not activating scene")
+            return False
+
+        elif self.light_group.media_type == VIDEO:
+            # if no scene is set, use the default activation. This is the case for ambilight.
+            if self._is_within_schedule() and self._video_activation_rules():
+                log("[SCRIPT.SERVICE.HUE] Validate Video: No scene selected, within schedule and video activation rules: activate")
+                return True
+            else:
+                log("[SCRIPT.SERVICE.HUE] Validate Video: No scene selected, not within schedule or activation rules, ignoring")
                 return False
-            log("[SCRIPT.SERVICE.HUE] validate: Activating scene for VIDEO")
-            return True
 
         elif self.light_group.media_type == AUDIO and scene:
+            # Check audio activation rules
             if skip_scene_if_all_off and not skip_scene_if_all_off(scene, all_light_states):
-                log("[SCRIPT.SERVICE.HUE] validate: All lights are off, not activating scene")
+                log("[SCRIPT.SERVICE.HUE] Validate Audio: All lights are off, not activating scene")
                 return False
-            if not self._is_within_schedule():
-                log("[SCRIPT.SERVICE.HUE] validate: Not within schedule, not activating scene")
-                return False
-            log("[SCRIPT.SERVICE.HUE] validate: Activating scene for AUDIO media type")
-            return True
+            elif (skip_time_check_if_light_on and self._check_any_lights_on(scene, all_light_states)):
+                log("[SCRIPT.SERVICE.HUE] Validate Audio: A light in the scene is on, activating scene")
+                return True
+            elif self._is_within_schedule():
+                log("[SCRIPT.SERVICE.HUE] Validate Audio: Within schedule, activating scene")
+                return True
+            log("[SCRIPT.SERVICE.HUE] Validate Audio: Checks not passed, not activating")
+            return False
 
-        elif self.light_group.media_type == AUDIO:
-            if not self._is_within_schedule():
-                log("[SCRIPT.SERVICE.HUE] validate: Not within schedule, not activating scene")
-                return False
-            log("[SCRIPT.SERVICE.HUE] validate: Activating scene for AUDIO")
-            return True
