@@ -313,7 +313,7 @@ class Hue(object):
         geolocation = self.make_api_request("GET", "geolocation")
         log(f"[SCRIPT.SERVICE.HUE] v2 update_sunset(): geolocation: {geolocation}")
         sunset_str = self.search_dict(geolocation, "sunset_time")
-        if sunset_str is None:
+        if sunset_str is None or sunset_str == "":
             log(f"[SCRIPT.SERVICE.HUE] Sunset not found; configure Hue geolocalisation")
             notification(_("Hue Service"), _("Configure Hue Home location to use Sunset time, defaulting to 19:00"), icon=xbmcgui.NOTIFICATION_ERROR)
             self.sunset = convert_time("19:00")
