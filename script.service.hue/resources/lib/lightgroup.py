@@ -25,7 +25,7 @@ class LightGroup(xbmc.Player):
         self.light_group_id = light_group_id
         self.state = STATE_STOPPED
         self.media_type = media_type
-        self.video_info_tag = xbmc.InfoTagVideo
+        self.info_tag = None
         self.last_media_type = self.media_type
         self.settings_monitor = settings_monitor
 
@@ -51,20 +51,23 @@ class LightGroup(xbmc.Player):
 
         log(f"[SCRIPT.SERVICE.HUE] LightGroup[{self.light_group_id}] onPlaybackStarted. play_behavior: {play_enabled}, media_type: {self.media_type} == playback_type: {self._playback_type()}")
         if play_enabled and self.media_type == self._playback_type() and self._playback_type() == VIDEO:
-
             try:
-                self.video_info_tag = self.getVideoInfoTag()
+                self.info_tag = self.getVideoInfoTag()
             except (AttributeError, TypeError) as x:
-                log(f"[SCRIPT.SERVICE.HUE] LightGroup{self.light_group_id}: OnAV Started: Can't read infoTag")
+                log(f"[SCRIPT.SERVICE.HUE] LightGroup{self.light_group_id}: OnAV Started: Can't read VideoInfoTag")
                 reporting.process_exception(x)
-        else:
-            self.video_info_tag = None
+        elif play_enabled and self.media_type == self._playback_type() and self._playback_type() == AUDIO:
+            try:
+                self.info_tag = self.getMusicInfoTag()
+            except (AttributeError, TypeError) as x:
+                log(f"[SCRIPT.SERVICE.HUE] LightGroup{self.light_group_id}: OnAV Started: Can't read AudioInfoTag")
+                reporting.process_exception(x)
 
         if self.activation_check.validate(play_scene):
-            contents = inspect.getmembers(self.video_info_tag)
+            contents = inspect.getmembers(self.info_tag)
             log(f"[SCRIPT.SERVICE.HUE] Start InfoTag: {contents}")
 
-            log(f"[SCRIPT.SERVICE.HUE] InfoTag: {self.video_info_tag}, {self.video_info_tag.getDuration()}")
+            #log(f"[SCRIPT.SERVICE.HUE] InfoTag: {self.info_tag}, {self.info_tag.getDuration()}")
             log(f"[SCRIPT.SERVICE.HUE] LightGroup[{self.light_group_id}] Running Play action")
             self.run_action("play")
 
@@ -99,11 +102,11 @@ class LightGroup(xbmc.Player):
         if stop_enabled and (self.media_type == self.last_media_type or self.media_type == self._playback_type()):
             ########### TODO: Remove debug block
             #xbmc.sleep(5000)
-            contents = inspect.getmembers(self.video_info_tag)
+            contents = inspect.getmembers(self.info_tag)
             log(f"[SCRIPT.SERVICE.HUE] Stop[{self.light_group_id}] InfoTag Inspect Contents: {contents}")
 
-            duration = self.video_info_tag.getDuration()
-            log(f"[SCRIPT.SERVICE.HUE] Stop[{self.light_group_id}]: {self.video_info_tag}, {duration}")
+            duration = self.info_tag.getDuration()
+            log(f"[SCRIPT.SERVICE.HUE] Stop[{self.light_group_id}]: {self.info_tag}, {duration}")
             ############
 
             if self.activation_check.validate(stop_scene):
@@ -195,7 +198,7 @@ class ActivationChecker:
         other_setting = self.settings_monitor.other_setting
 
         # Fetch video info tag
-        info_tag = self.light_group.video_info_tag
+        info_tag = self.light_group.info_tag
         # Get duration in minutes
         duration = info_tag.getDuration() / 60
         # Get media type and file name
