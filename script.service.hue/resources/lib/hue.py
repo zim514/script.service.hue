@@ -131,8 +131,8 @@ class Hue(object):
             self.session.headers.update({'hue-application-key': self.settings_monitor.key})
 
             self.devices = self.make_api_request("GET", "device")
-            if self.devices is None:
-                log(f"[SCRIPT.SERVICE.HUE] v2 connect: Connection attempts failed. Setting connected to False")
+            if not isinstance(self.devices, dict):
+                log(f"[SCRIPT.SERVICE.HUE] v2 connect: Connection error. Setting connected to False.  {type(self.devices)} :  {self.devices}")
                 self.connected = False
                 return False
 
