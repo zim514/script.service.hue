@@ -29,5 +29,9 @@ If applicable, add screenshots to help explain your problem.
  - Kodi Version [e.g. 19]
 
 
+**Logs**
+Issues cannot be investigated without logs. See [the Wiki](https://kodi.wiki/view/Log_file) on how to provide them. 
+
+
 **Additional context**
 Add any other context about the problem here.
