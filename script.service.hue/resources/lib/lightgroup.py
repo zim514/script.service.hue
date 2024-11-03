@@ -46,7 +46,14 @@ class LightGroup(xbmc.Player):
 
         log(f"[SCRIPT.SERVICE.HUE] LightGroup[{self.light_group_id}] onPlaybackStarted. Group enabled: {enabled}, Bridge connected: {self.bridge.connected}, mediaType: {self.media_type}")
 
-        if not enabled or not self.bridge.connected:
+        if not enabled:
+            log(f"[SCRIPT.SERVICE.HUE] LightGroup[{self.light_group_id}] not enabled, doing nothing")
+            return
+        elif not play_enabled:
+            log(f"[SCRIPT.SERVICE.HUE] LightGroup[{self.light_group_id}] play action not enabled")
+            return
+        elif not self.bridge.connected:
+            log(f"[SCRIPT.SERVICE.HUE] Bridge not connected")
             return
 
         log(f"[SCRIPT.SERVICE.HUE] LightGroup[{self.light_group_id}] onPlaybackStarted. play_behavior: {play_enabled}, media_type: {self.media_type} == playback_type: {self._playback_type()}")
@@ -346,4 +353,3 @@ class ActivationChecker:
                 return True
             log("[SCRIPT.SERVICE.HUE] Validate Audio: Checks not passed, not activating")
             return False
-
