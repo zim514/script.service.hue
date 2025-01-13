@@ -1,5 +1,5 @@
 requests==2.32.3
-rollbar~=0.15.2
+rollbar~=1.1.1
 polib
 pillow
 Kodistubs~=21.0.0
