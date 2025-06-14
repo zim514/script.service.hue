@@ -48,7 +48,7 @@ jobs:
         working-directory: ./project/script.service.hue
 
       - name: Commit
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
           repository: project
           commit_message: Sync of addon metadata translations triggered by ${{ github.sha }}
