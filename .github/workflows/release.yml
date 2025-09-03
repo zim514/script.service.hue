@@ -57,7 +57,7 @@ jobs:
 
       - name: Create Github Release
         id: create_release
-        uses: ncipollo/release-action@v1.16.0
+        uses: ncipollo/release-action@v1.20.0
         with:
           allowUpdates: true
           artifacts: "${{ env.zip_filename }}"
