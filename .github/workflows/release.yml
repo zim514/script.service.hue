@@ -14,12 +14,12 @@ jobs:
     steps:
 
       - name: Checkout addon
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: 'addon'
 
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: 'repo'
           repository: 'zim514/zim514.github.io'

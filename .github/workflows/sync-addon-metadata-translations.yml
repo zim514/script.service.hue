@@ -21,13 +21,13 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: project
           fetch-depth: 0
 
       - name: Checkout sync_addon_metadata_translations repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: xbmc/sync_addon_metadata_translations
           path: sync_addon_metadata_translations
