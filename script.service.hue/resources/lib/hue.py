@@ -248,7 +248,7 @@ class Hue(object):
         log("[SCRIPT.SERVICE.HUE] v2 _create_user: In createUser")
 
         # Prepare data for POST request
-        data = '{{"devicetype": "kodi#{}"}}'.format(getfqdn())
+        data = '{{"devicetype": "kodi#{}", "generateclientkey": true}}'.format(getfqdn())
 
         time = 0
         timeout = 90
