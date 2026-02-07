@@ -47,7 +47,7 @@ class Hue(object):
     def make_api_request(self, method, resource, discovery=False, **kwargs):
         # Discovery and account creation not yet supported on API V2. This flag uses a V1 URL and supports new IPs.
         if discovery:
-            log(f"[SCRIPT.SERVICE.HUE] v2 make_request: discovery mode. DiscoveredIP: {self.discoveredIP}")
+            log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Discovery mode.")
         for attempt in range(MAX_RETRIES):
             # Prepare the URL for the request
             log(f"[SCRIPT.SERVICE.HUE] v2 ip: {self.settings_monitor.ip}, key: {self.settings_monitor.key}")
