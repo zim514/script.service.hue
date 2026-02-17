@@ -93,8 +93,10 @@ class Hue(object):
                     log(f"[SCRIPT.SERVICE.HUE] v2 make_request: HTTPError: {x}\nResponse: {x.response.text}")
                     reporting.process_exception(f"Response: {x.response.text}, Exception: {x}", logging=True)
                     return x.response.status_code
-            except (Timeout, json.JSONDecodeError) as x:
-                log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Timeout/JSONDecodeError: Response: {x.response}\n{x}")
+            except Timeout as x:
+                log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Timeout: Response: {x.response}\n{x}")
+            except json.JSONDecodeError as x:
+                log(f"[SCRIPT.SERVICE.HUE] v2 make_request: JSONDecodeError: {x}")
             except requests.RequestException as x:
                 # Report other kinds of RequestExceptions
                 log(f"[SCRIPT.SERVICE.HUE] v2 make_request: RequestException: {x}")
@@ -299,7 +301,7 @@ class Hue(object):
             swversion = int(swversion_raw)
             log(f"[SCRIPT.SERVICE.HUE] v2 _version_check(): swversion: {swversion}")
         except (KeyError, ValueError, TypeError) as error:
-            log(f"[SCRIPT.SERVICE.HUE] v2 _version_check():  Connected! Bridge too old: {swversion}, error: {error}")
+            log(f"[SCRIPT.SERVICE.HUE] v2 _version_check(): Bridge version check failed: {error}")
             notification(_("Hue Service"), _("Bridge outdated. Please update your bridge."), icon=xbmcgui.NOTIFICATION_ERROR)
             return False
         except Exception as exc:
