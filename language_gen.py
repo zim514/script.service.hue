@@ -25,7 +25,7 @@ print(f"Directory name is : {folder_name}")
 
 string_file = f"{dir_path}/script.service.hue/resources/language/resource.language.en_gb/strings.po"
 code_file = f"{dir_path}/script.service.hue/resources/lib/language.py"
-code_base = f"{dir_path}\\script.service.hue\\resources\\lib"
+code_base = os.path.join(dir_path, "script.service.hue", "resources", "lib")
 
 print(f"input file: {string_file}")
 print(f"code file: {code_file}")

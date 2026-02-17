@@ -90,7 +90,7 @@ class AmbiGroup(lightgroup.LightGroup):
         AMBI_RUNNING.set()
         executor = ThreadPoolExecutor(max_workers=len(self.ambi_lights) * 2)
         cap = xbmc.RenderCapture()
-        cap_image = bytes
+        cap_image = None
         log("[SCRIPT.SERVICE.HUE] _ambiLoop started")
         aspect_ratio = cap.getAspectRatio()
 
@@ -178,7 +178,7 @@ class AmbiGroup(lightgroup.LightGroup):
             }
             response = self.bridge.make_api_request('PUT', f'light/{light}', json=request_body)
 
-            if response is not None:
+            if isinstance(response, dict):
                 self.ambi_lights[light].update(prev_xy=xy)
             elif response == 429 or response == 500:
                 log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] _update_hue_rgb: {response}: Too Many Requests. Aborting request.")
@@ -186,9 +186,8 @@ class AmbiGroup(lightgroup.LightGroup):
                 notification(_("Hue Service"), _("Bridge overloaded, stopping ambilight"), icon=xbmcgui.NOTIFICATION_ERROR)
             elif response == 404:
                 log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] Not Found")
-                AMBI_RUNNING.clear()
-                notification(header=_("Hue Service"), message=_(f"ERROR: Light not found, it may have been deleted"), icon=xbmcgui.NOTIFICATION_ERROR)
                 AMBI_RUNNING.clear()  # shut it down
+                notification(header=_("Hue Service"), message=_(f"ERROR: Light not found, it may have been deleted"), icon=xbmcgui.NOTIFICATION_ERROR)
             else:
                 log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] RequestException Hue call fail")
                 AMBI_RUNNING.clear()  # shut it down
@@ -232,7 +231,7 @@ class AmbiGroup(lightgroup.LightGroup):
         return _("Unknown")
 
     def _get_and_save_light_states(self):
-        response = self.bridge.make_api_request('GET', 'lights')
+        response = self.bridge.make_api_request('GET', 'light')
         if response is not None and 'data' in response:
             states = {}
             for light in response['data']:
@@ -241,8 +240,6 @@ class AmbiGroup(lightgroup.LightGroup):
                     'brightness': light['dimming']['brightness'],
                     'color': light['color']['xy'],
                     'color_temperature': light['color_temperature']['mirek'] if 'mirek' in light['color_temperature'] else None,
-                    'dynamics': light['dynamics']['status'],
-                    'dynamics_speed': light['dynamics']['speed'],
                     'effects': light['effects']['status'],
                 }
             return states
@@ -257,15 +254,11 @@ class AmbiGroup(lightgroup.LightGroup):
                 "on": {"on": state['on']},
                 "dimming": {"brightness": state['brightness']},
                 "color": {"xy": state['color']},
-                "dynamics": {
-                    "status": state['dynamics'],
-                    "speed": state['dynamics_speed']
-                },
                 "effects": {"status": state['effects']}
             }
             if state['color_temperature'] is not None:
                 data["color_temperature"] = {"mirek": state['color_temperature']}
-            response = self.bridge.make_api_request('PUT', f'lights/{light_id}', json=data)
+            response = self.bridge.make_api_request('PUT', f'light/{light_id}', json=data)
             if response is not None:
                 log(f"[SCRIPT.SERVICE.HUE] Light[{light_id}] state resumed successfully.")
             else:
