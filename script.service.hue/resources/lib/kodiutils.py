@@ -28,7 +28,7 @@ def convert_time(time_string: str) -> datetime.time:
 
 
 def cache_get(key: str):
-    data_str = cache_window.getProperty(f"{ADDONID}.{key}]")
+    data_str = cache_window.getProperty(f"{ADDONID}.{key}")
     try:
         data = json.loads(data_str)
         return data
@@ -38,7 +38,7 @@ def cache_get(key: str):
 
 def cache_set(key: str, data):
     data_str = json.dumps(data)
-    cache_window.setProperty(f"{ADDONID}.{key}]", data_str)
+    cache_window.setProperty(f"{ADDONID}.{key}", data_str)
     return
 
 

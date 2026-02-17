@@ -125,6 +125,6 @@ class SettingsMonitor(xbmc.Monitor):
         log(f"[SCRIPT.SERVICE.HUE] Validate schedule. Schedule Enabled: {self.schedule_enabled}, Start time: {self.schedule_start}, End time: {self.schedule_end}")
         if self.schedule_enabled:
             if self.schedule_start > self.schedule_end:  # checking if start time is after the end time
-                ADDON.setSettingBool('EnableSchedule', False)
+                ADDON.setSettingBool('enableSchedule', False)
                 log('[SCRIPT.SERVICE.HUE] _validate_schedule: Start time is after end time, schedule disabled')
                 notification(_('Hue Service'), _('Invalid start or end time, schedule disabled'), icon=xbmcgui.NOTIFICATION_ERROR)
