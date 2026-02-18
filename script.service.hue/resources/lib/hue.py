@@ -1,3 +1,15 @@
+"""Hue Bridge API V2 client with discovery, authentication, and scene control.
+
+Handles all communication with the Philips Hue Bridge over HTTPS using the
+``hue-application-key`` header for authentication. Supports:
+
+- N-UPnP bridge discovery and manual IP entry.
+- User/application key creation (link-button pairing).
+- Scene recall with configurable transition times.
+- Device and scene enumeration for configuration UIs.
+- Automatic IP re-discovery on connection failure.
+- Retry with exponential backoff for transient errors.
+"""
 #      Copyright (C) 2023 Kodi Hue Service (script.service.hue)
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
@@ -18,6 +30,24 @@ from .language import get_string as _
 
 
 class Hue(object):
+    """Philips Hue Bridge API V2 client.
+
+    On instantiation, either initiates bridge discovery or connects to a
+    previously configured bridge using the IP and application key from settings.
+
+    Args:
+        settings_monitor: Active :class:`~settings.SettingsMonitor` instance providing
+            bridge IP and key.
+        discover: If ``True``, run the full discovery workflow instead of connecting
+            to the saved bridge.
+
+    Attributes:
+        connected (bool): Whether the bridge is currently reachable and authenticated.
+        devices (dict): Cached response from the ``/device`` API endpoint.
+        scene_data (dict): Cached response from the ``/scene`` API endpoint.
+        sunset (datetime.time): Today's sunset time from the bridge geolocation API.
+    """
+
     def __init__(self, settings_monitor, discover=False):
         self.scene_data = None
 
@@ -45,75 +75,86 @@ class Hue(object):
             notification(_("Hue Service"), _("Bridge not configured"), icon=xbmcgui.NOTIFICATION_ERROR)
 
     def make_api_request(self, method, resource, discovery=False, **kwargs):
-        # Discovery and account creation not yet supported on API V2. This flag uses a V1 URL and supports new IPs.
+        """Make an HTTP request to the Hue Bridge API with retry and error handling.
+
+        Retries with exponential backoff on transient failures (timeouts, connection
+        errors). Handles specific HTTP status codes (401, 404, 429, 500) with
+        appropriate user notifications.
+
+        Args:
+            method: HTTP method (``"GET"``, ``"PUT"``, ``"POST"``).
+            resource: API resource path (appended to ``base_url``).
+            discovery: If ``True``, use the V1 API URL for discovery/account creation.
+            **kwargs: Additional arguments passed to ``requests.Session.request()``.
+
+        Returns:
+            Parsed JSON response as a dict/list on success, an HTTP status code
+            (int) for handled errors, or ``None`` on total failure.
+        """
         if discovery:
             log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Discovery mode.")
         for attempt in range(MAX_RETRIES):
-            # Prepare the URL for the request
             log(f"[SCRIPT.SERVICE.HUE] v2 ip: {self.settings_monitor.ip}, key: {self.settings_monitor.key}")
             base_url = self.base_url if not discovery else f"https://{self.discoveredIP}/api/"
             log(f"[SCRIPT.SERVICE.HUE] v2 make_request: base_url: {base_url}")
             url = urljoin(base_url, resource)
-            #log(f"[SCRIPT.SERVICE.HUE] v2 make_request: base_url: {base_url}, url: {url}, method: {method}, kwargs: {kwargs}")
             try:
-                # Make the request
                 response = self.session.request(method, url, timeout=TIMEOUT, **kwargs)
                 response.raise_for_status()
                 return response.json()
-            except ConnectionError as x:
-                # If a ConnectionError occurs, try to handle a new IP, except in discovery mode
-                log(f"[SCRIPT.SERVICE.HUE] v2 make_request: ConnectionError: {x}")
+            except ConnectionError as error:
+                log(f"[SCRIPT.SERVICE.HUE] v2 make_request: ConnectionError: {error}")
                 if self._discover_new_ip() and not discovery:
-                    # If handling a new IP is successful, retry the request
                     log(f"[SCRIPT.SERVICE.HUE] v2 make_request: New IP handled successfully. Retrying request.")
                     continue
                 else:
-                    # If handling a new IP fails, abort the request
                     log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Failed to handle new IP. Aborting request.")
                     return None
 
-            except HTTPError as x:
-                # Handle HTTP errors
-                if x.response.status_code == 429:
-                    # If a 429 status code is received, abort and log an error
-                    log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Too Many Requests: {x} \nResponse: {x.response.text}")
+            except HTTPError as error:
+                if error.response.status_code == 429:
+                    log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Too Many Requests: {error} \nResponse: {error.response.text}")
                     return 429
-                elif x.response.status_code in [401, 403]:
-                    log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Unauthorized: {x}\nResponse: {x.response.text}")
+                elif error.response.status_code in [401, 403]:
+                    log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Unauthorized: {error}\nResponse: {error.response.text}")
                     notification(_("Hue Service"), _("Bridge unauthorized, please reconfigure."), icon=xbmcgui.NOTIFICATION_ERROR)
                     ADDON.setSettingString("bridgeUser", "")
                     return 401
-                elif x.response.status_code == 404:
-                    log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Not Found: {x}\nResponse: {x.response.text}")
+                elif error.response.status_code == 404:
+                    log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Not Found: {error}\nResponse: {error.response.text}")
                     return 404
-                elif x.response.status_code == 500:
-                    log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Internal Bridge Error: {x}\nResponse: {x.response.text}")
+                elif error.response.status_code == 500:
+                    log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Internal Bridge Error: {error}\nResponse: {error.response.text}")
                     return 500
                 else:
-                    log(f"[SCRIPT.SERVICE.HUE] v2 make_request: HTTPError: {x}\nResponse: {x.response.text}")
-                    reporting.process_exception(f"Response: {x.response.text}, Exception: {x}", logging=True)
-                    return x.response.status_code
-            except Timeout as x:
-                log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Timeout: Response: {x.response}\n{x}")
-            except json.JSONDecodeError as x:
-                log(f"[SCRIPT.SERVICE.HUE] v2 make_request: JSONDecodeError: {x}")
-            except requests.RequestException as x:
-                # Report other kinds of RequestExceptions
-                log(f"[SCRIPT.SERVICE.HUE] v2 make_request: RequestException: {x}")
-                reporting.process_exception(x)
-            # Calculate the retry time and log the retry attempt
-            retry_time = 2 ** attempt
-            if retry_time >= 7 and attempt >= NOTIFICATION_THRESHOLD:
+                    log(f"[SCRIPT.SERVICE.HUE] v2 make_request: HTTPError: {error}\nResponse: {error.response.text}")
+                    reporting.process_exception(f"Response: {error.response.text}, Exception: {error}", logging=True)
+                    return error.response.status_code
+            except Timeout as error:
+                log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Timeout: Response: {error.response}\n{error}")
+            except json.JSONDecodeError as error:
+                log(f"[SCRIPT.SERVICE.HUE] v2 make_request: JSONDecodeError: {error}")
+            except requests.RequestException as error:
+                log(f"[SCRIPT.SERVICE.HUE] v2 make_request: RequestException: {error}")
+                reporting.process_exception(error)
+
+            retry_delay = 2 ** attempt
+            if retry_delay >= 7 and attempt >= NOTIFICATION_THRESHOLD:
                 notification(_("Hue Service"), _("Connection failed, retrying..."), icon=xbmcgui.NOTIFICATION_WARNING)
-            log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Retry in {retry_time} seconds, retry {attempt + 1}/{MAX_RETRIES}...")
-            if self.settings_monitor.waitForAbort(retry_time):
+            log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Retry in {retry_delay} seconds, retry {attempt + 1}/{MAX_RETRIES}...")
+            if self.settings_monitor.waitForAbort(retry_delay):
                 break
-        # If all attempts fail, log the failure and set connected to False
+
         log(f"[SCRIPT.SERVICE.HUE] v2 make_request: All attempts failed after {MAX_RETRIES} retries. Setting connected to False")
         self.connected = False
         return None
 
     def _discover_new_ip(self):
+        """Attempt to discover a new bridge IP via N-UPnP and reconnect.
+
+        Returns:
+            ``True`` if a new IP was found and connection succeeded, ``False`` otherwise.
+        """
         if self._discover_endpoint():
             log(f"[SCRIPT.SERVICE.HUE] v2 _discover_and_handle_new_ip: discover_endpoint SUCCESS, bridge IP: {self.settings_monitor.ip}")
             # TODO:  add new discovery methods here, like mDNS, when I can figure out how to make it multiplatform and not binary
@@ -125,6 +166,14 @@ class Hue(object):
         return False
 
     def connect(self):
+        """Establish a connection to the configured Hue Bridge.
+
+        Sets up the base URL and authentication header, fetches devices and scenes,
+        verifies the bridge firmware version, and updates the sunset time.
+
+        Returns:
+            ``True`` if connection and version check succeeded, ``False`` otherwise.
+        """
         log(f"[SCRIPT.SERVICE.HUE] v2 connect: ip: {self.settings_monitor.ip}, key: {self.settings_monitor.key}")
         if self.settings_monitor.ip and self.settings_monitor.key:
             self.base_url = f"https://{self.settings_monitor.ip}/clip/v2/resource/"
@@ -153,8 +202,16 @@ class Hue(object):
         return False
 
     def discover(self):
+        """Run the full bridge discovery workflow with progress dialog.
+
+        Steps:
+        1. Attempt N-UPnP auto-discovery; fall back to manual IP entry.
+        2. Verify bridge reachability.
+        3. Prompt user to press the link button for pairing.
+        4. Save bridge IP and application key to addon settings.
+        5. Establish connection.
+        """
         log("[SCRIPT.SERVICE.HUE] v2 Start discover")
-        # Reset settings
         self.discoveredIP = ""
         self.key = ""
         self.connected = False
@@ -170,11 +227,9 @@ class Hue(object):
         while not progress_bar.iscanceled() and not complete and not self.settings_monitor.abortRequested():
 
             progress_bar.update(percent=10, message=_("N-UPnP discovery..."))
-            # Try to discover the bridge using N-UPnP
             ip_discovered = self._discover_endpoint()
 
             if not ip_discovered and not progress_bar.iscanceled():
-                # If the bridge was not found, ask the user to enter the IP manually
                 log("[SCRIPT.SERVICE.HUE] v2 discover: Bridge not found automatically")
                 progress_bar.update(percent=10, message=_("Bridge not found"))
                 manual_entry = xbmcgui.Dialog().yesno(_("Bridge not found"), _("Bridge not found automatically. Please make sure your bridge is up to date and has access to the internet. [CR]Would you like to enter your bridge IP manually?")
@@ -185,9 +240,7 @@ class Hue(object):
 
             if self.discoveredIP:
                 progress_bar.update(percent=50, message=_("Connecting..."))
-                # Set the base URL for the API
                 self.base_url = f"https://{self.discoveredIP}/clip/v2/resource/"
-                # Try to connect to the bridge
                 log(f"[SCRIPT.SERVICE.HUE] v2 discover: Attempt connection")
                 config = self.make_api_request("GET", "0/config", discovery=True)  # bypass some checks in discovery mode, and use Hue API V1 until Philipps provides a V2 method
                 log(f"[SCRIPT.SERVICE.HUE] v2 discover: config: {config}")
@@ -195,14 +248,12 @@ class Hue(object):
                     progress_bar.update(percent=100, message=_("Found bridge: ") + self.discoveredIP)
                     self.settings_monitor.waitForAbort(1)
 
-                    # Try to create a user
                     bridge_user_created = self._create_user(progress_bar)
 
                     if bridge_user_created:
                         log(f"[SCRIPT.SERVICE.HUE] v2 discover: User created: {bridge_user_created}")
                         progress_bar.update(percent=90, message=_("User Found![CR]Saving settings..."))
 
-                        # Save the IP and user key to the settings
                         ADDON.setSettingString("bridgeIP", self.discoveredIP)
                         ADDON.setSettingString("bridgeUser", bridge_user_created)
 
@@ -246,41 +297,47 @@ class Hue(object):
             progress_bar.close()
 
     def _create_user(self, progress_bar):
-        # Log start of user creation
+        """Pair with the bridge by creating a new application key.
+
+        Polls the bridge for up to 90 seconds, waiting for the user to press
+        the physical link button on the bridge.
+
+        Args:
+            progress_bar: Active Kodi progress dialog for status updates.
+
+        Returns:
+            The application key (username) string on success, or ``False`` on
+            timeout/cancellation.
+        """
         log("[SCRIPT.SERVICE.HUE] v2 _create_user: In createUser")
 
-        # Prepare data for POST request
         data = '{{"devicetype": "kodi#{}", "generateclientkey": true}}'.format(getfqdn())
 
-        time = 0
-        timeout = 90
-        progress = 0
-        last_progress = -1
+        elapsed_seconds = 0
+        timeout_seconds = 90
+        progress_percent = 0
+        last_progress_percent = -1
 
-        # Loop until timeout, user cancellation, or settings_monitor abort request
-        while time <= timeout and not self.settings_monitor.abortRequested() and not progress_bar.iscanceled():
-            progress = int((time / timeout) * 100)
+        while elapsed_seconds <= timeout_seconds and not self.settings_monitor.abortRequested() and not progress_bar.iscanceled():
+            progress_percent = int((elapsed_seconds / timeout_seconds) * 100)
 
-            # Update progress bar if progress has changed
-            if progress != last_progress:
-                progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))
-                last_progress = progress
+            if progress_percent != last_progress_percent:
+                progress_bar.update(percent=progress_percent, message=_("Press link button on bridge. Waiting for 90 seconds..."))
+                last_progress_percent = progress_percent
 
             response = self.make_api_request("POST", "", discovery=True, data=data)
-            log(f"[SCRIPT.SERVICE.HUE] v2 _create_user: response at iteration {time}: {response}")
+            log(f"[SCRIPT.SERVICE.HUE] v2 _create_user: response at iteration {elapsed_seconds}: {response}")
 
-            # Break loop if link button has been pressed
             if response and response[0].get('error', {}).get('type') != 101:
                 break
 
             self.settings_monitor.waitForAbort(1)
-            time = time + 1
+            elapsed_seconds = elapsed_seconds + 1
 
         if progress_bar.iscanceled():
             return False
 
         try:
-            # Extract and save username from response
             username = response[0]['success']['username']
 
             log(f"[SCRIPT.SERVICE.HUE] v2 _create_user: User created: {username}")
@@ -290,6 +347,11 @@ class Hue(object):
             return False
 
     def _check_version(self):
+        """Verify the bridge firmware is at least version 1.60 (required for API V2).
+
+        Returns:
+            ``True`` if the firmware version is sufficient, ``False`` otherwise.
+        """
         try:
             self.discoveredIP = self.settings_monitor.ip
             config = self.make_api_request("GET", "config", discovery=True)
@@ -317,6 +379,11 @@ class Hue(object):
         return False
 
     def update_sunset(self):
+        """Fetch today's sunset time from the bridge geolocation API.
+
+        Falls back to 19:00 if geolocation is not configured on the bridge.
+        Updates :attr:`sunset` with the parsed :class:`datetime.time`.
+        """
         geolocation = self.make_api_request("GET", "geolocation")
         log(f"[SCRIPT.SERVICE.HUE] v2 update_sunset(): geolocation: {geolocation}")
         sunset_str = self.search_dict(geolocation, "sunset_time")
@@ -329,7 +396,16 @@ class Hue(object):
         self.sunset = convert_time(sunset_str)
         log(f"[SCRIPT.SERVICE.HUE] v2 update_sunset(): sunset: {self.sunset}")
 
-    def recall_scene(self, scene_id, duration=400):  # 400 is the default used by Hue, defaulting here for consistency
+    def recall_scene(self, scene_id, duration=400):
+        """Activate a Hue scene with a transition duration.
+
+        Args:
+            scene_id: The Hue scene resource ID.
+            duration: Transition time in milliseconds (default 400, Hue's default).
+
+        Returns:
+            API response dict on success, or an HTTP status code (int) / ``None`` on error.
+        """
 
         log(f"[SCRIPT.SERVICE.HUE] v2 recall_scene(): scene_id: {scene_id}, transition_time: {duration}")
 
@@ -345,6 +421,12 @@ class Hue(object):
         return response
 
     def configure_scene(self, group_id, action):
+        """Open the scene selection dialog and save the chosen scene to addon settings.
+
+        Args:
+            group_id: Light group ID to configure.
+            action: Playback action (``"play"``, ``"pause"``, or ``"stop"``).
+        """
         scene = self.select_hue_scene()
         log(f"[SCRIPT.SERVICE.HUE] v2 selected scene: {scene}")
         if scene is not None:
@@ -354,18 +436,23 @@ class Hue(object):
         ADDON.openSettings()
 
     def get_scenes_and_areas(self):
+        """Fetch all scenes, rooms, and zones from the bridge.
+
+        Returns:
+            Tuple of ``(scenes_dict, areas_dict)`` where:
+            - ``scenes_dict``: ``{scene_id: {"scene_name": str, "area_id": str}}``
+            - ``areas_dict``: ``{area_id: area_name}`` (merged rooms and zones)
+        """
         scenes_data = self.make_api_request("GET", "scene")
         rooms_data = self.make_api_request("GET", "room")
         zones_data = self.make_api_request("GET", "zone")
 
-        # Create dictionaries for rooms and zones
         rooms_dict = {room['id']: room['metadata']['name'] for room in rooms_data['data']}
         zones_dict = {zone['id']: zone['metadata']['name'] for zone in zones_data['data']}
 
-        # Merge rooms and zones into areas
         areas_dict = {**rooms_dict, **zones_dict}
         log(f"[SCRIPT.SERVICE.HUE] v2 get_scenes(): areas_dict: {areas_dict}")
-        # Create a dictionary for scenes
+
         scenes_dict = {}
         for scene in scenes_data['data']:
             scene_id = scene['id']
@@ -374,12 +461,15 @@ class Hue(object):
 
             scenes_dict[scene_id] = {'scene_name': scene_name, 'area_id': area_id}
 
-        # dict_items = "\n".join([f"{key}: {value}" for key, value in scenes_dict.items()])
-        # log(f"[SCRIPT.SERVICE.HUE] v2 get_scenes(): scenes_dict:\n{dict_items}")
-
         return scenes_dict, areas_dict
 
     def select_hue_scene(self):
+        """Display a two-step dialog for selecting a Hue scene (area, then scene).
+
+        Returns:
+            Tuple of ``(scene_id, display_name)`` where ``display_name`` is
+            ``"Scene Name - Area Name"``, or ``None`` if the user cancelled.
+        """
         dialog_progress = xbmcgui.DialogProgress()
         dialog_progress.create("Hue Service", "Searching for scenes...")
         log("[SCRIPT.SERVICE.HUE] V2 selectHueScene{}")
@@ -401,26 +491,36 @@ class Hue(object):
                 selected_id, selected_scene_item = scene_items[selected_scene_index]
                 selected_scene_name = selected_scene_item.getLabel()
                 selected_area_name = area_items[selected_area_index].getLabel()
-                selected_name = f"{selected_scene_name} - {selected_area_name}"
-                log(f"[SCRIPT.SERVICE.HUE] V2 selectHueScene: selected: {selected_id}, name: {selected_name}")
+                display_name = f"{selected_scene_name} - {selected_area_name}"
+                log(f"[SCRIPT.SERVICE.HUE] V2 selectHueScene: selected: {selected_id}, name: {display_name}")
                 dialog_progress.close()
-                return selected_id, selected_name
+                return selected_id, display_name
         log("[SCRIPT.SERVICE.HUE] V2 selectHueScene: cancelled")
         dialog_progress.close()
         return None
 
     def configure_ambilights(self, group_id):
+        """Open the light multi-select dialog and save chosen lights for ambilight.
+
+        Args:
+            group_id: Ambilight group ID (typically ``"3"``).
+        """
         lights = self._select_hue_lights()
         if lights is not None:
             light_names = [light['metadata']['name'] for light in lights]
-            color_lights = [light['id'] for light in lights]
+            color_light_ids = [light['id'] for light in lights]
 
-            ADDON.setSettingString(f"group{group_id}_Lights", ','.join(color_lights))
+            ADDON.setSettingString(f"group{group_id}_Lights", ','.join(color_light_ids))
             ADDON.setSettingString(f"group{group_id}_LightNames", ', '.join(light_names))
             ADDON.setSettingBool(f"group{group_id}_enabled", True)
             ADDON.openSettings()
 
     def _select_hue_lights(self):
+        """Display a multi-select dialog listing all available Hue lights.
+
+        Returns:
+            List of light data dicts for selected lights, or ``None`` if cancelled.
+        """
         hue_lights: dict = self.make_api_request("GET", "light")
         if hue_lights is not None and 'data' in hue_lights:
             items = [xbmcgui.ListItem(label=light['metadata']['name']) for light in hue_lights['data']]
@@ -430,6 +530,12 @@ class Hue(object):
         return None
 
     def _discover_endpoint(self):
+        """Discover the bridge IP address using the Philips N-UPnP cloud service.
+
+        Returns:
+            ``True`` if a bridge IP was found (stored in :attr:`discoveredIP`),
+            ``None`` otherwise.
+        """
         log("[SCRIPT.SERVICE.HUE] v2 _discover_endpoint.")
         result: dict = self.make_api_request('GET', 'https://discovery.meethue.com/', discovery=True)
         if result is None or isinstance(result, int):
@@ -448,6 +554,15 @@ class Hue(object):
 
     @staticmethod
     def get_device_by_archetype(json_data, archetype):
+        """Find a device ID by its product archetype (e.g. ``"bridge_v2"``).
+
+        Args:
+            json_data: Response from the ``/device`` API endpoint.
+            archetype: Product archetype string to match.
+
+        Returns:
+            Device ID string, or ``None`` if not found.
+        """
         for device in json_data['data']:
             if device['product_data']['product_archetype'] == archetype:
                 return device['id']
@@ -455,6 +570,17 @@ class Hue(object):
 
     @staticmethod
     def get_attribute_value(json_data, device_id, attribute_path):
+        """Extract a nested attribute value from a device in the API response.
+
+        Args:
+            json_data: Response from the ``/device`` API endpoint.
+            device_id: The device ID to look up.
+            attribute_path: List of keys forming the path to the desired value
+                (e.g. ``["metadata", "name"]``).
+
+        Returns:
+            The attribute value, or ``None`` if the device or path is not found.
+        """
         for device in json_data['data']:
             if device['id'] == device_id:
                 value = device
@@ -467,6 +593,15 @@ class Hue(object):
 
     @staticmethod
     def search_dict(d, key):
+        """Recursively search a nested dict/list structure for a key.
+
+        Args:
+            d: Dictionary (possibly nested) to search.
+            key: Key name to find.
+
+        Returns:
+            The first matching value, or ``None`` if not found.
+        """
         if key in d:
             return d[key]
         for k, v in d.items():
