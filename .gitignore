@@ -4,6 +4,7 @@
 # pycharm
 /.idea
 /venv
+/.venv
 
 # local reference docs
 /docs
