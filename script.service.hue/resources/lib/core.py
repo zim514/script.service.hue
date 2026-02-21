@@ -337,18 +337,3 @@ class Timers(threading.Thread):
                     break
                 self._run_sunset()
         log("[SCRIPT.SERVICE.HUE] Timers stopped")
-
-    @staticmethod
-    def _time_until(current, target):
-        """Calculate the number of seconds from ``current`` to ``target`` time.
-
-        Args:
-            current: A :class:`datetime.time` representing the current time.
-            target: A :class:`datetime.time` representing the target time.
-
-        Returns:
-            Number of seconds until ``target`` (wraps past midnight).
-        """
-        now = datetime(1, 1, 1, current.hour, current.minute, current.second)
-        then = datetime(1, 1, 1, target.hour, target.minute, target.second)
-        return (then - now).seconds
