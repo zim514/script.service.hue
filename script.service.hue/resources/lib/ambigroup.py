@@ -87,6 +87,7 @@ class AmbiGroup(lightgroup.LightGroup):
 
         if self.activation_check.validate():
             log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] Running Play action")
+            self._get_and_save_light_states()
 
             ambi_loop_thread = Thread(target=self._ambi_loop, name="_ambi_loop", daemon=True)
             ambi_loop_thread.start()
@@ -100,6 +101,7 @@ class AmbiGroup(lightgroup.LightGroup):
         log(f"[SCRIPT.SERVICE.HUE] In ambiGroup[{self.light_group_id}], onPlaybackStopped()")
         self.state = STATE_STOPPED
         AMBI_RUNNING.clear()
+        self._resume_all_light_states()
 
     def onPlayBackPaused(self):
         """Handle playback pause: clear the ambilight running flag to terminate the capture loop.
@@ -110,6 +112,7 @@ class AmbiGroup(lightgroup.LightGroup):
         log(f"[SCRIPT.SERVICE.HUE] In ambiGroup[{self.light_group_id}], onPlaybackPaused()")
         self.state = STATE_PAUSED
         AMBI_RUNNING.clear()
+        self._resume_all_light_states()
 
     def _ambi_loop(self):
         """Main ambilight capture and update loop (runs on a daemon thread).
@@ -301,42 +304,45 @@ class AmbiGroup(lightgroup.LightGroup):
         return _("Unknown")
 
     def _get_and_save_light_states(self):
-        """Fetch and return the current state of all Hue lights for later restoration.
+        """Fetch and save the current state of configured ambilight lights for later restoration.
 
-        Returns:
-            Dict mapping light IDs to their state (on, brightness, color, color_temperature,
-            effects), or ``None`` if the API request failed.
+        Only saves lights present in :attr:`ambi_lights`. Results are stored
+        in :attr:`saved_light_states`.
         """
-        response = self.bridge.make_api_request('GET', 'light')
-        if response is not None and 'data' in response:
-            states = {}
-            for light in response['data']:
-                states[light['id']] = {
-                    'on': light['on']['on'],
-                    'brightness': light['dimming']['brightness'],
-                    'color': light['color']['xy'],
-                    'color_temperature': light['color_temperature']['mirek'] if 'mirek' in light['color_temperature'] else None,
-                    'effects': light['effects']['status'],
-                }
-            return states
-        else:
-            log(f"[SCRIPT.SERVICE.HUE] Failed to get light states.")
-            return None
+        self.saved_light_states = {}
+        for light_id in self.ambi_lights:
+            response = self.bridge.make_api_request('GET', f'light/{light_id}')
+            if response is not None and 'data' in response:
+                for light in response['data']:
+                    self.saved_light_states[light['id']] = {
+                        'on': light['on']['on'],
+                        'brightness': light['dimming']['brightness'],
+                        'color': light['color']['xy'],
+                        'color_temperature': light['color_temperature']['mirek'] if 'mirek' in light.get('color_temperature', {}) else None,
+                        'effects': light['effects']['status'] if 'effects' in light else None,
+                    }
+            else:
+                log(f"[SCRIPT.SERVICE.HUE] Failed to get state for Light[{light_id}].")
 
-    def _resume_all_light_states(self, states):
+    def _resume_all_light_states(self):
         """Restore previously saved light states via the Hue API.
 
-        Args:
-            states: Dict mapping light IDs to state dicts (from :meth:`_get_and_save_light_states`).
+        Only restores if ``group3_ResumeState`` is enabled and saved states exist.
+        Uses ``group3_ResumeTransition`` for the transition duration.
         """
-        for light_id, state in states.items():
+        if not self.settings_monitor.group3_resume_state or not self.saved_light_states:
+            return
+
+        for light_id, state in self.saved_light_states.items():
             data = {
                 "type": "light",
                 "on": {"on": state['on']},
                 "dimming": {"brightness": state['brightness']},
                 "color": {"xy": state['color']},
-                "effects": {"status": state['effects']}
+                "dynamics": {"duration": self.settings_monitor.group3_resume_transition},
             }
+            if state['effects'] is not None:
+                data["effects"] = {"status": state['effects']}
             if state['color_temperature'] is not None:
                 data["color_temperature"] = {"mirek": state['color_temperature']}
             response = self.bridge.make_api_request('PUT', f'light/{light_id}', json=data)
