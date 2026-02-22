@@ -4,6 +4,10 @@
 # pycharm
 /.idea
 /venv
+/.venv
+
+# local reference docs
+/docs
 
 #workflow testing
 act-ref.json

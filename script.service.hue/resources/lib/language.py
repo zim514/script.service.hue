@@ -1,3 +1,14 @@
+"""Auto-generated i18n string mapping for the Hue service addon.
+
+Maps English source strings to Kodi localized string IDs. The ``_strings``
+dictionary below the ``# GENERATED`` marker is maintained by
+``language_gen.py`` — do not edit it manually.
+
+Usage::
+
+    from .language import get_string as _
+    label = _("Hue Service")
+"""
 #      Copyright (C) 2019 Kodi Hue Service (script.service.hue)
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
@@ -15,6 +26,15 @@ _strings = {}
 
 
 def get_string(t):
+    """Look up the Kodi localized string for the given English text.
+
+    Args:
+        t: English source string (case-insensitive lookup).
+
+    Returns:
+        Localized string from Kodi, or the original text if no mapping exists.
+        When :data:`STRDEBUG` is ``True``, returns the string ID for debugging.
+    """
     string_id = _strings.get(t.lower())
     if not string_id:
         log(f"[SCRIPT.SERVICE.HUE] LANGUAGE: missing translation for '{t.lower()}'")
@@ -144,4 +164,4 @@ _strings['bridge unauthorized, please reconfigure.'] = 30025
 _strings['connection failed, retrying...'] = 30026
 _strings['not selected'] = 30003
 _strings['error: light not found, it may have been deleted'] = 30027
-_strings['configure hue home location to use sunset time, defaulting to 19:00'] = None
+_strings['configure hue home location to use sunset time, defaulting to 19:00'] = 30028

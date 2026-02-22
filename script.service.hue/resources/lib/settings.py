@@ -1,3 +1,10 @@
+"""Settings monitoring and validation for the Hue service addon.
+
+Provides :class:`SettingsMonitor`, which extends :class:`xbmc.Monitor` to
+load all addon settings into typed attributes and react to setting changes.
+Bridge connection settings trigger a reconnection event, and schedule/ambilight
+configurations are validated on every reload.
+"""
 #      Copyright (C) 2019 Kodi Hue Service (script.service.hue)
 #      This file is part of script.service.hue
 #      SPDX-License-Identifier: MIT
@@ -13,6 +20,27 @@ from .kodiutils import convert_time, notification, log
 
 
 class SettingsMonitor(xbmc.Monitor):
+    """Monitors Kodi addon settings and exposes them as typed attributes.
+
+    Automatically reloads settings when the user modifies them in the Kodi UI.
+    If the bridge IP or application key changes, sets the
+    :data:`~BRIDGE_SETTINGS_CHANGED` event to signal the main service loop
+    to reconnect.
+
+    Settings are organized into groups:
+        - **Bridge:** ``ip``, ``key``, ``show500error``
+        - **Schedule:** ``schedule_enabled``, ``schedule_start``, ``schedule_end``,
+          ``morning_time``, ``sunset_offset``, ``daylight_disable``, ``force_on_sunset``
+        - **Video rules:** ``minimum_duration``, ``movie_setting``, ``episode_setting``,
+          ``music_video_setting``, ``pvr_setting``, ``other_setting``,
+          ``skip_time_check_if_light_on``, ``skip_scene_if_all_off``
+        - **Group 0 (Video):** ``group0_enabled``, ``group0_{play,pause,stop}_{enabled,scene,transition}``
+        - **Group 1 (Audio):** ``group1_enabled``, ``group1_{play,pause,stop}_{enabled,scene,transition}``
+        - **Group 3 (Ambilight):** ``group3_enabled``, ``group3_lights``, ``group3_transition_time``,
+          ``group3_min_bri``, ``group3_max_bri``, ``group3_saturation``, ``group3_capture_size``,
+          ``group3_resume_state``, ``group3_resume_transition``, ``group3_update_interval``
+    """
+
     def __init__(self):
         super().__init__()
 
@@ -22,9 +50,11 @@ class SettingsMonitor(xbmc.Monitor):
         self.reload_settings()
 
     def onSettingsChanged(self):
+        """Kodi callback: triggered when the user changes any addon setting."""
         self.reload_settings()
 
     def reload_settings(self):
+        """Reload all settings from Kodi, detect bridge changes, and validate configuration."""
         log("[SCRIPT.SERVICE.HUE] Reloading settings...")
         old_ip = self.ip
         old_key = self.key
@@ -114,6 +144,7 @@ class SettingsMonitor(xbmc.Monitor):
         self._validate_ambilight()
 
     def _validate_ambilight(self):
+        """Validate ambilight configuration; disable the group if no lights are selected."""
         log(f"[SCRIPT.SERVICE.HUE] Validate ambilight config. Enabled: {self.group3_enabled}, Lights: {type(self.group3_lights)} : {self.group3_lights}")
         if self.group3_enabled:
             if self.group3_lights == ["-1"]:
@@ -122,9 +153,10 @@ class SettingsMonitor(xbmc.Monitor):
                 notification(_('Hue Service'), _('No lights selected for Ambilight.'), icon=xbmcgui.NOTIFICATION_ERROR)
 
     def _validate_schedule(self):
+        """Validate schedule times; disable the schedule if start time is after end time."""
         log(f"[SCRIPT.SERVICE.HUE] Validate schedule. Schedule Enabled: {self.schedule_enabled}, Start time: {self.schedule_start}, End time: {self.schedule_end}")
         if self.schedule_enabled:
             if self.schedule_start > self.schedule_end:  # checking if start time is after the end time
-                ADDON.setSettingBool('EnableSchedule', False)
+                ADDON.setSettingBool('enableSchedule', False)
                 log('[SCRIPT.SERVICE.HUE] _validate_schedule: Start time is after end time, schedule disabled')
                 notification(_('Hue Service'), _('Invalid start or end time, schedule disabled'), icon=xbmcgui.NOTIFICATION_ERROR)

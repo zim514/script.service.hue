@@ -1,3 +1,11 @@
+"""Plugin route handler for Kodi UI menus (status, toggle, actions).
+
+Parses Kodi plugin routes and renders the user-facing navigation:
+    - ``/`` — main menu with status, settings, and action shortcuts.
+    - ``/?settings`` — opens addon settings dialog.
+    - ``/?toggle`` — toggles service enabled/disabled.
+    - ``/actions`` — submenu for triggering play/pause/stop actions on light groups.
+"""
 # Copyright (C) 2019 Kodi Hue Service (script.service.hue)
 # This file is part of script.service.hue
 # SPDX-License-Identifier: MIT
@@ -17,6 +25,12 @@ from .language import get_string as _
 
 
 class Menu():
+    """Kodi plugin menu handler. Routes plugin URLs to menu-building or action handlers.
+
+    Instantiated by ``plugin.py`` on each plugin invocation. Parses ``sys.argv``
+    to determine the route and command, then delegates to the appropriate handler.
+    """
+
     def __init__(self):
         route = sys.argv[0]
         addon_handle = int(sys.argv[1])
@@ -36,6 +50,13 @@ class Menu():
             log(f"[SCRIPT.SERVICE.HUE] Unknown command. Handle: {addon_handle}, route: {route}, Arguments: {sys.argv}")
 
     def handle_route(self, base_url, addon_handle, command):
+        """Route main plugin commands: empty (build menu), ``settings``, or ``toggle``.
+
+        Args:
+            base_url: Plugin base URL.
+            addon_handle: Kodi plugin handle for adding directory items.
+            command: URL query string (e.g. ``"settings"`` or ``"toggle"``).
+        """
         if not command:
             self.build_menu(base_url, addon_handle)
         elif command == "settings":
@@ -45,6 +66,10 @@ class Menu():
             self.handle_toggle_command()
 
     def handle_toggle_command(self):
+        """Toggle the Hue service between enabled and disabled states.
+
+        Does nothing if the service is currently disabled by the daytime rule.
+        """
         if self.enabled and self._get_status() != "Disabled by daytime":
             log("[SCRIPT.SERVICE.HUE] Disable service")
             cache_set("service_enabled", False)
@@ -56,6 +81,16 @@ class Menu():
         xbmc.executebuiltin('Container.Refresh')
 
     def handle_actions_route(self, parsed, base_url, addon_handle):
+        """Handle the ``/actions`` route: show action submenu or execute an action.
+
+        When ``action=menu``, displays play/pause/stop options for the specified
+        light group. Otherwise, caches the action for the service to process.
+
+        Args:
+            parsed: Parsed URL query parameters (``action``, ``light_group_id``).
+            base_url: Plugin base URL.
+            addon_handle: Kodi plugin handle for adding directory items.
+        """
         action = parsed['action'][0]
         light_group_id = parsed['light_group_id'][0]
         log(f"[SCRIPT.SERVICE.HUE] Actions: {action}, light_group_id: {light_group_id}")
@@ -68,6 +103,12 @@ class Menu():
             cache_set("action", (action, light_group_id))
 
     def build_menu(self, base_url, addon_handle):
+        """Build the main plugin menu with status toggle, settings, and action shortcuts.
+
+        Args:
+            base_url: Plugin base URL.
+            addon_handle: Kodi plugin handle for adding directory items.
+        """
         log(f"[SCRIPT.SERVICE.HUE] build_menu: status: {self._get_status()}")
         status_item = ListItem(_("Hue Status: ") + self._get_status())
         status_icon = self._get_status_icon()
@@ -80,6 +121,17 @@ class Menu():
         xbmcplugin.endOfDirectory(handle=addon_handle, cacheToDisc=False)
 
     def add_directory_items(self, base_url, addon_handle, status_item, settings_item):
+        """Add menu items to the plugin directory listing.
+
+        Includes the status toggle and settings items always, plus video/audio
+        scene action shortcuts when the service is enabled.
+
+        Args:
+            base_url: Plugin base URL.
+            addon_handle: Kodi plugin handle.
+            status_item: ListItem for the status/toggle entry.
+            settings_item: ListItem for the settings entry.
+        """
         xbmcplugin.addDirectoryItem(addon_handle, base_url + "?toggle", status_item)
         xbmcplugin.addDirectoryItem(addon_handle, base_url + "?settings", settings_item)
         if self.enabled:
@@ -87,6 +139,11 @@ class Menu():
             xbmcplugin.addDirectoryItem(addon_handle, base_url + "/actions?light_group_id=2&action=menu", ListItem(_("Audio Scenes")), True)
 
     def _get_status(self):
+        """Return a human-readable service status string.
+
+        Returns:
+            ``"Enabled"``, ``"Disabled"``, or ``"Disabled by daytime"``.
+        """
         daytime_disable = ADDON.getSettingBool("daylightDisable")  # Legacy setting name, it's daytime everywhere now
         log(f"[SCRIPT.SERVICE.HUE] _get_status enabled: {self.enabled}   -  {type(self.enabled)}, daytime: {self.daytime}, daytime_disable: {daytime_disable}")
         if self.daytime and daytime_disable:
@@ -97,9 +154,13 @@ class Menu():
             return "Disabled"
 
     def _get_status_icon(self):
+        """Return the icon path corresponding to the current service status.
+
+        Returns:
+            Path to the appropriate icon (enabled, disabled, or daylight).
+        """
 
         daytime_disable = ADDON.getSettingBool("daylightDisable")
-        # log("[SCRIPT.SERVICE.HUE] Current status: {}".format(daytime_disable))
         if self.daytime and daytime_disable:
             return xbmcvfs.makeLegalFilename(ADDONPATH + "resources/icons/daylight.png")  # Disabled by daytime, legacy icon name
         elif self.enabled:
