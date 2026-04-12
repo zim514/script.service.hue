@@ -28,6 +28,7 @@ class Hue(object):
         self.connected: bool = False
         self.devices: dict = None
         self.bridge_id = None
+        self.discoveredIP = ""
         self.retries = 0
         self.max_retries = 5
         self.max_timeout = 5
@@ -48,29 +49,23 @@ class Hue(object):
         # Discovery and account creation not yet supported on API V2. This flag uses a V1 URL and supports new IPs.
         if discovery:
             log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Discovery mode.")
+        ip_discovered = False
         for attempt in range(MAX_RETRIES):
             # Prepare the URL for the request
             log(f"[SCRIPT.SERVICE.HUE] v2 ip: {self.settings_monitor.ip}, key: {self.settings_monitor.key}")
             base_url = self.base_url if not discovery else f"https://{self.discoveredIP}/api/"
             log(f"[SCRIPT.SERVICE.HUE] v2 make_request: base_url: {base_url}")
             url = urljoin(base_url, resource)
-            #log(f"[SCRIPT.SERVICE.HUE] v2 make_request: base_url: {base_url}, url: {url}, method: {method}, kwargs: {kwargs}")
             try:
                 # Make the request
                 response = self.session.request(method, url, timeout=TIMEOUT, **kwargs)
                 response.raise_for_status()
                 return response.json()
             except ConnectionError as x:
-                # If a ConnectionError occurs, try to handle a new IP, except in discovery mode
+                # If a ConnectionError occurs, try to discover new IP once
                 log(f"[SCRIPT.SERVICE.HUE] v2 make_request: ConnectionError: {x}")
-                if self._discover_new_ip() and not discovery:
-                    # If handling a new IP is successful, retry the request
-                    log(f"[SCRIPT.SERVICE.HUE] v2 make_request: New IP handled successfully. Retrying request.")
-                    continue
-                else:
-                    # If handling a new IP fails, abort the request
-                    log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Failed to handle new IP. Aborting request.")
-                    return None
+                if not ip_discovered and not discovery:
+                    ip_discovered = self._discover_new_ip()
 
             except HTTPError as x:
                 # Handle HTTP errors
@@ -113,13 +108,13 @@ class Hue(object):
 
     def _discover_new_ip(self):
         if self._discover_endpoint():
-            log(f"[SCRIPT.SERVICE.HUE] v2 _discover_and_handle_new_ip: discover_endpoint SUCCESS, bridge IP: {self.settings_monitor.ip}")
+            log(f"[SCRIPT.SERVICE.HUE] v2 _discover_new_ip: discover_endpoint SUCCESS, discovered IP: {self.discoveredIP}")
             # TODO:  add new discovery methods here, like mDNS, when I can figure out how to make it multiplatform and not binary
             ADDON.setSettingString("bridgeIP", self.discoveredIP)
-            if self.connect():
-                log(f"[SCRIPT.SERVICE.HUE] v2 _discover_and_handle_new_ip: connect SUCCESS")
-                return True
-        log(f"[SCRIPT.SERVICE.HUE] v2 _discover_and_handle_new_ip: discover_endpoint FAIL, bridge IP: {self.settings_monitor.ip}")
+            self.base_url = f"https://{self.discoveredIP}/clip/v2/resource/"
+            log(f"[SCRIPT.SERVICE.HUE] v2 _discover_new_ip: updated base_url to {self.base_url}")
+            return True
+        log(f"[SCRIPT.SERVICE.HUE] v2 _discover_new_ip: discover_endpoint FAIL")
         return False
 
     def connect(self):
@@ -131,6 +126,7 @@ class Hue(object):
             self.devices = self.make_api_request("GET", "device")
             if not isinstance(self.devices, dict):
                 log(f"[SCRIPT.SERVICE.HUE] v2 connect: Connection error. Setting connected to False.  {type(self.devices)} :  {self.devices}")
+                notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
                 self.connected = False
                 return False
 
@@ -143,6 +139,7 @@ class Hue(object):
                 log(f"[SCRIPT.SERVICE.HUE] v2 connect: Connection successful")
                 return True
             log(f"[SCRIPT.SERVICE.HUE] v2 connect: Connection attempts failed. Setting connected to False")
+            notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
             self.connected = False
             return False
 
@@ -248,11 +245,11 @@ class Hue(object):
         log("[SCRIPT.SERVICE.HUE] v2 _create_user: In createUser")
 
         # Prepare data for POST request
-        data = '{{"devicetype": "kodi#{}", "generateclientkey": true}}'.format(getfqdn())
+        data = {"devicetype": f"kodi#{getfqdn()}", "generateclientkey": True}
 
+        response = None
         time = 0
         timeout = 90
-        progress = 0
         last_progress = -1
 
         # Loop until timeout, user cancellation, or settings_monitor abort request
@@ -264,7 +261,7 @@ class Hue(object):
                 progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))
                 last_progress = progress
 
-            response = self.make_api_request("POST", "", discovery=True, data=data)
+            response = self.make_api_request("POST", "", discovery=True, json=data)
             log(f"[SCRIPT.SERVICE.HUE] v2 _create_user: response at iteration {time}: {response}")
 
             # Break loop if link button has been pressed
@@ -299,7 +296,7 @@ class Hue(object):
             swversion = int(swversion_raw)
             log(f"[SCRIPT.SERVICE.HUE] v2 _version_check(): swversion: {swversion}")
         except (KeyError, ValueError, TypeError) as error:
-            log(f"[SCRIPT.SERVICE.HUE] v2 _version_check():  Connected! Bridge too old: {swversion}, error: {error}")
+            log(f"[SCRIPT.SERVICE.HUE] v2 _version_check():  Could not determine bridge version: {error}")
             notification(_("Hue Service"), _("Bridge outdated. Please update your bridge."), icon=xbmcgui.NOTIFICATION_ERROR)
             return False
         except Exception as exc:
