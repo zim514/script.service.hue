@@ -5,7 +5,6 @@
 
 import json
 from socket import getfqdn
-from urllib.parse import urljoin
 
 import requests
 import urllib3
@@ -15,6 +14,7 @@ from requests.exceptions import HTTPError, ConnectionError, Timeout
 from . import ADDON, TIMEOUT, NOTIFICATION_THRESHOLD, MAX_RETRIES, reporting
 from .kodiutils import notification, convert_time, log
 from .language import get_string as _
+from .mdns_discovery import discover_hue_bridge_mdns
 
 
 class Hue(object):
@@ -28,7 +28,6 @@ class Hue(object):
         self.connected: bool = False
         self.devices: dict = None
         self.bridge_id = None
-        self.discoveredIP = ""
         self.base_url = None
         self.sunset = None
         self.settings_monitor = settings_monitor
@@ -42,32 +41,21 @@ class Hue(object):
             log("[SCRIPT.SERVICE.HUE] No bridge IP or user key provided. Bridge not configured.")
             notification(_("Hue Service"), _("Bridge not configured"), icon=xbmcgui.NOTIFICATION_ERROR)
 
-    def make_api_request(self, method, resource, discovery=False, **kwargs):
-        # Discovery and account creation not yet supported on API V2. This flag uses a V1 URL and supports new IPs.
-        if discovery:
-            log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Discovery mode.")
+    def make_api_request(self, method, resource, **kwargs):
         ip_discovered = False
         for attempt in range(MAX_RETRIES):
-            # Prepare the URL for the request
-            log(f"[SCRIPT.SERVICE.HUE] v2 ip: {self.settings_monitor.ip}, key: {self.settings_monitor.key}")
-            base_url = self.base_url if not discovery else f"https://{self.discoveredIP}/api/"
-            log(f"[SCRIPT.SERVICE.HUE] v2 make_request: base_url: {base_url}")
-            url = urljoin(base_url, resource)
+            url = f"{self.base_url}{resource}"
+            log(f"[SCRIPT.SERVICE.HUE] v2 make_request: {method} {url}")
             try:
-                # Make the request
                 response = self.session.request(method, url, timeout=TIMEOUT, **kwargs)
                 response.raise_for_status()
                 return response.json()
             except ConnectionError as x:
-                # If a ConnectionError occurs, try to discover new IP once
                 log(f"[SCRIPT.SERVICE.HUE] v2 make_request: ConnectionError: {x}")
-                if not ip_discovered and not discovery:
+                if not ip_discovered:
                     ip_discovered = self._discover_new_ip()
-
             except HTTPError as x:
-                # Handle HTTP errors
                 if x.response.status_code == 429:
-                    # If a 429 status code is received, abort and log an error
                     log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Too Many Requests: {x} \nResponse: {x.response.text}")
                     return 429
                 elif x.response.status_code in [401, 403]:
@@ -79,7 +67,7 @@ class Hue(object):
                     log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Not Found: {x}\nResponse: {x.response.text}")
                     return 404
                 elif x.response.status_code == 500:
-                    # Transient bridge error — fall through to retry/backoff.
+                    # Transient bridge error — fall through to retry/backoff
                     log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Internal Bridge Error: {x}\nResponse: {x.response.text}")
                 else:
                     log(f"[SCRIPT.SERVICE.HUE] v2 make_request: HTTPError: {x}\nResponse: {x.response.text}")
@@ -90,30 +78,75 @@ class Hue(object):
             except json.JSONDecodeError as x:
                 log(f"[SCRIPT.SERVICE.HUE] v2 make_request: JSONDecodeError: {x}")
             except requests.RequestException as x:
-                # Report other kinds of RequestExceptions
                 log(f"[SCRIPT.SERVICE.HUE] v2 make_request: RequestException: {x}")
                 reporting.process_exception(x)
-            # Calculate the retry time and log the retry attempt
             retry_time = 2 ** attempt
             if retry_time >= 7 and attempt >= NOTIFICATION_THRESHOLD:
                 notification(_("Hue Service"), _("Connection failed, retrying..."), icon=xbmcgui.NOTIFICATION_WARNING)
             log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Retry in {retry_time} seconds, retry {attempt + 1}/{MAX_RETRIES}...")
             if self.settings_monitor.waitForAbort(retry_time):
                 break
-        # If all attempts fail, log the failure and set connected to False
         log(f"[SCRIPT.SERVICE.HUE] v2 make_request: All attempts failed after {MAX_RETRIES} retries. Setting connected to False")
         self.connected = False
         return None
 
+    def _make_v1_request(self, method, resource, ip=None, **kwargs):
+        if ip is None:
+            ip = self.settings_monitor.ip
+        url = f"https://{ip}/api/{resource}"
+        log(f"[SCRIPT.SERVICE.HUE] v2 _make_v1_request: {method} {url}")
+        try:
+            response = self.session.request(method, url, timeout=TIMEOUT, **kwargs)
+            response.raise_for_status()
+            return response.json()
+        except (ConnectionError, HTTPError, Timeout) as exc:
+            log(f"[SCRIPT.SERVICE.HUE] v2 _make_v1_request: {type(exc).__name__}: {exc}")
+            return None
+        except json.JSONDecodeError as exc:
+            log(f"[SCRIPT.SERVICE.HUE] v2 _make_v1_request: JSONDecodeError: {exc}")
+            return None
+
+    def _discover_bridge_ip(self):
+        log("[SCRIPT.SERVICE.HUE] v2 _discover_bridge_ip: Trying mDNS...")
+        ip = discover_hue_bridge_mdns(timeout=2.0)
+        if ip:
+            log(f"[SCRIPT.SERVICE.HUE] v2 _discover_bridge_ip: mDNS found bridge at {ip}")
+            return ip
+        log("[SCRIPT.SERVICE.HUE] v2 _discover_bridge_ip: mDNS failed, trying cloud lookup...")
+        ip = self._discover_cloud()
+        if ip:
+            log(f"[SCRIPT.SERVICE.HUE] v2 _discover_bridge_ip: Cloud found bridge at {ip}")
+            return ip
+        log("[SCRIPT.SERVICE.HUE] v2 _discover_bridge_ip: All discovery methods failed")
+        return None
+
+    def _discover_cloud(self):
+        log("[SCRIPT.SERVICE.HUE] v2 _discover_cloud: Querying discovery.meethue.com")
+        try:
+            response = self.session.get("https://discovery.meethue.com/", timeout=TIMEOUT)
+            response.raise_for_status()
+            result = response.json()
+            if result:
+                ip = result[0]["internalipaddress"]
+                log(f"[SCRIPT.SERVICE.HUE] v2 _discover_cloud: Found bridge at {ip}")
+                return ip
+            log("[SCRIPT.SERVICE.HUE] v2 _discover_cloud: Empty response")
+            return None
+        except (ConnectionError, HTTPError, Timeout) as exc:
+            log(f"[SCRIPT.SERVICE.HUE] v2 _discover_cloud: {type(exc).__name__}: {exc}")
+            return None
+        except (KeyError, IndexError, json.JSONDecodeError) as exc:
+            log(f"[SCRIPT.SERVICE.HUE] v2 _discover_cloud: Parse error: {exc}")
+            return None
+
     def _discover_new_ip(self):
-        if self._discover_endpoint():
-            log(f"[SCRIPT.SERVICE.HUE] v2 _discover_new_ip: discover_endpoint SUCCESS, discovered IP: {self.discoveredIP}")
-            # TODO:  add new discovery methods here, like mDNS, when I can figure out how to make it multiplatform and not binary
-            ADDON.setSettingString("bridgeIP", self.discoveredIP)
-            self.base_url = f"https://{self.discoveredIP}/clip/v2/resource/"
-            log(f"[SCRIPT.SERVICE.HUE] v2 _discover_new_ip: updated base_url to {self.base_url}")
+        new_ip = self._discover_bridge_ip()
+        if new_ip:
+            log(f"[SCRIPT.SERVICE.HUE] v2 _discover_new_ip: Found bridge at {new_ip}")
+            ADDON.setSettingString("bridgeIP", new_ip)
+            self.base_url = f"https://{new_ip}/clip/v2/resource/"
             return True
-        log(f"[SCRIPT.SERVICE.HUE] v2 _discover_new_ip: discover_endpoint FAIL")
+        log("[SCRIPT.SERVICE.HUE] v2 _discover_new_ip: Discovery failed")
         return False
 
     def connect(self):
@@ -148,7 +181,6 @@ class Hue(object):
 
     def discover(self):
         log("[SCRIPT.SERVICE.HUE] v2 Start discover")
-        self.discoveredIP = ""
         self.connected = False
 
         ADDON.setSettingString("bridgeIP", "")
@@ -158,11 +190,12 @@ class Hue(object):
         progress_bar.create(_('Searching for bridge...'))
         progress_bar.update(5, _("Discovery started"))
 
+        discovered_ip = ""
         while not progress_bar.iscanceled() and not self.settings_monitor.abortRequested():
-            progress_bar.update(percent=10, message=_("N-UPnP discovery..."))
-            ip_discovered = self._discover_endpoint()
+            progress_bar.update(percent=10, message=_("Searching for bridge..."))
+            discovered_ip = self._discover_bridge_ip() or ""
 
-            if not ip_discovered and not progress_bar.iscanceled():
+            if not discovered_ip and not progress_bar.iscanceled():
                 log("[SCRIPT.SERVICE.HUE] v2 discover: Bridge not found automatically")
                 progress_bar.update(percent=10, message=_("Bridge not found"))
                 manual_entry = xbmcgui.Dialog().yesno(
@@ -171,16 +204,15 @@ class Hue(object):
                 )
                 if not manual_entry:
                     break
-                self.discoveredIP = xbmcgui.Dialog().numeric(3, _("Bridge IP"))
-                log(f"[SCRIPT.SERVICE.HUE] v2 discover: Manual entry: {self.discoveredIP}")
+                discovered_ip = xbmcgui.Dialog().numeric(3, _("Bridge IP"))
+                log(f"[SCRIPT.SERVICE.HUE] v2 discover: Manual entry: {discovered_ip}")
 
-            if not self.discoveredIP:
-                continue  # empty manual entry or cancelled numeric dialog — retry loop
+            if not discovered_ip:
+                continue
 
             progress_bar.update(percent=50, message=_("Connecting..."))
-            self.base_url = f"https://{self.discoveredIP}/clip/v2/resource/"
-            log("[SCRIPT.SERVICE.HUE] v2 discover: Attempt connection")
-            config = self.make_api_request("GET", "0/config", discovery=True)
+            log(f"[SCRIPT.SERVICE.HUE] v2 discover: Attempt connection to {discovered_ip}")
+            config = self._make_v1_request("GET", "0/config", ip=discovered_ip)
             log(f"[SCRIPT.SERVICE.HUE] v2 discover: config: {config}")
 
             if progress_bar.iscanceled():
@@ -189,15 +221,15 @@ class Hue(object):
             if not isinstance(config, dict):
                 log("[SCRIPT.SERVICE.HUE] v2 discover: Bridge not reachable, retrying")
                 progress_bar.update(percent=10, message=_("Bridge not found[CR]Check your bridge and network."))
-                self.discoveredIP = ""
+                discovered_ip = ""
                 if self.settings_monitor.waitForAbort(3):
                     break
                 continue
 
-            progress_bar.update(percent=100, message=_("Found bridge: ") + self.discoveredIP)
+            progress_bar.update(percent=100, message=_("Found bridge: ") + discovered_ip)
             self.settings_monitor.waitForAbort(1)
 
-            bridge_user_created = self._create_user(progress_bar)
+            bridge_user_created = self._create_user(progress_bar, discovered_ip)
 
             if progress_bar.iscanceled():
                 break
@@ -205,7 +237,7 @@ class Hue(object):
             if bridge_user_created:
                 log(f"[SCRIPT.SERVICE.HUE] v2 discover: User created: {bridge_user_created}")
                 progress_bar.update(percent=90, message=_("User Found![CR]Saving settings..."))
-                ADDON.setSettingString("bridgeIP", self.discoveredIP)
+                ADDON.setSettingString("bridgeIP", discovered_ip)
                 ADDON.setSettingString("bridgeUser", bridge_user_created)
                 progress_bar.update(percent=100, message=_("Complete!"))
                 self.settings_monitor.waitForAbort(5)
@@ -216,7 +248,7 @@ class Hue(object):
 
             log("[SCRIPT.SERVICE.HUE] v2 discover: User not created, retrying")
             progress_bar.update(percent=10, message=_("User not found[CR]Check your bridge and network."))
-            self.discoveredIP = ""
+            discovered_ip = ""
             if self.settings_monitor.waitForAbort(3):
                 break
 
@@ -225,11 +257,9 @@ class Hue(object):
         self.settings_monitor.waitForAbort(1)
         progress_bar.close()
 
-    def _create_user(self, progress_bar):
-        # Log start of user creation
+    def _create_user(self, progress_bar, ip):
         log("[SCRIPT.SERVICE.HUE] v2 _create_user: In createUser")
 
-        # Prepare data for POST request
         data = {"devicetype": f"kodi#{getfqdn()}", "generateclientkey": True}
 
         response = None
@@ -237,19 +267,16 @@ class Hue(object):
         timeout = 90
         last_progress = -1
 
-        # Loop until timeout, user cancellation, or settings_monitor abort request
         while time <= timeout and not self.settings_monitor.abortRequested() and not progress_bar.iscanceled():
             progress = int((time / timeout) * 100)
 
-            # Update progress bar if progress has changed
             if progress != last_progress:
                 progress_bar.update(percent=progress, message=_("Press link button on bridge. Waiting for 90 seconds..."))
                 last_progress = progress
 
-            response = self.make_api_request("POST", "", discovery=True, json=data)
+            response = self._make_v1_request("POST", "", ip=ip, json=data)
             log(f"[SCRIPT.SERVICE.HUE] v2 _create_user: response at iteration {time}: {response}")
 
-            # Break loop if link button has been pressed
             if response and response[0].get('error', {}).get('type') != 101:
                 break
 
@@ -260,9 +287,7 @@ class Hue(object):
             return False
 
         try:
-            # Extract and save username from response
             username = response[0]['success']['username']
-
             log(f"[SCRIPT.SERVICE.HUE] v2 _create_user: User created: {username}")
             return username
         except (KeyError, TypeError) as exc:
@@ -271,8 +296,7 @@ class Hue(object):
 
     def _check_version(self):
         try:
-            self.discoveredIP = self.settings_monitor.ip
-            config = self.make_api_request("GET", "config", discovery=True)
+            config = self._make_v1_request("GET", "config")
             log(f"[SCRIPT.SERVICE.HUE] v2 _version_check(): config: {config}")
 
             swversion_raw = self.search_dict(config, "swversion")
@@ -408,23 +432,6 @@ class Hue(object):
             if selected:
                 return [hue_lights['data'][i] for i in selected]
         return None
-
-    def _discover_endpoint(self):
-        log("[SCRIPT.SERVICE.HUE] v2 _discover_endpoint.")
-        result: dict = self.make_api_request('GET', 'https://discovery.meethue.com/', discovery=True)
-        if result is None or isinstance(result, int):
-            log(f"[SCRIPT.SERVICE.HUE] v2 _discover_endpoint: make_request failed, result: {result}")
-            return None
-
-        bridge_ip = None
-        if result:
-            try:
-                bridge_ip = result[0]["internalipaddress"]
-            except KeyError:
-                log("[SCRIPT.SERVICE.HUE] v2 _discover_endpoint: No IP found in response")
-                return None
-        self.discoveredIP = bridge_ip
-        return True
 
     @staticmethod
     def get_device_by_archetype(json_data, archetype):
