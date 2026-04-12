@@ -11,7 +11,7 @@ import urllib3
 import xbmcgui,xbmcvfs
 from requests.exceptions import HTTPError, ConnectionError, Timeout
 
-from . import ADDON, TIMEOUT, NOTIFICATION_THRESHOLD, MAX_RETRIES, reporting
+from . import ADDON, TIMEOUT, NOTIFICATION_THRESHOLD, MAX_RETRIES, HueApiError, reporting
 from .kodiutils import notification, convert_time, log
 from .language import get_string as _
 from .mdns_discovery import discover_hue_bridge_mdns
@@ -45,7 +45,8 @@ class Hue(object):
         ip_discovered = False
         for attempt in range(MAX_RETRIES):
             url = f"{self.base_url}{resource}"
-            log(f"[SCRIPT.SERVICE.HUE] make_request: {method} {url}")
+            if attempt == 0 or ip_discovered:
+                log(f"[SCRIPT.SERVICE.HUE] make_request: {method} {url}")
             try:
                 response = self.session.request(method, url, timeout=TIMEOUT, **kwargs)
                 response.raise_for_status()
@@ -55,24 +56,25 @@ class Hue(object):
                 if not ip_discovered:
                     ip_discovered = self._discover_new_ip()
             except HTTPError as x:
-                if x.response.status_code == 429:
-                    log(f"[SCRIPT.SERVICE.HUE] make_request: Too Many Requests: {x} \nResponse: {x.response.text}")
-                    return 429
-                elif x.response.status_code in [401, 403]:
-                    log(f"[SCRIPT.SERVICE.HUE] make_request: Unauthorized: {x}\nResponse: {x.response.text}")
+                status = x.response.status_code
+                text = x.response.text
+                if status == 429:
+                    log(f"[SCRIPT.SERVICE.HUE] make_request: Too Many Requests: {x}\nResponse: {text}")
+                    raise HueApiError(429, text)
+                elif status in [401, 403]:
+                    log(f"[SCRIPT.SERVICE.HUE] make_request: Unauthorized: {x}\nResponse: {text}")
                     notification(_("Hue Service"), _("Bridge unauthorized, please reconfigure."), icon=xbmcgui.NOTIFICATION_ERROR)
                     ADDON.setSettingString("bridgeUser", "")
-                    return 401
-                elif x.response.status_code == 404:
-                    log(f"[SCRIPT.SERVICE.HUE] make_request: Not Found: {x}\nResponse: {x.response.text}")
-                    return 404
-                elif x.response.status_code == 500:
-                    # Transient bridge error — fall through to retry/backoff
-                    log(f"[SCRIPT.SERVICE.HUE] make_request: Internal Bridge Error: {x}\nResponse: {x.response.text}")
+                    raise HueApiError(401, text)
+                elif status == 404:
+                    log(f"[SCRIPT.SERVICE.HUE] make_request: Not Found: {x}\nResponse: {text}")
+                    raise HueApiError(404, text)
+                elif status == 500:
+                    log(f"[SCRIPT.SERVICE.HUE] make_request: Internal Bridge Error: {x}\nResponse: {text}")
                 else:
-                    log(f"[SCRIPT.SERVICE.HUE] make_request: HTTPError: {x}\nResponse: {x.response.text}")
-                    reporting.process_exception(f"Response: {x.response.text}, Exception: {x}", logging=True)
-                    return x.response.status_code
+                    log(f"[SCRIPT.SERVICE.HUE] make_request: HTTPError: {x}\nResponse: {text}")
+                    reporting.process_exception(f"Response: {text}, Exception: {x}", logging=True)
+                    raise HueApiError(status, text)
             except Timeout as x:
                 log(f"[SCRIPT.SERVICE.HUE] make_request: Timeout: {x}")
             except json.JSONDecodeError as x:
@@ -81,13 +83,12 @@ class Hue(object):
                 log(f"[SCRIPT.SERVICE.HUE] make_request: RequestException: {x}")
                 reporting.process_exception(x)
             retry_time = 2 ** attempt
-            if retry_time >= 7 and attempt >= NOTIFICATION_THRESHOLD:
+            if attempt >= NOTIFICATION_THRESHOLD:
                 notification(_("Hue Service"), _("Connection failed, retrying..."), icon=xbmcgui.NOTIFICATION_WARNING)
-            log(f"[SCRIPT.SERVICE.HUE] make_request: Retry in {retry_time} seconds, retry {attempt + 1}/{MAX_RETRIES}...")
+            log(f"[SCRIPT.SERVICE.HUE] make_request: Retry in {retry_time}s ({attempt + 1}/{MAX_RETRIES})")
             if self.settings_monitor.waitForAbort(retry_time):
                 break
-        log(f"[SCRIPT.SERVICE.HUE] make_request: All attempts failed after {MAX_RETRIES} retries. Setting connected to False")
-        self.connected = False
+        log(f"[SCRIPT.SERVICE.HUE] make_request: All {MAX_RETRIES} attempts failed")
         return None
 
     def _make_v1_request(self, method, resource, ip=None, **kwargs):
