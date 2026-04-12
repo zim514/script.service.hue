@@ -29,9 +29,6 @@ class Hue(object):
         self.devices: dict = None
         self.bridge_id = None
         self.discoveredIP = ""
-        self.retries = 0
-        self.max_retries = 5
-        self.max_timeout = 5
         self.base_url = None
         self.sunset = None
         self.settings_monitor = settings_monitor
@@ -82,14 +79,16 @@ class Hue(object):
                     log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Not Found: {x}\nResponse: {x.response.text}")
                     return 404
                 elif x.response.status_code == 500:
+                    # Transient bridge error — fall through to retry/backoff.
                     log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Internal Bridge Error: {x}\nResponse: {x.response.text}")
-                    return 500
                 else:
                     log(f"[SCRIPT.SERVICE.HUE] v2 make_request: HTTPError: {x}\nResponse: {x.response.text}")
                     reporting.process_exception(f"Response: {x.response.text}, Exception: {x}", logging=True)
                     return x.response.status_code
-            except (Timeout, json.JSONDecodeError) as x:
-                log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Timeout/JSONDecodeError: Response: {x.response}\n{x}")
+            except Timeout as x:
+                log(f"[SCRIPT.SERVICE.HUE] v2 make_request: Timeout: {x}")
+            except json.JSONDecodeError as x:
+                log(f"[SCRIPT.SERVICE.HUE] v2 make_request: JSONDecodeError: {x}")
             except requests.RequestException as x:
                 # Report other kinds of RequestExceptions
                 log(f"[SCRIPT.SERVICE.HUE] v2 make_request: RequestException: {x}")
@@ -149,9 +148,7 @@ class Hue(object):
 
     def discover(self):
         log("[SCRIPT.SERVICE.HUE] v2 Start discover")
-        # Reset settings
         self.discoveredIP = ""
-        self.key = ""
         self.connected = False
 
         ADDON.setSettingString("bridgeIP", "")
@@ -161,84 +158,72 @@ class Hue(object):
         progress_bar.create(_('Searching for bridge...'))
         progress_bar.update(5, _("Discovery started"))
 
-        complete = False
-        while not progress_bar.iscanceled() and not complete and not self.settings_monitor.abortRequested():
-
+        while not progress_bar.iscanceled() and not self.settings_monitor.abortRequested():
             progress_bar.update(percent=10, message=_("N-UPnP discovery..."))
-            # Try to discover the bridge using N-UPnP
             ip_discovered = self._discover_endpoint()
 
             if not ip_discovered and not progress_bar.iscanceled():
-                # If the bridge was not found, ask the user to enter the IP manually
                 log("[SCRIPT.SERVICE.HUE] v2 discover: Bridge not found automatically")
                 progress_bar.update(percent=10, message=_("Bridge not found"))
-                manual_entry = xbmcgui.Dialog().yesno(_("Bridge not found"), _("Bridge not found automatically. Please make sure your bridge is up to date and has access to the internet. [CR]Would you like to enter your bridge IP manually?")
-                                                      )
-                if manual_entry:
-                    self.discoveredIP = xbmcgui.Dialog().numeric(3, _("Bridge IP"))
-                    log(f"[SCRIPT.SERVICE.HUE] v2 discover: Manual entry: {self.discoveredIP}")
+                manual_entry = xbmcgui.Dialog().yesno(
+                    _("Bridge not found"),
+                    _("Bridge not found automatically. Please make sure your bridge is up to date and has access to the internet. [CR]Would you like to enter your bridge IP manually?")
+                )
+                if not manual_entry:
+                    break
+                self.discoveredIP = xbmcgui.Dialog().numeric(3, _("Bridge IP"))
+                log(f"[SCRIPT.SERVICE.HUE] v2 discover: Manual entry: {self.discoveredIP}")
 
-            if self.discoveredIP:
-                progress_bar.update(percent=50, message=_("Connecting..."))
-                # Set the base URL for the API
-                self.base_url = f"https://{self.discoveredIP}/clip/v2/resource/"
-                # Try to connect to the bridge
-                log(f"[SCRIPT.SERVICE.HUE] v2 discover: Attempt connection")
-                config = self.make_api_request("GET", "0/config", discovery=True)  # bypass some checks in discovery mode, and use Hue API V1 until Philipps provides a V2 method
-                log(f"[SCRIPT.SERVICE.HUE] v2 discover: config: {config}")
-                if config is not None and isinstance(config, dict) and not progress_bar.iscanceled():
-                    progress_bar.update(percent=100, message=_("Found bridge: ") + self.discoveredIP)
-                    self.settings_monitor.waitForAbort(1)
+            if not self.discoveredIP:
+                continue  # empty manual entry or cancelled numeric dialog — retry loop
 
-                    # Try to create a user
-                    bridge_user_created = self._create_user(progress_bar)
+            progress_bar.update(percent=50, message=_("Connecting..."))
+            self.base_url = f"https://{self.discoveredIP}/clip/v2/resource/"
+            log("[SCRIPT.SERVICE.HUE] v2 discover: Attempt connection")
+            config = self.make_api_request("GET", "0/config", discovery=True)
+            log(f"[SCRIPT.SERVICE.HUE] v2 discover: config: {config}")
 
-                    if bridge_user_created:
-                        log(f"[SCRIPT.SERVICE.HUE] v2 discover: User created: {bridge_user_created}")
-                        progress_bar.update(percent=90, message=_("User Found![CR]Saving settings..."))
+            if progress_bar.iscanceled():
+                break
 
-                        # Save the IP and user key to the settings
-                        ADDON.setSettingString("bridgeIP", self.discoveredIP)
-                        ADDON.setSettingString("bridgeUser", bridge_user_created)
+            if not isinstance(config, dict):
+                log("[SCRIPT.SERVICE.HUE] v2 discover: Bridge not reachable, retrying")
+                progress_bar.update(percent=10, message=_("Bridge not found[CR]Check your bridge and network."))
+                self.discoveredIP = ""
+                if self.settings_monitor.waitForAbort(3):
+                    break
+                continue
 
-                        progress_bar.update(percent=100, message=_("Complete!"))
-                        self.settings_monitor.waitForAbort(5)
-                        progress_bar.close()
-                        log("[SCRIPT.SERVICE.HUE] v2 discover: Bridge discovery complete")
-                        self.connect()
-                        return
+            progress_bar.update(percent=100, message=_("Found bridge: ") + self.discoveredIP)
+            self.settings_monitor.waitForAbort(1)
 
-                    elif progress_bar.iscanceled():
-                        log("[SCRIPT.SERVICE.HUE] v2 discover: Discovery cancelled by user")
-                        progress_bar.update(percent=100, message=_("Cancelled"))
-                        progress_bar.close()
+            bridge_user_created = self._create_user(progress_bar)
 
-                    else:
-                        log(f"[SCRIPT.SERVICE.HUE] v2 discover: User not created, received: {self.settings_monitor.key}")
-                        progress_bar.update(percent=100, message=_("User not found[CR]Check your bridge and network."))
-                        self.settings_monitor.waitForAbort(5)
-                        progress_bar.close()
-                        return
-                elif progress_bar.iscanceled():
-                    log("[SCRIPT.SERVICE.HUE] v2 discover: Discovery cancelled by user")
+            if progress_bar.iscanceled():
+                break
 
-                    progress_bar.update(percent=100, message=_("Cancelled"))
-                    progress_bar.close()
-                else:
-                    progress_bar.update(percent=100, message=_("Bridge not found[CR]Check your bridge and network."))
-                    log("[SCRIPT.SERVICE.HUE] v2 discover: Bridge not found, check your bridge and network")
-                    self.settings_monitor.waitForAbort(5)
-                    progress_bar.close()
+            if bridge_user_created:
+                log(f"[SCRIPT.SERVICE.HUE] v2 discover: User created: {bridge_user_created}")
+                progress_bar.update(percent=90, message=_("User Found![CR]Saving settings..."))
+                ADDON.setSettingString("bridgeIP", self.discoveredIP)
+                ADDON.setSettingString("bridgeUser", bridge_user_created)
+                progress_bar.update(percent=100, message=_("Complete!"))
+                self.settings_monitor.waitForAbort(5)
+                progress_bar.close()
+                log("[SCRIPT.SERVICE.HUE] v2 discover: Bridge discovery complete")
+                self.connect()
+                return
 
-            log("[SCRIPT.SERVICE.HUE] v2 discover: Discovery process complete")
-            complete = True
-            progress_bar.update(percent=100, message=_("Cancelled"))
-            progress_bar.close()
+            log("[SCRIPT.SERVICE.HUE] v2 discover: User not created, retrying")
+            progress_bar.update(percent=10, message=_("User not found[CR]Check your bridge and network."))
+            self.discoveredIP = ""
+            if self.settings_monitor.waitForAbort(3):
+                break
 
-        if progress_bar.iscanceled():
-            log("[SCRIPT.SERVICE.HUE] v2 discover: Bridge discovery cancelled by user")
-            progress_bar.update(percent=100, message=_("Cancelled"))
-            progress_bar.close()
+        log("[SCRIPT.SERVICE.HUE] v2 discover: Discovery cancelled or ended")
+        progress_bar.update(percent=100, message=_("Cancelled"))
+        self.settings_monitor.waitForAbort(1)
+        progress_bar.close()
 
     def _create_user(self, progress_bar):
         # Log start of user creation
