@@ -184,14 +184,12 @@ class Hue(object):
         log("[SCRIPT.SERVICE.HUE] Start discover")
         self.connected = False
 
-        ADDON.setSettingString("bridgeIP", "")
-        ADDON.setSettingString("bridgeUser", "")
-
         progress_bar = xbmcgui.DialogProgress()
         progress_bar.create(_('Searching for bridge...'))
         progress_bar.update(5, _("Discovery started"))
 
-        discovered_ip = ""
+        create_user_attempts = 0
+        MAX_CREATE_USER_ATTEMPTS = 1
         while not progress_bar.iscanceled() and not self.settings_monitor.abortRequested():
             progress_bar.update(percent=10, message=_("Searching for bridge..."))
             discovered_ip = self._discover_bridge_ip() or ""
@@ -247,8 +245,17 @@ class Hue(object):
                 self.connect()
                 return
 
+            create_user_attempts += 1
+            if create_user_attempts >= MAX_CREATE_USER_ATTEMPTS:
+                log(f"[SCRIPT.SERVICE.HUE] discover: Giving up after {create_user_attempts} failed pairing attempts; existing settings preserved")
+                progress_bar.update(percent=100, message=_("Bridge connection failed"))
+
+                self.settings_monitor.waitForAbort(3)
+
+                break
+
             log("[SCRIPT.SERVICE.HUE] discover: User not created, retrying")
-            progress_bar.update(percent=10, message=_("User not found[CR]Check your bridge and network."))
+            progress_bar.update(percent=10, message=_("Bridge connection failed"))
             discovered_ip = ""
             if self.settings_monitor.waitForAbort(3):
                 break
