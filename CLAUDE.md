@@ -1,10 +1,24 @@
 # CLAUDE.md
-
+make 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
 Kodi add-on (`script.service.hue`) that controls Philips Hue lights based on media playback. Supports scene triggering on video/audio play/pause/stop, ambilight (real-time color matching from video frames), scheduling, and daytime/sunset automation. Requires Hue Bridge V2 (HTTPS).
+
+**Target Kodi versions:** Matrix (v19) and newer (Nexus v20, Omega v21, Piers v22). `addon.xml` requires `xbmc.python` ≥ 3.0.0; `kodi-addon-checker` is run with `--branch=matrix`. Python 3.8+. Do not introduce APIs added after Matrix without verifying compatibility.
+
+## Kodi API rules (must follow)
+
+These are hard rules for this addon — see also `~/.claude/projects/.../memory/kodi-service-addon-requirements.md` and `kodi-api-reference.md`.
+
+- **All service-loop sleeps go through `xbmc.Monitor.waitForAbort(timeout)`.** Never `xbmc.sleep()`, `time.sleep()`, or `threading.Event.wait()` for waits in service code — they don't observe Kodi's abort signal and will hang shutdown. `SettingsMonitor` extends `xbmc.Monitor`; pass it down rather than instantiating new monitors.
+- **`waitForAbort` can only be interrupted by abort, not by internal flags.** To stop a long wait early for non-abort reasons (e.g. `Timers.stop()`, settings change), poll in short `waitForAbort(1)` chunks and re-check your flags each tick.
+- **Don't block inside Kodi callbacks** (`Monitor.on*`, `Player.on*`). They run on Kodi's thread — enqueue work, return fast.
+- **Don't `setSetting*` inside `onSettingsChanged` unconditionally** — it re-fires the callback. Compare to current value first.
+- **Window-property IPC (`kodiutils.cache_get/cache_set`) is not atomic across read-then-write.** The `service.py` and `plugin.py` processes share Window 10000 — any check-and-clear (e.g. `_process_action`) needs application-level coordination.
+- **`xbmc.Player` subclasses must be kept alive** for the addon's lifetime, or callbacks stop firing. `HueService.light_groups` holds them — don't drop that reference.
+- **Setting IDs are case-sensitive.** `setSetting('EnableSchedule', …)` ≠ `setSetting('enableSchedule', …)`.
 
 ## Commands
 

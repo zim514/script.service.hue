@@ -7,7 +7,7 @@
 import xbmc
 import xbmcgui
 
-from . import ADDON, BRIDGE_SETTINGS_CHANGED
+from . import ADDON, BRIDGE_SETTINGS_CHANGED, TIMERS_DIRTY
 from .language import get_string as _
 from .kodiutils import convert_time, notification, log
 
@@ -29,6 +29,12 @@ class SettingsMonitor(xbmc.Monitor):
         old_ip = self.ip
         old_key = self.key
 
+        # Snapshot previous timing values so we can detect changes after reload.
+        # On the very first load these attributes don't exist yet — getattr keeps
+        # us from spuriously waking a Timers thread that hasn't been created.
+        old_morning_time = getattr(self, "morning_time", None)
+        old_sunset_offset = getattr(self, "sunset_offset", None)
+
         # bridge
         self.ip = ADDON.getSetting("bridgeIP")
         self.key = ADDON.getSetting("bridgeUser")
@@ -46,6 +52,22 @@ class SettingsMonitor(xbmc.Monitor):
         self.force_on_sunset = ADDON.getSettingBool("forceOnSunset")
         self.morning_time = convert_time(ADDON.getSettingString("morningTime"))
         self.sunset_offset = ADDON.getSettingNumber("sunsetOffset")
+
+        # Wake the Timers thread when its inputs change, otherwise the new
+        # values won't take effect until the current (potentially multi-hour)
+        # waitForAbort expires. Skipped on first load — the Timers thread is
+        # only started after the initial bridge connection succeeds.
+        if old_morning_time is not None and (
+            old_morning_time != self.morning_time
+            or old_sunset_offset != self.sunset_offset
+        ):
+            log(
+                "[SCRIPT.SERVICE.HUE] SettingsMonitor: Timing settings changed "
+                f"(morning {old_morning_time}->{self.morning_time}, "
+                f"sunset_offset {old_sunset_offset}->{self.sunset_offset}); "
+                "waking Timers"
+            )
+            TIMERS_DIRTY.set()
 
         self.schedule_enabled = ADDON.getSettingBool("enableSchedule")
         self.schedule_start = convert_time(ADDON.getSettingString("startTime"))
