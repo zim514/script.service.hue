@@ -8,6 +8,14 @@ Kodi add-on (`script.service.hue`) that controls Philips Hue lights based on med
 
 **Target Kodi versions:** Matrix (v19) and newer (Nexus v20, Omega v21, Piers v22). `addon.xml` requires `xbmc.python` ≥ 3.0.0; `kodi-addon-checker` is run with `--branch=matrix`. Python 3.8+. Do not introduce APIs added after Matrix without verifying compatibility.
 
+**Target hardware:** low-power SBCs — Raspberry Pi (assume Pi 3-class as the floor) and Amlogic SoC boxes (S905-class and up, common on CoreELEC / Android TV). The addon runs alongside Kodi playback, so CPU and RAM headroom is tight. Design implications:
+
+- Throttle hot loops. The 1 Hz main service loop and ambilight update-interval / capture-size / `MINIMUM_COLOR_DISTANCE` settings exist to keep CPU usage down — treat tightening any of them as a perf tradeoff.
+- Avoid unnecessary HTTP calls; cache bridge state where it's safe (`scene_data` is fetched once on connect).
+- Don't add a dependency for convenience. The codebase uses stdlib `socket`+`struct` for mDNS instead of pulling in `zeroconf` for this reason.
+- No per-frame logging in the ambilight loop.
+- `ThreadPoolExecutor` in `ambigroup.py` is sized to `len(ambi_lights) * 2` deliberately — don't expand it without reason.
+
 ## Kodi API rules (must follow)
 
 These are hard rules for this addon — see also `~/.claude/projects/.../memory/kodi-service-addon-requirements.md` and `kodi-api-reference.md`.
