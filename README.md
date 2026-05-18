@@ -5,7 +5,7 @@
 Automate your [Hue lights](https://www.meethue.com/) on audio or video playback with [Kodi Media Player](https://kodi.tv/)
 
 ## Requirements
-- Kodi 21 or higher
+- Kodi 19 (Matrix) or higher
 - Hue Bridge V2 (Square)
 
 ## Installation
@@ -21,7 +21,6 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 ## Features:
 - Use standard Hue Scenes
   - Configure scenes from the official Hue app and select them in the add-on settings
-  - Now supports dynamic scenes
 
 
 - Daytime configuration
@@ -38,13 +37,13 @@ Automate your [Hue lights](https://www.meethue.com/) on audio or video playback 
 
 
 ## Experimental Ambilight Support
-You can now configure multiple lights to match playing video as closely as possible.  
+Configure multiple lights to match playing video as closely as possible.  
 
 These settings can impact performance, and may need to be tuned for your set up. 
 
 ### Basic Settings:
 - **Select Lights:** Only Hue bulbs and lamps that support colour  can be used with this system. Lights that can only reproduce whites or color temperatures are ignored.
-- **Force on :** Force the selected lights on when playback starts. Otherwise, lights will stay off.
+- **Force on:** Force the selected lights on when playback starts. Otherwise, lights will stay off.
 - **Minimum & Maximum Brightness:** Sets the brightness
 - **Saturation:** Increase the colour saturation factor, with 1 being no change. This can create more colourful effects, but less precision.
 
@@ -57,22 +56,6 @@ Every selected light increases the number of necessary commands therefore influe
 - **Hue transition time:** Hue impact. The amount of time the lights will take to fade from one colour to the next, in milliseconds. Set to 0 for instant transition. 100ms is recommended for a quick and smooth. Hue will wait for this transition to complete before applying the next command. Normally should be the same as the update interval. 
 - **Capture size:** CPU impact. Size at which frames are captured, in pixels of X by X. Colour calculation time is too slow with full sized frames, so they are resized first. May affect colour precision as some pixels are lost in the resize process.
 - **Average image processing time:** Shows the average time it took to process the colours before updating the Hue bulbs, in milliseconds. This value is updated whenever a video is stopped.
-
-<!-- I don't think anyone is using this and I removed it. 
-## JSON RPC Commands
-This addon supports Kodi JSON RPC commands that can be sent by HTTP, other add-ons or skins. These commands simulate the same result as the commands in the plugin menu.
-
-**Disable**:
-Temporarily disable service. Service will be re-enabled when Kodi restarts. 
-**Enable**
-**Actions**:
-
-Available commands: play, pause, stop
-
-Video Group: 0
-
-Audio Group: 1
--->
 
 ## Problems?
 
