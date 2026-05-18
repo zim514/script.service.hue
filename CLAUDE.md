@@ -1,5 +1,5 @@
 # CLAUDE.md
-make 
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
@@ -19,6 +19,15 @@ These are hard rules for this addon — see also `~/.claude/projects/.../memory/
 - **Window-property IPC (`kodiutils.cache_get/cache_set`) is not atomic across read-then-write.** The `service.py` and `plugin.py` processes share Window 10000 — any check-and-clear (e.g. `_process_action`) needs application-level coordination.
 - **`xbmc.Player` subclasses must be kept alive** for the addon's lifetime, or callbacks stop firing. `HueService.light_groups` holds them — don't drop that reference.
 - **Setting IDs are case-sensitive.** `setSetting('EnableSchedule', …)` ≠ `setSetting('enableSchedule', …)`.
+
+## Code comments
+
+This project **keeps code-restating comments** — the maintainer uses them to navigate files. This overrides Claude Code's global default of "don't explain WHAT the code does."
+
+- **Do not strip** existing comments when editing, even if they only restate the next line.
+- **Do not propose stripping** them in audits or refactors. If a comment is *factually wrong* (refers to a removed function, wrong behavior), fix it; otherwise leave it.
+- **New code may include** restating comments; match the surrounding file's style.
+- **Still avoid** comments that reference specific callers, fixes, or issue numbers ("used by X", "added for Y", "from #123") — those rot when surrounding code moves. Describe behavior, not history.
 
 ## Commands
 

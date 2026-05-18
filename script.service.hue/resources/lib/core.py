@@ -51,13 +51,13 @@ class CommandHandler:
 
     def discover(self):
         bridge = Hue(self.settings_monitor, discover=True)
+        # Open the settings dialog either way so the user can inspect or fix the
+        # bridge configuration; the log line distinguishes the two outcomes.
         if bridge.connected:
             log("[SCRIPT.SERVICE.HUE] Found bridge. Opening settings.")
-            ADDON.openSettings()
-
         else:
             log("[SCRIPT.SERVICE.HUE] No bridge found. Opening settings.")
-            ADDON.openSettings()
+        ADDON.openSettings()
 
     def scene_select(self, light_group, action):
         log(f"[SCRIPT.SERVICE.HUE] sceneSelect: light_group: {light_group}, action: {action}")
@@ -83,7 +83,9 @@ class HueService:
         self.bridge = Hue(settings_monitor)
         self.light_groups = []
         self.timers = None
-        self.service_enabled = True
+        # The cache is the source of truth for service_enabled — menu.py (plugin
+        # process) reads and writes it via cache_get/cache_set. Initialize True
+        # so the first cache_get in run() agrees with the default.
         cache_set("service_enabled", True)
 
     def run(self):
@@ -95,11 +97,11 @@ class HueService:
             self.timers.start()
 
         # Track the previous state of the service
-        prev_service_enabled = self.service_enabled
+        prev_service_enabled = True
 
         while not self.settings_monitor.abortRequested(): # main loop, once per second
             # Update the current state of the service
-            self.service_enabled = cache_get("service_enabled")
+            service_enabled = cache_get("service_enabled")
 
             # Check if the bridge settings have changed, if so, reconnect the bridge
             if BRIDGE_SETTINGS_CHANGED.is_set():
@@ -109,7 +111,7 @@ class HueService:
             #Process pending action commands
             self._process_action()
 
-            if self.service_enabled:
+            if service_enabled:
                 # If the service was previously disabled and is now enabled, activate light groups
                 if not prev_service_enabled and self.bridge.connected:
                     self.activate()
@@ -126,7 +128,7 @@ class HueService:
                 self.timers.start()
 
             # Update the previous state for the next iteration
-            prev_service_enabled = self.service_enabled
+            prev_service_enabled = service_enabled
 
             if self.settings_monitor.waitForAbort(1):
                 break
@@ -143,7 +145,7 @@ class HueService:
 
     def activate(self):
         # Activates play action as appropriate for all groups. Used at sunset and when service is re-enabled via Actions.
-        log(f"[SCRIPT.SERVICE.HUE] Activating scenes")
+        log("[SCRIPT.SERVICE.HUE] Activating scenes")
 
         for g in self.light_groups:
             if ADDON.getSettingBool(f"group{g.light_group_id}_enabled"):
