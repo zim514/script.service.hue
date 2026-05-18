@@ -62,7 +62,7 @@ class AmbiGroup(lightgroup.LightGroup):
             try:
                 self.info_tag = self.getVideoInfoTag()
             except (AttributeError, TypeError) as x:
-                log(f"[SCRIPT.SERVICE.HUE] AmbiGroup{self.light_group_id}: OnAV Started: Can't read infoTag")
+                log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}]: OnAV Started: Can't read infoTag")
                 reporting.process_exception(x)
         else:
             self.info_tag = None
@@ -76,13 +76,13 @@ class AmbiGroup(lightgroup.LightGroup):
 
     def onPlayBackStopped(self):
         # always stop ambilight even if group is disabled or it'll run forever
-        log(f"[SCRIPT.SERVICE.HUE] In ambiGroup[{self.light_group_id}], onPlaybackStopped()")
+        log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}]: onPlaybackStopped")
         self.state = STATE_STOPPED
         AMBI_RUNNING.clear()
 
     def onPlayBackPaused(self):
         # always stop ambilight even if group is disabled or it'll run forever
-        log(f"[SCRIPT.SERVICE.HUE] In ambiGroup[{self.light_group_id}], onPlaybackPaused()")
+        log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}]: onPlaybackPaused")
         self.state = STATE_PAUSED
         AMBI_RUNNING.clear()
 
@@ -118,7 +118,7 @@ class AmbiGroup(lightgroup.LightGroup):
                 cap_image = cap.getImage()  # timeout to wait for OS in ms, default 1000
 
                 if cap_image is None or len(cap_image) < expected_capture_size:
-                    log("[SCRIPT.SERVICE.HUE] capImage is none or < expected. captured: {}, expected: {}".format(len(cap_image), expected_capture_size))
+                    log(f"[SCRIPT.SERVICE.HUE] capImage is none or < expected. captured: {len(cap_image)}, expected: {expected_capture_size}")
                     self.settings_monitor.waitForAbort(0.25)  # pause before trying again
                     continue  # no image captured, try again next iteration
                 image = Image.frombytes("RGBA", (capture_size_x, capture_size_y), bytes(cap_image), "raw", "BGRA", 0, 1)  # Kodi always returns a BGRA image.
@@ -247,7 +247,7 @@ class AmbiGroup(lightgroup.LightGroup):
                 }
             return states
         else:
-            log(f"[SCRIPT.SERVICE.HUE] Failed to get light states.")
+            log("[SCRIPT.SERVICE.HUE] Failed to get light states.")
             return None
 
     def _resume_all_light_states(self, states):

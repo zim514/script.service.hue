@@ -16,7 +16,7 @@ from .kodiutils import log
 
 
 def process_exception(exc, level="critical", error="", logging=False):
-    log(f"[SCRIPT.SERVICE.HUE] *** EXCEPTION ***:  Type: {type(exc)},\n Exception: {exc},\n Error: {error},\n Traceback: {traceback.format_exc()}")
+    log(f"[SCRIPT.SERVICE.HUE] *** EXCEPTION ***: Type: {type(exc)},\n Exception: {exc},\n Error: {error},\n Traceback: {traceback.format_exc()}")
     if ADDON.getSettingBool("error_reporting"):
         if _error_report_dialog(exc):
             _report_error(level, error, exc, logging)

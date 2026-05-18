@@ -40,7 +40,7 @@ class CommandHandler:
         }
 
     def handle_command(self, command, *args):
-        log(f"[SCRIPT.SERVICE.HUE] Started with {command}, Kodi: {KODIVERSION}, Addon: {ADDONVERSION},  Python: {sys.version}")
+        log(f"[SCRIPT.SERVICE.HUE] Started with {command}, Kodi: {KODIVERSION}, Addon: {ADDONVERSION}, Python: {sys.version}")
         command_func = self.commands.get(command)
 
         if command_func:
@@ -89,7 +89,7 @@ class HueService:
         cache_set("service_enabled", True)
 
     def run(self):
-        log(f"[SCRIPT.SERVICE.HUE] Starting Hue Service, Kodi: {KODIVERSION}, Addon: {ADDONVERSION},  Python: {sys.version}")
+        log(f"[SCRIPT.SERVICE.HUE] Starting Hue Service, Kodi: {KODIVERSION}, Addon: {ADDONVERSION}, Python: {sys.version}")
         self.light_groups = self.initialize_light_groups()
         self.timers = Timers(self.settings_monitor, self.bridge, self)
 
@@ -218,7 +218,7 @@ class Timers(threading.Thread):
         log(f"[SCRIPT.SERVICE.HUE] run_morning(): new sunset: {self.bridge.sunset}")
 
     def _run_sunset(self):
-        log("[SCRIPT.SERVICE.HUE] in run_sunset(): Sunset.")
+        log("[SCRIPT.SERVICE.HUE] run_sunset(): Sunset.")
         cache_set("daytime", False)
         if self.settings_monitor.force_on_sunset:
             self.hue_service.activate()
