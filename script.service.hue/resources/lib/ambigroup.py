@@ -12,7 +12,7 @@ import xbmcgui
 from PIL import Image
 
 from . import ADDON, MINIMUM_COLOR_DISTANCE, imageprocess, lightgroup
-from . import PROCESS_TIMES, reporting, AMBI_RUNNING
+from . import PROCESS_TIMES, reporting, AMBI_RUNNING, HueApiError
 from .kodiutils import notification, log
 from .language import get_string as _
 from .lightgroup import STATE_STOPPED, STATE_PAUSED, STATE_PLAYING, VIDEO
@@ -176,23 +176,25 @@ class AmbiGroup(lightgroup.LightGroup):
                     'duration': int(transition_time)
                 }
             }
-            response = self.bridge.make_api_request('PUT', f'light/{light}', json=request_body)
-
-            if response is not None:
-                self.ambi_lights[light].update(prev_xy=xy)
-            elif response == 429 or response == 500:
-                log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] _update_hue_rgb: {response}: Too Many Requests. Aborting request.")
-                self.bridge_capacity_error()
-                notification(_("Hue Service"), _("Bridge overloaded, stopping ambilight"), icon=xbmcgui.NOTIFICATION_ERROR)
-            elif response == 404:
-                log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] Not Found")
-                AMBI_RUNNING.clear()
-                notification(header=_("Hue Service"), message=_(f"ERROR: Light not found, it may have been deleted"), icon=xbmcgui.NOTIFICATION_ERROR)
-                AMBI_RUNNING.clear()  # shut it down
-            else:
-                log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] RequestException Hue call fail")
-                AMBI_RUNNING.clear()  # shut it down
-                reporting.process_exception(response)
+            try:
+                response = self.bridge.make_api_request('PUT', f'light/{light}', json=request_body)
+                if response is not None:
+                    self.ambi_lights[light].update(prev_xy=xy)
+                else:
+                    log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] RequestException Hue call fail")
+                    AMBI_RUNNING.clear()  # shut it down
+            except HueApiError as exc:
+                if exc.status_code == 429:
+                    log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] _update_hue_rgb: 429: Too Many Requests. Aborting request.")
+                    self.bridge_capacity_error()
+                    notification(_("Hue Service"), _("Bridge overloaded, stopping ambilight"), icon=xbmcgui.NOTIFICATION_ERROR)
+                elif exc.status_code == 404:
+                    log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] Not Found")
+                    notification(header=_("Hue Service"), message=_(f"ERROR: Light not found, it may have been deleted"), icon=xbmcgui.NOTIFICATION_ERROR)
+                    AMBI_RUNNING.clear()  # shut it down
+                else:
+                    AMBI_RUNNING.clear()  # shut it down
+                    reporting.process_exception(exc)
 
     def bridge_capacity_error(self):
         self.capacity_error_count = self.capacity_error_count + 1  # increment counter
@@ -208,10 +210,7 @@ class AmbiGroup(lightgroup.LightGroup):
     def _get_light_gamut(bridge, light):
         gamut = "C"  # default
         light_data = bridge.make_api_request("GET", f"light/{light}")
-        if light_data == 404:
-            log(f"[SCRIPT.SERVICE.HUE] _get_light_gamut: Light[{light}] not found or ID invalid")
-            return 404
-        elif light_data is not None and 'data' in light_data:
+        if light_data is not None and 'data' in light_data:
             for item in light_data['data']:
                 if 'color' in item and 'gamut_type' in item['color']:
                     gamut = item['color']['gamut_type']
@@ -276,14 +275,18 @@ class AmbiGroup(lightgroup.LightGroup):
         lights = getattr(self.settings_monitor, f"group{self.light_group_id}_lights")
         if len(lights) > 0:
             for L in lights:
-                gamut = self._get_light_gamut(self.bridge, L)
-                if gamut == 404:
-                    notification(header=_("Hue Service"), message=_(f"ERROR: Light not found, it may have been deleted"), icon=xbmcgui.NOTIFICATION_ERROR)
-                    AMBI_RUNNING.clear()
-                    ADDON.setSettingString(f"group{self.light_group_id}_Lights", "-1")
-                    ADDON.setSettingString(f"group{self.light_group_id}_LightNames", _("Not selected"))
-                else:
-                    light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
-                    self.ambi_lights.update(light)
-                    index = index + 1
+                try:
+                    gamut = self._get_light_gamut(self.bridge, L)
+                except HueApiError as exc:
+                    if exc.status_code == 404:
+                        log(f"[SCRIPT.SERVICE.HUE] _get_lights: Light[{L}] not found or ID invalid")
+                        notification(header=_("Hue Service"), message=_(f"ERROR: Light not found, it may have been deleted"), icon=xbmcgui.NOTIFICATION_ERROR)
+                        AMBI_RUNNING.clear()
+                        ADDON.setSettingString(f"group{self.light_group_id}_Lights", "-1")
+                        ADDON.setSettingString(f"group{self.light_group_id}_LightNames", _("Not selected"))
+                        continue
+                    raise
+                light = {L: {'gamut': gamut, 'prev_xy': (0, 0), "index": index}}
+                self.ambi_lights.update(light)
+                index = index + 1
         log(f"[SCRIPT.SERVICE.HUE] AmbiGroup[{self.light_group_id}] Lights: {self.ambi_lights}")

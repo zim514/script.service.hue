@@ -8,7 +8,7 @@ from datetime import datetime
 import xbmc
 import xbmcgui
 
-from . import ADDON, reporting
+from . import ADDON, HueApiError, reporting
 from .kodiutils import notification, cache_get, log
 from .language import get_string as _
 
@@ -157,17 +157,17 @@ class LightGroup(xbmc.Player):
                 log(f"[SCRIPT.SERVICE.HUE] Unknown action type: {action}")
                 raise RuntimeError
             try:
-                if self.bridge.recall_scene(scene, duration) == 404:  # scene not found, clear settings and display error message
+                self.bridge.recall_scene(scene, duration)
+                log(f"[SCRIPT.SERVICE.HUE] Scene {scene} recalled")
+            except HueApiError as exc:
+                if exc.status_code == 404:  # scene not found, clear settings and display error message
                     ADDON.setSettingBool(f"group{self.light_group_id}_{action}Behavior", False)
                     ADDON.setSettingString(f"group{self.light_group_id}_{action}SceneName", "Not Selected")
                     ADDON.setSettingString(f"group{self.light_group_id}_{action}SceneID", "-1")
                     log(f"[SCRIPT.SERVICE.HUE] Scene {scene} not found - group{self.light_group_id}_{action}Behavior ")
                     notification(header=_("Hue Service"), message=_("ERROR: Scene not found, it may have been deleted"), icon=xbmcgui.NOTIFICATION_ERROR)
-
-
                 else:
-                    log(f"[SCRIPT.SERVICE.HUE] Scene {scene} recalled")
-
+                    reporting.process_exception(exc)
             except Exception as exc:
                 reporting.process_exception(exc)
         log(f"[SCRIPT.SERVICE.HUE] LightGroup[{self.light_group_id}] run_action({action}), service_enabled: {service_enabled}, bridge_connected: {self.bridge.connected}")
