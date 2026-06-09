@@ -45,7 +45,7 @@ jobs:
         run: |
           git --git-dir=./repo/.git/ --work-tree=./repo/ rm -rf --ignore-unmatch *.md5 *.zip
           echo "pwd: $(pwd)"
-          ./repo/create_repository.py --datadir=repo/docs/repo ./addon/script.service.hue ./repo/repository.snapcase
+          ./repo/create_repository.py --datadir=repo/docs/repo ./addon/script.service.hue ./repo/repository.snapcase  https://github.com/zim514/script.module.pyrollbar.git#main:script.module.pyrollbar
 
 
       - name : Find addon zip
