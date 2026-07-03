@@ -135,7 +135,7 @@ class AmbiGroup(lightgroup.LightGroup):
                 cap_image = cap.getImage()  # timeout to wait for OS in ms, default 1000
 
                 if cap_image is None or len(cap_image) < expected_capture_size:
-                    log(f"[SCRIPT.SERVICE.HUE] capImage is none or < expected. captured: {len(cap_image)}, expected: {expected_capture_size}")
+                    log(f"[SCRIPT.SERVICE.HUE] capImage is none or < expected. captured: {len(cap_image) if cap_image is not None else 'None'}, expected: {expected_capture_size}")
                     self.settings_monitor.waitForAbort(0.25)  # pause before trying again
                     continue  # no image captured, try again next iteration
                 image = Image.frombytes("RGBA", (capture_size_x, capture_size_y), bytes(cap_image), "raw", "BGRA", 0, 1)  # Kodi always returns a BGRA image.
