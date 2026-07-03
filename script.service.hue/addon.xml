@@ -1,4 +1,4 @@
-<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="2.3.3">
+<addon id="script.service.hue" name="Hue Service" provider-name="zim514" version="2.3.4">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.31.0"/>
@@ -20,10 +20,11 @@
         </assets>
         <source>https://github.com/zim514/script.service.hue</source>
         <forum>https://forum.kodi.tv/showthread.php?tid=344886</forum>
-        <news>v2.3.2
-- Add mDNS bridge discovery, replacing N-UPnP
-- Improve retry/error handling for Hue API requests
-- Fix bridge connection, discovery, and reconnection bugs
+        <news>v2.3.4
+- Fix crashes that could stop the service on bridge errors (e.g. after re-pairing)
+- Fix ambilight errors with music playback, fast pause/resume and no lights configured
+- Restore ambilight resume light state feature
+- Fix schedule validation and bridge overload handling
 
 </news>
         <summary lang="bs_BA">Automatizirajte Hue svjetla pomoću Kodi reprodukcije</summary>
