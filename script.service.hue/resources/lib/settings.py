@@ -122,7 +122,7 @@ class SettingsMonitor(xbmc.Monitor):
         self.group3_saturation = ADDON.getSettingNumber("group3_Saturation")
         self.group3_capture_size = ADDON.getSettingInt("group3_CaptureSize")
         self.group3_resume_state = ADDON.getSettingBool("group3_ResumeState")
-        self.group3_resume_transition = ADDON.getSettingInt("group3_ResumeTransition") * 10  # convert seconds to multiple of 100ms
+        self.group3_resume_transition = ADDON.getSettingInt("group3_ResumeTransition") * 1000  # Hue API v2 expects milliseconds, setting is in seconds
         self.group3_update_interval = ADDON.getSettingInt("group3_Interval") / 1000
 
         if self.group3_update_interval == 0: #Never allow a 0 value for update interval
