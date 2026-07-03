@@ -82,6 +82,8 @@ class Hue(object):
             except requests.RequestException as x:
                 log(f"[SCRIPT.SERVICE.HUE] make_request: RequestException: {x}")
                 reporting.process_exception(x)
+            if attempt == MAX_RETRIES - 1:
+                break  # no point waiting after the last attempt
             retry_time = 2 ** attempt
             if attempt >= NOTIFICATION_THRESHOLD:
                 notification(_("Hue Service"), _("Connection failed, retrying..."), icon=xbmcgui.NOTIFICATION_WARNING)
@@ -156,21 +158,25 @@ class Hue(object):
             self.base_url = f"https://{self.settings_monitor.ip}/clip/v2/resource/"
             self.session.headers.update({'hue-application-key': self.settings_monitor.key})
 
-            self.devices = self.make_api_request("GET", "device")
-            if not isinstance(self.devices, dict):
-                log(f"[SCRIPT.SERVICE.HUE] connect: Connection error. Setting connected to False. {type(self.devices)}: {self.devices}")
-                notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
-                self.connected = False
-                return False
+            try:
+                self.devices = self.make_api_request("GET", "device")
+                if not isinstance(self.devices, dict):
+                    log(f"[SCRIPT.SERVICE.HUE] connect: Connection error. Setting connected to False. {type(self.devices)}: {self.devices}")
+                    notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
+                    self.connected = False
+                    return False
 
-            self.scene_data = self.make_api_request("GET", "scene")
+                self.scene_data = self.make_api_request("GET", "scene")
 
-            self.bridge_id = self.get_device_by_archetype(self.devices, 'bridge_v2')
-            if self._check_version():
-                self.connected = True
-                self.update_sunset()
-                log("[SCRIPT.SERVICE.HUE] connect: Connection successful")
-                return True
+                self.bridge_id = self.get_device_by_archetype(self.devices, 'bridge_v2')
+                if self._check_version():
+                    self.connected = True
+                    self.update_sunset()
+                    log("[SCRIPT.SERVICE.HUE] connect: Connection successful")
+                    return True
+            except HueApiError as exc:
+                # Bridge rejected the request (eg. 401 after a re-pair/reset); treat as a failed connection instead of crashing the service.
+                log(f"[SCRIPT.SERVICE.HUE] connect: HueApiError: {exc}")
             log("[SCRIPT.SERVICE.HUE] connect: Connection attempts failed. Setting connected to False")
             notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
             self.connected = False
@@ -178,6 +184,7 @@ class Hue(object):
 
         log("[SCRIPT.SERVICE.HUE] No bridge IP or user key provided. Bridge not configured.")
         notification(_("Hue Service"), _("Bridge not configured"), icon=xbmcgui.NOTIFICATION_ERROR)
+        self.connected = False
         return False
 
     def discover(self):
@@ -329,8 +336,20 @@ class Hue(object):
         return False
 
     def update_sunset(self):
-        geolocation = self.make_api_request("GET", "geolocation")
+        try:
+            geolocation = self.make_api_request("GET", "geolocation")
+        except HueApiError as exc:
+            log(f"[SCRIPT.SERVICE.HUE] update_sunset(): HueApiError: {exc}")
+            geolocation = None
         log(f"[SCRIPT.SERVICE.HUE] update_sunset(): geolocation: {geolocation}")
+        if geolocation is None:
+            # Request failed; keep the previous sunset if there is one so a transient outage doesn't reset it.
+            if self.sunset is not None:
+                log(f"[SCRIPT.SERVICE.HUE] update_sunset(): request failed, keeping previous sunset: {self.sunset}")
+                return
+            log("[SCRIPT.SERVICE.HUE] update_sunset(): request failed and no previous sunset, defaulting to 19:00")
+            self.sunset = convert_time("19:00")
+            return
         sunset_str = self.search_dict(geolocation, "sunset_time")
         if sunset_str is None or sunset_str == "":
             log("[SCRIPT.SERVICE.HUE] Sunset not found; configure Hue geolocalisation")
@@ -366,9 +385,18 @@ class Hue(object):
         ADDON.openSettings()
 
     def get_scenes_and_areas(self):
-        scenes_data = self.make_api_request("GET", "scene")
-        rooms_data = self.make_api_request("GET", "room")
-        zones_data = self.make_api_request("GET", "zone")
+        try:
+            scenes_data = self.make_api_request("GET", "scene")
+            rooms_data = self.make_api_request("GET", "room")
+            zones_data = self.make_api_request("GET", "zone")
+        except HueApiError as exc:
+            log(f"[SCRIPT.SERVICE.HUE] get_scenes_and_areas(): HueApiError: {exc}")
+            return None
+
+        # All three requests must have returned data before building the dictionaries
+        if not all(isinstance(d, dict) and 'data' in d for d in (scenes_data, rooms_data, zones_data)):
+            log("[SCRIPT.SERVICE.HUE] get_scenes_and_areas(): Bridge request failed, no data")
+            return None
 
         # Create dictionaries for rooms and zones
         rooms_dict = {room['id']: room['metadata']['name'] for room in rooms_data['data']}
@@ -393,7 +421,14 @@ class Hue(object):
         dialog_progress.create("Hue Service", "Searching for scenes...")
         log("[SCRIPT.SERVICE.HUE] select_hue_scene: start")
 
-        hue_scenes, hue_areas = self.get_scenes_and_areas()
+        scenes_and_areas = self.get_scenes_and_areas()
+        if scenes_and_areas is None:
+            # Bridge unreachable or rejected the request; close the progress dialog instead of leaving it stuck open
+            log("[SCRIPT.SERVICE.HUE] select_hue_scene: Can't fetch scenes from bridge")
+            dialog_progress.close()
+            notification(_("Hue Service"), _("Bridge connection failed"), icon=xbmcgui.NOTIFICATION_ERROR)
+            return None
+        hue_scenes, hue_areas = scenes_and_areas
 
         area_items = [xbmcgui.ListItem(label=name) for _, name in hue_areas.items()]
         log(f"[SCRIPT.SERVICE.HUE] select_hue_scene: area_items: {area_items}")

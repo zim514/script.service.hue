@@ -65,12 +65,14 @@ class LightGroup(xbmc.Player):
                     self.info_tag = self.getVideoInfoTag()
                 except (AttributeError, TypeError) as x:
                     log(f"[SCRIPT.SERVICE.HUE] LightGroup[{self.light_group_id}]: OnAV Started: Can't read VideoInfoTag")
+                    self.info_tag = None
                     reporting.process_exception(x)
             elif play_enabled and self.media_type == self._playback_type() and self._playback_type() == AUDIO:
                 try:
                     self.info_tag = self.getMusicInfoTag()
                 except (AttributeError, TypeError) as x:
                     log(f"[SCRIPT.SERVICE.HUE] LightGroup[{self.light_group_id}]: OnAV Started: Can't read AudioInfoTag")
+                    self.info_tag = None
                     reporting.process_exception(x)
 
             if self.activation_check.validate(play_scene):
@@ -210,6 +212,10 @@ class ActivationChecker:
 
         # Fetch video info tag
         info_tag = self.light_group.info_tag
+        # No info tag means the current playback isn't video (or the tag couldn't be read), so video rules can't pass
+        if info_tag is None:
+            log("[SCRIPT.SERVICE.HUE] _video_activation_rules: no info tag, activation: False")
+            return False
         # Get duration in minutes
         duration = info_tag.getDuration() / 60
         # Get media type and file name
@@ -317,7 +323,19 @@ class ActivationChecker:
         all_light_states = None
         if scene and (skip_time_check_if_light_on or skip_scene_if_all_off):
             # Fetch all light states
-            all_light_states = self.light_group.bridge.make_api_request("GET", "light")
+            try:
+                all_light_states = self.light_group.bridge.make_api_request("GET", "light")
+            except HueApiError as exc:
+                log(f"[SCRIPT.SERVICE.HUE] validate: light state fetch failed: {exc}")
+                all_light_states = None
+
+            # Without light states and cached scene data the light-on shortcuts can't be evaluated; fall back to the normal schedule checks
+            scene_data = self.light_group.bridge.scene_data
+            if (not isinstance(all_light_states, dict) or 'data' not in all_light_states
+                    or not isinstance(scene_data, dict) or 'data' not in scene_data):
+                log("[SCRIPT.SERVICE.HUE] validate: light states or scene data unavailable, skipping light-state shortcuts")
+                skip_time_check_if_light_on = False
+                skip_scene_if_all_off = False
 
         if self.light_group.media_type == VIDEO and scene:
             # Check video activation rules with a Scene
